@@ -152,21 +152,13 @@ Do not claim that a change works unless it has been verified or can be directly 
 
 If verification cannot be performed, clearly state what could not be verified.
 
-### 11.1 Mandatory App/UI Check After Every Feature, Step, or Action
-
-Build success, lint, and unit tests do not prove the feature actually works or looks correct on screen. Runtime and visual issues (e.g. content drawing under the system/navigation bar, overlapping elements, broken layouts, incorrect Bengali text rendering) are only caught by actually running the app.
-
-Therefore, after **every** implemented feature, plan step, bug fix, or other code change that affects app behavior or UI:
-
-1. Install and launch the app on an available emulator/device, and exercise the affected screen(s)/flow(s).
-2. Check both functional correctness (the feature does what was asked) and visual correctness (layout, spacing, insets/system bars, alignment, touch targets, text rendering).
-3. If a screenshot or emulator/device is not available in the current environment, explicitly say so, and ask the user to run the app and confirm/share what they see before treating the change as verified.
-4. Do not mark a step or feature as complete, or tell the user "this works," based solely on compilation, lint, or unit test results — call out clearly what was verified and what still needs the user's confirmation.
-5. When the user reports a UI/behavior problem (e.g. via a screenshot), after fixing it, re-check the same way rather than assuming the fix is correct from code inspection alone.
+Running the app on an emulator/device is not required to consider a step, action, or feature complete. Verification is based on code review, unit tests, and builds as described above.
 
 ## 12. Git and Existing Changes
 
 * Do run any git commit
+* After implementing a step, action, or feature, add any newly created files to git (`git add`) so they are tracked.
+* Running unit tests affecting the changed file(s) is mandatory after implementing a step, action, or feature; do not skip this before considering the change complete.
 
 ## 13. Project Plan
 
