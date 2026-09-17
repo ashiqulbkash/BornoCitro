@@ -11,13 +11,14 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke as PathStrokeStyle
 import androidx.compose.ui.tooling.preview.Preview
 import com.bornochitra.core.model.Point
 import com.bornochitra.core.model.Stroke
 import com.bornochitra.core.ui.theme.BornoChitraTheme
 
-private const val GUIDE_CANVAS_UNIT = 100f
+internal const val GUIDE_CANVAS_UNIT = 100f
 
 /** Visual styling for [DottedPathCanvas]. All sizes are in the exercise's normalized 0..100 units. */
 data class DottedPathStyle(
@@ -47,24 +48,39 @@ fun DottedPathCanvas(
 
     Canvas(modifier = modifier) {
         val scale = size.minDimension / GUIDE_CANVAS_UNIT
-        fun toOffset(point: Point) = Offset(point.x * scale, point.y * scale)
+        drawDottedGuide(stroke.points, dots, style, scale, resolvedDotColor, resolvedPathColor)
+    }
+}
 
-        if (stroke.points.size >= 2) {
-            val guidePath = Path().apply {
-                val first = stroke.points.first()
-                moveTo(first.x * scale, first.y * scale)
-                stroke.points.drop(1).forEach { lineTo(it.x * scale, it.y * scale) }
-            }
-            drawPath(
-                path = guidePath,
-                color = resolvedPathColor,
-                style = PathStrokeStyle(width = style.pathWidth * scale, cap = StrokeCap.Round),
-            )
-        }
+/**
+ * Draws the guide line and dots for a stroke. Shared by [DottedPathCanvas] and
+ * [TracingInputCanvas] so both scale points the same way within a single [DrawScope].
+ */
+internal fun DrawScope.drawDottedGuide(
+    strokePoints: List<Point>,
+    dots: List<Point>,
+    style: DottedPathStyle,
+    scale: Float,
+    dotColor: Color,
+    pathColor: Color,
+) {
+    fun toOffset(point: Point) = Offset(point.x * scale, point.y * scale)
 
-        dots.forEach { dot ->
-            drawCircle(color = resolvedDotColor, radius = style.dotRadius * scale, center = toOffset(dot))
+    if (strokePoints.size >= 2) {
+        val guidePath = Path().apply {
+            val first = strokePoints.first()
+            moveTo(first.x * scale, first.y * scale)
+            strokePoints.drop(1).forEach { lineTo(it.x * scale, it.y * scale) }
         }
+        drawPath(
+            path = guidePath,
+            color = pathColor,
+            style = PathStrokeStyle(width = style.pathWidth * scale, cap = StrokeCap.Round),
+        )
+    }
+
+    dots.forEach { dot ->
+        drawCircle(color = dotColor, radius = style.dotRadius * scale, center = toOffset(dot))
     }
 }
 
