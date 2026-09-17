@@ -1,11 +1,13 @@
 package com.bornochitra.feature.home
 
 import com.bornochitra.core.database.repository.ProgressRepository
+import com.bornochitra.core.model.ExerciseProgress
 import com.bornochitra.core.model.LearningProgress
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.resetMain
@@ -44,6 +46,8 @@ class HomeViewModelTest {
         )
         val repository = object : ProgressRepository {
             override fun observeProgress(): Flow<LearningProgress> = progressFlow
+            override fun observeExerciseProgress(exerciseIds: List<String>): Flow<Map<String, ExerciseProgress>> =
+                flowOf(emptyMap())
         }
 
         val viewModel = HomeViewModel(repository)
@@ -62,6 +66,8 @@ class HomeViewModelTest {
     fun `default ui state has zero progress and no continue exercise`() = runTest(dispatcher) {
         val repository = object : ProgressRepository {
             override fun observeProgress(): Flow<LearningProgress> = MutableStateFlow(LearningProgress())
+            override fun observeExerciseProgress(exerciseIds: List<String>): Flow<Map<String, ExerciseProgress>> =
+                flowOf(emptyMap())
         }
 
         val viewModel = HomeViewModel(repository)

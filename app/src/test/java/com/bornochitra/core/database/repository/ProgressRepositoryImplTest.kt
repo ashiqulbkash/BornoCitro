@@ -83,4 +83,26 @@ class ProgressRepositoryImplTest {
 
         assertNull(result.continueExerciseId)
     }
+
+    @Test
+    fun `exercise progress is keyed by id and filtered to the requested ids`() = runTest {
+        val rows = listOf(
+            progress("vowel-o", isMastered = true),
+            progress("vowel-aa", isMastered = false),
+            progress("consonant-ko", isMastered = true),
+        )
+
+        val result = repositoryWith(rows).observeExerciseProgress(listOf("vowel-o", "vowel-aa")).first()
+
+        assertEquals(setOf("vowel-o", "vowel-aa"), result.keys)
+        assertEquals(true, result["vowel-o"]?.isMastered)
+        assertEquals(false, result["vowel-aa"]?.isMastered)
+    }
+
+    @Test
+    fun `exercise progress omits ids with no recorded progress`() = runTest {
+        val result = repositoryWith(emptyList()).observeExerciseProgress(listOf("vowel-o")).first()
+
+        assertEquals(emptyMap<String, Any>(), result)
+    }
 }

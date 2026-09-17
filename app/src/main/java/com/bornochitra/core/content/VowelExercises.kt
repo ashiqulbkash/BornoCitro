@@ -132,11 +132,56 @@ internal val vowelExercises: List<Exercise> = listOf(
         ),
     ),
     Exercise(
+        id = "vowel-uu",
+        title = "ঊ",
+        type = ExerciseType.VOWEL,
+        difficulty = Difficulty.INTERMEDIATE,
+        order = 6,
+        strokes = listOf(
+            Stroke(
+                id = "vowel-uu-body",
+                points = StrokePoints.line(Point(30f, 20f), Point(30f, 65f)),
+            ),
+            Stroke(
+                id = "vowel-uu-hook",
+                points = StrokePoints.arc(center = Point(45f, 65f), radius = 15f, startDeg = 180f, sweepDeg = 160f, samples = 16),
+            ),
+            Stroke(
+                id = "vowel-uu-tail",
+                points = StrokePoints.line(Point(50f, 25f), Point(70f, 15f)),
+            ),
+        ),
+    ),
+    Exercise(
+        id = "vowel-ri",
+        title = "ঋ",
+        type = ExerciseType.VOWEL,
+        difficulty = Difficulty.ADVANCED,
+        order = 7,
+        strokes = listOf(
+            Stroke(
+                id = "vowel-ri-body",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(35f, 15f),
+                        Point(35f, 55f),
+                        Point(55f, 70f),
+                        Point(35f, 85f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "vowel-ri-hook",
+                points = StrokePoints.arc(center = Point(35f, 15f), radius = 8f, startDeg = 90f, sweepDeg = 270f, samples = 12),
+            ),
+        ),
+    ),
+    Exercise(
         id = "vowel-e",
         title = "এ",
         type = ExerciseType.VOWEL,
         difficulty = Difficulty.INTERMEDIATE,
-        order = 6,
+        order = 8,
         strokes = listOf(
             Stroke(
                 id = "vowel-e-body",
@@ -150,6 +195,70 @@ internal val vowelExercises: List<Exercise> = listOf(
                         Point(75f, 65f),
                     ),
                 ),
+            ),
+        ),
+    ),
+    Exercise(
+        id = "vowel-oi",
+        title = "ঐ",
+        type = ExerciseType.VOWEL,
+        difficulty = Difficulty.INTERMEDIATE,
+        order = 9,
+        strokes = listOf(
+            Stroke(
+                id = "vowel-oi-body",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(25f, 50f),
+                        Point(75f, 50f),
+                        Point(55f, 20f),
+                        Point(30f, 35f),
+                        Point(55f, 80f),
+                        Point(75f, 65f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "vowel-oi-mark",
+                points = StrokePoints.line(Point(15f, 40f), Point(15f, 60f)),
+            ),
+        ),
+    ),
+    Exercise(
+        id = "vowel-oa",
+        title = "ও",
+        type = ExerciseType.VOWEL,
+        difficulty = Difficulty.INTERMEDIATE,
+        order = 10,
+        strokes = listOf(
+            Stroke(
+                id = "vowel-oa-stem",
+                points = StrokePoints.line(Point(50f, 20f), Point(50f, 85f)),
+            ),
+            Stroke(
+                id = "vowel-oa-loop",
+                points = StrokePoints.arc(center = Point(50f, 30f), radius = 15f, startDeg = 90f, sweepDeg = 300f, samples = 20),
+            ),
+        ),
+    ),
+    Exercise(
+        id = "vowel-au",
+        title = "ঔ",
+        type = ExerciseType.VOWEL,
+        difficulty = Difficulty.ADVANCED,
+        order = 11,
+        strokes = listOf(
+            Stroke(
+                id = "vowel-au-stem",
+                points = StrokePoints.line(Point(50f, 20f), Point(50f, 85f)),
+            ),
+            Stroke(
+                id = "vowel-au-loop",
+                points = StrokePoints.arc(center = Point(50f, 30f), radius = 15f, startDeg = 90f, sweepDeg = 300f, samples = 20),
+            ),
+            Stroke(
+                id = "vowel-au-tail",
+                points = StrokePoints.line(Point(65f, 15f), Point(80f, 35f)),
             ),
         ),
     ),

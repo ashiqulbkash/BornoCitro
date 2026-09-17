@@ -2,6 +2,7 @@ package com.bornochitra.core.database.repository
 
 import com.bornochitra.core.database.dao.ExerciseProgressDao
 import com.bornochitra.core.database.entity.ExerciseProgressEntity
+import com.bornochitra.core.model.ExerciseProgress
 import com.bornochitra.core.model.LearningProgress
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -17,7 +18,22 @@ class ProgressRepositoryImpl @Inject constructor(
 
     override fun observeProgress(): Flow<LearningProgress> =
         exerciseProgressDao.observeAll().map { rows -> rows.toLearningProgress() }
+
+    override fun observeExerciseProgress(exerciseIds: List<String>): Flow<Map<String, ExerciseProgress>> =
+        exerciseProgressDao.observeAll().map { rows ->
+            rows.filter { it.exerciseId in exerciseIds }.associate { it.exerciseId to it.toExerciseProgress() }
+        }
 }
+
+private fun ExerciseProgressEntity.toExerciseProgress(): ExerciseProgress = ExerciseProgress(
+    exerciseId = exerciseId,
+    attemptCount = attemptCount,
+    completedCount = completedCount,
+    bestScore = bestScore,
+    lastScore = lastScore,
+    lastPracticedAt = lastPracticedAt,
+    isMastered = isMastered,
+)
 
 // Category is inferred from the exerciseId prefix convention already used by navigation
 // (see BcNavHost) until plan.md Step 6 introduces a real Exercise catalog with an explicit
