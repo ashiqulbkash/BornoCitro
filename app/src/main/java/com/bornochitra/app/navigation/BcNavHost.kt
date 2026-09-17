@@ -42,6 +42,9 @@ fun BcNavHost(
                 onConsonantsClick = { navController.navigate(BcDestination.Consonants.route) },
                 onDrawingClick = { navController.navigate(BcDestination.Drawing.route) },
                 onProgressClick = { navController.navigate(BcDestination.Progress.route) },
+                onContinueClick = { exerciseId ->
+                    navController.navigate(BcDestination.Practice.createRoute(exerciseId))
+                },
             )
         }
 

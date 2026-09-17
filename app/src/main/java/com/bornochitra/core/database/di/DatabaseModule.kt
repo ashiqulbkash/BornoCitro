@@ -3,6 +3,7 @@ package com.bornochitra.core.database.di
 import android.content.Context
 import androidx.room.Room
 import com.bornochitra.core.database.AppDatabase
+import com.bornochitra.core.database.dao.ExerciseProgressDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -20,4 +21,8 @@ object DatabaseModule {
     @Singleton
     fun provideAppDatabase(@ApplicationContext context: Context): AppDatabase =
         Room.databaseBuilder(context, AppDatabase::class.java, DATABASE_NAME).build()
+
+    @Provides
+    fun provideExerciseProgressDao(appDatabase: AppDatabase): ExerciseProgressDao =
+        appDatabase.exerciseProgressDao()
 }
