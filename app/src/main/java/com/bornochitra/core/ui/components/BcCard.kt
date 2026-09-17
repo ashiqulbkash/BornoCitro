@@ -14,10 +14,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import com.bornochitra.core.ui.theme.BcDimens
 import com.bornochitra.core.ui.theme.BcSpacing
 import com.bornochitra.core.ui.theme.BornoChitraTheme
+
+/** Single Bengali letters get the large glyph style; longer titles (e.g. drawing names) get a smaller
+ * single-line style so they don't wrap or overflow the fixed-size tile. */
+private const val SHORT_LABEL_MAX_LENGTH = 2
 
 @Composable
 fun BcCard(
@@ -53,7 +59,18 @@ fun BcExerciseTile(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
         ) {
-            Text(text = label, style = MaterialTheme.typography.headlineLarge)
+            val labelStyle = if (label.length <= SHORT_LABEL_MAX_LENGTH) {
+                MaterialTheme.typography.headlineLarge
+            } else {
+                MaterialTheme.typography.titleMedium
+            }
+            Text(
+                text = label,
+                style = labelStyle,
+                textAlign = TextAlign.Center,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
             if (statusText != null) {
                 Text(text = statusText, style = MaterialTheme.typography.labelMedium)
             }
@@ -68,6 +85,17 @@ private fun BcCardPreview() {
         Row(horizontalArrangement = Arrangement.spacedBy(BcSpacing.sm)) {
             BcExerciseTile(label = "অ", onClick = {}, statusText = "Mastered")
             BcExerciseTile(label = "আ", onClick = {}, statusText = "2 attempts")
+        }
+    }
+}
+
+@Preview(showBackground = true, name = "Long label")
+@Composable
+private fun BcCardLongLabelPreview() {
+    BornoChitraTheme {
+        Row(horizontalArrangement = Arrangement.spacedBy(BcSpacing.sm)) {
+            BcExerciseTile(label = "Triangle", onClick = {}, statusText = "Completed")
+            BcExerciseTile(label = "Circle", onClick = {}, statusText = null)
         }
     }
 }
