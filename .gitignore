@@ -1,0 +1,47 @@
+# Gradle
+.gradle/
+build/
+!*/src/**/build/
+out/
+
+# Local configuration (contains sdk.dir, personal machine paths)
+local.properties
+
+# Kotlin/Gradle build caches
+.kotlin/
+.cxx/
+.externalNativeBuild/
+
+# Android Studio / IntelliJ project files (not needed to reopen a Gradle project)
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Instant Run / captures / profiling
+/captures/
+.navigation/
+*.hprof
+
+# Log files
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Packaged / signed artifacts (build outputs, never source)
+*.apk
+*.aab
+*.ap_
+*.dex
+
+# Signing keys and secrets — never commit these
+*.jks
+*.keystore
+!debug.keystore
+
+# Freeline / legacy build tool state
+freeline.py
+freeline/
+freeline_project_description.json

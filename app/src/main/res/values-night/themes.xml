@@ -1,0 +1,7 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. Full Material3 color scheme is applied in Compose (core/ui/theme). -->
+    <style name="Theme.BornoChitra" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowBackground">@color/bc_background_dark</item>
+    </style>
+</resources>
