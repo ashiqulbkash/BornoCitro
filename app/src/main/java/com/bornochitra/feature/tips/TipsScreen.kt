@@ -1,9 +1,13 @@
 package com.bornochitra.feature.tips
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -11,12 +15,23 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.bornochitra.core.ui.components.BcCard
 import com.bornochitra.core.ui.components.BcPrimaryButton
 import com.bornochitra.core.ui.components.BcTopAppBar
 import com.bornochitra.core.ui.theme.BcSpacing
 import com.bornochitra.core.ui.theme.BornoChitraTheme
 
-/** Placeholder for the Step 4 Tips screen. Wired into navigation now so the flow is reachable end to end. */
+private data class Tip(val stepNumber: Int, val text: String)
+
+// Static onboarding copy — see plan.md section 18. Not dynamic, so no ViewModel/repository needed.
+private val tips = listOf(
+    Tip(1, "Follow the dots."),
+    Tip(2, "Start from the highlighted dot."),
+    Tip(3, "Move your finger slowly."),
+    Tip(4, "Stay close to the dotted line."),
+    Tip(5, "Complete all strokes."),
+)
+
 @Composable
 fun TipsScreen(
     onContinueClick: () -> Unit,
@@ -24,18 +39,46 @@ fun TipsScreen(
 ) {
     Scaffold(
         modifier = modifier,
-        topBar = { BcTopAppBar(title = "Tips") },
+        topBar = { BcTopAppBar(title = "How to Practice") },
+        bottomBar = {
+            BcPrimaryButton(
+                text = "Continue",
+                onClick = onContinueClick,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .navigationBarsPadding()
+                    .padding(BcSpacing.md),
+            )
+        },
     ) { innerPadding ->
-        Column(
+        LazyColumn(
             modifier = Modifier
-                .fillMaxSize()
+                .fillMaxWidth()
                 .padding(innerPadding)
-                .padding(BcSpacing.md),
-            verticalArrangement = Arrangement.spacedBy(BcSpacing.md, Alignment.CenterVertically),
-            horizontalAlignment = Alignment.CenterHorizontally,
+                .padding(horizontal = BcSpacing.md),
+            verticalArrangement = Arrangement.spacedBy(BcSpacing.sm),
+            contentPadding = PaddingValues(vertical = BcSpacing.md),
         ) {
-            Text(text = "Tips screen coming soon", style = MaterialTheme.typography.headlineSmall)
-            BcPrimaryButton(text = "Continue", onClick = onContinueClick)
+            items(tips, key = { it.stepNumber }) { tip ->
+                TipRow(tip = tip)
+            }
+        }
+    }
+}
+
+@Composable
+private fun TipRow(
+    tip: Tip,
+    modifier: Modifier = Modifier,
+) {
+    BcCard(modifier = modifier.fillMaxWidth()) {
+        Row(
+            modifier = Modifier.padding(BcSpacing.md),
+            horizontalArrangement = Arrangement.spacedBy(BcSpacing.md),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(text = tip.stepNumber.toString(), style = MaterialTheme.typography.headlineMedium)
+            Text(text = tip.text, style = MaterialTheme.typography.bodyLarge)
         }
     }
 }
