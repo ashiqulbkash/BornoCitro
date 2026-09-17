@@ -179,9 +179,29 @@ For every non-trivial task:
 3. Inspect the existing implementation.
 4. Search for similar patterns already used in the project.
 5. Decide on the smallest appropriate change.
-6. Implement incrementally.
-7. Test and verify the changes.
-8. Review the final implementation for unnecessary complexity.
+6. Write the pre-task brief required by Section 15.
+7. Implement incrementally.
+8. Test and verify the changes.
+9. Review the final implementation for unnecessary complexity.
+10. Write the post-task brief required by Section 15.
+
+## 15. Task Reporting
+
+Every task (planned step, bug fix, or feature) must be reported in two messages: one before starting, one after finishing.
+
+**Before starting work**, post a brief message stating:
+
+* What is being planned (the requirement/step being addressed).
+* What is about to be done (the concrete actions/approach to implement it).
+
+**After finishing work**, post a brief message that:
+
+* Restates the plan from the pre-task brief.
+* States exactly what was done to complete it (files changed, logic added/modified, tests run/added, and their results).
+
+* Keep both briefs short and factual — no filler, no restating unrelated context.
+* Do not skip either brief, even for small changes.
+* Do not merge the two briefs into one message; the pre-task brief must be posted before implementation begins, and the post-task brief only after verification (Section 11) is complete.
 
 ## Most Important Principles
 
@@ -195,4 +215,5 @@ For every non-trivial task:
 8. Make the smallest change that correctly solves the requirement.
 9. Do not over-engineer.
 10. Keep the codebase simple, consistent, and maintainable.
+11. Post a pre-task brief before starting and a post-task brief after finishing every task (Section 15).
 
