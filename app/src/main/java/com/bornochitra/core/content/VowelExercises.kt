@@ -8,9 +8,9 @@ import com.bornochitra.core.model.Stroke
 
 /**
  * Vowel stroke geometry. অ (plan.md Step 10.8), আ (Step 11.1), ই (Step 11.2), ঈ (Step 11.3), উ
- * (Step 11.4), ঊ (Step 11.5), ঋ (Step 11.6), এ (Step 11.7) and ঐ (Step 11.8) are read off the
- * rendered glyph's centreline; the letters after them still carry placeholder paths that approximate
- * the letter's silhouette, and are corrected one at a time by plan.md Steps 11.9-11.10.
+ * (Step 11.4), ঊ (Step 11.5), ঋ (Step 11.6), এ (Step 11.7), ঐ (Step 11.8) and ও (Step 11.9) are
+ * read off the rendered glyph's centreline; ঔ, the last one, still carries a placeholder path that
+ * approximates the letter's silhouette, and is corrected by plan.md Step 11.10.
  */
 internal val vowelExercises: List<Exercise> = listOf(
     /**
@@ -827,6 +827,16 @@ internal val vowelExercises: List<Exercise> = listOf(
             ),
         ),
     ),
+    /**
+     * ও has no matra either — what closes its top is the upper lobe's own arch. The letter is two
+     * pen movements and neither one reverses, so neither is split: the curl runs out of the round
+     * terminal inside the upper lobe, over the top and down the right-hand side to where the two
+     * lobes meet, and the sweep starts at the cut tail up on the left, runs down and around the
+     * bottom, back up the right and turns in to finish inside the lower lobe. Both round terminals
+     * are taken from the widest point of the glyph's ink, so a stroke ends in the middle of the
+     * ball rather than on its edge. Geometry is read off the centreline of the glyph as Noto Sans
+     * Bengali renders it, the font Android draws the character with above the tracing canvas.
+     */
     Exercise(
         id = "vowel-oa",
         title = "ও",
@@ -835,12 +845,76 @@ internal val vowelExercises: List<Exercise> = listOf(
         order = 10,
         strokes = listOf(
             Stroke(
-                id = "vowel-oa-stem",
-                points = StrokePoints.line(Point(50f, 20f), Point(50f, 85f)),
+                id = "vowel-oa-curl",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(46f, 39f),
+                        Point(42f, 36f),
+                        Point(42f, 33f),
+                        Point(43f, 30f),
+                        Point(44f, 27f),
+                        Point(46f, 23f),
+                        Point(49f, 20f),
+                        Point(52f, 18f),
+                        Point(56f, 16f),
+                        Point(59f, 14f),
+                        Point(62f, 13f),
+                        Point(66f, 12f),
+                        Point(69f, 12f),
+                        Point(72f, 12f),
+                        Point(75f, 12f),
+                        Point(79f, 13f),
+                        Point(82f, 15f),
+                        Point(85f, 18f),
+                        Point(87f, 21f),
+                        Point(87f, 24f),
+                        Point(88f, 28f),
+                        Point(88f, 31f),
+                        Point(88f, 34f),
+                        Point(87f, 37f),
+                        Point(86f, 41f),
+                        Point(85f, 44f),
+                        Point(82f, 48f),
+                    ),
+                ),
             ),
             Stroke(
-                id = "vowel-oa-loop",
-                points = StrokePoints.arc(center = Point(50f, 30f), radius = 15f, startDeg = 90f, sweepDeg = 300f, samples = 20),
+                id = "vowel-oa-sweep",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(9f, 24f),
+                        Point(11f, 28f),
+                        Point(12f, 32f),
+                        Point(13f, 37f),
+                        Point(15f, 42f),
+                        Point(17f, 46f),
+                        Point(19f, 51f),
+                        Point(22f, 56f),
+                        Point(24f, 60f),
+                        Point(28f, 65f),
+                        Point(32f, 70f),
+                        Point(36f, 74f),
+                        Point(41f, 78f),
+                        Point(46f, 80f),
+                        Point(50f, 82f),
+                        Point(55f, 84f),
+                        Point(60f, 84f),
+                        Point(65f, 84f),
+                        Point(69f, 84f),
+                        Point(74f, 84f),
+                        Point(79f, 82f),
+                        Point(84f, 80f),
+                        Point(87f, 75f),
+                        Point(89f, 70f),
+                        Point(90f, 66f),
+                        Point(90f, 61f),
+                        Point(89f, 56f),
+                        Point(87f, 52f),
+                        Point(82f, 48f),
+                        Point(78f, 48f),
+                        Point(73f, 48f),
+                    ),
+                ),
             ),
         ),
     ),

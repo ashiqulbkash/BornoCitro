@@ -13,7 +13,7 @@ import org.junit.Test
 
 /**
  * Validates plan.md Steps 10.8-10.10's checklist for real exercise content — the Bengali letters
- * "অ", "আ", "ই", "ঈ", "উ", "ঊ", "ঋ", "এ" and "ঐ" (plan.md Steps 11.1-11.8) and "ক", plus the
+ * "অ", "আ", "ই", "ঈ", "উ", "ঊ", "ঋ", "এ", "ঐ" and "ও" (plan.md Steps 11.1-11.9) and "ক", plus the
  * non-letter "Circle"
  * drawing — by running each through [TracingEngine], the same reusable component
  * [LetterTracingPrototype] drives (plan.md Step 10.11). "ক" has straight/angular strokes
@@ -33,6 +33,7 @@ class LetterTracingPrototypeTest {
     private val vowelRi = vowelExercises.first { it.id == "vowel-ri" }
     private val vowelE = vowelExercises.first { it.id == "vowel-e" }
     private val vowelOi = vowelExercises.first { it.id == "vowel-oi" }
+    private val vowelOa = vowelExercises.first { it.id == "vowel-oa" }
     private val consonantKo = consonantExercises.first { it.id == "consonant-ko" }
     private val drawingCircle = drawingExercises.first { it.id == "drawing-circle" }
 
@@ -376,6 +377,54 @@ class LetterTracingPrototypeTest {
     @Test
     fun `tracing far from vowel-oi's guide path does not complete the exercise`() {
         assertOffPathTraceDoesNotComplete(vowelOi)
+    }
+
+    @Test
+    fun `vowel-oa is traced as curl then sweep`() {
+        assertEquals(
+            listOf("vowel-oa-curl", "vowel-oa-sweep"),
+            vowelOa.strokes.map { it.id },
+        )
+        assertEquals(Point(46f, 39f), vowelOa.strokes.first().points.first())
+    }
+
+    @Test
+    fun `vowel-oa has no matra`() {
+        // The upper lobe's own arch closes the letter's top; there is no headline to add.
+        assertTrue(vowelOa.strokes.none { it.id.endsWith("-matra") })
+    }
+
+    @Test
+    fun `vowel-oa's curl ends where the sweep passes between the two lobes`() {
+        val curl = vowelOa.strokes.first { it.id == "vowel-oa-curl" }.points
+        val sweep = vowelOa.strokes.first { it.id == "vowel-oa-sweep" }.points
+        assertTrue(curl.last() in sweep)
+    }
+
+    @Test
+    fun `vowel-oa's sweep starts at the cut tail and finishes inside the lower lobe`() {
+        // The tail's tip is the letter's top-left corner, and the sweep ends at the ball terminal —
+        // left of, and below, the point where it turned in off the right-hand side.
+        val sweep = vowelOa.strokes.first { it.id == "vowel-oa-sweep" }.points
+        assertEquals(Point(9f, 24f), sweep.first())
+        assertEquals(Point(73f, 48f), sweep.last())
+        assertTrue(sweep.last().x < sweep.maxOf { it.x })
+        assertTrue(sweep.last().y < sweep.maxOf { it.y })
+    }
+
+    @Test
+    fun `vowel-oa shows every stroke's guide at once`() {
+        assertEquals(vowelOa.strokes, TracingEngine(vowelOa).guideStrokes)
+    }
+
+    @Test
+    fun `faithfully tracing vowel-oa's real stroke path completes the sequence with a perfect score`() {
+        assertFaithfulTraceIsPerfect(vowelOa)
+    }
+
+    @Test
+    fun `tracing far from vowel-oa's guide path does not complete the exercise`() {
+        assertOffPathTraceDoesNotComplete(vowelOa)
     }
 
     @Test

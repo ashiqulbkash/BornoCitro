@@ -1470,8 +1470,8 @@ Vowels — `অ` is already done and is the reference implementation. These foll
 11.6   ঋ    vowel-ri    done — 6 strokes (curl, diagonal, sweep, stem, hook, arm)
 11.7   এ    vowel-e     done — 3 strokes (curl, stem, base)
 11.8   ঐ    vowel-oi    done — 4 strokes (curl, stem, base, kar)
-11.9   ও    vowel-oa
-11.10  ঔ    vowel-au    shares ও's body today
+11.9   ও    vowel-oa    done — 2 strokes (curl, sweep)
+11.10  ঔ    vowel-au    still carries the body ও used to share
 ```
 
 Consonants:
@@ -1969,7 +1969,8 @@ Tracked here so the catalogue's real state is visible at a glance. Update as Ste
 এ                  done — 3 strokes (curl, stem, base), derived from the glyph; no matra
 ঐ                  done — 4 strokes (curl, stem, base, kar), derived from its own glyph,
                    not shared with এ
-2 other vowels     placeholder geometry    → Steps 11.9–11.10
+ও                  done — 2 strokes (curl, sweep), derived from the glyph; no matra
+1 other vowel      placeholder geometry    → Step 11.10
 5 consonants       placeholder geometry    → Steps 11.11–11.15
 5 drawings         unverified              → Steps 11.16–11.17
 ```
