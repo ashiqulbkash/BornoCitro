@@ -8,9 +8,9 @@ import com.bornochitra.core.model.Stroke
 
 /**
  * Vowel stroke geometry. অ (plan.md Step 10.8), আ (Step 11.1), ই (Step 11.2), ঈ (Step 11.3), উ
- * (Step 11.4), ঊ (Step 11.5), ঋ (Step 11.6) and এ (Step 11.7) are read off the rendered glyph's
- * centreline; the letters after them still carry placeholder paths that approximate the letter's
- * silhouette, and are corrected one at a time by plan.md Steps 11.8-11.10.
+ * (Step 11.4), ঊ (Step 11.5), ঋ (Step 11.6), এ (Step 11.7) and ঐ (Step 11.8) are read off the
+ * rendered glyph's centreline; the letters after them still carry placeholder paths that approximate
+ * the letter's silhouette, and are corrected one at a time by plan.md Steps 11.9-11.10.
  */
 internal val vowelExercises: List<Exercise> = listOf(
     /**
@@ -712,6 +712,16 @@ internal val vowelExercises: List<Exercise> = listOf(
             ),
         ),
     ),
+    /**
+     * ঐ is এ with the ঐ-কার above it, so the body is written the way এ's is — the curl out of the
+     * round terminal, the stem, then the base — and the কার is added last, the way a mark is. It is
+     * not এ redrawn smaller, though: the কার takes the top of the square, so the body sits lower and
+     * tighter, and every point here is read off ঐ's own glyph. The কার starts at its thin top
+     * terminal, drops, runs right and curls back down to land on the head of the stem, where the
+     * curl ends too. Like ই and ঈ the letter is taller than it is wide, so it is fitted by height
+     * and centred. Geometry is read off the centreline of the glyph as Noto Sans Bengali renders it,
+     * the font Android draws the character with above the tracing canvas.
+     */
     Exercise(
         id = "vowel-oi",
         title = "ঐ",
@@ -720,21 +730,100 @@ internal val vowelExercises: List<Exercise> = listOf(
         order = 9,
         strokes = listOf(
             Stroke(
-                id = "vowel-oi-body",
+                id = "vowel-oi-curl",
                 points = StrokePoints.polyline(
                     listOf(
-                        Point(25f, 50f),
-                        Point(75f, 50f),
-                        Point(55f, 20f),
-                        Point(30f, 35f),
-                        Point(55f, 80f),
-                        Point(75f, 65f),
+                        Point(45f, 59f),
+                        Point(44f, 58f),
+                        Point(42f, 58f),
+                        Point(40f, 57f),
+                        Point(39f, 55f),
+                        Point(39f, 52f),
+                        Point(40f, 48f),
+                        Point(41f, 46f),
+                        Point(43f, 43f),
+                        Point(45f, 41f),
+                        Point(46f, 39f),
+                        Point(48f, 38f),
+                        Point(50f, 37f),
+                        Point(52f, 37f),
+                        Point(54f, 36f),
+                        Point(56f, 36f),
+                        Point(59f, 36f),
+                        Point(61f, 37f),
+                        Point(63f, 38f),
+                        Point(65f, 41f),
+                        Point(66f, 45f),
+                        Point(66f, 49f),
+                        Point(66f, 52f),
                     ),
                 ),
             ),
             Stroke(
-                id = "vowel-oi-mark",
-                points = StrokePoints.line(Point(15f, 40f), Point(15f, 60f)),
+                id = "vowel-oi-stem",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(66f, 52f),
+                        Point(66f, 60f),
+                        Point(66f, 68f),
+                        Point(66f, 76f),
+                        Point(66f, 84f),
+                        Point(66f, 88f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "vowel-oi-base",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(20f, 57f),
+                        Point(20f, 62f),
+                        Point(19f, 66f),
+                        Point(20f, 69f),
+                        Point(21f, 73f),
+                        Point(23f, 76f),
+                        Point(26f, 78f),
+                        Point(30f, 80f),
+                        Point(35f, 80f),
+                        Point(39f, 80f),
+                        Point(43f, 80f),
+                        Point(47f, 79f),
+                        Point(51f, 79f),
+                        Point(54f, 79f),
+                        Point(58f, 80f),
+                        Point(61f, 82f),
+                        Point(64f, 83f),
+                        Point(66f, 84f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "vowel-oi-kar",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(40f, 8f),
+                        Point(40f, 13f),
+                        Point(41f, 15f),
+                        Point(42f, 18f),
+                        Point(44f, 20f),
+                        Point(46f, 21f),
+                        Point(49f, 22f),
+                        Point(53f, 23f),
+                        Point(58f, 23f),
+                        Point(62f, 24f),
+                        Point(67f, 25f),
+                        Point(72f, 26f),
+                        Point(76f, 28f),
+                        Point(79f, 31f),
+                        Point(80f, 35f),
+                        Point(81f, 38f),
+                        Point(80f, 42f),
+                        Point(78f, 47f),
+                        Point(75f, 49f),
+                        Point(71f, 52f),
+                        Point(66f, 52f),
+                    ),
+                ),
             ),
         ),
     ),

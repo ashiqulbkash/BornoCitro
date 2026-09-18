@@ -13,8 +13,8 @@ import org.junit.Test
 
 /**
  * Validates plan.md Steps 10.8-10.10's checklist for real exercise content — the Bengali letters
- * "অ", "আ", "ই", "ঈ", "উ", "ঊ", "ঋ" and "এ" (plan.md Steps 11.1-11.7) and "ক", plus the non-letter
- * "Circle"
+ * "অ", "আ", "ই", "ঈ", "উ", "ঊ", "ঋ", "এ" and "ঐ" (plan.md Steps 11.1-11.8) and "ক", plus the
+ * non-letter "Circle"
  * drawing — by running each through [TracingEngine], the same reusable component
  * [LetterTracingPrototype] drives (plan.md Step 10.11). "ক" has straight/angular strokes
  * structurally different from "অ"'s curved loop, and "Circle" is not a letter at all, so passing
@@ -32,6 +32,7 @@ class LetterTracingPrototypeTest {
     private val vowelUu = vowelExercises.first { it.id == "vowel-uu" }
     private val vowelRi = vowelExercises.first { it.id == "vowel-ri" }
     private val vowelE = vowelExercises.first { it.id == "vowel-e" }
+    private val vowelOi = vowelExercises.first { it.id == "vowel-oi" }
     private val consonantKo = consonantExercises.first { it.id == "consonant-ko" }
     private val drawingCircle = drawingExercises.first { it.id == "drawing-circle" }
 
@@ -322,6 +323,59 @@ class LetterTracingPrototypeTest {
     @Test
     fun `tracing far from vowel-e's guide path does not complete the exercise`() {
         assertOffPathTraceDoesNotComplete(vowelE)
+    }
+
+    @Test
+    fun `vowel-oi is traced as curl, stem, base and kar, in that order`() {
+        assertEquals(
+            listOf("vowel-oi-curl", "vowel-oi-stem", "vowel-oi-base", "vowel-oi-kar"),
+            vowelOi.strokes.map { it.id },
+        )
+        assertEquals(Point(45f, 59f), vowelOi.strokes.first().points.first())
+    }
+
+    @Test
+    fun `vowel-oi's kar is written last and lands on the head of the stem`() {
+        // ঐ is এ plus its কার, and a mark goes on after the body it belongs to.
+        val stem = vowelOi.strokes.first { it.id == "vowel-oi-stem" }.points
+        val curl = vowelOi.strokes.first { it.id == "vowel-oi-curl" }.points
+        val kar = vowelOi.strokes.last()
+        assertEquals("vowel-oi-kar", kar.id)
+        assertEquals(stem.first(), kar.points.last())
+        assertEquals(stem.first(), curl.last())
+        assertTrue(kar.points.first().y < curl.minOf { it.y })
+    }
+
+    @Test
+    fun `vowel-oi carries its own geometry rather than এ's`() {
+        // The কার takes the top of the square, so ঐ's body sits lower than এ's — sharing a shape
+        // between the two is the defect plan.md Step 11.8 exists to remove.
+        val oiBody = vowelOi.strokes.filterNot { it.id == "vowel-oi-kar" }
+        assertTrue(oiBody.map { it.points } != vowelE.strokes.map { it.points })
+        assertTrue(oiBody.minOf { stroke -> stroke.points.minOf { it.y } } > vowelE.strokes.minOf { stroke -> stroke.points.minOf { it.y } })
+    }
+
+    @Test
+    fun `vowel-oi's base runs from its own terminal to the stem's foot`() {
+        val stem = vowelOi.strokes.first { it.id == "vowel-oi-stem" }.points
+        val base = vowelOi.strokes.first { it.id == "vowel-oi-base" }.points
+        assertEquals(base.first().x, vowelOi.strokes.minOf { stroke -> stroke.points.minOf { it.x } }, 1f)
+        assertTrue(base.last() in stem)
+    }
+
+    @Test
+    fun `vowel-oi shows every stroke's guide at once`() {
+        assertEquals(vowelOi.strokes, TracingEngine(vowelOi).guideStrokes)
+    }
+
+    @Test
+    fun `faithfully tracing vowel-oi's real stroke path completes the sequence with a perfect score`() {
+        assertFaithfulTraceIsPerfect(vowelOi)
+    }
+
+    @Test
+    fun `tracing far from vowel-oi's guide path does not complete the exercise`() {
+        assertOffPathTraceDoesNotComplete(vowelOi)
     }
 
     @Test
