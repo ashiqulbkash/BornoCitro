@@ -81,8 +81,9 @@ Low scores should encourage another attempt rather than make the child feel that
 3. Dotted tracing
 4. Multiple strokes per letter
 5. Stroke-order guidance
-6. Drawing exercises
-7. Practice-based learning
+6. Whole-letter practice after the individual strokes
+7. Drawing exercises
+8. Practice-based learning
 
 ## Progress
 
@@ -640,35 +641,40 @@ Phase 10
 Practice
 
 Phase 11
-Scoring
+Exercise Content Correction
 
 Phase 12
-Result
+Scoring
 
 Phase 13
-Progress
+Result
 
 Phase 14
-Consonants
+Progress
 
 Phase 15
-Drawing
+Consonants
 
 Phase 16
-Mastery
+Drawing
 
 Phase 17
-Contextual Tips
+Mastery
 
 Phase 18
-Animations / Feedback
+Contextual Tips
 
 Phase 19
-Accessibility / Performance
+Animations / Feedback
 
 Phase 20
+Accessibility / Performance
+
+Phase 21
 Final Testing / Release
 ```
+
+Phase 11 was added after Step 11 revealed that most exercise content had incorrect stroke geometry. Correcting it before Scoring avoids tuning tolerances against wrong paths.
 
 ---
 
@@ -1004,6 +1010,7 @@ Prove that tracing feels:
 8. Detect stroke completion
 9. Calculate accuracy
 10. Produce a trace result
+11. Run a whole-letter pass after the individual strokes
 
 ## Prototype Architecture
 
@@ -1154,27 +1161,40 @@ Reliable coverage measurement.
 
 Bengali letters can contain multiple strokes.
 
-Implement:
+An attempt runs in two passes. The child first learns each stroke on its own, then writes the whole letter once more with every guide on screen:
 
 ```text
-Stroke 1
-   ↓
-Stroke 2
-   ↓
-Stroke 3
+Pass 1 — stroke by stroke       Pass 2 — whole letter
+one guide shown at a time       all guides shown at once
+
+Stroke 1                        Stroke 1
+   ↓                               ↓
+Stroke 2           →            Stroke 2
+   ↓                               ↓
+Stroke 3                        Stroke 3
+                                   ↓
+                            Exercise complete
 ```
+
+Both passes run the same stroke sequence in the same order. Only the guides shown differ.
+
+The exercise is not complete until the whole-letter pass is finished.
+
+An exercise with a single stroke has nothing to assemble, so it runs pass 1 only.
 
 Track:
 
+- Current pass
 - Current stroke
 - Completed strokes
 - Stroke coverage
 - Stroke accuracy
 - Incorrect stroke behavior
+- Which guides to display for the current pass
 
 ## Deliverable
 
-Multiple-stroke exercises work correctly.
+Multiple-stroke exercises work correctly and end with a whole-letter pass.
 
 ---
 
@@ -1225,10 +1245,37 @@ Validate:
 - Finger interaction
 - Coverage
 - Score
+- Whole-letter pass after the individual strokes
+
+## Authoring Stroke Geometry
+
+Do not approximate a letter's shape by eye. A guide that only loosely resembles the letter teaches the wrong hand movement, and the error is not obvious until it is seen on a device next to the rendered character.
+
+Derive the stroke points from the rendered glyph itself:
+
+```text
+Render the glyph
+        ↓
+Upscale / binarize
+        ↓
+Skeletonize to the centreline
+        ↓
+Read ordered waypoints
+        ↓
+Normalize into the 0..100 canvas
+```
+
+Rules:
+
+- The guide must follow the pen centreline, never the outer contour.
+- Include the matra (headline) when the letter has one — it is the most recognizable part of the character.
+- Keep the letter's true proportions; centre it rather than stretching it to fill the square.
+
+`অ` is three strokes: bowl, then stem, then matra — Bengali draws the headline last. Every other exercise is brought up to this standard in Steps 11.1–11.17.
 
 ## Deliverable
 
-A real Bengali letter can be traced in the prototype.
+A real Bengali letter can be traced in the prototype, stroke by stroke and then as a whole letter.
 
 ---
 
@@ -1237,6 +1284,8 @@ A real Bengali letter can be traced in the prototype.
 Use `ক` because it provides a different stroke structure.
 
 Validate that the tracing engine is not accidentally specialized for `অ`.
+
+While `ক` still has placeholder single-stroke geometry it also proves the opposite case: a single-stroke exercise correctly skips the whole-letter pass. Once `ক` is given its real multi-stroke geometry in Step 11.11 it gains that pass automatically, with no engine change.
 
 ## Deliverable
 
@@ -1259,6 +1308,8 @@ House
 ```
 
 Validate that the same tracing engine can support non-letter exercises.
+
+The final pass is driven by stroke count, not by exercise type, so a multi-stroke drawing ends with the same whole-shape pass a letter does. On-screen wording must therefore suit non-letters too — do not hardcode the word "letter" into the step label.
 
 ## Deliverable
 
@@ -1297,6 +1348,20 @@ Connect real exercises to the tracing engine.
 Stroke 1 of 3
 ```
 
+After the last individual stroke, the final pass shows every stroke's guide at once and says so:
+
+```text
+← Back
+
+          অ
+
+  all strokes' dots shown
+
+Whole letter — stroke 1 of 3
+```
+
+Ink from strokes already written stays on screen during that pass, so the letter visibly builds up as the child writes it.
+
 Potential controls:
 
 - Reset
@@ -1330,7 +1395,130 @@ A child can complete a real exercise.
 
 ---
 
-# 37. Step 12 — Scoring
+# 37. Step 11.1–11.17 — Exercise Content Correction
+
+> **Model requirement:** this block must be executed with **Claude Opus**. Deriving stroke geometry means reading a glyph's shape, judging whether a traced path matches it, and catching a wrong result that still looks plausible. A weaker model produces confident, wrong-shaped paths — which is exactly the defect being fixed here.
+
+## Why this sits between Step 11 and Step 12
+
+Step 11 made a real exercise traceable. It also made visible that roughly 90% of the exercise content does not render a correct dotted path — only `অ` has geometry derived from its glyph.
+
+Everything downstream measures a child's trace **against** that path:
+
+```text
+wrong guide path
+      ↓
+Step 12 Scoring     tolerance tuned against a shape that is wrong
+      ↓
+Step 13 Result      a number that means nothing
+      ↓
+Step 14 Progress    mastery awarded for tracing the wrong shape
+```
+
+Fixing the content later would mean re-tuning scoring and invalidating any progress already stored. It is cheaper and more honest to fix it here.
+
+These sub-steps keep the numbering of Steps 12–25 unchanged.
+
+## Prerequisites
+
+Two items are outstanding from the Step 11 work and must be closed before 11.1:
+
+```text
+P1  Verify the whole-letter pass on a physical device
+    (built and unit-tested, never yet seen running)
+
+P2  Fix the step label for non-letters
+    tracingStepLabel() says "Whole letter" — wrong for a
+    multi-stroke drawing such as House (see Step 10.10)
+```
+
+## Known Defects
+
+The placeholder content shares a small number of root causes, not 20 unrelated bugs:
+
+```text
+1. No matra          every letter except অ is missing its headline bar
+2. Eyeballed shapes  zigzag polylines that only loosely suggest the letter
+3. Copied bodies     আ/ই/ঈ, উ/ঊ, এ/ঐ, ও/ঔ reuse a body that was never correct
+4. Single stroke     most letters never reach the whole-letter pass
+```
+
+## Per-Exercise Procedure
+
+One exercise per sub-step. Do not batch them, and verify each before moving on.
+
+```text
+1. Render the glyph and derive the centreline   (method: Step 10.8)
+2. Decide stroke split and order                 (matra last)
+3. Write the points, normalized into 0..100
+4. Overlay the result on the glyph and compare
+5. Build + unit test
+6. Check on a physical device against the
+   character shown above the canvas
+7. Confirm the whole-letter pass appears and works
+```
+
+## Per-Exercise Definition of Done
+
+- [ ] Geometry derived from the glyph, not approximated
+- [ ] Matra present where the letter has one
+- [ ] Stroke count and order correct
+- [ ] Guide follows the pen centreline
+- [ ] Proportions preserved, letter centred in the canvas
+- [ ] Unit test pins stroke ids and starting point
+- [ ] Verified on a physical device against the rendered character
+- [ ] Whole-letter pass present for multi-stroke exercises
+
+## Sub-Steps
+
+Vowels — `অ` is already done and is the reference implementation. These follow teaching order, which also front-loads the MVP vowel set:
+
+```text
+11.1   আ    vowel-aa    body is অ's old placeholder + a tail; needs its own geometry
+11.2   ই    vowel-i
+11.3   ঈ    vowel-ii    shares ই's body today
+11.4   উ    vowel-u
+11.5   ঊ    vowel-uu    shares উ's body today
+```
+
+**Checkpoint after 11.5.** `অ আ ই ঈ উ ঊ` is the MVP vowel set from Section 51. With these correct the whole learning loop can be exercised honestly end to end. If schedule pressure appears, Steps 12–14 may run here and the remaining sub-steps resume afterwards — but no exercise ships with placeholder geometry.
+
+```text
+11.6   ঋ    vowel-ri
+11.7   এ    vowel-e
+11.8   ঐ    vowel-oi    shares এ's body today
+11.9   ও    vowel-oa
+11.10  ঔ    vowel-au    shares ও's body today
+```
+
+Consonants:
+
+```text
+11.11  ক    consonant-ko
+11.12  খ    consonant-kho
+11.13  গ    consonant-go
+11.14  ঘ    consonant-gho
+11.15  ঙ    consonant-ngo
+```
+
+Drawings:
+
+```text
+11.16  Line, Circle, Square, Triangle   verify only
+11.17  House                            composite shape, re-derive if wrong
+```
+
+Drawings in 11.16 are defined by exact geometry — an arc is a circle, four lines are a square — so they carry no handwriting risk and need verification rather than redrawing. Correct them only if the device check shows a real defect.
+
+## Deliverable
+
+Every exercise renders a dotted path that matches the character or shape shown above it, verified on a physical device.
+
+---
+
+# 38. Step 12 — Scoring
+
+> **Prerequisite:** Step 11.1–11.17. Scoring a trace against a wrong guide path produces meaningless numbers and mis-tuned tolerances.
 
 ## Objective
 
@@ -1350,6 +1538,24 @@ Optional:
 - Completion duration
 
 Do not over-weight time.
+
+## Scoring Across Both Passes
+
+A multi-stroke attempt produces stroke results from two passes (Step 10.6): the stroke-by-stroke pass and the whole-letter pass.
+
+Existing behavior carried in from Step 10.6 averages every stroke of both passes into one score. Choose the model deliberately in this step rather than inheriting it:
+
+```text
+A. Equal weight      average all strokes from both passes (current)
+B. Weighted          the whole-letter pass counts for more
+C. Final pass only   only the whole-letter pass is scored
+```
+
+Whichever is chosen:
+
+- Keep the weighting configurable, not hardcoded.
+- A single-stroke exercise has only pass 1 and must still score correctly.
+- A retried stroke should not be able to drag the score below an honest reflection of the final attempt.
 
 ## Output
 
@@ -1374,7 +1580,7 @@ Same scoring logic works for letters and drawings.
 
 ---
 
-# 38. Step 13 — Result Screen
+# 39. Step 13 — Result Screen
 
 ## Perfect
 
@@ -1432,7 +1638,7 @@ Every practice attempt has a clear result.
 
 ---
 
-# 39. Step 14 — Progress Screen
+# 40. Step 14 — Progress Screen
 
 ## Objective
 
@@ -1485,7 +1691,7 @@ Progress survives app restart.
 
 ---
 
-# 40. Step 15 — Learning Completion and Mastery
+# 41. Step 15 — Learning Completion and Mastery
 
 Do not treat "opened" or "attempted once" as "learned."
 
@@ -1523,7 +1729,7 @@ Keep this configurable.
 
 ---
 
-# 41. Step 16 — Drawing Practice
+# 42. Step 16 — Drawing Practice
 
 Use the same tracing and scoring infrastructure.
 
@@ -1541,11 +1747,13 @@ LOW / MEDIUM / PERFECT
 Progress
 ```
 
+Multi-stroke drawings end with the same whole-shape pass as letters (Step 10.6).
+
 Do not implement a separate tracing engine for drawings unless requirements genuinely differ.
 
 ---
 
-# 42. Step 17 — Contextual Tips
+# 43. Step 17 — Contextual Tips
 
 After the core learning loop works, introduce contextual guidance.
 
@@ -1573,7 +1781,7 @@ Do not overwhelm the child with messages.
 
 ---
 
-# 43. Step 18 — Animations and Feedback
+# 44. Step 18 — Animations and Feedback
 
 Only after core functionality is stable.
 
@@ -1592,7 +1800,7 @@ Performance takes priority over decorative animation.
 
 ---
 
-# 44. Step 19 — Accessibility and Child-Friendly UX
+# 45. Step 19 — Accessibility and Child-Friendly UX
 
 Requirements:
 
@@ -1612,7 +1820,7 @@ Test on multiple device sizes.
 
 ---
 
-# 45. Step 20 — Offline-First Behavior
+# 46. Step 20 — Offline-First Behavior
 
 The learning experience should work without internet.
 
@@ -1636,7 +1844,9 @@ Cloud synchronization can be added later if required.
 
 ---
 
-# 46. Step 21 — Testing Strategy
+# 47. Step 21 — Testing Strategy
+
+> **This is a standing reference, not a gate.** `CLAUDE.md` requires tests alongside every behaviour change, so this list is applied continuously from Step 1 onward. Reaching this step means auditing coverage against the list, not starting to write tests.
 
 ## Unit Tests
 
@@ -1665,6 +1875,8 @@ Test:
 - Accidental touches
 - Repeated tracing
 - Stroke boundaries
+- Whole-letter pass after the individual strokes
+- Single-stroke exercise skipping the whole-letter pass
 
 ## Room Tests
 
@@ -1702,7 +1914,9 @@ Home
 
 ---
 
-# 47. Step 22 — Performance
+# 48. Step 22 — Performance
+
+> **This is a standing constraint, not a gate.** These rules bind from Step 10 onward — tracing performance cannot be retrofitted at step 22. Reaching this step means measuring and confirming, not starting to care.
 
 Tracing must feel real-time.
 
@@ -1732,7 +1946,9 @@ Never persist every touch point to Room unless a future requirement explicitly n
 
 ---
 
-# 48. Step 23 — Bengali Content Validation
+# 49. Step 23 — Bengali Content Validation
+
+The per-exercise correction work happens earlier, in Steps 11.1–11.17. This step is the **final sweep before release**: re-verify the whole catalogue in one pass, including the metadata that the correction steps do not cover (difficulty, ordering, audio).
 
 Every letter must be validated.
 
@@ -1743,10 +1959,32 @@ For each letter verify:
 - Correct starting point
 - Correct dotted path
 - Correct number of strokes
+- Matra (headline) included where the letter has one
+- Guide follows the pen centreline, not the outer contour
 - Correct proportions
 - Correct difficulty
 - Correct ordering
+- Whole-letter pass behaves correctly
 - Correct pronunciation/audio if added
+
+Author every letter with the method established in Step 10.8 — derived from the rendered glyph's skeleton, never approximated by eye. Check each letter on a device against the character shown above the canvas.
+
+## Content Status
+
+Tracked here so the catalogue's real state is visible at a glance. Update as Steps 11.1–11.17 land.
+
+```text
+21 exercises total
+
+অ                  done — 3 strokes (bowl, stem, matra), derived from the glyph
+10 other vowels    placeholder geometry    → Steps 11.1–11.10
+5 consonants       placeholder geometry    → Steps 11.11–11.15
+5 drawings         unverified              → Steps 11.16–11.17
+```
+
+Because the whole-letter pass is driven purely by stroke count, each letter gains it automatically as soon as its real multi-stroke geometry lands. No per-letter engine work is required.
+
+Anything still showing placeholder geometry at this step is a release blocker.
 
 This is critical.
 
@@ -1754,7 +1992,7 @@ A technically correct tracing engine can still teach incorrect handwriting if th
 
 ---
 
-# 49. Step 24 — Analytics
+# 50. Step 24 — Analytics
 
 Only add analytics after the learning experience is stable.
 
@@ -1775,7 +2013,7 @@ Analytics should focus on product interaction, not personal data.
 
 ---
 
-# 50. Step 25 — Release Quality
+# 51. Step 25 — Release Quality
 
 Before release:
 
@@ -1800,7 +2038,7 @@ Before release:
 
 ---
 
-# 51. MVP Scope
+# 52. MVP Scope
 
 Do not build the entire product before validating the core learning experience.
 
@@ -1855,7 +2093,7 @@ Only after this loop feels good should the app expand to all vowels, consonants,
 
 ---
 
-# 52. Feature Completion Definition
+# 53. Feature Completion Definition
 
 A feature is complete only when it satisfies:
 
@@ -1867,7 +2105,7 @@ A feature is complete only when it satisfies:
 
 ---
 
-# 53. Git / Commit Strategy
+# 54. Git / Commit Strategy
 
 Follow the git rules in `CLAUDE.md` (Section 11). Suggested commit messages per phase:
 
@@ -1892,7 +2130,7 @@ feat: add drawing exercises
 
 ---
 
-# 54. Final Architecture
+# 55. Final Architecture
 
 ```text
                          ┌───────────────────────┐
@@ -1948,7 +2186,7 @@ Static Exercise Content
 
 ---
 
-# 55. Final Product Flow
+# 56. Final Product Flow
 
 The finished application should feel simple to a child:
 
@@ -2014,7 +2252,7 @@ Animal
 
 ---
 
-# 56. Most Important Principle
+# 57. Most Important Principle
 
 The application should not be considered successful merely because:
 
