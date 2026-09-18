@@ -8,9 +8,9 @@ import com.bornochitra.core.model.Stroke
 
 /**
  * Vowel stroke geometry. অ (plan.md Step 10.8), আ (Step 11.1), ই (Step 11.2), ঈ (Step 11.3), উ
- * (Step 11.4) and ঊ (Step 11.5) are read off the rendered glyph's centreline; the letters after them
- * still carry placeholder paths that approximate the letter's silhouette, and are corrected one at a
- * time by plan.md Steps 11.6-11.10.
+ * (Step 11.4), ঊ (Step 11.5) and ঋ (Step 11.6) are read off the rendered glyph's centreline; the
+ * letters after them still carry placeholder paths that approximate the letter's silhouette, and are
+ * corrected one at a time by plan.md Steps 11.7-11.10.
  */
 internal val vowelExercises: List<Exercise> = listOf(
     /**
@@ -471,6 +471,17 @@ internal val vowelExercises: List<Exercise> = listOf(
             ),
         ),
     ),
+    /**
+     * ঋ is the first vowel with no matra — nothing runs along the top to tie its parts together, so
+     * every piece is derived on its own. The left knot is a single movement in handwriting: it
+     * starts inside the round terminal at the top left, sweeps right and up to the peak, drops to
+     * the vertex where it meets the stem, runs back down-left to the sharp point, then sweeps
+     * down-right to the stem's foot. It is written here as three strokes, split at the knot's two
+     * reversals, so a child can finish each one in a single finger pass. The stem follows, then the
+     * hook that leaves it and the arm the hook lands on. Geometry is read off the centreline of the
+     * glyph as Noto Sans Bengali renders it, the font Android draws the character with above the
+     * tracing canvas.
+     */
     Exercise(
         id = "vowel-ri",
         title = "ঋ",
@@ -479,19 +490,132 @@ internal val vowelExercises: List<Exercise> = listOf(
         order = 7,
         strokes = listOf(
             Stroke(
-                id = "vowel-ri-body",
+                id = "vowel-ri-curl",
                 points = StrokePoints.polyline(
                     listOf(
-                        Point(35f, 15f),
-                        Point(35f, 55f),
-                        Point(55f, 70f),
-                        Point(35f, 85f),
+                        Point(16f, 25f),
+                        Point(17f, 27f),
+                        Point(19f, 30f),
+                        Point(21f, 31f),
+                        Point(23f, 31f),
+                        Point(26f, 30f),
+                        Point(28f, 30f),
+                        Point(31f, 29f),
+                        Point(34f, 28f),
+                        Point(36f, 26f),
+                        Point(39f, 24f),
+                        Point(41f, 22f),
+                        Point(44f, 20f),
+                        Point(46f, 16f),
+                        Point(48f, 22f),
+                        Point(50f, 23f),
+                        Point(50f, 25f),
+                        Point(51f, 26f),
+                        Point(52f, 27f),
+                        Point(53f, 29f),
+                        Point(53f, 30f),
+                        Point(54f, 31f),
+                        Point(54f, 33f),
+                        Point(55f, 34f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "vowel-ri-diagonal",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(55f, 34f),
+                        Point(52f, 36f),
+                        Point(50f, 37f),
+                        Point(46f, 39f),
+                        Point(44f, 40f),
+                        Point(41f, 41f),
+                        Point(38f, 43f),
+                        Point(35f, 44f),
+                        Point(32f, 46f),
+                        Point(29f, 48f),
+                        Point(26f, 49f),
+                        Point(23f, 51f),
+                        Point(21f, 53f),
+                        Point(18f, 52f),
+                        Point(15f, 52f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "vowel-ri-sweep",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(15f, 52f),
+                        Point(18f, 54f),
+                        Point(20f, 56f),
+                        Point(21f, 58f),
+                        Point(24f, 60f),
+                        Point(28f, 61f),
+                        Point(32f, 62f),
+                        Point(36f, 64f),
+                        Point(40f, 66f),
+                        Point(44f, 68f),
+                        Point(47f, 71f),
+                        Point(51f, 74f),
+                        Point(55f, 78f),
+                        Point(59f, 80f),
+                        Point(63f, 82f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "vowel-ri-stem",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(62f, 8f),
+                        Point(62f, 14f),
+                        Point(63f, 20f),
+                        Point(63f, 30f),
+                        Point(63f, 40f),
+                        Point(63f, 50f),
+                        Point(64f, 58f),
+                        Point(64f, 66f),
+                        Point(64f, 74f),
+                        Point(63f, 82f),
+                        Point(63f, 88f),
                     ),
                 ),
             ),
             Stroke(
                 id = "vowel-ri-hook",
-                points = StrokePoints.arc(center = Point(35f, 15f), radius = 8f, startDeg = 90f, sweepDeg = 270f, samples = 12),
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(64f, 58f),
+                        Point(66f, 59f),
+                        Point(68f, 59f),
+                        Point(70f, 60f),
+                        Point(72f, 61f),
+                        Point(74f, 63f),
+                        Point(76f, 65f),
+                        Point(78f, 67f),
+                        Point(79f, 69f),
+                        Point(81f, 71f),
+                        Point(83f, 72f),
+                        Point(85f, 72f),
+                        Point(87f, 74f),
+                        Point(88f, 75f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "vowel-ri-arm",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(86f, 8f),
+                        Point(87f, 16f),
+                        Point(88f, 30f),
+                        Point(88f, 45f),
+                        Point(88f, 60f),
+                        Point(88f, 72f),
+                        Point(88f, 80f),
+                    ),
+                ),
             ),
         ),
     ),

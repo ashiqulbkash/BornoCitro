@@ -13,7 +13,7 @@ import org.junit.Test
 
 /**
  * Validates plan.md Steps 10.8-10.10's checklist for real exercise content — the Bengali letters
- * "অ", "আ", "ই", "ঈ", "উ" and "ঊ" (plan.md Steps 11.1-11.5) and "ক", plus the non-letter "Circle"
+ * "অ", "আ", "ই", "ঈ", "উ", "ঊ" and "ঋ" (plan.md Steps 11.1-11.6) and "ক", plus the non-letter "Circle"
  * drawing — by running each through [TracingEngine], the same reusable component
  * [LetterTracingPrototype] drives (plan.md Step 10.11). "ক" has straight/angular strokes
  * structurally different from "অ"'s curved loop, and "Circle" is not a letter at all, so passing
@@ -29,6 +29,7 @@ class LetterTracingPrototypeTest {
     private val vowelIi = vowelExercises.first { it.id == "vowel-ii" }
     private val vowelU = vowelExercises.first { it.id == "vowel-u" }
     private val vowelUu = vowelExercises.first { it.id == "vowel-uu" }
+    private val vowelRi = vowelExercises.first { it.id == "vowel-ri" }
     private val consonantKo = consonantExercises.first { it.id == "consonant-ko" }
     private val drawingCircle = drawingExercises.first { it.id == "drawing-circle" }
 
@@ -209,6 +210,67 @@ class LetterTracingPrototypeTest {
     @Test
     fun `tracing far from vowel-uu's guide path does not complete the exercise`() {
         assertOffPathTraceDoesNotComplete(vowelUu)
+    }
+
+    @Test
+    fun `vowel-ri is traced as curl, diagonal, sweep, stem, hook and arm, in that order`() {
+        assertEquals(
+            listOf(
+                "vowel-ri-curl",
+                "vowel-ri-diagonal",
+                "vowel-ri-sweep",
+                "vowel-ri-stem",
+                "vowel-ri-hook",
+                "vowel-ri-arm",
+            ),
+            vowelRi.strokes.map { it.id },
+        )
+        assertEquals(Point(16f, 25f), vowelRi.strokes.first().points.first())
+    }
+
+    @Test
+    fun `vowel-ri has no matra`() {
+        // The first vowel whose glyph carries no headline, so nothing ties its parts along the top.
+        assertTrue(vowelRi.strokes.none { it.id.endsWith("-matra") })
+    }
+
+    @Test
+    fun `vowel-ri's knot is one path split at its two reversals`() {
+        // Curl, diagonal and sweep are a single handwriting movement; each picks up where the last
+        // one stopped, and the split points are the peak's vertex and the knot's sharp left point.
+        val curl = vowelRi.strokes.first { it.id == "vowel-ri-curl" }.points
+        val diagonal = vowelRi.strokes.first { it.id == "vowel-ri-diagonal" }.points
+        val sweep = vowelRi.strokes.first { it.id == "vowel-ri-sweep" }.points
+        assertEquals(curl.last(), diagonal.first())
+        assertEquals(diagonal.last(), sweep.first())
+        assertEquals(diagonal.last().x, vowelRi.strokes.minOf { stroke -> stroke.points.minOf { it.x } }, 0f)
+    }
+
+    @Test
+    fun `vowel-ri's knot and hook both end on the stroke that follows them`() {
+        val sweep = vowelRi.strokes.first { it.id == "vowel-ri-sweep" }.points
+        val stem = vowelRi.strokes.first { it.id == "vowel-ri-stem" }.points
+        val hook = vowelRi.strokes.first { it.id == "vowel-ri-hook" }.points
+        val arm = vowelRi.strokes.first { it.id == "vowel-ri-arm" }.points
+        assertTrue(sweep.last() in stem)
+        assertTrue(hook.first() in stem)
+        assertEquals(arm.last().x, hook.last().x, 1f)
+        assertTrue(hook.last().y < arm.last().y)
+    }
+
+    @Test
+    fun `vowel-ri shows every stroke's guide at once`() {
+        assertEquals(vowelRi.strokes, TracingEngine(vowelRi).guideStrokes)
+    }
+
+    @Test
+    fun `faithfully tracing vowel-ri's real stroke path completes the sequence with a perfect score`() {
+        assertFaithfulTraceIsPerfect(vowelRi)
+    }
+
+    @Test
+    fun `tracing far from vowel-ri's guide path does not complete the exercise`() {
+        assertOffPathTraceDoesNotComplete(vowelRi)
     }
 
     @Test

@@ -1467,7 +1467,7 @@ Vowels — `অ` is already done and is the reference implementation. These foll
 **Checkpoint after 11.5.** `অ আ ই ঈ উ ঊ` is the MVP vowel set from Section 51. With these correct the whole learning loop can be exercised honestly end to end. If schedule pressure appears, Steps 12–14 may run here and the remaining sub-steps resume afterwards — but no exercise ships with placeholder geometry.
 
 ```text
-11.6   ঋ    vowel-ri
+11.6   ঋ    vowel-ri    done — 6 strokes (curl, diagonal, sweep, stem, hook, arm)
 11.7   এ    vowel-e
 11.8   ঐ    vowel-oi    shares এ's body today
 11.9   ও    vowel-oa
@@ -1964,7 +1964,9 @@ Tracked here so the catalogue's real state is visible at a glance. Update as Ste
 ঈ                  done — 4 strokes (hook, bowl, tail, matra), derived from the glyph
 উ                  done — 4 strokes (hook, stem, bowl, matra), derived from the glyph
 ঊ                  done — 5 strokes (hook, stem, bowl, arm, matra), derived from the glyph
-5 other vowels     placeholder geometry    → Steps 11.6–11.10
+ঋ                  done — 6 strokes (curl, diagonal, sweep, stem, hook, arm), derived from
+                   the glyph; the first vowel with no matra
+4 other vowels     placeholder geometry    → Steps 11.7–11.10
 5 consonants       placeholder geometry    → Steps 11.11–11.15
 5 drawings         unverified              → Steps 11.16–11.17
 ```
