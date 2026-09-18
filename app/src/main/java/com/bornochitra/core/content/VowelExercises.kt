@@ -7,10 +7,10 @@ import com.bornochitra.core.model.Point
 import com.bornochitra.core.model.Stroke
 
 /**
- * Vowel stroke geometry. অ (plan.md Step 10.8), আ (Step 11.1), ই (Step 11.2) and ঈ (Step 11.3) are
- * read off the rendered glyph's centreline; the letters after them still carry placeholder paths
- * that approximate the letter's silhouette, and are corrected one at a time by plan.md Steps
- * 11.4-11.10.
+ * Vowel stroke geometry. অ (plan.md Step 10.8), আ (Step 11.1), ই (Step 11.2), ঈ (Step 11.3) and উ
+ * (Step 11.4) are read off the rendered glyph's centreline; the letters after them still carry
+ * placeholder paths that approximate the letter's silhouette, and are corrected one at a time by
+ * plan.md Steps 11.5-11.10.
  */
 internal val vowelExercises: List<Exercise> = listOf(
     /**
@@ -279,6 +279,13 @@ internal val vowelExercises: List<Exercise> = listOf(
             ),
         ),
     ),
+    /**
+     * উ hangs two pieces off the matra: the stem, which drops and curls right into the u-kar hook,
+     * and the big bowl, which sweeps from the upper left around the bottom and back up the right.
+     * Both finish at the same blunt tip above the hook, the way the glyph butts them together.
+     * Geometry is read off the centreline of the glyph as Noto Sans Bengali renders it, the font
+     * Android draws the character with above the tracing canvas.
+     */
     Exercise(
         id = "vowel-u",
         title = "উ",
@@ -287,12 +294,71 @@ internal val vowelExercises: List<Exercise> = listOf(
         order = 5,
         strokes = listOf(
             Stroke(
-                id = "vowel-u-body",
-                points = StrokePoints.line(Point(30f, 20f), Point(30f, 65f)),
+                id = "vowel-u-hook",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(26f, 7f),
+                        Point(26f, 11f),
+                        Point(27f, 16f),
+                        Point(29f, 20f),
+                        Point(33f, 22f),
+                        Point(38f, 23f),
+                        Point(45f, 23f),
+                        Point(53f, 24f),
+                        Point(61f, 24f),
+                        Point(65f, 26f),
+                        Point(68f, 30f),
+                        Point(68f, 38f),
+                    ),
+                ),
             ),
             Stroke(
-                id = "vowel-u-hook",
-                points = StrokePoints.arc(center = Point(45f, 65f), radius = 15f, startDeg = 180f, sweepDeg = 160f, samples = 16),
+                id = "vowel-u-stem",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(46f, 39f),
+                        Point(46f, 45f),
+                        Point(46f, 51f),
+                        Point(46f, 57f),
+                        Point(46f, 61f),
+                        Point(47f, 64f),
+                        Point(49f, 67f),
+                        Point(53f, 68f),
+                        Point(57f, 68f),
+                        Point(60f, 66f),
+                        Point(64f, 63f),
+                        Point(67f, 60f),
+                        Point(70f, 56f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "vowel-u-bowl",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(21f, 50f),
+                        Point(23f, 55f),
+                        Point(25f, 61f),
+                        Point(27f, 67f),
+                        Point(30f, 73f),
+                        Point(34f, 79f),
+                        Point(40f, 85f),
+                        Point(46f, 89f),
+                        Point(53f, 90f),
+                        Point(59f, 90f),
+                        Point(66f, 88f),
+                        Point(72f, 84f),
+                        Point(75f, 77f),
+                        Point(76f, 71f),
+                        Point(75f, 64f),
+                        Point(72f, 59f),
+                        Point(70f, 56f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "vowel-u-matra",
+                points = StrokePoints.line(Point(17f, 38f), Point(83f, 38f)),
             ),
         ),
     ),
