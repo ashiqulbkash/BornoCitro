@@ -7,9 +7,10 @@ import com.bornochitra.core.model.Point
 import com.bornochitra.core.model.Stroke
 
 /**
- * Consonant stroke geometry. ক is read off its rendered glyph's centreline (plan.md Step 11.11);
- * খ, গ, ঘ and ঙ still carry the placeholder geometry described in [vowelExercises]' history and are
- * corrected in plan.md Steps 11.12-11.15. Step 23 re-validates every letter before release.
+ * Consonant stroke geometry. ক and খ are read off their rendered glyphs' centrelines (plan.md
+ * Steps 11.11-11.12); গ, ঘ and ঙ still carry the placeholder geometry described in
+ * [vowelExercises]' history and are corrected in plan.md Steps 11.13-11.15. Step 23 re-validates
+ * every letter before release.
  */
 internal val consonantExercises: List<Exercise> = listOf(
     /**
@@ -108,6 +109,16 @@ internal val consonantExercises: List<Exercise> = listOf(
             ),
         ),
     ),
+    /**
+     * খ is read off its rendered glyph's centreline, like ক. Its curl comes first: the pen starts at
+     * the letter's top peak, carries on down into the wrap and finishes in the filled ball at the
+     * top left. The body then leaves that same peak at a corner — which is why it is a second stroke
+     * rather than a continuation — descends the long arc, rounds the pointed left terminal and
+     * sweeps out to the stem's foot in one movement, as ক's knot does. The stem, which rises a
+     * little above the headline, comes next, and the matra last. খ's headline bar is genuinely short
+     * and sits only to the right of the stem: the curl occupies the top left, so there is nothing
+     * for a bar to cross there. Bars only join into a continuous headline in running text.
+     */
     Exercise(
         id = "consonant-kho",
         title = "খ",
@@ -116,16 +127,82 @@ internal val consonantExercises: List<Exercise> = listOf(
         order = 2,
         strokes = listOf(
             Stroke(
+                id = "consonant-kho-curl",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(50f, 15f),
+                        Point(48f, 18f),
+                        Point(47f, 20f),
+                        Point(47f, 22f),
+                        Point(47f, 23f),
+                        Point(44f, 24f),
+                        Point(42f, 26f),
+                        Point(40f, 29f),
+                        Point(38f, 31f),
+                        Point(35f, 32f),
+                        Point(32f, 33f),
+                        Point(29f, 34f),
+                        Point(26f, 33f),
+                        Point(23f, 33f),
+                        Point(21f, 30f),
+                        Point(20f, 28f),
+                        Point(20f, 25f),
+                        Point(21f, 22f),
+                        Point(21f, 21f),
+                    ),
+                ),
+            ),
+            Stroke(
                 id = "consonant-kho-body",
                 points = StrokePoints.polyline(
                     listOf(
-                        Point(30f, 15f),
-                        Point(30f, 85f),
-                        Point(75f, 85f),
-                        Point(75f, 45f),
-                        Point(30f, 45f),
+                        Point(47f, 23f),
+                        Point(50f, 24f),
+                        Point(51f, 27f),
+                        Point(52f, 30f),
+                        Point(52f, 33f),
+                        Point(52f, 36f),
+                        Point(51f, 39f),
+                        Point(50f, 42f),
+                        Point(48f, 44f),
+                        Point(45f, 46f),
+                        Point(43f, 48f),
+                        Point(40f, 49f),
+                        Point(37f, 50f),
+                        Point(34f, 51f),
+                        Point(31f, 52f),
+                        Point(30f, 52f),
+                        Point(26f, 52f),
+                        Point(22f, 51f),
+                        Point(23f, 55f),
+                        Point(27f, 57f),
+                        Point(30f, 58f),
+                        Point(32f, 60f),
+                        Point(35f, 61f),
+                        Point(38f, 62f),
+                        Point(41f, 63f),
+                        Point(44f, 64f),
+                        Point(46f, 66f),
+                        Point(49f, 67f),
+                        Point(52f, 69f),
+                        Point(54f, 71f),
+                        Point(56f, 73f),
+                        Point(59f, 75f),
+                        Point(61f, 77f),
+                        Point(63f, 80f),
+                        Point(65f, 81f),
+                        Point(68f, 82f),
+                        Point(70f, 83f),
                     ),
                 ),
+            ),
+            Stroke(
+                id = "consonant-kho-stem",
+                points = StrokePoints.line(Point(69f, 10f), Point(70f, 88f), samples = 16),
+            ),
+            Stroke(
+                id = "consonant-kho-matra",
+                points = StrokePoints.line(Point(70f, 19f), Point(83f, 19f)),
             ),
         ),
     ),

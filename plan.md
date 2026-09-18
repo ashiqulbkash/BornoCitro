@@ -1480,7 +1480,7 @@ Consonants:
 
 ```text
 11.11  ক    consonant-ko    done — 4 strokes (knot, stem, lobe, matra)
-11.12  খ    consonant-kho
+11.12  খ    consonant-kho   done — 4 strokes (curl, body, stem, matra)
 11.13  গ    consonant-go
 11.14  ঘ    consonant-gho
 11.15  ঙ    consonant-ngo
@@ -1978,7 +1978,9 @@ Tracked here so the catalogue's real state is visible at a glance. Update as Ste
 ক                  done — 4 strokes (knot, stem, lobe, matra), derived from the glyph; the first
                    letter wide enough that its ink is fitted by width and centred vertically
                    rather than fitted by height
-4 consonants       placeholder geometry    → Steps 11.12–11.15
+খ                  done — 4 strokes (curl, body, stem, matra), derived from the glyph; its
+                   headline bar is genuinely short, covering only the stem's right side
+3 consonants       placeholder geometry    → Steps 11.13–11.15
 5 drawings         unverified              → Steps 11.16–11.17
 ```
 

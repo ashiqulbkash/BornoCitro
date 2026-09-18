@@ -10,6 +10,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import kotlin.math.hypot
 
 /**
  * Validates plan.md Steps 10.8-10.10's checklist for real exercise content — the Bengali letters
@@ -35,9 +36,12 @@ class LetterTracingPrototypeTest {
     private val vowelOa = vowelExercises.first { it.id == "vowel-oa" }
     private val vowelAu = vowelExercises.first { it.id == "vowel-au" }
     private val consonantKo = consonantExercises.first { it.id == "consonant-ko" }
+    private val consonantKho = consonantExercises.first { it.id == "consonant-kho" }
     private val drawingCircle = drawingExercises.first { it.id == "drawing-circle" }
 
     private fun tracePoint(point: Point) = TracePoint(point.x, point.y, timestampMs = 0L)
+
+    private fun Point.distanceTo(other: Point) = hypot(x - other.x, y - other.y)
 
     @Test
     fun `vowel-o is traced as bowl, stem and matra, in that order`() {
@@ -548,6 +552,65 @@ class LetterTracingPrototypeTest {
     @Test
     fun `tracing far from consonant-ko's guide path does not complete the exercise`() {
         assertOffPathTraceDoesNotComplete(consonantKo)
+    }
+
+    @Test
+    fun `consonant-kho is traced as curl, body, stem and matra, in that order`() {
+        assertEquals(
+            listOf(
+                "consonant-kho-curl",
+                "consonant-kho-body",
+                "consonant-kho-stem",
+                "consonant-kho-matra",
+            ),
+            consonantKho.strokes.map { it.id },
+        )
+        assertEquals(Point(50f, 15f), consonantKho.strokes.first().points.first())
+    }
+
+    @Test
+    fun `consonant-kho's curl ends in the ball terminal at the top left`() {
+        // The ball is where the pen comes to rest, so the curl wraps inward and stops there rather
+        // than starting from it.
+        val curl = consonantKho.strokes.first().points
+        assertTrue(curl.last().x < curl.first().x)
+        assertTrue(curl.last().x < curl.maxOf { it.x } - 20f)
+        assertTrue(curl.last().y < curl.maxOf { it.y })
+    }
+
+    @Test
+    fun `consonant-kho's body starts at the same peak as the curl and ends at the stem's foot`() {
+        val curl = consonantKho.strokes.first().points
+        val body = consonantKho.strokes[1].points
+        val stem = consonantKho.strokes[2].points
+        assertTrue(body.first().distanceTo(curl.first()) < 10f)
+        assertTrue(body.last().distanceTo(stem.last()) < 10f)
+    }
+
+    @Test
+    fun `consonant-kho's matra is written last and covers only the stem's right side`() {
+        // খ's headline bar really is short — the curl takes the top left, so no bar crosses there.
+        val matra = consonantKho.strokes.last()
+        assertEquals("consonant-kho-matra", matra.id)
+        val stem = consonantKho.strokes[2].points
+        assertTrue(matra.points.minOf { it.x } >= stem.minOf { it.x } - 1f)
+        assertTrue(matra.points.maxOf { it.x } > stem.maxOf { it.x })
+        assertEquals(matra.points.map { it.y }.distinct().size, 1)
+    }
+
+    @Test
+    fun `consonant-kho shows every stroke's guide at once`() {
+        assertEquals(consonantKho.strokes, TracingEngine(consonantKho).guideStrokes)
+    }
+
+    @Test
+    fun `faithfully tracing consonant-kho's real stroke path completes the sequence with a perfect score`() {
+        assertFaithfulTraceIsPerfect(consonantKho)
+    }
+
+    @Test
+    fun `tracing far from consonant-kho's guide path does not complete the exercise`() {
+        assertOffPathTraceDoesNotComplete(consonantKho)
     }
 
     @Test
