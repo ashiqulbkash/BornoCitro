@@ -1,9 +1,12 @@
 package com.bornochitra.core.database.repository
 
 import com.bornochitra.core.database.dao.ExerciseProgressDao
+import com.bornochitra.core.database.dao.PracticeSessionDao
 import com.bornochitra.core.database.entity.ExerciseProgressEntity
+import com.bornochitra.core.database.entity.PracticeSessionEntity
 import com.bornochitra.core.model.ExerciseProgress
 import com.bornochitra.core.model.LearningProgress
+import com.bornochitra.core.model.PracticeResult
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -14,6 +17,7 @@ private const val DRAWING_PREFIX = "drawing-"
 
 class ProgressRepositoryImpl @Inject constructor(
     private val exerciseProgressDao: ExerciseProgressDao,
+    private val practiceSessionDao: PracticeSessionDao,
 ) : ProgressRepository {
 
     override fun observeProgress(): Flow<LearningProgress> =
@@ -23,6 +27,31 @@ class ProgressRepositoryImpl @Inject constructor(
         exerciseProgressDao.observeAll().map { rows ->
             rows.filter { it.exerciseId in exerciseIds }.associate { it.exerciseId to it.toExerciseProgress() }
         }
+
+    override suspend fun savePracticeResult(result: PracticeResult): Long {
+        val existing = practiceSessionDao.getProgress(result.exerciseId)
+        val updatedProgress = ExerciseProgressEntity(
+            exerciseId = result.exerciseId,
+            attemptCount = (existing?.attemptCount ?: 0) + 1,
+            completedCount = (existing?.completedCount ?: 0) + if (result.completed) 1 else 0,
+            bestScore = maxOf(existing?.bestScore ?: 0f, result.score),
+            lastScore = result.score,
+            scoreLevel = result.scoreLevel.name,
+            lastPracticedAt = result.completedAtMs,
+            isMastered = existing?.isMastered ?: false,
+        )
+        return practiceSessionDao.recordPracticeResult(
+            session = PracticeSessionEntity(
+                exerciseId = result.exerciseId,
+                score = result.score,
+                scoreLevel = result.scoreLevel.name,
+                duration = result.durationMs,
+                completed = result.completed,
+                createdAt = result.completedAtMs,
+            ),
+            progress = updatedProgress,
+        )
+    }
 }
 
 private fun ExerciseProgressEntity.toExerciseProgress(): ExerciseProgress = ExerciseProgress(

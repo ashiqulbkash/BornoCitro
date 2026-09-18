@@ -66,6 +66,7 @@ class ConsonantsViewModelTest {
         override fun observeProgress() = MutableStateFlow(com.bornochitra.core.model.LearningProgress())
         override fun observeExerciseProgress(exerciseIds: List<String>): Flow<Map<String, ExerciseProgress>> =
             flowOf(progressByExerciseId.filterKeys { it in exerciseIds })
+        override suspend fun savePracticeResult(result: com.bornochitra.core.model.PracticeResult): Long = 0L
     }
 
     @Test

@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.bornochitra.core.database.AppDatabase
 import com.bornochitra.core.database.dao.ExerciseProgressDao
+import com.bornochitra.core.database.dao.PracticeSessionDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -25,4 +26,8 @@ object DatabaseModule {
     @Provides
     fun provideExerciseProgressDao(appDatabase: AppDatabase): ExerciseProgressDao =
         appDatabase.exerciseProgressDao()
+
+    @Provides
+    fun providePracticeSessionDao(appDatabase: AppDatabase): PracticeSessionDao =
+        appDatabase.practiceSessionDao()
 }

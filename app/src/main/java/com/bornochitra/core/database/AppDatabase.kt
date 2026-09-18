@@ -3,6 +3,7 @@ package com.bornochitra.core.database
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.bornochitra.core.database.dao.ExerciseProgressDao
+import com.bornochitra.core.database.dao.PracticeSessionDao
 import com.bornochitra.core.database.entity.ExerciseProgressEntity
 import com.bornochitra.core.database.entity.PracticeSessionEntity
 
@@ -15,4 +16,6 @@ import com.bornochitra.core.database.entity.PracticeSessionEntity
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun exerciseProgressDao(): ExerciseProgressDao
+
+    abstract fun practiceSessionDao(): PracticeSessionDao
 }

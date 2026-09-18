@@ -48,6 +48,7 @@ class HomeViewModelTest {
             override fun observeProgress(): Flow<LearningProgress> = progressFlow
             override fun observeExerciseProgress(exerciseIds: List<String>): Flow<Map<String, ExerciseProgress>> =
                 flowOf(emptyMap())
+            override suspend fun savePracticeResult(result: com.bornochitra.core.model.PracticeResult): Long = 0L
         }
 
         val viewModel = HomeViewModel(repository)
@@ -68,6 +69,7 @@ class HomeViewModelTest {
             override fun observeProgress(): Flow<LearningProgress> = MutableStateFlow(LearningProgress())
             override fun observeExerciseProgress(exerciseIds: List<String>): Flow<Map<String, ExerciseProgress>> =
                 flowOf(emptyMap())
+            override suspend fun savePracticeResult(result: com.bornochitra.core.model.PracticeResult): Long = 0L
         }
 
         val viewModel = HomeViewModel(repository)
