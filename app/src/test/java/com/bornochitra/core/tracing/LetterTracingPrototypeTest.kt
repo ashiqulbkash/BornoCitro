@@ -1,6 +1,7 @@
 package com.bornochitra.core.tracing
 
 import com.bornochitra.core.content.consonantExercises
+import com.bornochitra.core.content.drawingExercises
 import com.bornochitra.core.content.vowelExercises
 import com.bornochitra.core.model.Exercise
 import com.bornochitra.core.model.Point
@@ -11,17 +12,20 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 /**
- * Validates plan.md Step 10.8/10.9's checklist for the real Bengali "অ" and "ক" exercise content
- * by running each through the actual tracing engine (stroke path, starting point, stroke order,
- * coverage, score) — "ক" has straight/angular strokes, structurally different from "অ"'s curved
- * loop, so passing both proves the engine is not accidentally specialized for one shape. Dotted
- * rendering and live finger interaction can only be checked visually/manually via
- * [LetterTracingPrototype]'s previews and a physical device — see the post-task brief.
+ * Validates plan.md Steps 10.8-10.10's checklist for real exercise content — the Bengali letters
+ * "অ" and "ক", plus the non-letter "Circle" drawing — by running each through the actual tracing
+ * engine (stroke path, starting point, stroke order, coverage, score). "ক" has straight/angular
+ * strokes structurally different from "অ"'s curved loop, and "Circle" is not a letter at all, so
+ * passing all three proves the engine is not accidentally specialized for one shape or for
+ * letters specifically. Dotted rendering and live finger interaction can only be checked
+ * visually/manually via [LetterTracingPrototype]'s previews and a physical device — see the
+ * post-task brief.
  */
 class LetterTracingPrototypeTest {
 
     private val vowelO = vowelExercises.first { it.id == "vowel-o" }
     private val consonantKo = consonantExercises.first { it.id == "consonant-ko" }
+    private val drawingCircle = drawingExercises.first { it.id == "drawing-circle" }
 
     private fun tracePoint(point: Point) = TracePoint(point.x, point.y, timestampMs = 0L)
 
@@ -57,6 +61,23 @@ class LetterTracingPrototypeTest {
     @Test
     fun `tracing far from consonant-ko's guide path neither advances nor scores well`() {
         assertOffPathTraceIsLow(consonantKo)
+    }
+
+    @Test
+    fun `drawing-circle has exactly one stroke starting at its documented point`() {
+        assertEquals(1, drawingCircle.strokes.size)
+        assertEquals(Point(85f, 50f), drawingCircle.strokes.single().points.first())
+    }
+
+    @Test
+    fun `faithfully tracing drawing-circle's real stroke path completes the sequence with a perfect score`() {
+        // A closed arc loop, not a letter at all - proves the engine generalizes beyond handwriting.
+        assertFaithfulTraceIsPerfect(drawingCircle)
+    }
+
+    @Test
+    fun `tracing far from drawing-circle's guide path neither advances nor scores well`() {
+        assertOffPathTraceIsLow(drawingCircle)
     }
 
     private fun assertFaithfulTraceIsPerfect(exercise: Exercise) {

@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.bornochitra.core.content.consonantExercises
+import com.bornochitra.core.content.drawingExercises
 import com.bornochitra.core.content.vowelExercises
 import com.bornochitra.core.model.Exercise
 import com.bornochitra.core.ui.components.BcPrimaryButton
@@ -104,6 +105,17 @@ private fun LetterTracingPrototypeConsonantKoPreview() {
     BornoChitraTheme {
         Surface {
             LetterTracingPrototype(exercise = consonantExercises.first { it.id == "consonant-ko" })
+        }
+    }
+}
+
+/** plan.md Step 10.10 — validates the same engine also supports non-letter drawing exercises. */
+@Preview(showBackground = true, name = "letter tracing prototype — Circle")
+@Composable
+private fun LetterTracingPrototypeDrawingCirclePreview() {
+    BornoChitraTheme {
+        Surface {
+            LetterTracingPrototype(exercise = drawingExercises.first { it.id == "drawing-circle" })
         }
     }
 }
