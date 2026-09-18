@@ -17,6 +17,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.bornochitra.core.content.consonantExercises
 import com.bornochitra.core.content.vowelExercises
 import com.bornochitra.core.model.Exercise
 import com.bornochitra.core.ui.components.BcPrimaryButton
@@ -92,6 +93,17 @@ private fun LetterTracingPrototypeVowelOPreview() {
     BornoChitraTheme {
         Surface {
             LetterTracingPrototype(exercise = vowelExercises.first { it.id == "vowel-o" })
+        }
+    }
+}
+
+/** plan.md Step 10.9 — ক has straight/angular strokes, structurally different from অ's curved loop. */
+@Preview(showBackground = true, name = "letter tracing prototype — ক")
+@Composable
+private fun LetterTracingPrototypeConsonantKoPreview() {
+    BornoChitraTheme {
+        Surface {
+            LetterTracingPrototype(exercise = consonantExercises.first { it.id == "consonant-ko" })
         }
     }
 }
