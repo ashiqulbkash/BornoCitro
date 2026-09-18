@@ -53,41 +53,22 @@ class TracingEngineTest {
 
         assertEquals(TracingAttemptOutcome.StrokeAttempted(isCompleted = true), outcome)
         assertEquals(strokeB, engine.currentStroke)
-        assertEquals(2, engine.currentStrokeNumber)
         assertFalse(engine.isExerciseCompleted)
     }
 
     @Test
-    fun `completing every stroke moves on to writing the whole letter rather than finishing`() {
+    fun `every stroke's guide is shown from the start so the whole letter is visible`() {
         val engine = TracingEngine(exercise, tolerance = TracingTolerance(maxDistance = 0.5f))
+        assertEquals(listOf(strokeA, strokeB), engine.guideStrokes)
+
         traceFully(engine, strokeA.points.first(), strokeA.points.last())
 
-        val outcome = traceFully(engine, strokeB.points.first(), strokeB.points.last())
-
-        assertEquals(TracingAttemptOutcome.StrokeAttempted(isCompleted = true), outcome)
-        assertEquals(TracingPhase.FULL_LETTER, engine.phase)
-        assertFalse(engine.isExerciseCompleted)
-        assertEquals(strokeA, engine.currentStroke)
-        assertEquals(1, engine.currentStrokeNumber)
-    }
-
-    @Test
-    fun `only the whole-letter pass shows every stroke's guide`() {
-        val engine = TracingEngine(exercise, tolerance = TracingTolerance(maxDistance = 0.5f))
-        assertEquals(listOf(strokeA), engine.guideStrokes)
-
-        traceFully(engine, strokeA.points.first(), strokeA.points.last())
-        assertEquals(listOf(strokeB), engine.guideStrokes)
-
-        traceFully(engine, strokeB.points.first(), strokeB.points.last())
         assertEquals(listOf(strokeA, strokeB), engine.guideStrokes)
     }
 
     @Test
-    fun `the exercise completes with a perfect score once the whole letter is written too`() {
+    fun `the exercise completes with a perfect score once every stroke is written`() {
         val engine = TracingEngine(exercise, tolerance = TracingTolerance(maxDistance = 0.5f))
-        traceFully(engine, strokeA.points.first(), strokeA.points.last())
-        traceFully(engine, strokeB.points.first(), strokeB.points.last())
         traceFully(engine, strokeA.points.first(), strokeA.points.last())
 
         val outcome = traceFully(engine, strokeB.points.first(), strokeB.points.last())
@@ -101,11 +82,9 @@ class TracingEngineTest {
     }
 
     @Test
-    fun `a single-stroke exercise has nothing to assemble so it skips the whole-letter pass`() {
+    fun `a single-stroke exercise completes on its only stroke`() {
         val singleStroke = exercise.copy(strokes = listOf(strokeA))
         val engine = TracingEngine(singleStroke, tolerance = TracingTolerance(maxDistance = 0.5f))
-
-        assertEquals(listOf(TracingPhase.STROKE_BY_STROKE), engine.phases)
 
         val outcome = traceFully(engine, strokeA.points.first(), strokeA.points.last())
 
@@ -123,7 +102,6 @@ class TracingEngineTest {
 
         assertEquals(TracingAttemptOutcome.StrokeAttempted(isCompleted = false), outcome)
         assertEquals(strokeA, engine.currentStroke)
-        assertEquals(1, engine.currentStrokeNumber)
         assertFalse(engine.isExerciseCompleted)
     }
 

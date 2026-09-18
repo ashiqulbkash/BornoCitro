@@ -63,11 +63,8 @@ class LetterTracingPrototypeTest {
     }
 
     @Test
-    fun `vowel-aa ends with a whole-letter pass`() {
-        assertEquals(
-            listOf(TracingPhase.STROKE_BY_STROKE, TracingPhase.FULL_LETTER),
-            TracingEngine(vowelAa).phases,
-        )
+    fun `vowel-aa shows every stroke's guide at once`() {
+        assertEquals(vowelAa.strokes, TracingEngine(vowelAa).guideStrokes)
     }
 
     @Test
@@ -90,11 +87,8 @@ class LetterTracingPrototypeTest {
     }
 
     @Test
-    fun `vowel-i ends with a whole-letter pass`() {
-        assertEquals(
-            listOf(TracingPhase.STROKE_BY_STROKE, TracingPhase.FULL_LETTER),
-            TracingEngine(vowelI).phases,
-        )
+    fun `vowel-i shows every stroke's guide at once`() {
+        assertEquals(vowelI.strokes, TracingEngine(vowelI).guideStrokes)
     }
 
     @Test
@@ -128,11 +122,8 @@ class LetterTracingPrototypeTest {
     }
 
     @Test
-    fun `vowel-ii ends with a whole-letter pass`() {
-        assertEquals(
-            listOf(TracingPhase.STROKE_BY_STROKE, TracingPhase.FULL_LETTER),
-            TracingEngine(vowelIi).phases,
-        )
+    fun `vowel-ii shows every stroke's guide at once`() {
+        assertEquals(vowelIi.strokes, TracingEngine(vowelIi).guideStrokes)
     }
 
     @Test
@@ -163,11 +154,8 @@ class LetterTracingPrototypeTest {
     }
 
     @Test
-    fun `vowel-u ends with a whole-letter pass`() {
-        assertEquals(
-            listOf(TracingPhase.STROKE_BY_STROKE, TracingPhase.FULL_LETTER),
-            TracingEngine(vowelU).phases,
-        )
+    fun `vowel-u shows every stroke's guide at once`() {
+        assertEquals(vowelU.strokes, TracingEngine(vowelU).guideStrokes)
     }
 
     @Test
@@ -209,11 +197,8 @@ class LetterTracingPrototypeTest {
     }
 
     @Test
-    fun `vowel-uu ends with a whole-letter pass`() {
-        assertEquals(
-            listOf(TracingPhase.STROKE_BY_STROKE, TracingPhase.FULL_LETTER),
-            TracingEngine(vowelUu).phases,
-        )
+    fun `vowel-uu shows every stroke's guide at once`() {
+        assertEquals(vowelUu.strokes, TracingEngine(vowelUu).guideStrokes)
     }
 
     @Test
@@ -265,13 +250,11 @@ class LetterTracingPrototypeTest {
         val engine = TracingEngine(exercise)
         var outcome: TracingAttemptOutcome = TracingAttemptOutcome.NoAttempt
 
-        // Every pass traces the same stroke sequence: stroke by stroke, then the whole letter.
-        repeat(engine.phases.size) {
-            for (stroke in exercise.strokes) {
-                engine.onStart(tracePoint(stroke.points.first()))
-                stroke.points.drop(1).forEach { engine.onMove(tracePoint(it)) }
-                outcome = engine.onEnd()
-            }
+        // The whole letter is on screen throughout; its strokes are traced in their teaching order.
+        for (stroke in exercise.strokes) {
+            engine.onStart(tracePoint(stroke.points.first()))
+            stroke.points.drop(1).forEach { engine.onMove(tracePoint(it)) }
+            outcome = engine.onEnd()
         }
 
         assertTrue(engine.isExerciseCompleted)

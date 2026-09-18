@@ -32,7 +32,6 @@ import com.bornochitra.core.tracing.TracingAttemptOutcome
 import com.bornochitra.core.tracing.TracingEngine
 import com.bornochitra.core.tracing.TracingInputCanvas
 import com.bornochitra.core.tracing.TracingPointerEvent
-import com.bornochitra.core.tracing.tracingStepLabel
 import com.bornochitra.core.ui.components.BcEmptyState
 import com.bornochitra.core.ui.components.BcPrimaryButton
 import com.bornochitra.core.ui.components.BcTopAppBar
@@ -118,8 +117,6 @@ private fun ExerciseTracingContent(
     val engine = remember(exercise, attemptId) { TracingEngine(exercise) }
 
     var currentStroke by remember(engine) { mutableStateOf(engine.currentStroke) }
-    var strokeNumber by remember(engine) { mutableStateOf(engine.currentStrokeNumber) }
-    var phase by remember(engine) { mutableStateOf(engine.phase) }
     var guideStrokes by remember(engine) { mutableStateOf(engine.guideStrokes) }
     var feedback by remember(engine) { mutableStateOf<String?>(null) }
 
@@ -131,8 +128,6 @@ private fun ExerciseTracingContent(
             TracingAttemptOutcome.NoAttempt -> Unit
         }
         currentStroke = engine.currentStroke
-        strokeNumber = engine.currentStrokeNumber
-        phase = engine.phase
         guideStrokes = engine.guideStrokes
     }
 
@@ -145,10 +140,6 @@ private fun ExerciseTracingContent(
 
         val strokeToTrace = currentStroke
         if (strokeToTrace != null) {
-            Text(
-                text = tracingStepLabel(phase, strokeNumber, engine.totalStrokes, exercise.type),
-                style = MaterialTheme.typography.bodyLarge,
-            )
             TracingInputCanvas(
                 stroke = strokeToTrace,
                 guideStrokes = guideStrokes,

@@ -81,7 +81,7 @@ Low scores should encourage another attempt rather than make the child feel that
 3. Dotted tracing
 4. Multiple strokes per letter
 5. Stroke-order guidance
-6. Whole-letter practice after the individual strokes
+6. Whole-letter practice — the complete letter is shown at once and traced over
 7. Drawing exercises
 8. Practice-based learning
 
@@ -1010,7 +1010,7 @@ Prove that tracing feels:
 8. Detect stroke completion
 9. Calculate accuracy
 10. Produce a trace result
-11. Run a whole-letter pass after the individual strokes
+11. Show every stroke's guide at once so the whole letter is traced in one pass
 
 ## Prototype Architecture
 
@@ -1161,40 +1161,37 @@ Reliable coverage measurement.
 
 Bengali letters can contain multiple strokes.
 
-An attempt runs in two passes. The child first learns each stroke on its own, then writes the whole letter once more with every guide on screen:
+An attempt runs in a single pass. Every stroke's guide is shown at once, so the child sees the complete letter and practises on top of it:
 
 ```text
-Pass 1 — stroke by stroke       Pass 2 — whole letter
-one guide shown at a time       all guides shown at once
+Whole letter — all guides shown at once
 
-Stroke 1                        Stroke 1
-   ↓                               ↓
-Stroke 2           →            Stroke 2
-   ↓                               ↓
-Stroke 3                        Stroke 3
-                                   ↓
-                            Exercise complete
+Stroke 1
+   ↓
+Stroke 2
+   ↓
+Stroke 3
+   ↓
+Exercise complete
 ```
 
-Both passes run the same stroke sequence in the same order. Only the guides shown differ.
+There are no step-by-step practice versions; the letter is never built up one guide at a time.
 
-The exercise is not complete until the whole-letter pass is finished.
+The strokes are still traced in their teaching order, so stroke order can be tracked and scored.
 
-An exercise with a single stroke has nothing to assemble, so it runs pass 1 only.
+A single-stroke exercise behaves the same way — its one guide is already the whole letter.
 
 Track:
 
-- Current pass
 - Current stroke
 - Completed strokes
 - Stroke coverage
 - Stroke accuracy
 - Incorrect stroke behavior
-- Which guides to display for the current pass
 
 ## Deliverable
 
-Multiple-stroke exercises work correctly and end with a whole-letter pass.
+Multiple-stroke exercises work correctly with the complete letter shown throughout.
 
 ---
 
@@ -1245,7 +1242,7 @@ Validate:
 - Finger interaction
 - Coverage
 - Score
-- Whole-letter pass after the individual strokes
+- Complete letter shown at once while tracing
 
 ## Authoring Stroke Geometry
 
@@ -1275,7 +1272,7 @@ Rules:
 
 ## Deliverable
 
-A real Bengali letter can be traced in the prototype, stroke by stroke and then as a whole letter.
+A real Bengali letter can be traced in the prototype with the complete letter shown at once.
 
 ---
 
@@ -1285,7 +1282,7 @@ Use `ক` because it provides a different stroke structure.
 
 Validate that the tracing engine is not accidentally specialized for `অ`.
 
-While `ক` still has placeholder single-stroke geometry it also proves the opposite case: a single-stroke exercise correctly skips the whole-letter pass. Once `ক` is given its real multi-stroke geometry in Step 11.11 it gains that pass automatically, with no engine change.
+While `ক` still has placeholder single-stroke geometry it also proves the single-stroke case: its one guide is already the whole letter. Once `ক` is given its real multi-stroke geometry in Step 11.11 all of its guides are shown together, with no engine change.
 
 ## Deliverable
 
@@ -1309,7 +1306,7 @@ House
 
 Validate that the same tracing engine can support non-letter exercises.
 
-The final pass is driven by stroke count, not by exercise type, so a multi-stroke drawing ends with the same whole-shape pass a letter does. On-screen wording must therefore suit non-letters too — do not hardcode the word "letter" into the step label.
+A drawing is practised exactly like a letter: every stroke's guide is shown at once and traced over. Nothing on screen describes the exercise in words, so drawings need no wording of their own.
 
 ## Deliverable
 
@@ -1340,27 +1337,12 @@ Connect real exercises to the tracing engine.
 
           অ
 
-     • • • • •
-   •           •
-   •           •
-     • • • • •
-
-Stroke 1 of 3
-```
-
-After the last individual stroke, the final pass shows every stroke's guide at once and says so:
-
-```text
-← Back
-
-          অ
-
   all strokes' dots shown
-
-Whole letter — stroke 1 of 3
 ```
 
-Ink from strokes already written stays on screen during that pass, so the letter visibly builds up as the child writes it.
+The complete letter is on screen from the first touch. There are no step-by-step practice versions to work through first, and no step or stroke caption above the canvas.
+
+Ink from strokes already written stays on screen, so the letter visibly builds up as the child writes it.
 
 Potential controls:
 
@@ -1424,12 +1406,13 @@ These sub-steps keep the numbering of Steps 12–25 unchanged.
 Two items were outstanding from the Step 11 work. Both are now closed:
 
 ```text
-P1  Verify the whole-letter pass on a physical device
-    done — আ's four strokes ran through both passes on a
-    device during Step 11.1 and ended on the Result screen
+P1  Verify whole-letter practice on a physical device
+    done — আ's four strokes were traced on a device during
+    Step 11.1 and ended on the Result screen
 
 P2  Fix the step label for non-letters
-    done — tracingStepLabel() now suits drawings too
+    done — the step label was removed altogether, so no
+    wording has to suit letters and drawings alike
 ```
 
 ## Known Defects
@@ -1440,7 +1423,7 @@ The placeholder content shares a small number of root causes, not 20 unrelated b
 1. No matra          every letter except অ is missing its headline bar
 2. Eyeballed shapes  zigzag polylines that only loosely suggest the letter
 3. Copied bodies     আ/ই/ঈ, উ/ঊ, এ/ঐ, ও/ঔ reuse a body that was never correct
-4. Single stroke     most letters never reach the whole-letter pass
+4. Single stroke     most letters are one stroke, not their real stroke split
 ```
 
 ## Per-Exercise Procedure
@@ -1455,7 +1438,7 @@ One exercise per sub-step. Do not batch them, and verify each before moving on.
 5. Build + unit test
 6. Check on a physical device against the
    character shown above the canvas
-7. Confirm the whole-letter pass appears and works
+7. Confirm the complete letter is shown while tracing
 ```
 
 ## Per-Exercise Definition of Done
@@ -1467,7 +1450,7 @@ One exercise per sub-step. Do not batch them, and verify each before moving on.
 - [ ] Proportions preserved, letter centred in the canvas
 - [ ] Unit test pins stroke ids and starting point
 - [ ] Verified on a physical device against the rendered character
-- [ ] Whole-letter pass present for multi-stroke exercises
+- [ ] Complete letter shown at once for multi-stroke exercises
 
 ## Sub-Steps
 
@@ -1539,22 +1522,21 @@ Optional:
 
 Do not over-weight time.
 
-## Scoring Across Both Passes
+## Scoring a Whole-Letter Attempt
 
-A multi-stroke attempt produces stroke results from two passes (Step 10.6): the stroke-by-stroke pass and the whole-letter pass.
+A multi-stroke attempt produces one stroke result per stroke of the single whole-letter pass (Step 10.6).
 
-Existing behavior carried in from Step 10.6 averages every stroke of both passes into one score. Choose the model deliberately in this step rather than inheriting it:
+Existing behavior carried in from Step 10.6 averages every stroke into one score. Choose the model deliberately in this step rather than inheriting it:
 
 ```text
-A. Equal weight      average all strokes from both passes (current)
-B. Weighted          the whole-letter pass counts for more
-C. Final pass only   only the whole-letter pass is scored
+A. Equal weight      average every stroke equally (current)
+B. Weighted          some strokes count for more
 ```
 
 Whichever is chosen:
 
 - Keep the weighting configurable, not hardcoded.
-- A single-stroke exercise has only pass 1 and must still score correctly.
+- A single-stroke exercise must still score correctly.
 - A retried stroke should not be able to drag the score below an honest reflection of the final attempt.
 
 ## Output
@@ -1875,8 +1857,8 @@ Test:
 - Accidental touches
 - Repeated tracing
 - Stroke boundaries
-- Whole-letter pass after the individual strokes
-- Single-stroke exercise skipping the whole-letter pass
+- Whole letter shown at once while tracing
+- Single-stroke exercise
 
 ## Room Tests
 
@@ -1964,7 +1946,7 @@ For each letter verify:
 - Correct proportions
 - Correct difficulty
 - Correct ordering
-- Whole-letter pass behaves correctly
+- Complete letter shown at once while tracing
 - Correct pronunciation/audio if added
 
 Author every letter with the method established in Step 10.8 — derived from the rendered glyph's skeleton, never approximated by eye. Check each letter on a device against the character shown above the canvas.
@@ -1987,7 +1969,7 @@ Tracked here so the catalogue's real state is visible at a glance. Update as Ste
 5 drawings         unverified              → Steps 11.16–11.17
 ```
 
-Because the whole-letter pass is driven purely by stroke count, each letter gains it automatically as soon as its real multi-stroke geometry lands. No per-letter engine work is required.
+Because every stroke's guide is shown at once, a letter needs no per-letter engine work when its real multi-stroke geometry lands.
 
 Anything still showing placeholder geometry at this step is a release blocker.
 

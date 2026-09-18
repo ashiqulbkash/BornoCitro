@@ -28,10 +28,10 @@ import com.bornochitra.core.ui.theme.BornoChitraTheme
  * traced path for immediate visual feedback. This is the pointer-tracking prototype from
  * plan.md Step 10.3: raw touch capture only — no distance/coverage scoring and no persistence.
  *
- * [stroke] is the one being traced now; [guideStrokes] is everything drawn as a guide, which is
- * just [stroke] while practising stroke by stroke but the whole letter on the final pass. Ink from
- * strokes already finished against the current [guideStrokes] stays on screen, so the letter builds
- * up as it is written; a retry of the same stroke replaces its own ink rather than layering on it.
+ * [stroke] is the one being traced now; [guideStrokes] is everything drawn as a guide — the whole
+ * letter or shape, so the child always sees the complete exercise. Ink from strokes already
+ * finished against the current [guideStrokes] stays on screen, so the letter builds up as it is
+ * written; a retry of the same stroke replaces its own ink rather than layering on it.
  */
 @Composable
 fun TracingInputCanvas(

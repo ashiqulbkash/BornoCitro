@@ -26,8 +26,8 @@ import com.bornochitra.core.ui.theme.BcSpacing
 import com.bornochitra.core.ui.theme.BornoChitraTheme
 
 /**
- * End-to-end tracing prototype for a single [Exercise]: renders the dotted guide, accepts finger
- * tracing via [TracingInputCanvas], and shows stroke progress/score feedback, all driven through
+ * End-to-end tracing prototype for a single [Exercise]: renders the complete dotted guide, accepts
+ * finger tracing via [TracingInputCanvas], and shows score feedback, all driven through
  * [TracingEngine] — the reusable tracing component from plan.md Step 10.11. This Composable holds
  * no tracing business logic itself; it only translates [TracingEngine]'s state and
  * [TracingAttemptOutcome] into UI, the same shape a future PracticeViewModel (plan.md Step 11)
@@ -39,8 +39,6 @@ fun LetterTracingPrototype(exercise: Exercise, modifier: Modifier = Modifier) {
     val engine = remember(exercise, attemptId) { TracingEngine(exercise) }
 
     var currentStroke by remember(engine) { mutableStateOf(engine.currentStroke) }
-    var strokeNumber by remember(engine) { mutableIntStateOf(engine.currentStrokeNumber) }
-    var phase by remember(engine) { mutableStateOf(engine.phase) }
     var guideStrokes by remember(engine) { mutableStateOf(engine.guideStrokes) }
     var feedback by remember(engine) { mutableStateOf<String?>(null) }
 
@@ -52,8 +50,6 @@ fun LetterTracingPrototype(exercise: Exercise, modifier: Modifier = Modifier) {
             TracingAttemptOutcome.NoAttempt -> feedback
         }
         currentStroke = engine.currentStroke
-        strokeNumber = engine.currentStrokeNumber
-        phase = engine.phase
         guideStrokes = engine.guideStrokes
     }
 
@@ -66,10 +62,6 @@ fun LetterTracingPrototype(exercise: Exercise, modifier: Modifier = Modifier) {
 
         val strokeToTrace = currentStroke
         if (strokeToTrace != null) {
-            Text(
-                text = tracingStepLabel(phase, strokeNumber, engine.totalStrokes, exercise.type),
-                style = MaterialTheme.typography.bodyLarge,
-            )
             TracingInputCanvas(
                 stroke = strokeToTrace,
                 guideStrokes = guideStrokes,

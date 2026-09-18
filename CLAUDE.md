@@ -13,6 +13,8 @@
 * Keep changes focused and incremental.
 * Never assume an implementation is correct without inspecting the relevant code.
 * When a requirement is ambiguous, inspect the existing code and `plan.md` first; ask for clarification only when implementation cannot reasonably proceed.
+* Claude may read any file and run any command needed to complete a task, inside or outside the working directory.
+* Claude must show the command it is executing before or while running it, so every action is visible.
 
 ## 2. Architecture
 
