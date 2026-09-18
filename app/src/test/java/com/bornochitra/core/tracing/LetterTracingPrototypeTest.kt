@@ -13,8 +13,7 @@ import org.junit.Test
 
 /**
  * Validates plan.md Steps 10.8-10.10's checklist for real exercise content — the Bengali letters
- * "অ", "আ", "ই", "ঈ", "উ", "ঊ", "ঋ", "এ", "ঐ" and "ও" (plan.md Steps 11.1-11.9) and "ক", plus the
- * non-letter "Circle"
+ * every vowel (plan.md Steps 11.1-11.10) and "ক", plus the non-letter "Circle"
  * drawing — by running each through [TracingEngine], the same reusable component
  * [LetterTracingPrototype] drives (plan.md Step 10.11). "ক" has straight/angular strokes
  * structurally different from "অ"'s curved loop, and "Circle" is not a letter at all, so passing
@@ -34,6 +33,7 @@ class LetterTracingPrototypeTest {
     private val vowelE = vowelExercises.first { it.id == "vowel-e" }
     private val vowelOi = vowelExercises.first { it.id == "vowel-oi" }
     private val vowelOa = vowelExercises.first { it.id == "vowel-oa" }
+    private val vowelAu = vowelExercises.first { it.id == "vowel-au" }
     private val consonantKo = consonantExercises.first { it.id == "consonant-ko" }
     private val drawingCircle = drawingExercises.first { it.id == "drawing-circle" }
 
@@ -425,6 +425,72 @@ class LetterTracingPrototypeTest {
     @Test
     fun `tracing far from vowel-oa's guide path does not complete the exercise`() {
         assertOffPathTraceDoesNotComplete(vowelOa)
+    }
+
+    @Test
+    fun `vowel-au is traced as curl, sweep and kar, in that order`() {
+        assertEquals(
+            listOf("vowel-au-curl", "vowel-au-sweep", "vowel-au-kar"),
+            vowelAu.strokes.map { it.id },
+        )
+        assertEquals(Point(40f, 56f), vowelAu.strokes.first().points.first())
+    }
+
+    @Test
+    fun `vowel-au's kar is written last and ends where the curl ends`() {
+        // ঔ is ও plus its কার, and a mark goes on after the body it belongs to.
+        val curl = vowelAu.strokes.first { it.id == "vowel-au-curl" }.points
+        val kar = vowelAu.strokes.last()
+        assertEquals("vowel-au-kar", kar.id)
+        assertEquals(curl.last(), kar.points.last())
+        assertTrue(kar.points.first().y < curl.minOf { it.y })
+    }
+
+    @Test
+    fun `vowel-au carries its own geometry rather than ও's`() {
+        // The কার takes the top of the square, so ঔ's body sits lower than ও's — sharing a shape
+        // between the two is the defect plan.md Step 11.10 exists to remove.
+        val auBody = vowelAu.strokes.filterNot { it.id == "vowel-au-kar" }
+        assertTrue(auBody.map { it.points } != vowelOa.strokes.map { it.points })
+        assertTrue(auBody.minOf { stroke -> stroke.points.minOf { it.y } } > vowelOa.strokes.minOf { stroke -> stroke.points.minOf { it.y } })
+    }
+
+    @Test
+    fun `vowel-au's sweep starts at the cut tail and finishes inside the lower lobe`() {
+        val sweep = vowelAu.strokes.first { it.id == "vowel-au-sweep" }.points
+        assertEquals(Point(16f, 46f), sweep.first())
+        assertEquals(Point(58f, 62f), sweep.last())
+        assertTrue(sweep.last().x < sweep.maxOf { it.x })
+        assertTrue(sweep.last().y < sweep.maxOf { it.y })
+    }
+
+    @Test
+    fun `vowel-au shows every stroke's guide at once`() {
+        assertEquals(vowelAu.strokes, TracingEngine(vowelAu).guideStrokes)
+    }
+
+    @Test
+    fun `faithfully tracing vowel-au's real stroke path completes the sequence with a perfect score`() {
+        assertFaithfulTraceIsPerfect(vowelAu)
+    }
+
+    @Test
+    fun `tracing far from vowel-au's guide path does not complete the exercise`() {
+        assertOffPathTraceDoesNotComplete(vowelAu)
+    }
+
+    @Test
+    fun `every vowel is traced with geometry derived from its own glyph`() {
+        // plan.md Steps 11.1-11.10 close out the placeholder content: no two vowels share a body,
+        // and no vowel is still a handful of eyeballed points.
+        val bodies = vowelExercises.map { exercise -> exercise.strokes.map { it.points } }
+        assertEquals(bodies.size, bodies.distinct().size)
+        vowelExercises.forEach { exercise ->
+            assertTrue(
+                "${exercise.id} has too few waypoints to be glyph-derived",
+                exercise.strokes.sumOf { it.points.size } >= 60,
+            )
+        }
     }
 
     @Test
