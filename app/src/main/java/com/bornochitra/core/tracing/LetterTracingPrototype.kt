@@ -40,6 +40,8 @@ fun LetterTracingPrototype(exercise: Exercise, modifier: Modifier = Modifier) {
 
     var currentStroke by remember(engine) { mutableStateOf(engine.currentStroke) }
     var strokeNumber by remember(engine) { mutableIntStateOf(engine.currentStrokeNumber) }
+    var phase by remember(engine) { mutableStateOf(engine.phase) }
+    var guideStrokes by remember(engine) { mutableStateOf(engine.guideStrokes) }
     var feedback by remember(engine) { mutableStateOf<String?>(null) }
 
     fun handleStrokeEnd() {
@@ -51,6 +53,8 @@ fun LetterTracingPrototype(exercise: Exercise, modifier: Modifier = Modifier) {
         }
         currentStroke = engine.currentStroke
         strokeNumber = engine.currentStrokeNumber
+        phase = engine.phase
+        guideStrokes = engine.guideStrokes
     }
 
     Column(
@@ -62,9 +66,13 @@ fun LetterTracingPrototype(exercise: Exercise, modifier: Modifier = Modifier) {
 
         val strokeToTrace = currentStroke
         if (strokeToTrace != null) {
-            Text(text = "Stroke $strokeNumber of ${engine.totalStrokes}", style = MaterialTheme.typography.bodyLarge)
+            Text(
+                text = tracingStepLabel(phase, strokeNumber, engine.totalStrokes),
+                style = MaterialTheme.typography.bodyLarge,
+            )
             TracingInputCanvas(
                 stroke = strokeToTrace,
+                guideStrokes = guideStrokes,
                 modifier = Modifier.fillMaxWidth().aspectRatio(1f),
                 onPointerEvent = { event ->
                     when (event) {

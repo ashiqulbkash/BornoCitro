@@ -30,9 +30,12 @@ class LetterTracingPrototypeTest {
     private fun tracePoint(point: Point) = TracePoint(point.x, point.y, timestampMs = 0L)
 
     @Test
-    fun `vowel-o has exactly one stroke starting at its documented point`() {
-        assertEquals(1, vowelO.strokes.size)
-        assertEquals(Point(65f, 15f), vowelO.strokes.single().points.first())
+    fun `vowel-o is traced as bowl, stem and matra, in that order`() {
+        assertEquals(
+            listOf("vowel-o-body", "vowel-o-stem", "vowel-o-matra"),
+            vowelO.strokes.map { it.id },
+        )
+        assertEquals(Point(10f, 40f), vowelO.strokes.first().points.first())
     }
 
     @Test
@@ -82,11 +85,16 @@ class LetterTracingPrototypeTest {
 
     private fun assertFaithfulTraceIsPerfect(exercise: Exercise) {
         val engine = TracingEngine(exercise)
-        val points = exercise.strokes.single().points
+        var outcome: TracingAttemptOutcome = TracingAttemptOutcome.NoAttempt
 
-        engine.onStart(tracePoint(points.first()))
-        points.drop(1).forEach { engine.onMove(tracePoint(it)) }
-        val outcome = engine.onEnd()
+        // Every pass traces the same stroke sequence: stroke by stroke, then the whole letter.
+        repeat(engine.phases.size) {
+            for (stroke in exercise.strokes) {
+                engine.onStart(tracePoint(stroke.points.first()))
+                stroke.points.drop(1).forEach { engine.onMove(tracePoint(it)) }
+                outcome = engine.onEnd()
+            }
+        }
 
         assertTrue(engine.isExerciseCompleted)
         require(outcome is TracingAttemptOutcome.ExerciseCompleted) { "expected ExerciseCompleted, was $outcome" }

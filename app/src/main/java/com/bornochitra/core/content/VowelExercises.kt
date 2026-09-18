@@ -12,6 +12,11 @@ import com.bornochitra.core.model.Stroke
  * refines অ specifically and Step 23 validates every letter's handwriting accuracy before release.
  */
 internal val vowelExercises: List<Exercise> = listOf(
+    /**
+     * অ is traced from the rendered glyph's centreline rather than approximated, so the guide sits
+     * on the letter shown above it. Written the way the letter is hand-drawn: the bowl first, then
+     * the stem, then the matra — Bengali draws the headline last.
+     */
     Exercise(
         id = "vowel-o",
         title = "অ",
@@ -23,15 +28,47 @@ internal val vowelExercises: List<Exercise> = listOf(
                 id = "vowel-o-body",
                 points = StrokePoints.polyline(
                     listOf(
-                        Point(65f, 15f),
-                        Point(35f, 20f),
-                        Point(25f, 45f),
-                        Point(45f, 60f),
-                        Point(70f, 55f),
-                        Point(65f, 80f),
-                        Point(40f, 88f),
+                        Point(10f, 40f),
+                        Point(14f, 44f),
+                        Point(16f, 50f),
+                        Point(21f, 57f),
+                        Point(27f, 62f),
+                        Point(33f, 66f),
+                        Point(41f, 68f),
+                        Point(47f, 67f),
+                        Point(53f, 65f),
+                        Point(57f, 60f),
+                        Point(60f, 55f),
+                        Point(60f, 48f),
+                        Point(58f, 43f),
+                        Point(55f, 40f),
+                        Point(50f, 38f),
+                        Point(44f, 38f),
+                        Point(40f, 39f),
+                        Point(37f, 43f),
+                        Point(36f, 46f),
+                        Point(39f, 50f),
+                        Point(42f, 51f),
                     ),
                 ),
+            ),
+            Stroke(
+                id = "vowel-o-stem",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(81f, 29f),
+                        Point(81f, 43f),
+                        Point(81f, 57f),
+                        Point(81f, 73f),
+                        Point(74f, 70f),
+                        Point(67f, 65f),
+                        Point(60f, 62f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "vowel-o-matra",
+                points = StrokePoints.line(Point(8f, 27f), Point(92f, 27f)),
             ),
         ),
     ),

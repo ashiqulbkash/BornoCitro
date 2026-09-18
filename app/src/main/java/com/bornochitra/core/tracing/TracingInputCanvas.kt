@@ -24,14 +24,20 @@ import com.bornochitra.core.model.Stroke
 import com.bornochitra.core.ui.theme.BornoChitraTheme
 
 /**
- * Renders a [Stroke]'s dotted guide and lets a child trace over it with their finger, showing the
- * live traced path for immediate visual feedback. This is the pointer-tracking prototype from
+ * Renders dotted guides and lets a child trace over them with their finger, showing the live
+ * traced path for immediate visual feedback. This is the pointer-tracking prototype from
  * plan.md Step 10.3: raw touch capture only — no distance/coverage scoring and no persistence.
+ *
+ * [stroke] is the one being traced now; [guideStrokes] is everything drawn as a guide, which is
+ * just [stroke] while practising stroke by stroke but the whole letter on the final pass. Ink from
+ * strokes already finished against the current [guideStrokes] stays on screen, so the letter builds
+ * up as it is written; a retry of the same stroke replaces its own ink rather than layering on it.
  */
 @Composable
 fun TracingInputCanvas(
     stroke: Stroke,
     modifier: Modifier = Modifier,
+    guideStrokes: List<Stroke> = listOf(stroke),
     style: DottedPathStyle = DottedPathStyle(),
     tracedColor: Color? = null,
     onPointerEvent: (TracingPointerEvent) -> Unit = {},
@@ -39,11 +45,12 @@ fun TracingInputCanvas(
     val resolvedDotColor = style.dotColor ?: MaterialTheme.colorScheme.primary
     val resolvedPathColor = style.pathColor ?: MaterialTheme.colorScheme.outline
     val resolvedTracedColor = tracedColor ?: MaterialTheme.colorScheme.secondary
-    val guideDots = remember(stroke, style.dotSpacing) {
-        DottedPathSampler.sample(stroke.points, style.dotSpacing)
+    val guides = remember(guideStrokes, style.dotSpacing) {
+        guideStrokes.map { guide -> guide.points to DottedPathSampler.sample(guide.points, style.dotSpacing) }
     }
     val session = remember(stroke, onPointerEvent) { TracingSession(onEvent = onPointerEvent) }
     var tracedPoints by remember(stroke) { mutableStateOf<List<TracePoint>>(emptyList()) }
+    var finishedTraces by remember(guideStrokes) { mutableStateOf<Map<String, List<TracePoint>>>(emptyMap()) }
 
     Canvas(
         modifier = modifier.pointerInput(stroke) {
@@ -56,6 +63,7 @@ fun TracingInputCanvas(
 
             detectDragGestures(
                 onDragStart = { offset ->
+                    finishedTraces = finishedTraces - stroke.id
                     session.onStart(toTracePoint(offset))
                     tracedPoints = session.tracedPoints
                 },
@@ -65,6 +73,7 @@ fun TracingInputCanvas(
                     tracedPoints = session.tracedPoints
                 },
                 onDragEnd = {
+                    finishedTraces = finishedTraces + (stroke.id to session.tracedPoints)
                     session.onEnd()
                 },
                 onDragCancel = {
@@ -75,13 +84,16 @@ fun TracingInputCanvas(
         },
     ) {
         val scale = size.minDimension / GUIDE_CANVAS_UNIT
-        drawDottedGuide(stroke.points, guideDots, style, scale, resolvedDotColor, resolvedPathColor)
+        guides.forEach { (guidePoints, guideDots) ->
+            drawDottedGuide(guidePoints, guideDots, style, scale, resolvedDotColor, resolvedPathColor)
+        }
 
-        if (tracedPoints.size >= 2) {
+        (finishedTraces.values + listOf(tracedPoints)).forEach { trace ->
+            if (trace.size < 2) return@forEach
             val tracedPath = Path().apply {
-                val first = tracedPoints.first()
+                val first = trace.first()
                 moveTo(first.x * scale, first.y * scale)
-                tracedPoints.drop(1).forEach { lineTo(it.x * scale, it.y * scale) }
+                trace.drop(1).forEach { lineTo(it.x * scale, it.y * scale) }
             }
             drawPath(
                 path = tracedPath,

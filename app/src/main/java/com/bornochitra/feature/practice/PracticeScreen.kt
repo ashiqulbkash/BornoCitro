@@ -32,6 +32,7 @@ import com.bornochitra.core.tracing.TracingAttemptOutcome
 import com.bornochitra.core.tracing.TracingEngine
 import com.bornochitra.core.tracing.TracingInputCanvas
 import com.bornochitra.core.tracing.TracingPointerEvent
+import com.bornochitra.core.tracing.tracingStepLabel
 import com.bornochitra.core.ui.components.BcEmptyState
 import com.bornochitra.core.ui.components.BcPrimaryButton
 import com.bornochitra.core.ui.components.BcTopAppBar
@@ -118,6 +119,8 @@ private fun ExerciseTracingContent(
 
     var currentStroke by remember(engine) { mutableStateOf(engine.currentStroke) }
     var strokeNumber by remember(engine) { mutableStateOf(engine.currentStrokeNumber) }
+    var phase by remember(engine) { mutableStateOf(engine.phase) }
+    var guideStrokes by remember(engine) { mutableStateOf(engine.guideStrokes) }
     var feedback by remember(engine) { mutableStateOf<String?>(null) }
 
     fun handleStrokeEnd() {
@@ -129,6 +132,8 @@ private fun ExerciseTracingContent(
         }
         currentStroke = engine.currentStroke
         strokeNumber = engine.currentStrokeNumber
+        phase = engine.phase
+        guideStrokes = engine.guideStrokes
     }
 
     Column(
@@ -140,9 +145,13 @@ private fun ExerciseTracingContent(
 
         val strokeToTrace = currentStroke
         if (strokeToTrace != null) {
-            Text(text = "Stroke $strokeNumber of ${engine.totalStrokes}", style = MaterialTheme.typography.bodyLarge)
+            Text(
+                text = tracingStepLabel(phase, strokeNumber, engine.totalStrokes),
+                style = MaterialTheme.typography.bodyLarge,
+            )
             TracingInputCanvas(
                 stroke = strokeToTrace,
+                guideStrokes = guideStrokes,
                 modifier = Modifier.fillMaxWidth().aspectRatio(1f),
                 onPointerEvent = { event ->
                     when (event) {
