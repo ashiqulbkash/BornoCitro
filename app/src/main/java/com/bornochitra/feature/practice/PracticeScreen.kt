@@ -146,7 +146,7 @@ private fun ExerciseTracingContent(
         val strokeToTrace = currentStroke
         if (strokeToTrace != null) {
             Text(
-                text = tracingStepLabel(phase, strokeNumber, engine.totalStrokes),
+                text = tracingStepLabel(phase, strokeNumber, engine.totalStrokes, exercise.type),
                 style = MaterialTheme.typography.bodyLarge,
             )
             TracingInputCanvas(
