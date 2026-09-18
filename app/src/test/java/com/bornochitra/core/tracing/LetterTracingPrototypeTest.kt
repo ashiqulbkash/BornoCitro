@@ -37,6 +37,7 @@ class LetterTracingPrototypeTest {
     private val vowelAu = vowelExercises.first { it.id == "vowel-au" }
     private val consonantKo = consonantExercises.first { it.id == "consonant-ko" }
     private val consonantKho = consonantExercises.first { it.id == "consonant-kho" }
+    private val consonantGo = consonantExercises.first { it.id == "consonant-go" }
     private val drawingCircle = drawingExercises.first { it.id == "drawing-circle" }
 
     private fun tracePoint(point: Point) = TracePoint(point.x, point.y, timestampMs = 0L)
@@ -611,6 +612,61 @@ class LetterTracingPrototypeTest {
     @Test
     fun `tracing far from consonant-kho's guide path does not complete the exercise`() {
         assertOffPathTraceDoesNotComplete(consonantKho)
+    }
+
+    @Test
+    fun `consonant-go is traced as body, stem and matra, in that order`() {
+        assertEquals(
+            listOf("consonant-go-body", "consonant-go-stem", "consonant-go-matra"),
+            consonantGo.strokes.map { it.id },
+        )
+        assertEquals(Point(70f, 34f), consonantGo.strokes.first().points.first())
+    }
+
+    @Test
+    fun `consonant-go's body is one movement from the stem round to the hook's terminal`() {
+        // The hairpin at the sharp left vertex is a turn, not a pen lift, so the arch and the hook
+        // belong to the same stroke.
+        val body = consonantGo.strokes.first().points
+        val stem = consonantGo.strokes[1].points
+        assertTrue(stem.any { it.distanceTo(body.first()) < 6f })
+        val vertex = body.minByOrNull { it.x }!!
+        assertTrue(body.first().x > vertex.x && body.last().x > vertex.x)
+        assertTrue(body.last().y > vertex.y)
+    }
+
+    @Test
+    fun `consonant-go's arch reaches the top of the letter before the hook drops below it`() {
+        val body = consonantGo.strokes.first().points
+        val apex = body.minByOrNull { it.y }!!
+        val vertexIndex = body.indexOf(body.minByOrNull { it.x }!!)
+        assertTrue(body.indexOf(apex) < vertexIndex)
+        assertTrue(body.last().y > body.maxOf { it.y } - 1f)
+    }
+
+    @Test
+    fun `consonant-go's matra is written last and covers only the stem's right side`() {
+        val matra = consonantGo.strokes.last()
+        assertEquals("consonant-go-matra", matra.id)
+        val stem = consonantGo.strokes[1].points
+        assertTrue(matra.points.minOf { it.x } >= stem.minOf { it.x } - 1f)
+        assertTrue(matra.points.maxOf { it.x } > stem.maxOf { it.x })
+        assertEquals(1, matra.points.map { it.y }.distinct().size)
+    }
+
+    @Test
+    fun `consonant-go shows every stroke's guide at once`() {
+        assertEquals(consonantGo.strokes, TracingEngine(consonantGo).guideStrokes)
+    }
+
+    @Test
+    fun `faithfully tracing consonant-go's real stroke path completes the sequence with a perfect score`() {
+        assertFaithfulTraceIsPerfect(consonantGo)
+    }
+
+    @Test
+    fun `tracing far from consonant-go's guide path does not complete the exercise`() {
+        assertOffPathTraceDoesNotComplete(consonantGo)
     }
 
     @Test

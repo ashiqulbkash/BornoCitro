@@ -7,10 +7,10 @@ import com.bornochitra.core.model.Point
 import com.bornochitra.core.model.Stroke
 
 /**
- * Consonant stroke geometry. ক and খ are read off their rendered glyphs' centrelines (plan.md
- * Steps 11.11-11.12); গ, ঘ and ঙ still carry the placeholder geometry described in
- * [vowelExercises]' history and are corrected in plan.md Steps 11.13-11.15. Step 23 re-validates
- * every letter before release.
+ * Consonant stroke geometry. ক, খ and গ are read off their rendered glyphs' centrelines (plan.md
+ * Steps 11.11-11.13); ঘ and ঙ still carry the placeholder geometry described in [vowelExercises]'
+ * history and are corrected in plan.md Steps 11.14-11.15. Step 23 re-validates every letter before
+ * release.
  */
 internal val consonantExercises: List<Exercise> = listOf(
     /**
@@ -206,6 +206,14 @@ internal val consonantExercises: List<Exercise> = listOf(
             ),
         ),
     ),
+    /**
+     * গ is read off its rendered glyph's centreline. Its body is a single movement: the pen leaves
+     * the stem, arches over the top, comes down the left side to a sharp hairpin, turns back and
+     * runs right into the hook, then curves down and round to the hook's flat terminal. The stem is
+     * the body's only other end, which is why the body starts there rather than in mid-air. Like খ,
+     * গ's headline bar is short and sits only to the right of the stem, and the stem rises a little
+     * above it.
+     */
     Exercise(
         id = "consonant-go",
         title = "গ",
@@ -217,13 +225,60 @@ internal val consonantExercises: List<Exercise> = listOf(
                 id = "consonant-go-body",
                 points = StrokePoints.polyline(
                     listOf(
-                        Point(30f, 20f),
-                        Point(70f, 20f),
-                        Point(30f, 50f),
-                        Point(70f, 55f),
-                        Point(45f, 85f),
+                        Point(70f, 34f),
+                        Point(67f, 32f),
+                        Point(65f, 31f),
+                        Point(62f, 29f),
+                        Point(60f, 27f),
+                        Point(58f, 24f),
+                        Point(55f, 23f),
+                        Point(53f, 21f),
+                        Point(50f, 20f),
+                        Point(47f, 19f),
+                        Point(44f, 19f),
+                        Point(41f, 18f),
+                        Point(38f, 19f),
+                        Point(35f, 19f),
+                        Point(32f, 20f),
+                        Point(29f, 21f),
+                        Point(27f, 23f),
+                        Point(24f, 25f),
+                        Point(22f, 28f),
+                        Point(20f, 30f),
+                        Point(19f, 33f),
+                        Point(19f, 35f),
+                        Point(15f, 37f),
+                        Point(18f, 39f),
+                        Point(22f, 39f),
+                        Point(25f, 39f),
+                        Point(28f, 39f),
+                        Point(31f, 38f),
+                        Point(34f, 38f),
+                        Point(37f, 39f),
+                        Point(40f, 40f),
+                        Point(43f, 41f),
+                        Point(45f, 44f),
+                        Point(46f, 46f),
+                        Point(46f, 49f),
+                        Point(46f, 52f),
+                        Point(46f, 56f),
+                        Point(45f, 58f),
+                        Point(43f, 61f),
+                        Point(40f, 63f),
+                        Point(38f, 65f),
+                        Point(35f, 66f),
+                        Point(34f, 67f),
+                        Point(30f, 70f),
                     ),
                 ),
+            ),
+            Stroke(
+                id = "consonant-go-stem",
+                points = StrokePoints.line(Point(70f, 10f), Point(71f, 88f), samples = 16),
+            ),
+            Stroke(
+                id = "consonant-go-matra",
+                points = StrokePoints.line(Point(71f, 19f), Point(84f, 19f)),
             ),
         ),
     ),
