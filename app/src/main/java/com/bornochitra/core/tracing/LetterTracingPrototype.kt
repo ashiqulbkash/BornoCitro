@@ -27,35 +27,30 @@ import com.bornochitra.core.ui.theme.BornoChitraTheme
 
 /**
  * End-to-end tracing prototype for a single [Exercise]: renders the dotted guide, accepts finger
- * tracing via [TracingInputCanvas], advances through the exercise's strokes with
- * [MultiStrokeTracker], and shows coverage/score feedback via [TraceScoreCalculator] once every
- * stroke is completed. This is the isolated prototype from plan.md Step 10.8, exercised first
- * against the real Bengali "অ" content. It is intentionally not wired into navigation or the real
- * Practice feature yet — that integration is plan.md Step 10.11.
+ * tracing via [TracingInputCanvas], and shows stroke progress/score feedback, all driven through
+ * [TracingEngine] — the reusable tracing component from plan.md Step 10.11. This Composable holds
+ * no tracing business logic itself; it only translates [TracingEngine]'s state and
+ * [TracingAttemptOutcome] into UI, the same shape a future PracticeViewModel (plan.md Step 11)
+ * would use. It is intentionally not wired into navigation or the real Practice feature yet.
  */
 @Composable
 fun LetterTracingPrototype(exercise: Exercise, modifier: Modifier = Modifier) {
     var attemptId by remember(exercise) { mutableIntStateOf(0) }
-    val tracker = remember(exercise, attemptId) { MultiStrokeTracker(exercise) }
-    val scoreCalculator = remember { TraceScoreCalculator() }
+    val engine = remember(exercise, attemptId) { TracingEngine(exercise) }
 
-    var currentStroke by remember(tracker) { mutableStateOf(tracker.currentStroke) }
-    var strokeNumber by remember(tracker) { mutableIntStateOf(tracker.currentStrokeIndex + 1) }
-    var feedback by remember(tracker) { mutableStateOf<String?>(null) }
+    var currentStroke by remember(engine) { mutableStateOf(engine.currentStroke) }
+    var strokeNumber by remember(engine) { mutableIntStateOf(engine.currentStrokeNumber) }
+    var feedback by remember(engine) { mutableStateOf<String?>(null) }
 
     fun handleStrokeEnd() {
-        tracker.onEnd()
-        val attempt = tracker.lastAttemptResult
-        currentStroke = tracker.currentStroke
-        strokeNumber = (tracker.currentStrokeIndex + 1).coerceAtMost(exercise.strokes.size)
-        feedback = when {
-            tracker.isSequenceCompleted -> {
-                val score = scoreCalculator.scoreTrace(tracker.toTraceResult())
-                "Score ${score.toInt()} — ${scoreCalculator.scoreLevel(score)}"
-            }
-            attempt != null && !attempt.isCompleted -> "Try again — follow the dots closely"
-            else -> null
+        feedback = when (val outcome = engine.onEnd()) {
+            is TracingAttemptOutcome.ExerciseCompleted -> "Score ${outcome.score.toInt()} — ${outcome.level}"
+            is TracingAttemptOutcome.StrokeAttempted ->
+                if (outcome.isCompleted) null else "Try again — follow the dots closely"
+            TracingAttemptOutcome.NoAttempt -> feedback
         }
+        currentStroke = engine.currentStroke
+        strokeNumber = engine.currentStrokeNumber
     }
 
     Column(
@@ -67,16 +62,16 @@ fun LetterTracingPrototype(exercise: Exercise, modifier: Modifier = Modifier) {
 
         val strokeToTrace = currentStroke
         if (strokeToTrace != null) {
-            Text(text = "Stroke $strokeNumber of ${exercise.strokes.size}", style = MaterialTheme.typography.bodyLarge)
+            Text(text = "Stroke $strokeNumber of ${engine.totalStrokes}", style = MaterialTheme.typography.bodyLarge)
             TracingInputCanvas(
                 stroke = strokeToTrace,
                 modifier = Modifier.fillMaxWidth().aspectRatio(1f),
                 onPointerEvent = { event ->
                     when (event) {
-                        is TracingPointerEvent.Start -> tracker.onStart(event.point)
-                        is TracingPointerEvent.Move -> tracker.onMove(event.point)
+                        is TracingPointerEvent.Start -> engine.onStart(event.point)
+                        is TracingPointerEvent.Move -> engine.onMove(event.point)
                         is TracingPointerEvent.End -> handleStrokeEnd()
-                        TracingPointerEvent.Cancel -> tracker.onCancel()
+                        TracingPointerEvent.Cancel -> engine.onCancel()
                     }
                 },
             )

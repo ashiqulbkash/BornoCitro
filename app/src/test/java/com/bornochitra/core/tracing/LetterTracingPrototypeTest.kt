@@ -13,13 +13,13 @@ import org.junit.Test
 
 /**
  * Validates plan.md Steps 10.8-10.10's checklist for real exercise content — the Bengali letters
- * "অ" and "ক", plus the non-letter "Circle" drawing — by running each through the actual tracing
- * engine (stroke path, starting point, stroke order, coverage, score). "ক" has straight/angular
- * strokes structurally different from "অ"'s curved loop, and "Circle" is not a letter at all, so
- * passing all three proves the engine is not accidentally specialized for one shape or for
- * letters specifically. Dotted rendering and live finger interaction can only be checked
- * visually/manually via [LetterTracingPrototype]'s previews and a physical device — see the
- * post-task brief.
+ * "অ" and "ক", plus the non-letter "Circle" drawing — by running each through [TracingEngine],
+ * the same reusable component [LetterTracingPrototype] drives (plan.md Step 10.11). "ক" has
+ * straight/angular strokes structurally different from "অ"'s curved loop, and "Circle" is not a
+ * letter at all, so passing all three proves the engine is not accidentally specialized for one
+ * shape or for letters specifically. Dotted rendering and live finger interaction can only be
+ * checked visually/manually via [LetterTracingPrototype]'s previews and a physical device — see
+ * the post-task brief.
  */
 class LetterTracingPrototypeTest {
 
@@ -41,8 +41,8 @@ class LetterTracingPrototypeTest {
     }
 
     @Test
-    fun `tracing far from vowel-o's guide path neither advances nor scores well`() {
-        assertOffPathTraceIsLow(vowelO)
+    fun `tracing far from vowel-o's guide path does not complete the exercise`() {
+        assertOffPathTraceDoesNotComplete(vowelO)
     }
 
     @Test
@@ -59,8 +59,8 @@ class LetterTracingPrototypeTest {
     }
 
     @Test
-    fun `tracing far from consonant-ko's guide path neither advances nor scores well`() {
-        assertOffPathTraceIsLow(consonantKo)
+    fun `tracing far from consonant-ko's guide path does not complete the exercise`() {
+        assertOffPathTraceDoesNotComplete(consonantKo)
     }
 
     @Test
@@ -76,43 +76,32 @@ class LetterTracingPrototypeTest {
     }
 
     @Test
-    fun `tracing far from drawing-circle's guide path neither advances nor scores well`() {
-        assertOffPathTraceIsLow(drawingCircle)
+    fun `tracing far from drawing-circle's guide path does not complete the exercise`() {
+        assertOffPathTraceDoesNotComplete(drawingCircle)
     }
 
     private fun assertFaithfulTraceIsPerfect(exercise: Exercise) {
-        val tracker = MultiStrokeTracker(exercise)
-        val scoreCalculator = TraceScoreCalculator()
-        val stroke = exercise.strokes.single()
+        val engine = TracingEngine(exercise)
+        val points = exercise.strokes.single().points
 
-        val points = stroke.points
-        tracker.onStart(tracePoint(points.first()))
-        points.drop(1).forEach { tracker.onMove(tracePoint(it)) }
-        tracker.onEnd()
+        engine.onStart(tracePoint(points.first()))
+        points.drop(1).forEach { engine.onMove(tracePoint(it)) }
+        val outcome = engine.onEnd()
 
-        assertTrue(tracker.isSequenceCompleted)
-        val attempt = tracker.lastAttemptResult!!
-        assertTrue(attempt.isCompleted)
-        assertTrue("coverage was ${attempt.coverage}", attempt.coverage >= 0.95f)
-
-        val score = scoreCalculator.scoreTrace(tracker.toTraceResult())
-        assertTrue("score was $score", score >= 90f)
-        assertEquals(ScoreLevel.PERFECT, scoreCalculator.scoreLevel(score))
+        assertTrue(engine.isExerciseCompleted)
+        require(outcome is TracingAttemptOutcome.ExerciseCompleted) { "expected ExerciseCompleted, was $outcome" }
+        assertTrue("score was ${outcome.score}", outcome.score >= 90f)
+        assertEquals(ScoreLevel.PERFECT, outcome.level)
     }
 
-    private fun assertOffPathTraceIsLow(exercise: Exercise) {
-        val tracker = MultiStrokeTracker(exercise)
-        val scoreCalculator = TraceScoreCalculator()
+    private fun assertOffPathTraceDoesNotComplete(exercise: Exercise) {
+        val engine = TracingEngine(exercise)
 
-        tracker.onStart(tracePoint(Point(0f, 0f)))
-        tracker.onMove(tracePoint(Point(5f, 5f)))
-        tracker.onEnd()
+        engine.onStart(tracePoint(Point(0f, 0f)))
+        engine.onMove(tracePoint(Point(5f, 5f)))
+        val outcome = engine.onEnd()
 
-        val attempt = tracker.lastAttemptResult!!
-        assertFalse(attempt.isCompleted)
-        assertFalse(tracker.isSequenceCompleted)
-
-        val score = scoreCalculator.scoreStroke(attempt)
-        assertEquals(ScoreLevel.LOW, scoreCalculator.scoreLevel(score))
+        assertEquals(TracingAttemptOutcome.StrokeAttempted(isCompleted = false), outcome)
+        assertFalse(engine.isExerciseCompleted)
     }
 }
