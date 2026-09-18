@@ -8,9 +8,9 @@ import com.bornochitra.core.model.Stroke
 
 /**
  * Vowel stroke geometry. অ (plan.md Step 10.8), আ (Step 11.1), ই (Step 11.2), ঈ (Step 11.3), উ
- * (Step 11.4), ঊ (Step 11.5) and ঋ (Step 11.6) are read off the rendered glyph's centreline; the
- * letters after them still carry placeholder paths that approximate the letter's silhouette, and are
- * corrected one at a time by plan.md Steps 11.7-11.10.
+ * (Step 11.4), ঊ (Step 11.5), ঋ (Step 11.6) and এ (Step 11.7) are read off the rendered glyph's
+ * centreline; the letters after them still carry placeholder paths that approximate the letter's
+ * silhouette, and are corrected one at a time by plan.md Steps 11.8-11.10.
  */
 internal val vowelExercises: List<Exercise> = listOf(
     /**
@@ -619,6 +619,16 @@ internal val vowelExercises: List<Exercise> = listOf(
             ),
         ),
     ),
+    /**
+     * এ has no matra either — what closes its top is the arch of the curl, not a headline. The
+     * letter is written from the inside out: the pen starts in the round terminal at the letter's
+     * centre, spirals up and to the left, arches over the top and turns down into the right-hand
+     * stem. That turn is where the guide splits, so a child can finish each stroke in a single
+     * finger pass. The base is written last, from its cut terminal on the left, down and along the
+     * bottom and up again to the stem's foot. Geometry is read off the centreline of the glyph as
+     * Noto Sans Bengali renders it, the font Android draws the character with above the tracing
+     * canvas.
+     */
     Exercise(
         id = "vowel-e",
         title = "এ",
@@ -627,15 +637,76 @@ internal val vowelExercises: List<Exercise> = listOf(
         order = 8,
         strokes = listOf(
             Stroke(
-                id = "vowel-e-body",
+                id = "vowel-e-curl",
                 points = StrokePoints.polyline(
                     listOf(
-                        Point(25f, 50f),
-                        Point(75f, 50f),
-                        Point(55f, 20f),
-                        Point(30f, 35f),
-                        Point(55f, 80f),
-                        Point(75f, 65f),
+                        Point(54f, 45f),
+                        Point(49f, 43f),
+                        Point(46f, 42f),
+                        Point(44f, 38f),
+                        Point(45f, 35f),
+                        Point(45f, 31f),
+                        Point(47f, 28f),
+                        Point(49f, 24f),
+                        Point(52f, 20f),
+                        Point(55f, 17f),
+                        Point(59f, 14f),
+                        Point(62f, 13f),
+                        Point(66f, 12f),
+                        Point(70f, 12f),
+                        Point(73f, 12f),
+                        Point(77f, 13f),
+                        Point(80f, 16f),
+                        Point(83f, 19f),
+                        Point(83f, 23f),
+                        Point(84f, 26f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "vowel-e-stem",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(84f, 26f),
+                        Point(84f, 34f),
+                        Point(84f, 42f),
+                        Point(84f, 50f),
+                        Point(84f, 58f),
+                        Point(84f, 66f),
+                        Point(84f, 74f),
+                        Point(84f, 81f),
+                        Point(84f, 89f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "vowel-e-base",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(17f, 42f),
+                        Point(16f, 49f),
+                        Point(16f, 54f),
+                        Point(16f, 59f),
+                        Point(17f, 61f),
+                        Point(18f, 64f),
+                        Point(20f, 68f),
+                        Point(22f, 71f),
+                        Point(25f, 73f),
+                        Point(28f, 74f),
+                        Point(32f, 75f),
+                        Point(37f, 76f),
+                        Point(42f, 76f),
+                        Point(47f, 75f),
+                        Point(52f, 75f),
+                        Point(57f, 74f),
+                        Point(62f, 74f),
+                        Point(67f, 74f),
+                        Point(70f, 75f),
+                        Point(72f, 76f),
+                        Point(75f, 77f),
+                        Point(77f, 79f),
+                        Point(80f, 80f),
+                        Point(84f, 82f),
                     ),
                 ),
             ),
