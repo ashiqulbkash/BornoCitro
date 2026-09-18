@@ -7,9 +7,9 @@ import com.bornochitra.core.model.Point
 import com.bornochitra.core.model.Stroke
 
 /**
- * Placeholder vowel stroke geometry. These paths approximate each letter's silhouette so the
- * content pipeline and tracing prototype have real data to work against; plan.md Step 10.8
- * refines অ specifically and Step 23 validates every letter's handwriting accuracy before release.
+ * Vowel stroke geometry. অ (plan.md Step 10.8) and আ (Step 11.1) are read off the rendered glyph's
+ * centreline; the letters after them still carry placeholder paths that approximate the letter's
+ * silhouette, and are corrected one at a time by plan.md Steps 11.2-11.10.
  */
 internal val vowelExercises: List<Exercise> = listOf(
     /**
@@ -72,6 +72,11 @@ internal val vowelExercises: List<Exercise> = listOf(
             ),
         ),
     ),
+    /**
+     * আ is অ plus the আ-কার, so it is written the same way and then given its own vertical: the
+     * bowl, অ's stem with the tail that joins it, the আ-কার, then the matra last. Geometry is read
+     * off the rendered glyph's centreline, like অ's.
+     */
     Exercise(
         id = "vowel-aa",
         title = "আ",
@@ -83,19 +88,49 @@ internal val vowelExercises: List<Exercise> = listOf(
                 id = "vowel-aa-body",
                 points = StrokePoints.polyline(
                     listOf(
-                        Point(65f, 15f),
-                        Point(35f, 20f),
-                        Point(25f, 45f),
-                        Point(45f, 60f),
-                        Point(70f, 55f),
-                        Point(65f, 80f),
-                        Point(40f, 88f),
+                        Point(10f, 35f),
+                        Point(13f, 46f),
+                        Point(18f, 56f),
+                        Point(25f, 64f),
+                        Point(32f, 69f),
+                        Point(39f, 71f),
+                        Point(43f, 71f),
+                        Point(47f, 71f),
+                        Point(52f, 68f),
+                        Point(56f, 63f),
+                        Point(58f, 62f),
+                        Point(59f, 53f),
+                        Point(58f, 46f),
+                        Point(55f, 39f),
+                        Point(51f, 36f),
+                        Point(48f, 34f),
+                        Point(41f, 33f),
+                        Point(38f, 36f),
+                        Point(35f, 40f),
+                        Point(35f, 43f),
+                        Point(35f, 47f),
                     ),
                 ),
             ),
             Stroke(
-                id = "vowel-aa-tail",
-                points = StrokePoints.line(Point(70f, 30f), Point(85f, 85f)),
+                id = "vowel-aa-stem",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(72f, 24f),
+                        Point(72f, 76f),
+                        Point(67f, 74f),
+                        Point(60f, 64f),
+                        Point(58f, 62f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "vowel-aa-kar",
+                points = StrokePoints.line(Point(88f, 24f), Point(88f, 75f)),
+            ),
+            Stroke(
+                id = "vowel-aa-matra",
+                points = StrokePoints.line(Point(6f, 24f), Point(94f, 24f)),
             ),
         ),
     ),

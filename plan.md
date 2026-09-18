@@ -1421,15 +1421,15 @@ These sub-steps keep the numbering of Steps 12–25 unchanged.
 
 ## Prerequisites
 
-Two items are outstanding from the Step 11 work and must be closed before 11.1:
+Two items were outstanding from the Step 11 work. Both are now closed:
 
 ```text
 P1  Verify the whole-letter pass on a physical device
-    (built and unit-tested, never yet seen running)
+    done — আ's four strokes ran through both passes on a
+    device during Step 11.1 and ended on the Result screen
 
 P2  Fix the step label for non-letters
-    tracingStepLabel() says "Whole letter" — wrong for a
-    multi-stroke drawing such as House (see Step 10.10)
+    done — tracingStepLabel() now suits drawings too
 ```
 
 ## Known Defects
@@ -1474,7 +1474,7 @@ One exercise per sub-step. Do not batch them, and verify each before moving on.
 Vowels — `অ` is already done and is the reference implementation. These follow teaching order, which also front-loads the MVP vowel set:
 
 ```text
-11.1   আ    vowel-aa    body is অ's old placeholder + a tail; needs its own geometry
+11.1   আ    vowel-aa    done — 4 strokes (bowl, stem, আ-কার, matra)
 11.2   ই    vowel-i
 11.3   ঈ    vowel-ii    shares ই's body today
 11.4   উ    vowel-u
@@ -1977,7 +1977,8 @@ Tracked here so the catalogue's real state is visible at a glance. Update as Ste
 21 exercises total
 
 অ                  done — 3 strokes (bowl, stem, matra), derived from the glyph
-10 other vowels    placeholder geometry    → Steps 11.1–11.10
+আ                  done — 4 strokes (bowl, stem, আ-কার, matra), derived from the glyph
+9 other vowels     placeholder geometry    → Steps 11.2–11.10
 5 consonants       placeholder geometry    → Steps 11.11–11.15
 5 drawings         unverified              → Steps 11.16–11.17
 ```
