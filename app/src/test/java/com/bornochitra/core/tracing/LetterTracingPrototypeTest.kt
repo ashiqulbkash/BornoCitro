@@ -13,7 +13,7 @@ import org.junit.Test
 
 /**
  * Validates plan.md Steps 10.8-10.10's checklist for real exercise content — the Bengali letters
- * "অ", "আ", "ই", "ঈ" and "উ" (plan.md Steps 11.1-11.4) and "ক", plus the non-letter "Circle"
+ * "অ", "আ", "ই", "ঈ", "উ" and "ঊ" (plan.md Steps 11.1-11.5) and "ক", plus the non-letter "Circle"
  * drawing — by running each through [TracingEngine], the same reusable component
  * [LetterTracingPrototype] drives (plan.md Step 10.11). "ক" has straight/angular strokes
  * structurally different from "অ"'s curved loop, and "Circle" is not a letter at all, so passing
@@ -28,6 +28,7 @@ class LetterTracingPrototypeTest {
     private val vowelI = vowelExercises.first { it.id == "vowel-i" }
     private val vowelIi = vowelExercises.first { it.id == "vowel-ii" }
     private val vowelU = vowelExercises.first { it.id == "vowel-u" }
+    private val vowelUu = vowelExercises.first { it.id == "vowel-uu" }
     private val consonantKo = consonantExercises.first { it.id == "consonant-ko" }
     private val drawingCircle = drawingExercises.first { it.id == "drawing-circle" }
 
@@ -177,6 +178,52 @@ class LetterTracingPrototypeTest {
     @Test
     fun `tracing far from vowel-u's guide path does not complete the exercise`() {
         assertOffPathTraceDoesNotComplete(vowelU)
+    }
+
+    @Test
+    fun `vowel-uu is traced as hook, stem, bowl, arm and matra, in that order`() {
+        assertEquals(
+            listOf("vowel-uu-hook", "vowel-uu-stem", "vowel-uu-bowl", "vowel-uu-arm", "vowel-uu-matra"),
+            vowelUu.strokes.map { it.id },
+        )
+        assertEquals(Point(26f, 7f), vowelUu.strokes.first().points.first())
+    }
+
+    @Test
+    fun `vowel-uu's stem and bowl finish at the same tip`() {
+        // ঊ is built like উ, so the glyph butts the two together at the same blunt tip.
+        val stem = vowelUu.strokes.first { it.id == "vowel-uu-stem" }.points
+        val bowl = vowelUu.strokes.first { it.id == "vowel-uu-bowl" }.points
+        assertEquals(stem.last(), bowl.last())
+    }
+
+    @Test
+    fun `vowel-uu's arm hangs inside the bowl and ends on it`() {
+        // What separates ঊ from উ: a second arm below the matra, running down inside the bowl's own
+        // arm and joining it where the bottom sweep begins.
+        val bowl = vowelUu.strokes.first { it.id == "vowel-uu-bowl" }.points
+        val arm = vowelUu.strokes.first { it.id == "vowel-uu-arm" }.points
+        assertTrue(arm.last() in bowl)
+        assertTrue(arm.first().x > bowl.first().x)
+        assertTrue(arm.maxOf { it.y } < bowl.maxOf { it.y })
+    }
+
+    @Test
+    fun `vowel-uu ends with a whole-letter pass`() {
+        assertEquals(
+            listOf(TracingPhase.STROKE_BY_STROKE, TracingPhase.FULL_LETTER),
+            TracingEngine(vowelUu).phases,
+        )
+    }
+
+    @Test
+    fun `faithfully tracing vowel-uu's real stroke path completes the sequence with a perfect score`() {
+        assertFaithfulTraceIsPerfect(vowelUu)
+    }
+
+    @Test
+    fun `tracing far from vowel-uu's guide path does not complete the exercise`() {
+        assertOffPathTraceDoesNotComplete(vowelUu)
     }
 
     @Test

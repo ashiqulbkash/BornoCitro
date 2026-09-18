@@ -7,10 +7,10 @@ import com.bornochitra.core.model.Point
 import com.bornochitra.core.model.Stroke
 
 /**
- * Vowel stroke geometry. অ (plan.md Step 10.8), আ (Step 11.1), ই (Step 11.2), ঈ (Step 11.3) and উ
- * (Step 11.4) are read off the rendered glyph's centreline; the letters after them still carry
- * placeholder paths that approximate the letter's silhouette, and are corrected one at a time by
- * plan.md Steps 11.5-11.10.
+ * Vowel stroke geometry. অ (plan.md Step 10.8), আ (Step 11.1), ই (Step 11.2), ঈ (Step 11.3), উ
+ * (Step 11.4) and ঊ (Step 11.5) are read off the rendered glyph's centreline; the letters after them
+ * still carry placeholder paths that approximate the letter's silhouette, and are corrected one at a
+ * time by plan.md Steps 11.6-11.10.
  */
 internal val vowelExercises: List<Exercise> = listOf(
     /**
@@ -362,6 +362,14 @@ internal val vowelExercises: List<Exercise> = listOf(
             ),
         ),
     ),
+    /**
+     * ঊ is built the way উ is — the same top hook, the same stem curling right into the u-kar, and
+     * the same bowl sweeping round the bottom to the blunt tip the stem also ends on. What makes it
+     * ঊ is the second arm hanging inside the bowl: it starts below the matra like the bowl's own arm
+     * does, runs down parallel to it and joins the bowl where the bottom sweep begins. Geometry is
+     * read off the centreline of the glyph as Noto Sans Bengali renders it, the font Android draws
+     * the character with above the tracing canvas.
+     */
     Exercise(
         id = "vowel-uu",
         title = "ঊ",
@@ -370,16 +378,96 @@ internal val vowelExercises: List<Exercise> = listOf(
         order = 6,
         strokes = listOf(
             Stroke(
-                id = "vowel-uu-body",
-                points = StrokePoints.line(Point(30f, 20f), Point(30f, 65f)),
-            ),
-            Stroke(
                 id = "vowel-uu-hook",
-                points = StrokePoints.arc(center = Point(45f, 65f), radius = 15f, startDeg = 180f, sweepDeg = 160f, samples = 16),
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(26f, 7f),
+                        Point(28f, 11f),
+                        Point(29f, 16f),
+                        Point(32f, 20f),
+                        Point(36f, 22f),
+                        Point(41f, 23f),
+                        Point(49f, 24f),
+                        Point(57f, 24f),
+                        Point(65f, 24f),
+                        Point(71f, 26f),
+                        Point(74f, 30f),
+                        Point(75f, 38f),
+                    ),
+                ),
             ),
             Stroke(
-                id = "vowel-uu-tail",
-                points = StrokePoints.line(Point(50f, 25f), Point(70f, 15f)),
+                id = "vowel-uu-stem",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(51f, 39f),
+                        Point(51f, 45f),
+                        Point(51f, 51f),
+                        Point(51f, 57f),
+                        Point(52f, 62f),
+                        Point(53f, 66f),
+                        Point(56f, 68f),
+                        Point(59f, 68f),
+                        Point(63f, 67f),
+                        Point(66f, 66f),
+                        Point(69f, 63f),
+                        Point(72f, 60f),
+                        Point(75f, 58f),
+                        Point(77f, 54f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "vowel-uu-bowl",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(17f, 53f),
+                        Point(19f, 58f),
+                        Point(21f, 63f),
+                        Point(24f, 68f),
+                        Point(27f, 73f),
+                        Point(30f, 78f),
+                        Point(34f, 82f),
+                        Point(38f, 85f),
+                        Point(43f, 87f),
+                        Point(47f, 87f),
+                        Point(51f, 89f),
+                        Point(56f, 90f),
+                        Point(61f, 90f),
+                        Point(66f, 90f),
+                        Point(71f, 88f),
+                        Point(75f, 86f),
+                        Point(78f, 82f),
+                        Point(80f, 77f),
+                        Point(80f, 71f),
+                        Point(79f, 65f),
+                        Point(76f, 59f),
+                        Point(77f, 54f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "vowel-uu-arm",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(31f, 52f),
+                        Point(32f, 56f),
+                        Point(33f, 60f),
+                        Point(34f, 63f),
+                        Point(36f, 66f),
+                        Point(37f, 69f),
+                        Point(38f, 72f),
+                        Point(40f, 76f),
+                        Point(42f, 79f),
+                        Point(45f, 82f),
+                        Point(46f, 85f),
+                        Point(47f, 87f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "vowel-uu-matra",
+                points = StrokePoints.line(Point(13f, 38f), Point(87f, 38f)),
             ),
         ),
     ),
