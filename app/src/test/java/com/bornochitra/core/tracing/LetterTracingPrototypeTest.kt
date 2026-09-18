@@ -13,8 +13,8 @@ import org.junit.Test
 
 /**
  * Validates plan.md Steps 10.8-10.10's checklist for real exercise content — the Bengali letters
- * "অ", "আ" and "ই" (plan.md Steps 11.1-11.2) and "ক", plus the non-letter "Circle" drawing — by
- * running each through [TracingEngine], the same reusable component [LetterTracingPrototype]
+ * "অ", "আ", "ই" and "ঈ" (plan.md Steps 11.1-11.3) and "ক", plus the non-letter "Circle" drawing —
+ * by running each through [TracingEngine], the same reusable component [LetterTracingPrototype]
  * drives (plan.md Step 10.11). "ক" has straight/angular strokes structurally different from "অ"'s
  * curved loop, and "Circle" is not a letter at all, so passing them all proves the engine is not
  * accidentally specialized for one shape or for letters specifically. Dotted rendering and live
@@ -26,6 +26,7 @@ class LetterTracingPrototypeTest {
     private val vowelO = vowelExercises.first { it.id == "vowel-o" }
     private val vowelAa = vowelExercises.first { it.id == "vowel-aa" }
     private val vowelI = vowelExercises.first { it.id == "vowel-i" }
+    private val vowelIi = vowelExercises.first { it.id == "vowel-ii" }
     private val consonantKo = consonantExercises.first { it.id == "consonant-ko" }
     private val drawingCircle = drawingExercises.first { it.id == "drawing-circle" }
 
@@ -102,6 +103,44 @@ class LetterTracingPrototypeTest {
     @Test
     fun `tracing far from vowel-i's guide path does not complete the exercise`() {
         assertOffPathTraceDoesNotComplete(vowelI)
+    }
+
+    @Test
+    fun `vowel-ii is traced as hook, body, tail and matra, in that order`() {
+        assertEquals(
+            listOf("vowel-ii-hook", "vowel-ii-body", "vowel-ii-tail", "vowel-ii-matra"),
+            vowelIi.strokes.map { it.id },
+        )
+        assertEquals(Point(26f, 6f), vowelIi.strokes.first().points.first())
+    }
+
+    @Test
+    fun `vowel-ii's tail leaves the body's bottom sweep and ends below it`() {
+        // What separates ঈ from ই: the tail starts where the body's sweep passes, rises to its
+        // apex and then drops into the descender, rather than running out to the bottom right.
+        val body = vowelIi.strokes.first { it.id == "vowel-ii-body" }.points
+        val tail = vowelIi.strokes.first { it.id == "vowel-ii-tail" }.points
+        assertTrue(tail.first() in body)
+        assertTrue(tail.minOf { it.y } < body.maxOf { it.y })
+        assertTrue(tail.last().y > body.maxOf { it.y })
+    }
+
+    @Test
+    fun `vowel-ii ends with a whole-letter pass`() {
+        assertEquals(
+            listOf(TracingPhase.STROKE_BY_STROKE, TracingPhase.FULL_LETTER),
+            TracingEngine(vowelIi).phases,
+        )
+    }
+
+    @Test
+    fun `faithfully tracing vowel-ii's real stroke path completes the sequence with a perfect score`() {
+        assertFaithfulTraceIsPerfect(vowelIi)
+    }
+
+    @Test
+    fun `tracing far from vowel-ii's guide path does not complete the exercise`() {
+        assertOffPathTraceDoesNotComplete(vowelIi)
     }
 
     @Test

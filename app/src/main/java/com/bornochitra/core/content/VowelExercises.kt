@@ -7,9 +7,10 @@ import com.bornochitra.core.model.Point
 import com.bornochitra.core.model.Stroke
 
 /**
- * Vowel stroke geometry. অ (plan.md Step 10.8) and আ (Step 11.1) are read off the rendered glyph's
- * centreline, as is ই (Step 11.2); the letters after them still carry placeholder paths that
- * approximate the letter's silhouette, and are corrected one at a time by plan.md Steps 11.3-11.10.
+ * Vowel stroke geometry. অ (plan.md Step 10.8), আ (Step 11.1), ই (Step 11.2) and ঈ (Step 11.3) are
+ * read off the rendered glyph's centreline; the letters after them still carry placeholder paths
+ * that approximate the letter's silhouette, and are corrected one at a time by plan.md Steps
+ * 11.4-11.10.
  */
 internal val vowelExercises: List<Exercise> = listOf(
     /**
@@ -190,6 +191,14 @@ internal val vowelExercises: List<Exercise> = listOf(
             ),
         ),
     ),
+    /**
+     * ঈ shares ই's hook, bowl and bottom sweep, so it is written the same way up to that point; what
+     * makes it ঈ is the tail, which instead of running out to the bottom right rises back over the
+     * bowl, hooks at its apex and drops into a long descender. Geometry is read off the centreline
+     * of the glyph as Noto Sans Bengali renders it — the font Android draws the character with above
+     * the tracing canvas. Like ই the letter is taller than it is wide, so it is fitted by height and
+     * centred.
+     */
     Exercise(
         id = "vowel-ii",
         title = "ঈ",
@@ -198,21 +207,75 @@ internal val vowelExercises: List<Exercise> = listOf(
         order = 4,
         strokes = listOf(
             Stroke(
+                id = "vowel-ii-hook",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(26f, 6f),
+                        Point(25f, 10f),
+                        Point(26f, 15f),
+                        Point(29f, 20f),
+                        Point(35f, 22f),
+                        Point(43f, 23f),
+                        Point(51f, 23f),
+                        Point(58f, 23f),
+                        Point(63f, 25f),
+                        Point(66f, 29f),
+                        Point(66f, 37f),
+                    ),
+                ),
+            ),
+            Stroke(
                 id = "vowel-ii-body",
                 points = StrokePoints.polyline(
                     listOf(
-                        Point(30f, 20f),
-                        Point(55f, 25f),
-                        Point(35f, 45f),
-                        Point(60f, 55f),
-                        Point(35f, 70f),
-                        Point(60f, 85f),
+                        Point(28f, 61f),
+                        Point(27f, 57f),
+                        Point(27f, 54f),
+                        Point(29f, 51f),
+                        Point(32f, 49f),
+                        Point(36f, 49f),
+                        Point(41f, 49f),
+                        Point(45f, 51f),
+                        Point(48f, 55f),
+                        Point(50f, 59f),
+                        Point(50f, 62f),
+                        Point(51f, 64f),
+                        Point(50f, 67f),
+                        Point(48f, 71f),
+                        Point(45f, 76f),
+                        Point(42f, 79f),
+                        Point(38f, 80f),
+                        Point(34f, 80f),
+                        Point(31f, 78f),
+                        Point(28f, 74f),
                     ),
                 ),
             ),
             Stroke(
                 id = "vowel-ii-tail",
-                points = StrokePoints.line(Point(65f, 30f), Point(85f, 82f)),
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(51f, 64f),
+                        Point(55f, 62f),
+                        Point(58f, 60f),
+                        Point(61f, 57f),
+                        Point(64f, 55f),
+                        Point(67f, 53f),
+                        Point(70f, 53f),
+                        Point(70f, 58f),
+                        Point(69f, 63f),
+                        Point(68f, 68f),
+                        Point(68f, 73f),
+                        Point(68f, 79f),
+                        Point(69f, 84f),
+                        Point(70f, 89f),
+                        Point(71f, 92f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "vowel-ii-matra",
+                points = StrokePoints.line(Point(19f, 37f), Point(81f, 37f)),
             ),
         ),
     ),
