@@ -13,18 +13,19 @@ import org.junit.Test
 
 /**
  * Validates plan.md Steps 10.8-10.10's checklist for real exercise content — the Bengali letters
- * "অ", "আ" (plan.md Step 11.1) and "ক", plus the non-letter "Circle" drawing — by running each
- * through [TracingEngine], the same reusable component [LetterTracingPrototype] drives (plan.md
- * Step 10.11). "ক" has straight/angular strokes structurally different from "অ"'s curved loop, and
- * "Circle" is not a letter at all, so passing them all proves the engine is not accidentally
- * specialized for one shape or for letters specifically. Dotted rendering and live finger
- * interaction can only be checked visually/manually via [LetterTracingPrototype]'s previews and a
- * physical device — see the post-task brief.
+ * "অ", "আ" and "ই" (plan.md Steps 11.1-11.2) and "ক", plus the non-letter "Circle" drawing — by
+ * running each through [TracingEngine], the same reusable component [LetterTracingPrototype]
+ * drives (plan.md Step 10.11). "ক" has straight/angular strokes structurally different from "অ"'s
+ * curved loop, and "Circle" is not a letter at all, so passing them all proves the engine is not
+ * accidentally specialized for one shape or for letters specifically. Dotted rendering and live
+ * finger interaction can only be checked visually/manually via [LetterTracingPrototype]'s previews
+ * and a physical device — see the post-task brief.
  */
 class LetterTracingPrototypeTest {
 
     private val vowelO = vowelExercises.first { it.id == "vowel-o" }
     private val vowelAa = vowelExercises.first { it.id == "vowel-aa" }
+    private val vowelI = vowelExercises.first { it.id == "vowel-i" }
     private val consonantKo = consonantExercises.first { it.id == "consonant-ko" }
     private val drawingCircle = drawingExercises.first { it.id == "drawing-circle" }
 
@@ -74,6 +75,33 @@ class LetterTracingPrototypeTest {
     @Test
     fun `tracing far from vowel-aa's guide path does not complete the exercise`() {
         assertOffPathTraceDoesNotComplete(vowelAa)
+    }
+
+    @Test
+    fun `vowel-i is traced as hook, body and matra, in that order`() {
+        assertEquals(
+            listOf("vowel-i-hook", "vowel-i-body", "vowel-i-matra"),
+            vowelI.strokes.map { it.id },
+        )
+        assertEquals(Point(23f, 6f), vowelI.strokes.first().points.first())
+    }
+
+    @Test
+    fun `vowel-i ends with a whole-letter pass`() {
+        assertEquals(
+            listOf(TracingPhase.STROKE_BY_STROKE, TracingPhase.FULL_LETTER),
+            TracingEngine(vowelI).phases,
+        )
+    }
+
+    @Test
+    fun `faithfully tracing vowel-i's real stroke path completes the sequence with a perfect score`() {
+        assertFaithfulTraceIsPerfect(vowelI)
+    }
+
+    @Test
+    fun `tracing far from vowel-i's guide path does not complete the exercise`() {
+        assertOffPathTraceDoesNotComplete(vowelI)
     }
 
     @Test

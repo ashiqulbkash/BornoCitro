@@ -8,8 +8,8 @@ import com.bornochitra.core.model.Stroke
 
 /**
  * Vowel stroke geometry. অ (plan.md Step 10.8) and আ (Step 11.1) are read off the rendered glyph's
- * centreline; the letters after them still carry placeholder paths that approximate the letter's
- * silhouette, and are corrected one at a time by plan.md Steps 11.2-11.10.
+ * centreline, as is ই (Step 11.2); the letters after them still carry placeholder paths that
+ * approximate the letter's silhouette, and are corrected one at a time by plan.md Steps 11.3-11.10.
  */
 internal val vowelExercises: List<Exercise> = listOf(
     /**
@@ -134,6 +134,12 @@ internal val vowelExercises: List<Exercise> = listOf(
             ),
         ),
     ),
+    /**
+     * ই is the top hook, then the body below the matra — a small curl that opens into the bowl and
+     * runs out into the long diagonal tail — and the matra last. Geometry is read off the rendered
+     * glyph's centreline. Unlike অ and আ the letter is taller than it is wide, so it is fitted by
+     * height and centred.
+     */
     Exercise(
         id = "vowel-i",
         title = "ই",
@@ -142,21 +148,45 @@ internal val vowelExercises: List<Exercise> = listOf(
         order = 3,
         strokes = listOf(
             Stroke(
-                id = "vowel-i-body",
+                id = "vowel-i-hook",
                 points = StrokePoints.polyline(
                     listOf(
-                        Point(30f, 20f),
-                        Point(55f, 25f),
-                        Point(35f, 45f),
-                        Point(60f, 55f),
-                        Point(35f, 70f),
-                        Point(60f, 85f),
+                        Point(23f, 6f),
+                        Point(24f, 12f),
+                        Point(29f, 16f),
+                        Point(35f, 17f),
+                        Point(55f, 18f),
+                        Point(61f, 21f),
+                        Point(65f, 25f),
+                        Point(66f, 33f),
                     ),
                 ),
             ),
             Stroke(
-                id = "vowel-i-dot",
-                points = StrokePoints.arc(center = Point(75f, 20f), radius = 4f, startDeg = 0f, sweepDeg = 360f, samples = 12),
+                id = "vowel-i-body",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(41f, 52f),
+                        Point(43f, 46f),
+                        Point(49f, 41f),
+                        Point(59f, 42f),
+                        Point(65f, 45f),
+                        Point(67f, 51f),
+                        Point(67f, 56f),
+                        Point(66f, 61f),
+                        Point(62f, 65f),
+                        Point(57f, 68f),
+                        Point(52f, 69f),
+                        Point(48f, 70f),
+                        Point(38f, 69f),
+                        Point(49f, 77f),
+                        Point(77f, 94f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "vowel-i-matra",
+                points = StrokePoints.line(Point(35f, 34f), Point(72f, 34f)),
             ),
         ),
     ),
