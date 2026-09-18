@@ -12,6 +12,7 @@
 * Do not make architectural changes without a clear reason.
 * Keep changes focused and incremental.
 * Never assume an implementation is correct without inspecting the relevant code.
+* When a requirement is ambiguous, inspect the existing code and `plan.md` first; ask for clarification only when implementation cannot reasonably proceed.
 
 ## 2. Architecture
 
@@ -125,7 +126,7 @@
 * Use appropriate dependency scopes.
 * Do not add a dependency solely to solve a simple problem that can be handled with existing tools.
 
-## 10. Testing
+## 9. Testing
 
 * Add or update tests when behavior changes.
 * Prefer testing behavior rather than implementation details.
@@ -137,7 +138,7 @@
 * Do not mock unnecessarily when a simpler test approach is available.
 * Follow the existing project's testing framework and patterns.
 
-## 11. Build and Verification
+## 10. Build and Verification
 
 After implementing a change:
 
@@ -152,15 +153,21 @@ Do not claim that a change works unless it has been verified or can be directly 
 
 If verification cannot be performed, clearly state what could not be verified.
 
-Running the app on an emulator/device is not required to consider a step, action, or feature complete. Verification is based on code review, unit tests, and builds as described above.
+After completing a step, action, or task:
 
-## 12. Git and Existing Changes
+* If the changes include UI (Composables, screens, navigation, UI state rendering), run the app and check the affected screen/UI to confirm it works as expected.
+* If the changes include the data layer (repositories, data sources, DTOs/entities, database, network, mappers), run the relevant unit tests to confirm behavior.
+* If a change touches both UI and data layer, do both.
+* If running the app is not possible in the current environment, clearly state that UI verification could not be performed and why.
+
+## 11. Git and Existing Changes
 
 * Do run any git commit
 * After implementing a step, action, or feature, add any newly created files to git (`git add`) so they are tracked.
 * Running unit tests affecting the changed file(s) is mandatory after implementing a step, action, or feature; do not skip this before considering the change complete.
+* Keep commits small and focused; avoid mixing a feature with unrelated refactoring, formatting, or dependency upgrades in the same commit.
 
-## 13. Project Plan
+## 12. Project Plan
 
 * `plan.md` contains the requirements and execution plan for the current task/project.
 * Read `plan.md` before implementing a planned task.
@@ -170,7 +177,7 @@ Running the app on an emulator/device is not required to consider a step, action
 * If the plan conflicts with the existing architecture, inspect the codebase and resolve the conflict before making major architectural changes.
 * Do not implement features that are not required by the plan unless explicitly requested.
 
-## 14. Implementation Approach
+## 13. Implementation Approach
 
 For every non-trivial task:
 
@@ -179,13 +186,13 @@ For every non-trivial task:
 3. Inspect the existing implementation.
 4. Search for similar patterns already used in the project.
 5. Decide on the smallest appropriate change.
-6. Write the pre-task brief required by Section 15.
+6. Write the pre-task brief required by Section 14.
 7. Implement incrementally.
 8. Test and verify the changes.
 9. Review the final implementation for unnecessary complexity.
-10. Write the post-task brief required by Section 15.
+10. Write the post-task brief required by Section 14.
 
-## 15. Task Reporting
+## 14. Task Reporting
 
 Every task (planned step, bug fix, or feature) must be reported in two messages: one before starting, one after finishing.
 
@@ -201,7 +208,7 @@ Every task (planned step, bug fix, or feature) must be reported in two messages:
 
 * Keep both briefs short and factual — no filler, no restating unrelated context.
 * Do not skip either brief, even for small changes.
-* Do not merge the two briefs into one message; the pre-task brief must be posted before implementation begins, and the post-task brief only after verification (Section 11) is complete.
+* Do not merge the two briefs into one message; the pre-task brief must be posted before implementation begins, and the post-task brief only after verification (Section 10) is complete.
 
 ## Most Important Principles
 
@@ -215,5 +222,6 @@ Every task (planned step, bug fix, or feature) must be reported in two messages:
 8. Make the smallest change that correctly solves the requirement.
 9. Do not over-engineer.
 10. Keep the codebase simple, consistent, and maintainable.
-11. Post a pre-task brief before starting and a post-task brief after finishing every task (Section 15).
+11. Post a pre-task brief before starting and a post-task brief after finishing every task (Section 14).
+12. After any action, run the app for UI changes and run unit tests for data-layer changes (Section 10).
 

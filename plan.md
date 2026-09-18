@@ -10,56 +10,15 @@
 
 You are implementing this Android application according to this `plan.md`.
 
-## IMPORTANT EXECUTION RULES
+General development conventions — architecture, code quality, testing, build/verification, git, and task-reporting requirements — are defined in `CLAUDE.md` and apply to every step below. This section adds only the rules specific to executing this plan.
+
+## PLAN EXECUTION RULES
 
 1. Read the entire `plan.md` before making changes.
-2. Do **NOT** implement the entire application in one step.
-3. Implement exactly **one numbered step at a time**.
-4. Before starting a step:
-   - Inspect the existing project structure.
-   - Identify existing implementations that can be reused.
-   - Check Android, Kotlin, Compose, Gradle, and dependency versions.
-   - Review the relevant architecture requirements in this plan.
-5. After implementing a step:
-   - Run relevant unit tests.
-   - Run lint/static analysis where available.
-   - Build the affected module/project.
-   - Fix compilation and test failures.
-6. Do not move to the next step automatically unless explicitly instructed.
-7. Do not make unrelated refactoring changes.
-8. Do not introduce a new library unless necessary and justified.
-9. Follow existing project conventions when they do not conflict with this plan.
-10. Keep business logic outside Composables.
-11. Keep Room/database access outside ViewModels.
-12. Keep tracing logic independent from Compose UI.
-13. Follow MVI:
-
-```text
-UI
- ↓
-Event
- ↓
-ViewModel
- ↓
-Domain / Use Case / Repository
- ↓
-State
- ↓
-UI
-```
-
-14. Use Hilt for dependency injection.
-15. Use Room for persisted learning/progress data.
-16. Use Kotlin Coroutines and Flow for asynchronous/reactive operations.
-17. Prefer immutable UI state.
-18. Do not use placeholder implementations when implementing a real feature unless the current step explicitly requires a prototype.
-19. When a requirement is ambiguous, inspect the existing code and this plan first. Ask for clarification only when implementation cannot reasonably proceed.
-20. Before finishing a step, provide:
-   - What was implemented
-   - Files created/modified
-   - Tests executed
-   - Build/test result
-   - Remaining concerns
+2. Implement exactly **one numbered step at a time**. Do not implement multiple steps unless explicitly instructed.
+3. Do not move to the next step automatically unless explicitly instructed.
+4. Do not use placeholder implementations for a real feature unless the current step explicitly requires a prototype.
+5. Keep the tracing engine independent from ViewModel, Room, Hilt, and Compose UI implementation details (see Section 4).
 
 ## STEP COMPLETION
 
@@ -1068,6 +1027,10 @@ The tracing engine should produce measurement data.
 
 The score calculator should transform that data into a learning score.
 
+The tracing engine is a specialized, performance-sensitive subsystem — do not force it into the standard screen architecture used by other features.
+
+Tracing behavior must ultimately be validated on a physical Android device; an emulator alone is insufficient for validating touch feel.
+
 ---
 
 # 25. Step 10.1 — Tracing Domain Models
@@ -1894,325 +1857,19 @@ Only after this loop feels good should the app expand to all vowels, consonants,
 
 # 52. Feature Completion Definition
 
-A feature is complete only when applicable items are satisfied.
+A feature is complete only when it satisfies:
 
-## Architecture
-
-- [ ] MVI state/events implemented
-- [ ] ViewModel owns screen state
-- [ ] Business logic outside Composables
-- [ ] Repository abstraction where data access exists
-- [ ] Hilt dependencies configured
-- [ ] No unnecessary abstractions
-
-## UI
-
-- [ ] Compose implementation complete
-- [ ] Loading state handled where needed
-- [ ] Empty state handled where needed
-- [ ] Error state handled where needed
-- [ ] Child-friendly UX
-- [ ] Accessibility considered
-
-## Data
-
-- [ ] Domain model defined
-- [ ] Repository implemented where needed
-- [ ] DAO implemented where persistence is needed
-- [ ] Database operations asynchronous
-
-## Testing
-
-- [ ] Unit tests for business logic
-- [ ] ViewModel tests where applicable
-- [ ] Repository/database tests where applicable
-- [ ] UI test for critical flow where applicable
-
-## Quality
-
-- [ ] No unnecessary duplication
-- [ ] No hardcoded business rules in UI
-- [ ] No main-thread blocking operations
-- [ ] No unrelated refactoring
-- [ ] Build passes
-- [ ] Tests pass
+- The architecture, code-quality, testing, and build/verification rules in `CLAUDE.md`.
+- This plan's product-specific criteria:
+  - [ ] Child-friendly UX
+  - [ ] Accessibility considered
+  - [ ] Its step's Definition of Done (where specified)
 
 ---
 
-# 53. Development Rules for Claude Code
+# 53. Git / Commit Strategy
 
-When implementing this project, Claude Code must follow these rules.
-
-## Rule 1 — One Step at a Time
-
-Never implement multiple numbered steps unless explicitly requested.
-
-Example:
-
-```text
-Implement Step 1.
-```
-
-means only Step 1.
-
-After completion:
-
-```text
-STOP.
-```
-
-## Rule 2 — Inspect Before Editing
-
-Before changing code:
-
-```text
-Inspect project structure
-        ↓
-Inspect Gradle configuration
-        ↓
-Inspect existing architecture
-        ↓
-Inspect relevant files
-        ↓
-Plan implementation
-        ↓
-Modify code
-```
-
-Do not assume a file or class exists.
-
-## Rule 3 — Reuse Existing Code
-
-If the project already has:
-
-- Theme
-- Navigation
-- DI
-- Database
-- Common UI
-- Utilities
-
-reuse them instead of creating duplicates.
-
-## Rule 4 — Avoid Premature Abstraction
-
-Do not create:
-
-```text
-BaseViewModel
-BaseRepository
-BaseUseCase
-BaseScreen
-GenericState
-GenericNavigator
-```
-
-unless there is a demonstrated need.
-
-Prefer concrete, readable implementations.
-
-## Rule 5 — Do Not Over-Engineer
-
-The architecture should support the application, not become the application.
-
-Use a layer when it provides a meaningful responsibility.
-
-## Rule 6 — No Business Logic in Compose
-
-Bad:
-
-```kotlin
-@Composable
-fun ProgressScreen() {
-    // calculate mastery here
-}
-```
-
-Preferred:
-
-```text
-Room
- ↓
-Repository
- ↓
-Use Case
- ↓
-ViewModel
- ↓
-ProgressState
- ↓
-Compose
-```
-
-## Rule 7 — No Database Access in UI
-
-Composables must never directly call:
-
-```text
-DAO
-RoomDatabase
-Repository
-```
-
-They emit events.
-
-## Rule 8 — No Database Writes During Tracing
-
-Never perform:
-
-```text
-touch
- ↓
-Room insert
-```
-
-Instead:
-
-```text
-touch
- ↓
-in-memory tracing
- ↓
-completion
- ↓
-save result
-```
-
-## Rule 9 — Tracing Is Special
-
-Do not force the tracing engine into the normal screen architecture.
-
-The tracing engine should remain a specialized, performance-sensitive component.
-
-## Rule 10 — Validate on Real Device
-
-Tracing behavior must be tested on a physical Android device.
-
-An emulator alone is insufficient for validating touch feel.
-
----
-
-# 54. Recommended Claude Code Prompt Sequence
-
-Use the following interaction pattern.
-
-## First Prompt
-
-```text
-Read plan.md completely.
-
-Do not implement anything yet.
-
-Analyze the existing Android project and compare it against the plan.
-
-Tell me:
-
-1. Current project architecture
-2. Existing dependencies
-3. Existing Compose setup
-4. Existing Hilt setup
-5. Existing Room setup
-6. Existing navigation
-7. Existing testing setup
-8. What needs to be added
-9. Any conflicts between the existing project and plan.md
-
-Do not modify files.
-Wait for my next instruction.
-```
-
-## Bootstrap
-
-```text
-Implement Step 1 from plan.md.
-
-Follow all Agent Execution Instructions.
-
-Only implement Step 1.
-
-Inspect existing code before modifying anything.
-
-Do not implement future features.
-
-Run tests and build after implementation.
-
-Report:
-- Files changed
-- What was implemented
-- Tests executed
-- Build result
-- Remaining concerns
-
-Then STOP.
-```
-
-## Design System
-
-```text
-Implement Step 2 from plan.md.
-
-Only implement Step 2.
-
-Do not implement future features.
-
-Run relevant tests/build.
-
-Then STOP and report the result.
-```
-
-## Tracing
-
-When reaching tracing, use smaller prompts.
-
-```text
-Implement Step 10.1 from plan.md.
-
-Only implement the tracing domain models.
-
-Do not implement rendering, pointer handling, scoring, or PracticeScreen.
-
-Run tests.
-
-Then STOP.
-```
-
-Then:
-
-```text
-Implement Step 10.2 from plan.md.
-
-Only implement the dotted path renderer.
-
-Do not implement scoring or database integration.
-
-Run tests/build.
-
-Then STOP.
-```
-
-Continue with:
-
-```text
-Step 10.3
-Step 10.4
-Step 10.5
-Step 10.6
-Step 10.7
-Step 10.8
-Step 10.9
-Step 10.10
-Step 10.11
-```
-
-This decomposition is intentional because the tracing engine is the highest-risk technical component.
-
----
-
-# 55. Git / Commit Strategy
-
-Keep commits small and focused.
-
-Examples:
+Follow the git rules in `CLAUDE.md` (Section 11). Suggested commit messages per phase:
 
 ```text
 feat: bootstrap android project
@@ -2233,17 +1890,9 @@ feat: add progress tracking
 feat: add drawing exercises
 ```
 
-Avoid mixing:
-
-```text
-feature + unrelated refactor + formatting + dependency upgrade
-```
-
-in one commit.
-
 ---
 
-# 56. Final Architecture
+# 54. Final Architecture
 
 ```text
                          ┌───────────────────────┐
@@ -2299,7 +1948,7 @@ Static Exercise Content
 
 ---
 
-# 57. Final Product Flow
+# 55. Final Product Flow
 
 The finished application should feel simple to a child:
 
@@ -2365,7 +2014,7 @@ Animal
 
 ---
 
-# 58. Most Important Principle
+# 56. Most Important Principle
 
 The application should not be considered successful merely because:
 
