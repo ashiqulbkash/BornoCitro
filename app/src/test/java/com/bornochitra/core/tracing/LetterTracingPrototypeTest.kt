@@ -13,12 +13,12 @@ import org.junit.Test
 
 /**
  * Validates plan.md Steps 10.8-10.10's checklist for real exercise content — the Bengali letters
- * every vowel (plan.md Steps 11.1-11.10) and "ক", plus the non-letter "Circle"
- * drawing — by running each through [TracingEngine], the same reusable component
- * [LetterTracingPrototype] drives (plan.md Step 10.11). "ক" has straight/angular strokes
- * structurally different from "অ"'s curved loop, and "Circle" is not a letter at all, so passing
- * them all proves the engine is not accidentally specialized for one shape or for letters
- * specifically. Dotted rendering and live finger interaction can only be checked visually/manually
+ * every vowel (plan.md Steps 11.1-11.10) and "ক" (plan.md Step 11.11), plus the non-letter
+ * "Circle" drawing — by running each through [TracingEngine], the same reusable component
+ * [LetterTracingPrototype] drives (plan.md Step 10.11). "ক" is structurally different from "অ" — a
+ * knot that reverses at a sharp point, a straight stem and a curled lobe rather than a closed loop —
+ * and "Circle" is not a letter at all, so passing them all proves the engine is not accidentally
+ * specialized for one shape or for letters specifically. Dotted rendering and live finger interaction can only be checked visually/manually
  * via [LetterTracingPrototype]'s previews and a physical device — see the post-task brief.
  */
 class LetterTracingPrototypeTest {
@@ -494,15 +494,54 @@ class LetterTracingPrototypeTest {
     }
 
     @Test
-    fun `consonant-ko has exactly one stroke starting at its documented point`() {
-        assertEquals(1, consonantKo.strokes.size)
-        assertEquals(Point(30f, 15f), consonantKo.strokes.single().points.first())
+    fun `consonant-ko is traced as knot, stem, lobe and matra, in that order`() {
+        assertEquals(
+            listOf("consonant-ko-knot", "consonant-ko-stem", "consonant-ko-lobe", "consonant-ko-matra"),
+            consonantKo.strokes.map { it.id },
+        )
+        assertEquals(Point(56f, 32f), consonantKo.strokes.first().points.first())
+    }
+
+    @Test
+    fun `consonant-ko's knot doubles back at the letter's blunt left point`() {
+        // The knot is one movement: down-left from the stem to the point, then down-right to the
+        // foot. Splitting it in two would teach a pen lift the letter does not have.
+        val knot = consonantKo.strokes.first().points
+        val leftmost = knot.minByOrNull { it.x }!!
+        assertTrue(knot.first().x > leftmost.x && knot.last().x > leftmost.x)
+        assertTrue(knot.first().y < leftmost.y && knot.last().y > leftmost.y)
+    }
+
+    @Test
+    fun `consonant-ko's matra is written last and spans the whole letter`() {
+        val matra = consonantKo.strokes.last()
+        assertEquals("consonant-ko-matra", matra.id)
+        val body = consonantKo.strokes.dropLast(1).flatMap { it.points }
+        assertEquals(matra.points.map { it.y }.distinct(), listOf(body.minOf { it.y }))
+        assertTrue(matra.points.first().x < body.minOf { it.x })
+        assertTrue(matra.points.last().x > body.maxOf { it.x })
+    }
+
+    @Test
+    fun `consonant-ko shows every stroke's guide at once`() {
+        assertEquals(consonantKo.strokes, TracingEngine(consonantKo).guideStrokes)
+    }
+
+    @Test
+    fun `consonant-ko fits the canvas despite being wider than it is tall`() {
+        // Fitting ক by height the way the tall vowels are fitted would run its matra past x=100.
+        val points = consonantKo.strokes.flatMap { it.points }
+        assertTrue(points.all { it.x in 0f..100f && it.y in 0f..100f })
+        val width = points.maxOf { it.x } - points.minOf { it.x }
+        val height = points.maxOf { it.y } - points.minOf { it.y }
+        assertTrue("expected a wide letter, was ${width}x$height", width > height)
     }
 
     @Test
     fun `faithfully tracing consonant-ko's real stroke path completes the sequence with a perfect score`() {
-        // consonant-ko is built from straight diagonal/vertical segments, unlike vowel-o's curved
-        // loop, so this proves the engine is not accidentally specialized for one stroke shape.
+        // ক pairs a sharp reversal at the left point and a straight stem with a curled lobe, a
+        // different structure from vowel-o's loop, so this proves the engine is not accidentally
+        // specialized for one stroke shape.
         assertFaithfulTraceIsPerfect(consonantKo)
     }
 

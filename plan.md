@@ -1282,7 +1282,7 @@ Use `ক` because it provides a different stroke structure.
 
 Validate that the tracing engine is not accidentally specialized for `অ`.
 
-While `ক` still has placeholder single-stroke geometry it also proves the single-stroke case: its one guide is already the whole letter. Once `ক` is given its real multi-stroke geometry in Step 11.11 all of its guides are shown together, with no engine change.
+`ক` now carries its real four-stroke geometry (Step 11.11) and all of its guides are shown together, with no engine change. The single-stroke case is still covered — by the `Circle` drawing in Step 10.10, whose one guide is already the whole shape.
 
 ## Deliverable
 
@@ -1479,7 +1479,7 @@ That checkpoint has passed: Steps 11.6–11.10 ran without needing it, so every 
 Consonants:
 
 ```text
-11.11  ক    consonant-ko
+11.11  ক    consonant-ko    done — 4 strokes (knot, stem, lobe, matra)
 11.12  খ    consonant-kho
 11.13  গ    consonant-go
 11.14  ঘ    consonant-gho
@@ -1975,7 +1975,10 @@ Tracked here so the catalogue's real state is visible at a glance. Update as Ste
 ঔ                  done — 3 strokes (curl, sweep, kar), derived from its own glyph,
                    not shared with ও
 11 vowels          all done — no vowel carries placeholder geometry
-5 consonants       placeholder geometry    → Steps 11.11–11.15
+ক                  done — 4 strokes (knot, stem, lobe, matra), derived from the glyph; the first
+                   letter wide enough that its ink is fitted by width and centred vertically
+                   rather than fitted by height
+4 consonants       placeholder geometry    → Steps 11.12–11.15
 5 drawings         unverified              → Steps 11.16–11.17
 ```
 

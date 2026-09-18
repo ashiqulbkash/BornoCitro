@@ -93,7 +93,8 @@ private fun LetterTracingPrototypeVowelOPreview() {
     }
 }
 
-/** plan.md Step 10.9 — ক has straight/angular strokes, structurally different from অ's curved loop. */
+/** plan.md Steps 10.9 and 11.11 — ক's knot reverses at a sharp point and its lobe curls into a
+ * ball terminal, a different structure from অ's closed loop. */
 @Preview(showBackground = true, name = "letter tracing prototype — ক")
 @Composable
 private fun LetterTracingPrototypeConsonantKoPreview() {
