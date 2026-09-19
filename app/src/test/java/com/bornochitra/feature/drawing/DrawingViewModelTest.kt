@@ -67,6 +67,7 @@ class DrawingViewModelTest {
         override fun observeExerciseProgress(exerciseIds: List<String>): Flow<Map<String, ExerciseProgress>> =
             flowOf(progressByExerciseId.filterKeys { it in exerciseIds })
         override suspend fun savePracticeResult(result: com.bornochitra.core.model.PracticeResult): Long = 0L
+        override suspend fun getPracticeResult(sessionId: Long): com.bornochitra.core.model.PracticeResult? = null
     }
 
     @Test

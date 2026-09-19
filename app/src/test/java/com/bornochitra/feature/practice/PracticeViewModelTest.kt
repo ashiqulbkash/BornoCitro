@@ -69,6 +69,8 @@ class PracticeViewModelTest {
             savedResults += result
             return nextSessionId
         }
+
+        override suspend fun getPracticeResult(sessionId: Long): PracticeResult? = savedResults.firstOrNull()
     }
 
     private fun viewModel(

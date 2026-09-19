@@ -92,10 +92,15 @@ fun BcNavHost(
         composable(
             route = BcDestination.Result.route,
             arguments = listOf(navArgument(BcDestination.Result.ARG_SESSION_ID) { type = NavType.StringType }),
-        ) { backStackEntry ->
-            val sessionId = backStackEntry.arguments?.getString(BcDestination.Result.ARG_SESSION_ID).orEmpty()
+        ) {
             ResultScreen(
-                sessionId = sessionId,
+                // Practising again or moving on replaces the finished attempt, so Back from the new
+                // attempt returns to the exercise list instead of an already-scored result.
+                onPracticeClick = { exerciseId ->
+                    navController.navigate(BcDestination.Practice.createRoute(exerciseId)) {
+                        popUpTo(BcDestination.Practice.route) { inclusive = true }
+                    }
+                },
                 onProgressClick = {
                     navController.navigate(BcDestination.Progress.route) {
                         popUpTo(BcDestination.Home.route)

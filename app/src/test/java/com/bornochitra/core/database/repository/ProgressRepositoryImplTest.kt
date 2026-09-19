@@ -25,6 +25,9 @@ private class FakePracticeSessionDao(private var progress: ExerciseProgressEntit
         return insertedSessions.size.toLong()
     }
 
+    override suspend fun getSession(sessionId: Long): PracticeSessionEntity? =
+        insertedSessions.getOrNull(sessionId.toInt() - 1)?.copy(id = sessionId)
+
     override suspend fun getProgress(exerciseId: String): ExerciseProgressEntity? = progress
 
     override suspend fun upsertProgress(progress: ExerciseProgressEntity) {
@@ -204,5 +207,28 @@ class ProgressRepositoryImplTest {
         )
 
         assertEquals(1L, sessionId)
+    }
+
+    @Test
+    fun `a saved practice result can be read back by its session id`() = runTest {
+        val repository = repositoryWith(rows = emptyList(), practiceSessionDao = FakePracticeSessionDao(progress = null))
+        val saved = PracticeResult(
+            exerciseId = "vowel-o",
+            score = 92f,
+            scoreLevel = ScoreLevel.PERFECT,
+            completed = true,
+            durationMs = 5_000L,
+            completedAtMs = 1_000L,
+        )
+        val sessionId = repository.savePracticeResult(saved)
+
+        assertEquals(saved, repository.getPracticeResult(sessionId))
+    }
+
+    @Test
+    fun `an unknown session id has no practice result`() = runTest {
+        val repository = repositoryWith(rows = emptyList(), practiceSessionDao = FakePracticeSessionDao(progress = null))
+
+        assertNull(repository.getPracticeResult(404L))
     }
 }

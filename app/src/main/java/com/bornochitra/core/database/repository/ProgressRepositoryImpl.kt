@@ -7,6 +7,7 @@ import com.bornochitra.core.database.entity.PracticeSessionEntity
 import com.bornochitra.core.model.ExerciseProgress
 import com.bornochitra.core.model.LearningProgress
 import com.bornochitra.core.model.PracticeResult
+import com.bornochitra.core.model.ScoreLevel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -52,7 +53,19 @@ class ProgressRepositoryImpl @Inject constructor(
             progress = updatedProgress,
         )
     }
+
+    override suspend fun getPracticeResult(sessionId: Long): PracticeResult? =
+        practiceSessionDao.getSession(sessionId)?.toPracticeResult()
 }
+
+private fun PracticeSessionEntity.toPracticeResult(): PracticeResult = PracticeResult(
+    exerciseId = exerciseId,
+    score = score,
+    scoreLevel = ScoreLevel.valueOf(scoreLevel),
+    completed = completed,
+    durationMs = duration,
+    completedAtMs = createdAt,
+)
 
 private fun ExerciseProgressEntity.toExerciseProgress(): ExerciseProgress = ExerciseProgress(
     exerciseId = exerciseId,

@@ -13,4 +13,7 @@ interface ProgressRepository {
 
     /** Persists [result] and updates its exercise's aggregate progress, returning the new session id. */
     suspend fun savePracticeResult(result: PracticeResult): Long
+
+    /** The attempt saved under [sessionId], or null if no such session was recorded. */
+    suspend fun getPracticeResult(sessionId: Long): PracticeResult?
 }
