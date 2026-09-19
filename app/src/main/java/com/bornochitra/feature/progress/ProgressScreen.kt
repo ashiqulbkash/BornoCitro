@@ -1,6 +1,7 @@
 package com.bornochitra.feature.progress
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,6 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bornochitra.core.model.ExerciseType
+import com.bornochitra.core.model.LearningState
 import com.bornochitra.core.ui.components.BcEmptyState
 import com.bornochitra.core.ui.components.BcLabeledProgress
 import com.bornochitra.core.ui.components.BcTopAppBar
@@ -84,7 +86,11 @@ private fun ProgressContent(
                     }
 
                     items(category.exercises, key = { it.id }) { exercise ->
-                        ExerciseStarsRow(title = exercise.title, stars = exercise.stars)
+                        ExerciseStarsRow(
+                            title = exercise.title,
+                            stars = exercise.stars,
+                            stateText = exercise.state.label(),
+                        )
                     }
                 }
             }
@@ -96,6 +102,7 @@ private fun ProgressContent(
 private fun ExerciseStarsRow(
     title: String,
     stars: Int,
+    stateText: String?,
     modifier: Modifier = Modifier,
 ) {
     Row(
@@ -103,7 +110,18 @@ private fun ExerciseStarsRow(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Text(text = title, style = MaterialTheme.typography.titleMedium)
+        Column {
+            Text(text = title, style = MaterialTheme.typography.titleMedium)
+            // Stars rate how well the tracing went; this says how far the exercise has got,
+            // which is what mastery is about (plan.md section 41).
+            if (stateText != null) {
+                Text(
+                    text = stateText,
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        }
         Row(
             // The star glyphs read as punctuation to a screen reader, so say the rating instead.
             modifier = Modifier.clearAndSetSemantics {
@@ -125,6 +143,14 @@ private fun ExerciseStarsRow(
     }
 }
 
+private fun LearningState.label(): String? = when (this) {
+    LearningState.NOT_STARTED -> null
+    LearningState.STARTED -> "Started"
+    LearningState.PRACTICING -> "Practicing"
+    LearningState.COMPLETED -> "Completed"
+    LearningState.MASTERED -> "Mastered"
+}
+
 private fun ExerciseType.label(): String = when (this) {
     ExerciseType.VOWEL -> "স্বরবর্ণ"
     ExerciseType.CONSONANT -> "ব্যঞ্জনবর্ণ"
@@ -138,21 +164,25 @@ private val previewState = ProgressState(
             type = ExerciseType.VOWEL,
             progress = 0.75f,
             exercises = listOf(
-                ProgressExerciseItem(id = "vowel-o", title = "অ", stars = 3),
-                ProgressExerciseItem(id = "vowel-aa", title = "আ", stars = 2),
-                ProgressExerciseItem(id = "vowel-i", title = "ই", stars = 1),
-                ProgressExerciseItem(id = "vowel-ii", title = "ঈ", stars = 0),
+                ProgressExerciseItem(id = "vowel-o", title = "অ", stars = 3, state = LearningState.MASTERED),
+                ProgressExerciseItem(id = "vowel-aa", title = "আ", stars = 2, state = LearningState.COMPLETED),
+                ProgressExerciseItem(id = "vowel-i", title = "ই", stars = 1, state = LearningState.PRACTICING),
+                ProgressExerciseItem(id = "vowel-ii", title = "ঈ", stars = 0, state = LearningState.NOT_STARTED),
             ),
         ),
         ProgressCategory(
             type = ExerciseType.CONSONANT,
             progress = 0.2f,
-            exercises = listOf(ProgressExerciseItem(id = "consonant-ko", title = "ক", stars = 2)),
+            exercises = listOf(
+                ProgressExerciseItem(id = "consonant-ko", title = "ক", stars = 2, state = LearningState.COMPLETED),
+            ),
         ),
         ProgressCategory(
             type = ExerciseType.DRAWING,
             progress = 0f,
-            exercises = listOf(ProgressExerciseItem(id = "drawing-line", title = "Line", stars = 0)),
+            exercises = listOf(
+                ProgressExerciseItem(id = "drawing-line", title = "Line", stars = 0, state = LearningState.NOT_STARTED),
+            ),
         ),
     ),
 )

@@ -7,6 +7,7 @@ import com.bornochitra.core.model.Exercise
 import com.bornochitra.core.model.ExerciseProgress
 import com.bornochitra.core.model.ExerciseType
 import com.bornochitra.core.model.LearningProgress
+import com.bornochitra.core.model.LearningState
 import com.bornochitra.core.model.PracticeResult
 import com.bornochitra.core.model.Stroke
 import kotlinx.coroutines.Dispatchers
@@ -54,14 +55,19 @@ class ProgressViewModelTest {
         exercise("drawing-line", "Line", ExerciseType.DRAWING),
     )
 
-    private fun exerciseProgress(exerciseId: String, bestScore: Float, attemptCount: Int = 1) = ExerciseProgress(
+    private fun exerciseProgress(
+        exerciseId: String,
+        bestScore: Float,
+        attemptCount: Int = 1,
+        isMastered: Boolean = false,
+    ) = ExerciseProgress(
         exerciseId = exerciseId,
         attemptCount = attemptCount,
         completedCount = 1,
         bestScore = bestScore,
         lastScore = bestScore,
         lastPracticedAt = 0L,
-        isMastered = false,
+        isMastered = isMastered,
     )
 
     private fun viewModel(
@@ -154,6 +160,26 @@ class ProgressViewModelTest {
 
         val vowels = viewModel.uiState.value.categories.first { it.type == ExerciseType.VOWEL }
         assertEquals(0, vowels.exercises.first { it.id == "vowel-o" }.stars)
+    }
+
+    @Test
+    fun `each exercise carries its learning state, so mastery is visible`() = runTest(dispatcher) {
+        val viewModel = viewModel(
+            progressByExerciseId = mapOf(
+                "vowel-o" to exerciseProgress("vowel-o", bestScore = 94f, attemptCount = 4, isMastered = true),
+                "vowel-aa" to exerciseProgress("vowel-aa", bestScore = 72f),
+            ),
+        )
+        backgroundScope.launch(dispatcher) { viewModel.uiState.collect {} }
+        dispatcher.scheduler.advanceUntilIdle()
+
+        val stateById = viewModel.uiState.value.categories
+            .flatMap { it.exercises }
+            .associate { it.id to it.state }
+
+        assertEquals(LearningState.MASTERED, stateById["vowel-o"])
+        assertEquals(LearningState.COMPLETED, stateById["vowel-aa"])
+        assertEquals(LearningState.NOT_STARTED, stateById["drawing-line"])
     }
 
     @Test

@@ -8,7 +8,9 @@ import com.bornochitra.core.model.Exercise
 import com.bornochitra.core.model.ExerciseProgress
 import com.bornochitra.core.model.ExerciseType
 import com.bornochitra.core.model.LearningProgress
+import com.bornochitra.core.model.LearningState
 import com.bornochitra.core.model.ScoreLevel
+import com.bornochitra.core.model.toLearningState
 import com.bornochitra.core.tracing.ScoreThresholds
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -26,6 +28,7 @@ data class ProgressExerciseItem(
     val id: String,
     val title: String,
     val stars: Int,
+    val state: LearningState,
 )
 
 data class ProgressCategory(
@@ -92,6 +95,7 @@ class ProgressViewModel @Inject constructor(
         id = id,
         title = title,
         stars = starsOf(progress),
+        state = progress.toLearningState(),
     )
 
     /** Stars come from the best score so far, so a good attempt is never taken away by a worse one. */

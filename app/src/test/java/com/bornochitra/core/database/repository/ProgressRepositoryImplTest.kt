@@ -8,6 +8,7 @@ import com.bornochitra.core.database.entity.PracticeSessionEntity
 import com.bornochitra.core.model.Difficulty
 import com.bornochitra.core.model.Exercise
 import com.bornochitra.core.model.ExerciseType
+import com.bornochitra.core.model.MasteryRule
 import com.bornochitra.core.model.PracticeResult
 import com.bornochitra.core.model.ScoreLevel
 import com.bornochitra.core.model.Stroke
@@ -64,6 +65,7 @@ class ProgressRepositoryImplTest {
         rows: List<ExerciseProgressEntity>,
         practiceSessionDao: PracticeSessionDao = FakePracticeSessionDao(progress = null),
         catalogue: List<Exercise> = this.catalogue,
+        masteryRule: MasteryRule = MasteryRule(),
     ): ProgressRepositoryImpl {
         val fakeDao = object : ExerciseProgressDao {
             override fun observeAll(): Flow<List<ExerciseProgressEntity>> = flowOf(rows)
@@ -74,7 +76,7 @@ class ProgressRepositoryImplTest {
 
             override suspend fun getExercise(id: String): Exercise? = catalogue.find { it.id == id }
         }
-        return ProgressRepositoryImpl(fakeDao, practiceSessionDao, exerciseRepository)
+        return ProgressRepositoryImpl(fakeDao, practiceSessionDao, exerciseRepository, masteryRule)
     }
 
     private fun progress(
@@ -91,6 +93,20 @@ class ProgressRepositoryImplTest {
         scoreLevel = "PERFECT",
         lastPracticedAt = lastPracticedAt,
         isMastered = isMastered,
+    )
+
+    private fun practiceResult(
+        score: Float,
+        scoreLevel: ScoreLevel = ScoreLevel.PERFECT,
+        completed: Boolean = true,
+        completedAtMs: Long = 0L,
+    ) = PracticeResult(
+        exerciseId = "vowel-o",
+        score = score,
+        scoreLevel = scoreLevel,
+        completed = completed,
+        durationMs = 5_000L,
+        completedAtMs = completedAtMs,
     )
 
     @Test
@@ -280,6 +296,78 @@ class ProgressRepositoryImplTest {
         val sessionId = repository.savePracticeResult(saved)
 
         assertEquals(saved, repository.getPracticeResult(sessionId))
+    }
+
+    @Test
+    fun `mastery is awarded once the rule is met, not before`() = runTest {
+        val practiceSessionDao = FakePracticeSessionDao(progress = null)
+        val repository = repositoryWith(rows = emptyList(), practiceSessionDao = practiceSessionDao)
+
+        repeat(3) { attempt ->
+            repository.savePracticeResult(practiceResult(score = 92f, completedAtMs = attempt.toLong()))
+        }
+
+        assertEquals(
+            listOf(false, false, true),
+            practiceSessionDao.upsertedProgress.map { it.isMastered },
+        )
+    }
+
+    @Test
+    fun `completing often but never well enough is not mastery`() = runTest {
+        val practiceSessionDao = FakePracticeSessionDao(progress = null)
+        val repository = repositoryWith(rows = emptyList(), practiceSessionDao = practiceSessionDao)
+
+        repeat(5) { attempt ->
+            repository.savePracticeResult(
+                practiceResult(score = 70f, scoreLevel = ScoreLevel.MEDIUM, completedAtMs = attempt.toLong()),
+            )
+        }
+
+        assertTrue(practiceSessionDao.upsertedProgress.none { it.isMastered })
+    }
+
+    @Test
+    fun `attempts that were not completed do not count towards mastery`() = runTest {
+        val practiceSessionDao = FakePracticeSessionDao(progress = null)
+        val repository = repositoryWith(rows = emptyList(), practiceSessionDao = practiceSessionDao)
+
+        repeat(4) { attempt ->
+            repository.savePracticeResult(
+                practiceResult(score = 95f, completed = false, completedAtMs = attempt.toLong()),
+            )
+        }
+
+        assertTrue(practiceSessionDao.upsertedProgress.none { it.isMastered })
+    }
+
+    @Test
+    fun `mastery once earned is not taken away by a weaker attempt`() = runTest {
+        val practiceSessionDao = FakePracticeSessionDao(progress = null)
+        val repository = repositoryWith(rows = emptyList(), practiceSessionDao = practiceSessionDao)
+        repeat(3) { attempt ->
+            repository.savePracticeResult(practiceResult(score = 92f, completedAtMs = attempt.toLong()))
+        }
+
+        repository.savePracticeResult(
+            practiceResult(score = 20f, scoreLevel = ScoreLevel.LOW, completedAtMs = 10L),
+        )
+
+        assertTrue(practiceSessionDao.upsertedProgress.last().isMastered)
+    }
+
+    @Test
+    fun `a gentler mastery rule awards mastery sooner`() = runTest {
+        val practiceSessionDao = FakePracticeSessionDao(progress = null)
+        val repository = repositoryWith(
+            rows = emptyList(),
+            practiceSessionDao = practiceSessionDao,
+            masteryRule = MasteryRule(requiredCompletions = 1, minBestScore = 60f),
+        )
+
+        repository.savePracticeResult(practiceResult(score = 65f, scoreLevel = ScoreLevel.MEDIUM))
+
+        assertTrue(practiceSessionDao.upsertedProgress.single().isMastered)
     }
 
     @Test

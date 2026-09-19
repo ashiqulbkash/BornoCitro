@@ -9,6 +9,7 @@ import com.bornochitra.core.model.Exercise
 import com.bornochitra.core.model.ExerciseProgress
 import com.bornochitra.core.model.ExerciseType
 import com.bornochitra.core.model.LearningProgress
+import com.bornochitra.core.model.MasteryRule
 import com.bornochitra.core.model.PracticeResult
 import com.bornochitra.core.model.ScoreLevel
 import kotlinx.coroutines.flow.Flow
@@ -20,12 +21,14 @@ class ProgressRepositoryImpl @Inject constructor(
     private val exerciseProgressDao: ExerciseProgressDao,
     private val practiceSessionDao: PracticeSessionDao,
     private val exerciseRepository: ExerciseRepository,
+    private val masteryRule: MasteryRule,
 ) : ProgressRepository {
 
     /**
      * Ratios are measured against the bundled catalogue, so "100%" means every letter of a
      * category has been practised through to the end at least once rather than every letter the
-     * child happens to have opened. plan.md Step 15 replaces "completed" with mastery.
+     * child happens to have opened. Mastery is the stricter state tracked per exercise
+     * ([MasteryRule]), not what these bars measure.
      */
     override fun observeProgress(): Flow<LearningProgress> = combine(
         exerciseRepository.observeExercises(ExerciseType.VOWEL),
@@ -50,15 +53,19 @@ class ProgressRepositoryImpl @Inject constructor(
 
     override suspend fun savePracticeResult(result: PracticeResult): Long {
         val existing = practiceSessionDao.getProgress(result.exerciseId)
+        val completedCount = (existing?.completedCount ?: 0) + if (result.completed) 1 else 0
+        val bestScore = maxOf(existing?.bestScore ?: 0f, result.score)
         val updatedProgress = ExerciseProgressEntity(
             exerciseId = result.exerciseId,
             attemptCount = (existing?.attemptCount ?: 0) + 1,
-            completedCount = (existing?.completedCount ?: 0) + if (result.completed) 1 else 0,
-            bestScore = maxOf(existing?.bestScore ?: 0f, result.score),
+            completedCount = completedCount,
+            bestScore = bestScore,
             lastScore = result.score,
             scoreLevel = result.scoreLevel.name,
             lastPracticedAt = result.completedAtMs,
-            isMastered = existing?.isMastered ?: false,
+            // Mastery is never taken back once earned, so a later weaker attempt — or a stricter
+            // rule — cannot undo something the child has already learned.
+            isMastered = existing?.isMastered == true || masteryRule.isMastered(completedCount, bestScore),
         )
         return practiceSessionDao.recordPracticeResult(
             session = PracticeSessionEntity(

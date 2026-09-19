@@ -6,6 +6,8 @@ import com.bornochitra.core.content.ExerciseRepository
 import com.bornochitra.core.database.repository.ProgressRepository
 import com.bornochitra.core.model.ExerciseProgress
 import com.bornochitra.core.model.ExerciseType
+import com.bornochitra.core.model.LearningState
+import com.bornochitra.core.model.toLearningState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
@@ -55,10 +57,13 @@ class VowelsViewModel @Inject constructor(
         )
 }
 
-private fun ExerciseProgress?.toStatusText(): String? = when {
-    this == null || attemptCount == 0 -> null
-    isMastered -> "Mastered"
-    completedCount > 0 -> "Completed"
-    attemptCount == 1 -> "1 attempt"
-    else -> "$attemptCount attempts"
+private fun ExerciseProgress?.toStatusText(): String? {
+    val progress = this ?: return null
+    return when (progress.toLearningState()) {
+        LearningState.NOT_STARTED -> null
+        LearningState.STARTED -> "1 attempt"
+        LearningState.PRACTICING -> "${progress.attemptCount} attempts"
+        LearningState.COMPLETED -> "Completed"
+        LearningState.MASTERED -> "Mastered"
+    }
 }
