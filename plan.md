@@ -88,7 +88,10 @@ canvas) from the newest scratchpad that has them into the current one before sta
 wider than it is tall uses the width-fit set instead — `wide_norm.py` (branches, skeleton/ink grids
 and the pen half-width), `wide_ink.py`, `wide_check.py` and `wide_overlay.py`, written for জ in 1.3
 and taking the character as an argument. `calib_practice.py` and `trace_letter.py` do the device
-check for any letter.
+check for any letter, except that `calib_practice.py` measures the *topmost* row of guide dots as
+the matra: a letter whose headline is not its highest stroke, or whose headline is broken into two
+bars, needs `jho_calib.py` instead (written for ঝ in 1.4 — it takes the densest row of dots and
+measures only the run left of the break).
 
 1. `skel_branches.py <letter>` — the ordered centreline branches in the 0..100 canvas, and the mean
    pen half-width. Branches are returned longest first, so identify each one before using it.
@@ -152,7 +155,7 @@ else in that file passes on its own. Baseline after 1.1: **336 unit tests, 0 fai
 - [x] 1.1 চ
 - [x] 1.2 ছ
 - [x] 1.3 জ
-- [ ] 1.4 ঝ
+- [x] 1.4 ঝ
 - [ ] 1.5 ঞ
 - [ ] 1.6 ট
 - [ ] 1.7 ঠ
@@ -201,6 +204,7 @@ Step 1 as a whole is done when all 34 sub-steps are checked, the catalog test as
 - **1.1 চ** — derived from the glyph's centreline: below the headline চ is one closed bowl whose left edge is the stem, so it is `stem` (matra line down to the foot), `body` (foot round the bottom, up the right, back along the top to the stem) and `matra`. Every guide sample is on ink; traced on the RMX3624 it completed at 99% (PERFECT).
 - **1.2 ছ** — চ plus a ২-shaped lobe and tail on the right, so it is `bowl` (the whole চ part in one movement — only ~100 canvas units here, where চ alone is 185 and has to be split), `lobe` (out of the top of the bowl, clockwise down the right and back left along the bottom bar to its blunt tip), `tail` (from the bottom of the lobe down to the right) and `matra`. The bottom bar belongs to the lobe, not the tail: the ink there is one pen width thick, so the tail cannot reach that far left. Both flat-cut ends are where the skeleton forks into two prongs, and each guide stops 2 units short of the cut's midpoint. Every guide sample is on ink; traced on the RMX3624 it completed at 99% (PERFECT).
 - **1.3 জ** — the first wide consonant since ক: aspect 1.40, so it is fitted by width with y centred. Below the headline it is a spiral and a hook. The spiral is ~165 canvas units in one movement — down from the headline, counter-clockwise round the inner bowl, up to a sharp point in the middle, then reversing and running clockwise round the outer bowl to a flat cut on the far left — so it is split at the point, where the pen turns back on itself and the skeleton grows a spur into the ink's wedge. `curl` runs up into the point, `sweep` restarts at the junction just below it, `hook` hangs off the headline to the right and descends, `matra` last. Every guide sample is on ink; traced on the RMX3624 it completed at 99% (PERFECT).
+- **1.4 ঝ** — wider than tall (aspect 1.19), so fitted by width like জ. Its headline is genuinely broken: a long bar over the body and a short one over the right post, with 14 canvas units of blank canvas between them, so it takes two strokes. Below it the body is ক's shape exactly — `wedge` leaves the middle stem, runs down-left, rounds the blunt left point (an arc at x=12, where the skeleton forks into a spur to the ink's tip) and comes back down-right to the stem's foot — so it is written as ক's knot is: `wedge`, then `stem`. `arm` then leaves the stem halfway down and runs into `post`, the right vertical, which rises above the headline as খ's and গ's stems do. `cap` and `matra` are the two headline bars, written last; only the long one carries the `-matra` name the catalog orders on. Every guide sample is on ink; traced on the RMX3624 it completed at 97% (PERFECT).
 
 ---
 

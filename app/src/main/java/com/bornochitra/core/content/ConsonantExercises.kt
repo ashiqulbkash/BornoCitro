@@ -872,4 +872,107 @@ internal val consonantExercises: List<Exercise> = listOf(
             ),
         ),
     ),
+    /**
+     * ঝ is read off its rendered glyph's centreline like the letters before it. It is wider than it
+     * is tall, so its ink is fitted by width and centred vertically, as ক and জ are.
+     *
+     * The letter hangs a body off a long headline on the left and a post under a short headline of
+     * its own on the right: ঝ's headline is genuinely broken, with fourteen canvas units of blank
+     * canvas between the two bars, so one straight guide cannot cover both. The body is ক's shape —
+     * the wedge leaves the middle stem, runs down-left along the upper diagonal, rounds the blunt
+     * left point and comes back down-right to the stem's foot, one movement of ~105 canvas units —
+     * so it is written the way ক's knot is: the wedge first, then the stem. The arm then leaves the
+     * stem halfway down and runs down-right into the post, and the post descends past the arm to
+     * its own foot; like খ's and গ's stems it rises a little above the headline. The skeleton forks
+     * at the blunt left point into a short spur running out to the ink's leftmost tip, so the two
+     * diagonals are joined by an arc that rounds the point rather than by the fork's node, as ক's
+     * knot rounds its own point.
+     *
+     * The headline is written last, as Bengali is, in two strokes: the cap over the post, then the
+     * matra over the body. Only the long bar carries the `-matra` name, which is the name the
+     * catalog orders the headline on, but no part of the letter is drawn after either bar.
+     */
+    Exercise(
+        id = "consonant-jho",
+        title = "ঝ",
+        type = ExerciseType.CONSONANT,
+        difficulty = Difficulty.ADVANCED,
+        order = 9,
+        strokes = listOf(
+            Stroke(
+                id = "consonant-jho-wedge",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(57f, 35f),
+                        Point(54f, 35f),
+                        Point(51f, 35f),
+                        Point(48f, 36f),
+                        Point(45f, 37f),
+                        Point(43f, 38f),
+                        Point(40f, 39f),
+                        Point(37f, 41f),
+                        Point(34f, 42f),
+                        Point(31f, 43f),
+                        Point(28f, 45f),
+                        Point(26f, 46f),
+                        Point(23f, 48f),
+                        Point(20f, 49f),
+                        Point(18f, 51f),
+                        Point(15f, 53f),
+                        Point(12f, 52f),
+                        Point(12f, 55f),
+                        Point(18f, 59f),
+                        Point(20f, 60f),
+                        Point(24f, 61f),
+                        Point(26f, 62f),
+                        Point(29f, 63f),
+                        Point(32f, 64f),
+                        Point(35f, 66f),
+                        Point(37f, 67f),
+                        Point(40f, 69f),
+                        Point(42f, 71f),
+                        Point(45f, 73f),
+                        Point(47f, 75f),
+                        Point(49f, 78f),
+                        Point(51f, 80f),
+                        Point(54f, 81f),
+                        Point(56f, 82f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "consonant-jho-stem",
+                points = StrokePoints.line(Point(57f, 22f), Point(57f, 87f), samples = 16),
+            ),
+            Stroke(
+                id = "consonant-jho-arm",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(58f, 60f),
+                        Point(61f, 60f),
+                        Point(64f, 61f),
+                        Point(66f, 63f),
+                        Point(69f, 65f),
+                        Point(71f, 67f),
+                        Point(73f, 70f),
+                        Point(75f, 72f),
+                        Point(78f, 73f),
+                        Point(80f, 74f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "consonant-jho-post",
+                points = StrokePoints.line(Point(80f, 13f), Point(80f, 79f), samples = 16),
+            ),
+            Stroke(
+                id = "consonant-jho-cap",
+                points = StrokePoints.line(Point(80f, 22f), Point(95f, 22f)),
+            ),
+            Stroke(
+                id = "consonant-jho-matra",
+                points = StrokePoints.line(Point(5f, 22f), Point(59f, 22f)),
+            ),
+        ),
+    ),
 )
