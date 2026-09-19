@@ -1,5 +1,9 @@
 package com.bornochitra.feature.result
 
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
@@ -14,9 +18,15 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalInspectionMode
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -31,6 +41,11 @@ import com.bornochitra.core.ui.components.BcTip
 import com.bornochitra.core.ui.components.BcTopAppBar
 import com.bornochitra.core.ui.theme.BcSpacing
 import com.bornochitra.core.ui.theme.BornoChitraTheme
+import kotlinx.coroutines.launch
+import kotlin.math.roundToInt
+
+private const val SCORE_REVEAL_MS = 700
+private const val POP_START_SCALE = 0.7f
 
 /**
  * Reports one finished attempt (plan.md section 39). Wording is encouraging at every level: a low
@@ -116,8 +131,11 @@ private fun AttemptSummary(
         ) {
             BcFeedbackBanner(tone = wording.tone, title = wording.headline, message = wording.message)
 
-            BcExerciseHeading(title = attempt.title)
-            Text(text = "${attempt.scorePercent}%", style = MaterialTheme.typography.headlineLarge)
+            ResultHeadline(
+                title = attempt.title,
+                scorePercent = attempt.scorePercent,
+                celebrate = attempt.scoreLevel == ScoreLevel.PERFECT,
+            )
 
             attempt.tip?.let { BcTip(tip = it) }
 
@@ -146,6 +164,52 @@ private fun AttemptSummary(
         }
     }
 }
+
+/**
+ * The exercise and its score, revealed with a short count-up (plan.md section 44). A perfect score
+ * also pops in with a gentle bounce. Kept as its own composable so the per-frame count only
+ * recomposes this small part of the screen, and the bounce is applied while drawing.
+ *
+ * With animations turned off in system settings both finish immediately, so the final score is
+ * simply shown.
+ */
+@Composable
+private fun ResultHeadline(
+    title: String,
+    scorePercent: Int,
+    celebrate: Boolean,
+    modifier: Modifier = Modifier,
+) {
+    // A static preview never advances an animation, so it starts from the finished state.
+    val animate = !LocalInspectionMode.current
+    val reveal = remember { Animatable(if (animate) 0f else 1f) }
+    val pop = remember { Animatable(if (celebrate && animate) POP_START_SCALE else 1f) }
+    LaunchedEffect(Unit) {
+        launch { reveal.animateTo(1f, tween(durationMillis = SCORE_REVEAL_MS)) }
+        pop.animateTo(1f, spring(dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessLow))
+    }
+
+    Column(
+        modifier = modifier.graphicsLayer {
+            scaleX = pop.value
+            scaleY = pop.value
+        },
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(BcSpacing.md),
+    ) {
+        BcExerciseHeading(title = title)
+        Text(
+            text = "${countedScore(scorePercent, reveal.value)}%",
+            style = MaterialTheme.typography.headlineLarge,
+            // A counting number is noise to a screen reader, so it gets the final score straight away.
+            modifier = Modifier.clearAndSetSemantics { contentDescription = "$scorePercent percent" },
+        )
+    }
+}
+
+/** The score to show part-way through the count-up, from 0 up to [target] as [progress] goes 0..1. */
+internal fun countedScore(target: Int, progress: Float): Int =
+    (target * progress.coerceIn(0f, 1f)).roundToInt()
 
 private data class ResultWording(
     val tone: BcFeedbackTone,

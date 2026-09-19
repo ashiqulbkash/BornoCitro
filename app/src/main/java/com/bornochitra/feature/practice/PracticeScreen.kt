@@ -17,6 +17,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -130,10 +132,21 @@ private fun ExerciseTracingContent(
     var currentStroke by remember(engine) { mutableStateOf(engine.currentStroke) }
     var guideStrokes by remember(engine) { mutableStateOf(engine.guideStrokes) }
 
+    val haptics = LocalHapticFeedback.current
+
+    // Success is felt, a miss is not: a child who slips should never be buzzed for it.
     fun handleStrokeEnd() {
         when (val outcome = engine.onEnd()) {
-            is TracingAttemptOutcome.ExerciseCompleted -> onExerciseCompleted(outcome.score, outcome.level)
-            is TracingAttemptOutcome.StrokeAttempted -> onStrokeAttempted(outcome.isCompleted)
+            is TracingAttemptOutcome.ExerciseCompleted -> {
+                haptics.performHapticFeedback(HapticFeedbackType.Confirm)
+                onExerciseCompleted(outcome.score, outcome.level)
+            }
+
+            is TracingAttemptOutcome.StrokeAttempted -> {
+                if (outcome.isCompleted) haptics.performHapticFeedback(HapticFeedbackType.SegmentTick)
+                onStrokeAttempted(outcome.isCompleted)
+            }
+
             TracingAttemptOutcome.NoAttempt -> Unit
         }
         currentStroke = engine.currentStroke

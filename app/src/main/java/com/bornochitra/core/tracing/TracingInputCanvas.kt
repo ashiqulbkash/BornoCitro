@@ -2,7 +2,9 @@ package com.bornochitra.core.tracing
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -32,6 +34,10 @@ import com.bornochitra.core.ui.theme.BornoChitraTheme
  * letter or shape, so the child always sees the complete exercise. Ink from strokes already
  * finished against the current [guideStrokes] stays on screen, so the letter builds up as it is
  * written; a retry of the same stroke replaces its own ink rather than layering on it.
+ *
+ * Where to start [stroke] is marked with a pulsing dot (plan.md section 44). It is a separate
+ * layer, so its animation never redraws the guides, and it steps aside while a finger is down so it
+ * cannot get in the way of tracing.
  */
 @Composable
 fun TracingInputCanvas(
@@ -50,59 +56,75 @@ fun TracingInputCanvas(
     }
     val session = remember(stroke, onPointerEvent) { TracingSession(onEvent = onPointerEvent) }
     var tracedPoints by remember(stroke) { mutableStateOf<List<TracePoint>>(emptyList()) }
+    var isFingerDown by remember(stroke) { mutableStateOf(false) }
     var finishedTraces by remember(guideStrokes) { mutableStateOf<Map<String, List<TracePoint>>>(emptyMap()) }
 
-    Canvas(
-        modifier = modifier.pointerInput(stroke) {
-            val scale = minOf(size.width, size.height) / GUIDE_CANVAS_UNIT
-            fun toTracePoint(offset: Offset) = TracePoint(
-                x = offset.x / scale,
-                y = offset.y / scale,
-                timestampMs = System.currentTimeMillis(),
-            )
+    Box(modifier = modifier) {
+        Canvas(
+            modifier = Modifier.fillMaxSize().pointerInput(stroke) {
+                val scale = minOf(size.width, size.height) / GUIDE_CANVAS_UNIT
+                fun toTracePoint(offset: Offset) = TracePoint(
+                    x = offset.x / scale,
+                    y = offset.y / scale,
+                    timestampMs = System.currentTimeMillis(),
+                )
 
-            detectDragGestures(
-                onDragStart = { offset ->
-                    finishedTraces = finishedTraces - stroke.id
-                    session.onStart(toTracePoint(offset))
-                    tracedPoints = session.tracedPoints
-                },
-                onDrag = { change, _ ->
-                    change.consume()
-                    session.onMove(toTracePoint(change.position))
-                    tracedPoints = session.tracedPoints
-                },
-                onDragEnd = {
-                    finishedTraces = finishedTraces + (stroke.id to session.tracedPoints)
-                    session.onEnd()
-                },
-                onDragCancel = {
-                    session.onCancel()
-                    tracedPoints = session.tracedPoints
-                },
-            )
-        },
-    ) {
-        val scale = size.minDimension / GUIDE_CANVAS_UNIT
-        guides.forEach { (guidePoints, guideDots) ->
-            drawDottedGuide(guidePoints, guideDots, style, scale, resolvedDotColor, resolvedPathColor)
+                detectDragGestures(
+                    onDragStart = { offset ->
+                        isFingerDown = true
+                        finishedTraces = finishedTraces - stroke.id
+                        session.onStart(toTracePoint(offset))
+                        tracedPoints = session.tracedPoints
+                    },
+                    onDrag = { change, _ ->
+                        change.consume()
+                        session.onMove(toTracePoint(change.position))
+                        tracedPoints = session.tracedPoints
+                    },
+                    onDragEnd = {
+                        isFingerDown = false
+                        finishedTraces = finishedTraces + (stroke.id to session.tracedPoints)
+                        session.onEnd()
+                    },
+                    onDragCancel = {
+                        isFingerDown = false
+                        session.onCancel()
+                        tracedPoints = session.tracedPoints
+                    },
+                )
+            },
+        ) {
+            val scale = size.minDimension / GUIDE_CANVAS_UNIT
+            guides.forEach { (guidePoints, guideDots) ->
+                drawDottedGuide(guidePoints, guideDots, style, scale, resolvedDotColor, resolvedPathColor)
+            }
+
+            (finishedTraces.values + listOf(tracedPoints)).forEach { trace ->
+                if (trace.size < 2) return@forEach
+                val tracedPath = Path().apply {
+                    val first = trace.first()
+                    moveTo(first.x * scale, first.y * scale)
+                    trace.drop(1).forEach { lineTo(it.x * scale, it.y * scale) }
+                }
+                drawPath(
+                    path = tracedPath,
+                    color = resolvedTracedColor,
+                    style = PathStrokeStyle(
+                        width = style.pathWidth * scale * 1.5f,
+                        cap = StrokeCap.Round,
+                        join = StrokeJoin.Round,
+                    ),
+                )
+            }
         }
 
-        (finishedTraces.values + listOf(tracedPoints)).forEach { trace ->
-            if (trace.size < 2) return@forEach
-            val tracedPath = Path().apply {
-                val first = trace.first()
-                moveTo(first.x * scale, first.y * scale)
-                trace.drop(1).forEach { lineTo(it.x * scale, it.y * scale) }
-            }
-            drawPath(
-                path = tracedPath,
+        val start = stroke.points.firstOrNull()
+        if (start != null && !isFingerDown) {
+            StartMarker(
+                start = start,
+                style = style,
                 color = resolvedTracedColor,
-                style = PathStrokeStyle(
-                    width = style.pathWidth * scale * 1.5f,
-                    cap = StrokeCap.Round,
-                    join = StrokeJoin.Round,
-                ),
+                modifier = Modifier.matchParentSize(),
             )
         }
     }
