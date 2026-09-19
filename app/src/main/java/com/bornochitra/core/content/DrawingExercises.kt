@@ -78,6 +78,14 @@ internal val drawingExercises: List<Exercise> = listOf(
             ),
         ),
     ),
+    /**
+     * The house is the one composite drawing, so plan.md Step 11.17 re-derives it. Its walls used to
+     * run between x 25 and 75 while the roof spanned 15 to 85, which left every free end of both
+     * strokes in mid-air: each eave stopped 10 units to the side of a wall top, and the roof's slope
+     * passed 8.6 units above it. The roof now lands exactly on the wall tops, so the two strokes
+     * close into one outline — a square with a triangle on it, the way a child draws a house. The
+     * roof goes on first and the walls hang from its eaves.
+     */
     Exercise(
         id = "drawing-house",
         title = "House",
@@ -93,10 +101,10 @@ internal val drawingExercises: List<Exercise> = listOf(
                 id = "drawing-house-body",
                 points = StrokePoints.polyline(
                     listOf(
-                        Point(25f, 45f),
-                        Point(25f, 85f),
-                        Point(75f, 85f),
-                        Point(75f, 45f),
+                        Point(15f, 45f),
+                        Point(15f, 85f),
+                        Point(85f, 85f),
+                        Point(85f, 45f),
                     ),
                 ),
             ),

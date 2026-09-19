@@ -45,6 +45,7 @@ class LetterTracingPrototypeTest {
     private val drawingLine = drawingExercises.first { it.id == "drawing-line" }
     private val drawingSquare = drawingExercises.first { it.id == "drawing-square" }
     private val drawingTriangle = drawingExercises.first { it.id == "drawing-triangle" }
+    private val drawingHouse = drawingExercises.first { it.id == "drawing-house" }
 
     private fun tracePoint(point: Point) = TracePoint(point.x, point.y, timestampMs = 0L)
 
@@ -881,13 +882,55 @@ class LetterTracingPrototypeTest {
     }
 
     @Test
+    fun `drawing-house is traced as roof then walls`() {
+        assertEquals(
+            listOf("drawing-house-roof", "drawing-house-body"),
+            drawingHouse.strokes.map { it.id },
+        )
+        assertEquals(Point(15f, 45f), drawingHouse.strokes.first().points.first())
+    }
+
+    @Test
+    fun `drawing-house's roof lands exactly on the wall tops`() {
+        // plan.md Step 11.17 — the walls used to run between x 25 and 75 under a roof spanning
+        // 15 to 85, leaving every free end of both strokes in mid-air.
+        val roof = drawingHouse.strokes.first().points
+        val walls = drawingHouse.strokes.last().points
+        assertEquals(roof.first(), walls.first())
+        assertEquals(roof.last(), walls.last())
+    }
+
+    @Test
+    fun `drawing-house is a symmetric outline centred on the canvas`() {
+        val points = drawingHouse.strokes.flatMap { it.points }
+        assertEquals(15f, points.minOf { it.x })
+        assertEquals(85f, points.maxOf { it.x })
+        assertEquals(15f, points.minOf { it.y })
+        assertEquals(85f, points.maxOf { it.y })
+        assertEquals(Point(50f, 15f), drawingHouse.strokes.first().points.minByOrNull { it.y })
+        points.forEach { point ->
+            assertTrue(
+                "no mirror of $point about x=50",
+                points.any { abs(it.x - (100f - point.x)) < 0.01f && abs(it.y - point.y) < 0.01f },
+            )
+        }
+    }
+
+    @Test
+    fun `drawing-house shows every stroke's guide at once`() {
+        assertEquals(drawingHouse.strokes, TracingEngine(drawingHouse).guideStrokes)
+    }
+
+    @Test
     fun `faithfully tracing each simple drawing completes it with a perfect score`() {
-        listOf(drawingLine, drawingSquare, drawingTriangle).forEach(::assertFaithfulTraceIsPerfect)
+        listOf(drawingLine, drawingSquare, drawingTriangle, drawingHouse)
+            .forEach(::assertFaithfulTraceIsPerfect)
     }
 
     @Test
     fun `tracing far from a simple drawing's guide path does not complete it`() {
-        listOf(drawingLine, drawingSquare, drawingTriangle).forEach(::assertOffPathTraceDoesNotComplete)
+        listOf(drawingLine, drawingSquare, drawingTriangle, drawingHouse)
+            .forEach(::assertOffPathTraceDoesNotComplete)
     }
 
     private fun assertFaithfulTraceIsPerfect(exercise: Exercise) {

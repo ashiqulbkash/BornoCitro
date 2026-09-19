@@ -1466,7 +1466,7 @@ Vowels — `অ` is already done and is the reference implementation. These foll
 
 **Checkpoint after 11.5.** `অ আ ই ঈ উ ঊ` is the MVP vowel set from Section 51. With these correct the whole learning loop can be exercised honestly end to end. If schedule pressure appears, Steps 12–14 may run here and the remaining sub-steps resume afterwards — but no exercise ships with placeholder geometry.
 
-That checkpoint has passed: Steps 11.6–11.10 ran without needing it, so every vowel — the MVP set and the rest — now carries glyph-derived geometry. The consonants and drawings (11.11–11.17) are what remain.
+That checkpoint has passed: Steps 11.6–11.10 ran without needing it, so every vowel — the MVP set and the rest — now carries glyph-derived geometry. Steps 11.11–11.17 then closed out the consonants and the drawings, so the whole block is complete.
 
 ```text
 11.6   ঋ    vowel-ri    done — 6 strokes (curl, diagonal, sweep, stem, hook, arm)
@@ -1490,11 +1490,13 @@ Drawings:
 
 ```text
 11.16  Line, Circle, Square, Triangle   done — verified exact, no change needed
-11.17  House                            composite shape, re-derive if wrong
+11.17  House                            done — 2 strokes (roof, walls), re-derived: the roof
+                                       now lands on the wall tops
 ```
 
-Every letter — 11 vowels and 5 consonants — now carries glyph-derived geometry, and the four simple
-drawings are verified exact. Only House (11.17) remains.
+All 21 exercises are done: 11 vowels and 5 consonants carry glyph-derived geometry, the four simple
+drawings are verified exact, and the house is re-derived as a closed outline. Step 12 is unblocked —
+no exercise ships with placeholder geometry.
 
 Drawings in 11.16 are defined by exact geometry — an arc is a circle, four lines are a square — so they carry no handwriting risk and need verification rather than redrawing. Correct them only if the device check shows a real defect.
 
@@ -1993,12 +1995,16 @@ Tracked here so the catalogue's real state is visible at a glance. Update as Ste
 Line, Circle,      done — verified exact on a device, not re-derived: constant radius, four
 Square, Triangle   equal axis-aligned sides, isosceles triangle on a level base, all pinned
                    by unit test
-House              unverified              → Step 11.17
+House              done — 2 strokes (roof, walls), re-derived; its walls used to run between
+                   x 25 and 75 under a roof spanning 15 to 85, leaving both eaves and both wall
+                   tops in mid-air. The roof now lands exactly on the wall tops.
 ```
 
 Because every stroke's guide is shown at once, a letter needs no per-letter engine work when its real multi-stroke geometry lands.
 
-Anything still showing placeholder geometry at this step is a release blocker.
+Nothing in the catalogue carries placeholder geometry any more, so this step is a re-check of
+metadata and a fresh pass on a device rather than a hunt for defects. Anything that regresses to
+placeholder geometry is a release blocker.
 
 This is critical.
 
