@@ -84,7 +84,11 @@ Worked out while implementing 1.1; follow it for every remaining letter.
 The derivation scripts are **not in the repository** — they live in the Claude scratchpad and are
 copied forward between sessions. Copy `glyph.py`, `canvas.py`, `skel_branches.py`, `check.py`,
 `overlay.py` and `noto2.ttf` (Noto Sans Bengali, the font Android draws the character with above the
-canvas) from the newest scratchpad that has them into the current one before starting.
+canvas) from the newest scratchpad that has them into the current one before starting. A letter
+wider than it is tall uses the width-fit set instead — `wide_norm.py` (branches, skeleton/ink grids
+and the pen half-width), `wide_ink.py`, `wide_check.py` and `wide_overlay.py`, written for জ in 1.3
+and taking the character as an argument. `calib_practice.py` and `trace_letter.py` do the device
+check for any letter.
 
 1. `skel_branches.py <letter>` — the ordered centreline branches in the 0..100 canvas, and the mean
    pen half-width. Branches are returned longest first, so identify each one before using it.
@@ -103,9 +107,11 @@ canvas) from the newest scratchpad that has them into the current one before sta
 ### Constraints the catalog test already enforces
 
 - **Normalization.** `canvas.py`/`skel_branches.py` fit the *ink* bbox to y 7..90 with x centred.
-  A letter wider than it is tall must be fitted by width with y centred instead (`ko_norm.py`), or
-  its matra leaves the canvas. `ExerciseCatalogTest` checks every point is in 0..100 and that the
-  guide's bbox centre is within 3 units of (50, 50).
+  A letter wider than it is tall must be fitted by width (x 3..97) with y centred instead
+  (`wide_norm.py`; `ko_norm.py` was the ক-only original), or its matra leaves the canvas. Check the
+  aspect ratio the render prints before choosing — জ is 1.40 and height-fitting it puts the headline
+  past x=100. `ExerciseCatalogTest` checks every point is in 0..100 and that the guide's bbox centre
+  is within 3 units of (50, 50).
 - **Stroke ids** must start with the exercise id, be unique, and a `-matra` stroke must be last.
 - **`order`** must stay contiguous from 1 within the type, so each letter takes the next value.
 
@@ -124,7 +130,7 @@ canvas) from the newest scratchpad that has them into the current one before sta
 ### Tests to update for every letter
 
 `ExerciseCatalogTest` holds two hand-maintained assertions that fail until the new letter is added:
-the consonant title string (`কখগঘঙচছ` after 1.2) and the per-exercise stroke-count map. Everything
+the consonant title string (`কখগঘঙচছজ` after 1.3) and the per-exercise stroke-count map. Everything
 else in that file passes on its own. Baseline after 1.1: **336 unit tests, 0 failures**.
 
 ### Device check
@@ -145,7 +151,7 @@ else in that file passes on its own. Baseline after 1.1: **336 unit tests, 0 fai
 
 - [x] 1.1 চ
 - [x] 1.2 ছ
-- [ ] 1.3 জ
+- [x] 1.3 জ
 - [ ] 1.4 ঝ
 - [ ] 1.5 ঞ
 - [ ] 1.6 ট
@@ -194,6 +200,7 @@ Step 1 as a whole is done when all 34 sub-steps are checked, the catalog test as
 
 - **1.1 চ** — derived from the glyph's centreline: below the headline চ is one closed bowl whose left edge is the stem, so it is `stem` (matra line down to the foot), `body` (foot round the bottom, up the right, back along the top to the stem) and `matra`. Every guide sample is on ink; traced on the RMX3624 it completed at 99% (PERFECT).
 - **1.2 ছ** — চ plus a ২-shaped lobe and tail on the right, so it is `bowl` (the whole চ part in one movement — only ~100 canvas units here, where চ alone is 185 and has to be split), `lobe` (out of the top of the bowl, clockwise down the right and back left along the bottom bar to its blunt tip), `tail` (from the bottom of the lobe down to the right) and `matra`. The bottom bar belongs to the lobe, not the tail: the ink there is one pen width thick, so the tail cannot reach that far left. Both flat-cut ends are where the skeleton forks into two prongs, and each guide stops 2 units short of the cut's midpoint. Every guide sample is on ink; traced on the RMX3624 it completed at 99% (PERFECT).
+- **1.3 জ** — the first wide consonant since ক: aspect 1.40, so it is fitted by width with y centred. Below the headline it is a spiral and a hook. The spiral is ~165 canvas units in one movement — down from the headline, counter-clockwise round the inner bowl, up to a sharp point in the middle, then reversing and running clockwise round the outer bowl to a flat cut on the far left — so it is split at the point, where the pen turns back on itself and the skeleton grows a spur into the ink's wedge. `curl` runs up into the point, `sweep` restarts at the junction just below it, `hook` hangs off the headline to the right and descends, `matra` last. Every guide sample is on ink; traced on the RMX3624 it completed at 99% (PERFECT).
 
 ---
 

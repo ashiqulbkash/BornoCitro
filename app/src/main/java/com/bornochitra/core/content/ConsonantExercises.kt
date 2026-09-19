@@ -736,4 +736,140 @@ internal val consonantExercises: List<Exercise> = listOf(
             ),
         ),
     ),
+    /**
+     * জ is read off its rendered glyph's centreline like the letters before it. It is wider than it
+     * is tall, so its ink is fitted by width and centred vertically, as ক and the wide vowels are;
+     * fitting by height would push the headline past the edge of the canvas.
+     *
+     * Below the headline the letter is a spiral and a hook. The spiral is one movement of ~165
+     * canvas units: down from the headline, counter-clockwise round the small inner bowl, up to a
+     * sharp point in the middle of the letter, and then — turning back on itself — clockwise round
+     * the big outer bowl to the flat cut under the headline on the far left. That is too long to
+     * hold in one pass, so it is split at the point, which is both where the pen reverses and the
+     * clearest landmark in the letter; the ink narrows to a wedge there and the skeleton grows a
+     * spur into it. `curl` runs up into the point and `sweep` starts again just below it, where the
+     * outer bowl begins, so the two guides do not retrace the same few units. The hook hangs off the
+     * headline to the right and descends to its own flat cut. The matra is written last.
+     */
+    Exercise(
+        id = "consonant-jo",
+        title = "জ",
+        type = ExerciseType.CONSONANT,
+        difficulty = Difficulty.ADVANCED,
+        order = 8,
+        strokes = listOf(
+            Stroke(
+                id = "consonant-jo-curl",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(45f, 21f),
+                        Point(44f, 24f),
+                        Point(42f, 27f),
+                        Point(40f, 29f),
+                        Point(38f, 31f),
+                        Point(36f, 34f),
+                        Point(35f, 37f),
+                        Point(34f, 40f),
+                        Point(33f, 42f),
+                        Point(33f, 46f),
+                        Point(34f, 48f),
+                        Point(36f, 51f),
+                        Point(38f, 53f),
+                        Point(42f, 53f),
+                        Point(44f, 54f),
+                        Point(48f, 53f),
+                        Point(50f, 52f),
+                        Point(53f, 51f),
+                        Point(56f, 49f),
+                        Point(58f, 48f),
+                        Point(59f, 48f),
+                        Point(60f, 48f),
+                        Point(61f, 45f),
+                        Point(62f, 42f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "consonant-jo-sweep",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(60f, 48f),
+                        Point(62f, 50f),
+                        Point(62f, 53f),
+                        Point(63f, 56f),
+                        Point(63f, 59f),
+                        Point(62f, 62f),
+                        Point(62f, 65f),
+                        Point(60f, 68f),
+                        Point(59f, 70f),
+                        Point(56f, 72f),
+                        Point(54f, 73f),
+                        Point(51f, 74f),
+                        Point(48f, 75f),
+                        Point(45f, 75f),
+                        Point(42f, 75f),
+                        Point(39f, 75f),
+                        Point(36f, 74f),
+                        Point(33f, 73f),
+                        Point(30f, 71f),
+                        Point(28f, 69f),
+                        Point(26f, 67f),
+                        Point(24f, 65f),
+                        Point(22f, 62f),
+                        Point(20f, 60f),
+                        Point(19f, 57f),
+                        Point(18f, 54f),
+                        Point(17f, 51f),
+                        Point(16f, 48f),
+                        Point(15f, 45f),
+                        Point(14f, 42f),
+                        Point(13f, 40f),
+                        Point(12f, 37f),
+                        Point(12f, 36f),
+                        Point(12f, 34f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "consonant-jo-hook",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(55f, 21f),
+                        Point(56f, 24f),
+                        Point(57f, 27f),
+                        Point(59f, 29f),
+                        Point(61f, 31f),
+                        Point(64f, 33f),
+                        Point(67f, 34f),
+                        Point(70f, 35f),
+                        Point(73f, 36f),
+                        Point(76f, 36f),
+                        Point(79f, 36f),
+                        Point(80f, 36f),
+                        Point(81f, 36f),
+                        Point(82f, 39f),
+                        Point(82f, 42f),
+                        Point(82f, 45f),
+                        Point(81f, 48f),
+                        Point(80f, 51f),
+                        Point(80f, 54f),
+                        Point(80f, 57f),
+                        Point(80f, 60f),
+                        Point(80f, 63f),
+                        Point(80f, 66f),
+                        Point(80f, 69f),
+                        Point(81f, 72f),
+                        Point(81f, 75f),
+                        Point(82f, 78f),
+                        Point(82f, 79f),
+                        Point(82f, 81f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "consonant-jo-matra",
+                points = StrokePoints.line(Point(5f, 20f), Point(95f, 20f)),
+            ),
+        ),
+    ),
 )
