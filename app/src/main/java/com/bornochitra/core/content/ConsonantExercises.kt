@@ -7,10 +7,10 @@ import com.bornochitra.core.model.Point
 import com.bornochitra.core.model.Stroke
 
 /**
- * Consonant stroke geometry. ক, খ and গ are read off their rendered glyphs' centrelines (plan.md
- * Steps 11.11-11.13); ঘ and ঙ still carry the placeholder geometry described in [vowelExercises]'
- * history and are corrected in plan.md Steps 11.14-11.15. Step 23 re-validates every letter before
- * release.
+ * Consonant stroke geometry. ক, খ, গ and ঘ are read off their rendered glyphs' centrelines
+ * (plan.md Steps 11.11-11.14); ঙ still carries the placeholder geometry described in
+ * [vowelExercises]' history and is corrected in plan.md Step 11.15. Step 23 re-validates every
+ * letter before release.
  */
 internal val consonantExercises: List<Exercise> = listOf(
     /**
@@ -282,6 +282,16 @@ internal val consonantExercises: List<Exercise> = listOf(
             ),
         ),
     ),
+    /**
+     * ঘ is read off its rendered glyph's centreline. The hook comes first: the pen leaves the
+     * headline, drops down the left, wraps round the bowl and carries on out and up the diagonal to
+     * the flag's flat terminal — bowl and diagonal are one unbroken mass above the notch that opens
+     * under them, so they are one stroke. The body leaves that same node at a corner, which is why
+     * it is a second stroke: down the long diagonal, round the blunt left terminal and out along the
+     * bottom sweep to the stem's foot, one movement as ক's knot and খ's body are. Then the stem, and
+     * the matra last. Unlike খ and গ, ঘ's matra spans the whole letter, because the hook reaches the
+     * headline at the left.
+     */
     Exercise(
         id = "consonant-gho",
         title = "ঘ",
@@ -290,19 +300,74 @@ internal val consonantExercises: List<Exercise> = listOf(
         order = 4,
         strokes = listOf(
             Stroke(
-                id = "consonant-gho-body",
+                id = "consonant-gho-hook",
                 points = StrokePoints.polyline(
                     listOf(
-                        Point(30f, 15f),
-                        Point(30f, 85f),
-                        Point(70f, 85f),
-                        Point(70f, 15f),
+                        Point(26f, 12f),
+                        Point(25f, 16f),
+                        Point(25f, 19f),
+                        Point(24f, 22f),
+                        Point(23f, 25f),
+                        Point(23f, 28f),
+                        Point(24f, 31f),
+                        Point(25f, 34f),
+                        Point(27f, 36f),
+                        Point(29f, 38f),
+                        Point(32f, 39f),
+                        Point(35f, 39f),
+                        Point(38f, 40f),
+                        Point(39f, 41f),
+                        Point(42f, 41f),
+                        Point(45f, 40f),
+                        Point(48f, 38f),
+                        Point(51f, 37f),
+                        Point(56f, 35f),
                     ),
                 ),
             ),
             Stroke(
-                id = "consonant-gho-cross",
-                points = StrokePoints.line(Point(30f, 50f), Point(70f, 50f)),
+                id = "consonant-gho-body",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(39f, 43f),
+                        Point(39f, 42f),
+                        Point(38f, 45f),
+                        Point(36f, 48f),
+                        Point(33f, 50f),
+                        Point(31f, 51f),
+                        Point(28f, 53f),
+                        Point(28f, 54f),
+                        Point(24f, 55f),
+                        Point(25f, 58f),
+                        Point(28f, 59f),
+                        Point(28f, 60f),
+                        Point(30f, 61f),
+                        Point(33f, 62f),
+                        Point(36f, 63f),
+                        Point(39f, 64f),
+                        Point(42f, 65f),
+                        Point(45f, 66f),
+                        Point(48f, 67f),
+                        Point(51f, 69f),
+                        Point(53f, 70f),
+                        Point(56f, 72f),
+                        Point(58f, 74f),
+                        Point(61f, 76f),
+                        Point(63f, 78f),
+                        Point(65f, 80f),
+                        Point(68f, 81f),
+                        Point(71f, 82f),
+                        Point(73f, 83f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "consonant-gho-stem",
+                points = StrokePoints.line(Point(74f, 12f), Point(74f, 88f), samples = 16),
+            ),
+            Stroke(
+                id = "consonant-gho-matra",
+                points = StrokePoints.line(Point(12f, 12f), Point(88f, 12f)),
             ),
         ),
     ),
