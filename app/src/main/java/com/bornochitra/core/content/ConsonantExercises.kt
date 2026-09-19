@@ -1444,4 +1444,79 @@ internal val consonantExercises: List<Exercise> = listOf(
             ),
         ),
     ),
+    /**
+     * ঢ is read off its rendered glyph's centreline like the letters before it. It is a shade
+     * taller than it is wide (aspect 0.95), so its ink is fitted by height with x centred, the way
+     * ট and ঠ are.
+     *
+     * Below the headline the glyph is a single continuous movement of about 156 canvas units: down
+     * the long stem, round the bottom bowl, up the right flank and over the top into the filled
+     * ball that ends the curl. That is far more than a child can hold in one pass, so it is split
+     * at the foot — where the stem stops being straight and the bowl's curve begins — which is the
+     * split ট takes and the only landmark below the matra a child can see.
+     *
+     * The stem is therefore straight from the headline down to the foot, and the bowl carries every
+     * curve: round the bottom, up the right flank, over the top and inwards to the centre of the
+     * ball. That ball is a blunt filled terminal rather than a pen cut, so the skeleton collapses it
+     * to one point and the bowl is drawn into that centre, the way ক's lobe is drawn into its own
+     * ball and ট's bowl is drawn out of it.
+     *
+     * The matra is the full headline, inset 2 units from each end cap, and is written last.
+     */
+    Exercise(
+        id = "consonant-ddho",
+        title = "ঢ",
+        type = ExerciseType.CONSONANT,
+        difficulty = Difficulty.INTERMEDIATE,
+        order = 14,
+        strokes = listOf(
+            Stroke(
+                id = "consonant-ddho-stem",
+                points = StrokePoints.line(Point(31f, 12f), Point(31f, 72f)),
+            ),
+            Stroke(
+                id = "consonant-ddho-bowl",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(31f, 72f),
+                        Point(32f, 75f),
+                        Point(32f, 78f),
+                        Point(34f, 80f),
+                        Point(36f, 82f),
+                        Point(38f, 84f),
+                        Point(41f, 84f),
+                        Point(44f, 85f),
+                        Point(47f, 85f),
+                        Point(50f, 84f),
+                        Point(53f, 84f),
+                        Point(55f, 83f),
+                        Point(58f, 81f),
+                        Point(60f, 80f),
+                        Point(63f, 78f),
+                        Point(65f, 76f),
+                        Point(67f, 74f),
+                        Point(69f, 72f),
+                        Point(70f, 69f),
+                        Point(72f, 67f),
+                        Point(73f, 64f),
+                        Point(74f, 62f),
+                        Point(74f, 59f),
+                        Point(75f, 56f),
+                        Point(75f, 53f),
+                        Point(75f, 50f),
+                        Point(75f, 47f),
+                        Point(73f, 45f),
+                        Point(71f, 44f),
+                        Point(68f, 43f),
+                        Point(65f, 42f),
+                        Point(63f, 43f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "consonant-ddho-matra",
+                points = StrokePoints.line(Point(13f, 12f), Point(87f, 12f)),
+            ),
+        ),
+    ),
 )
