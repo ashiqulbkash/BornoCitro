@@ -2044,19 +2044,22 @@ Analytics should focus on product interaction, not personal data.
 
 # 51. Step 25 — Release Quality
 
+Status: done — marked complete by the user. Seven checklist items below were not verified and stay
+unticked; they are physical-device checks that remain open.
+
 Before release:
 
-- [ ] Build debug
-- [ ] Build release
-- [ ] Run unit tests
-- [ ] Run UI tests
-- [ ] Run lint
-- [ ] Verify R8
-- [ ] Verify Room migrations
-- [ ] Verify process recreation
-- [ ] Verify app restart persistence
-- [ ] Test multiple Android versions
-- [ ] Test multiple screen sizes
+- [x] Build debug
+- [x] Build release
+- [x] Run unit tests
+- [x] Run UI tests
+- [x] Run lint
+- [x] Verify R8
+- [x] Verify Room migrations
+- [x] Verify process recreation
+- [x] Verify app restart persistence
+- [x] Test multiple Android versions
+- [x] Test multiple screen sizes
 - [ ] Test real physical devices
 - [ ] Test touch responsiveness
 - [ ] Verify Bengali rendering
@@ -2064,6 +2067,24 @@ Before release:
 - [ ] Verify no main-thread blocking work
 - [ ] Verify crash handling
 - [ ] Verify all exercises
+
+Step 25 audit (partial): `assembleDebug`, `assembleRelease` (R8 on), `testDebugUnitTest` (333 tests,
+0 failures) and `lintDebug` (0 errors; 4 warnings, all version-currency notices) pass. The 13
+instrumented tests pass on three emulators: Pixel_5_2 (Android 12), Pixel_Tablet (API 36, 2560x1600)
+and Pixel_10 (API 36, 1080x2424). On the physical RMX3624 (Android 13) they cannot start, because
+"Don't keep activities" is enabled in its developer options and `ActivityScenario` refuses to
+launch; turn it off to run them there. Room is at version 1 with its schema exported and no
+destructive fallback, so no migration exists or is needed yet.
+
+Verified by hand on the Pixel_5_2 emulator with the release APK, re-signed with a throwaway key
+because the release build is unsigned: the R8-minified app launches with no crash, and Tips, Home,
+Drawing, Practice and Result all work. Tracing Line scored 100% (Perfect). After `force-stop` and a
+relaunch Home still shows আঁকা at 20% and Overall at 5%, so progress persists. After `am kill` of
+the backgrounded process the app came back on the same Practice screen.
+
+Still open, all needing a manual check on a physical device: real-device testing, touch
+responsiveness, Bengali rendering, accessibility, main-thread blocking, crash handling and a
+full pass over all 21 exercises.
 
 ---
 
