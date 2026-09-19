@@ -1333,15 +1333,19 @@ internal val consonantExercises: List<Exercise> = listOf(
      * itself, the same split জ and ঞ take.
      *
      * The arm therefore runs from the matra crossing down into the V and up into the point, and the
-     * bowl restarts at the junction just below it, runs down the flank and round the bottom and
-     * stops 2 units short of the midpoint of the left arm's flat-cut terminal, as ছ's cut ends do.
-     * Neither tip touches the headline: below the matra the letter hangs from the stem alone.
+     * bowl starts again at that same point, runs down the flank and round the bottom and stops 2
+     * units short of the midpoint of the left arm's flat-cut terminal, as ছ's cut ends do. Neither
+     * tip touches the headline: below the matra the letter hangs from the stem alone.
      *
-     * The arm ends one unit past the skeleton's spur, on the apex of the ink wedge, which is where
-     * the pen actually turns. That also carries it to 78.9 canvas units: the guide drops a dot
+     * The pen turns at (77,41), the highest point of the wedge that is still a full pen thick. The
+     * ink runs on above it to an apex at (79,35), but only as the taper where the two edges of the
+     * turn converge — half the ink's thickness there is 0.3 canvas units against the pen's 4.71 —
+     * so no pen centre ever reaches it, and a guide drawn up to it hangs outside the stroke and
+     * forks away from where the bowl begins. Both strokes meet at the turn instead, so their dot
+     * rows share a dot. That also leaves the arm 72.3 canvas units long: the guide drops a dot
      * every 6 units from a stroke's start, so a stroke that stops just short of a multiple of the
-     * spacing — 77.9 at the spur's end — draws almost a whole spacing of bare path past its last
-     * dot, which shows on the device as a tail hanging off the tip.
+     * spacing draws almost a whole spacing of bare path past its last dot, which shows on the
+     * device as a tail hanging off the tip.
      *
      * The matra is the full headline and is written last.
      */
@@ -1380,10 +1384,7 @@ internal val consonantExercises: List<Exercise> = listOf(
                         Point(71f, 46f),
                         Point(73f, 44f),
                         Point(76f, 42f),
-                        Point(77f, 39f),
-                        Point(79f, 37f),
-                        Point(79f, 36f),
-                        Point(79f, 35f),
+                        Point(77f, 41f),
                     ),
                 ),
             ),
@@ -1391,7 +1392,7 @@ internal val consonantExercises: List<Exercise> = listOf(
                 id = "consonant-ddo-bowl",
                 points = StrokePoints.polyline(
                     listOf(
-                        Point(76f, 42f),
+                        Point(77f, 41f),
                         Point(79f, 44f),
                         Point(81f, 46f),
                         Point(82f, 49f),
