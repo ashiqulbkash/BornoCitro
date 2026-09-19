@@ -89,7 +89,8 @@ wider than it is tall uses the width-fit set instead — `wide_norm.py` (branche
 and the pen half-width), `wide_ink.py`, `wide_check.py` and `wide_overlay.py`, written for জ in 1.3
 and taking the character as an argument. `tall_norm.py` is its height-fit mirror, written for ট in
 1.6, so a tall letter's `<letter>_build.py` can use the same setup/branches/half_width API.
-`calib_practice.py` and `trace_letter.py` do the device
+`zoom_ref.py` crops the reference glyph and the guide out of a Practice screenshot for
+comparison (written for ঠ in 1.7). `calib_practice.py` and `trace_letter.py` do the device
 check for any letter, except that `calib_practice.py` measures the *topmost* row of guide dots as
 the matra: a letter whose headline is not its highest stroke, or whose headline is broken into two
 bars, needs `jho_calib.py` instead (written for ঝ in 1.4 — it takes the densest row of dots and
@@ -108,6 +109,12 @@ so it works for any letter and needs no matra).
 4. `check.py <letter> <letter>_build` — **every stroke must report off-ink 0**, and its centreline
    distance must stay well inside the mean pen half-width.
 5. `overlay.py <letter> <letter>_build out.png` — look at the guide drawn over the glyph.
+   Then, once it is on the device, `zoom_ref.py <practice-screenshot> out.png` — the reference
+   glyph and the dotted guide cropped from the same screenshot and scaled to one height, side by
+   side. Off-ink 0 only says the guide sits *on* the ink; this is what shows whether it has the
+   letter's shape and flow. A stroke split must come from the glyph (where would the pen lift?),
+   not from a skeleton junction — a thick matra knots every branch touching it, and following
+   that knot leaves strokes meeting the headline at different points and loops hanging open.
 6. `apply_<letter>.py` — append the Kotlin `Exercise` before the closing `)` of `consonantExercises`,
    with a KDoc recording how the letter was derived and why the strokes were split where they were.
 
@@ -162,7 +169,7 @@ else in that file passes on its own. Baseline after 1.1: **336 unit tests, 0 fai
 - [x] 1.4 ঝ
 - [x] 1.5 ঞ
 - [x] 1.6 ট
-- [ ] 1.7 ঠ
+- [x] 1.7 ঠ
 - [ ] 1.8 ড
 - [ ] 1.9 ঢ
 - [ ] 1.10 ণ
@@ -213,6 +220,8 @@ Step 1 as a whole is done when all 34 sub-steps are checked, the catalog test as
 - **1.5 ঞ** — wider than tall (aspect 1.40), so fitted by width like জ and ঝ; like ঙ it has no headline bar at all, so no stroke is a matra. It is a middle stem carrying a sail on the left, two bowls on the right and a bar-and-base along the bottom. `stem` is written first, as চ's is, because everything else hangs off it. `hood` then leaves the stem's top, rises over the apex, comes down the left flank and stops in the filled ball that ends the sail — the outline's own terminal there is a disc, not a cut, and the skeleton's branch already ends at its centre, so the sail is drawn *into* it the way ক's lobe is drawn into its ball. The right half is one spiral of ~120 canvas units out of the stem's top; the leftward point between its two bowls is a tapering wedge rather than a pen terminal — the ink narrows to a rounded tip and the skeleton grows a spur into it, so the pen turns back on itself there — and it is split at that point exactly as জ is: `bowl` runs into the point, `sweep` restarts on the far side of the turn and runs round the lower bowl back to the stem. `base` is the last stroke, in the place a letter with a headline would write its matra: the left bar from its flat-cut top, down, round the corner and right along the bottom to the stem's foot. Every guide sample is on ink; traced on the RMX3624 it completed at 99% (PERFECT).
 
 - **1.6 ট** — taller than it is wide (aspect 0.64), so it is fitted by height like চ and ছ. `hook` is written first, being the topmost and leftmost stroke: down the short bar from its flat-cut top, then right across the whole letter above the headline and down onto the headline at the far right. `stem` is straight from the headline to where its foot starts to curve, and `bowl` carries that curve — out of the filled ball that heads it, down the right flank, round the bottom and back left into the stem's foot, the way চ's body closes onto its own stem. The ball is a blunt filled terminal, not a pen cut: the skeleton collapses it to a single point at its centre, so the bowl is drawn out of that centre exactly as ক's lobe is drawn into its own ball. `matra` is the full headline, last. Every guide sample is on ink; traced on the RMX3624 it completed at 99.6% (PERFECT).
+
+- **1.7 ঠ** — taller than it is wide (aspect 0.61), so it is fitted by height like ট. The glyph is one continuous movement broken only by the headline: down the flourish, through the matra, on into the bowl's left arm, out round the bottom-left, along the foot, up the right flank and back onto the matra. The skeleton does not say that on its own — the matra is 7 canvas units thick, so skeletonizing it knots the flourish, both halves of the headline and the bowl's two arms into a small diamond below it, stopping the flourish's branch at x=45 and reporting both of the loop's ends at the same junction point. Read literally those junctions land the flourish and the bowl on the headline at different places and leave the loop hanging open, which is how the first attempt at this letter came out; the two strokes are joined at the headline crossing instead, the only landmark in the letter a child can see, and the split also keeps each stroke short enough to hold in one pass. So `hook` runs from the rounded terminal at the top down onto the matra, `bowl` takes over at that same point and ends five units along the headline — under one dot spacing — so the loop reads as closed, and `matra` is last. Every guide sample is on ink; traced on the RMX3624 it completed at 99.7% (PERFECT).
 
 ---
 

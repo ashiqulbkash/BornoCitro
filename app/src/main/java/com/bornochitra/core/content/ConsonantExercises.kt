@@ -1213,4 +1213,112 @@ internal val consonantExercises: List<Exercise> = listOf(
             ),
         ),
     ),
+    /**
+     * ঠ is read off its rendered glyph's centreline like the letters before it. It is taller than
+     * it is wide (aspect 0.61), so its ink is fitted by height with x centred, the way ট is.
+     *
+     * The glyph is one continuous movement broken only by the headline: the pen comes down the
+     * flourish at the top, crosses the matra and carries straight on into the bowl's left arm,
+     * sweeps out to the left, round the foot, up the right flank and closes back onto the matra.
+     *
+     * The skeleton does not say that on its own. The matra is seven canvas units thick, so
+     * skeletonizing it knots the flourish, the two halves of the headline and the bowl's two arms
+     * into a small diamond just below it: the flourish's branch stops short at x=45 and the bowl's
+     * loop reports both of its ends at the same junction point. Reading those junctions literally
+     * would land the flourish and the bowl on the headline at different places and leave the loop
+     * hanging open, so the two strokes are joined at the headline crossing instead — which is also
+     * the only landmark in the letter a child can see, and the split keeps each stroke short
+     * enough to hold in one pass.
+     *
+     * The hook therefore runs from the rounded terminal at the top down onto the matra, and the
+     * bowl takes over at that same point, ending five units along the headline — under one dot
+     * spacing — so the loop reads as closed. The matra is written last.
+     */
+    Exercise(
+        id = "consonant-ttho",
+        title = "ঠ",
+        type = ExerciseType.CONSONANT,
+        difficulty = Difficulty.INTERMEDIATE,
+        order = 12,
+        strokes = listOf(
+            Stroke(
+                id = "consonant-ttho-hook",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(42f, 9f),
+                        Point(42f, 12f),
+                        Point(40f, 14f),
+                        Point(39f, 16f),
+                        Point(38f, 19f),
+                        Point(38f, 22f),
+                        Point(39f, 25f),
+                        Point(40f, 27f),
+                        Point(42f, 30f),
+                        Point(43f, 32f),
+                        Point(44f, 35f),
+                        Point(46f, 37f),
+                        Point(47f, 37f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "consonant-ttho-bowl",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(47f, 37f),
+                        Point(48f, 40f),
+                        Point(49f, 43f),
+                        Point(49f, 46f),
+                        Point(49f, 48f),
+                        Point(50f, 51f),
+                        Point(50f, 54f),
+                        Point(49f, 57f),
+                        Point(48f, 60f),
+                        Point(47f, 62f),
+                        Point(45f, 65f),
+                        Point(43f, 67f),
+                        Point(41f, 68f),
+                        Point(38f, 69f),
+                        Point(36f, 70f),
+                        Point(33f, 71f),
+                        Point(33f, 74f),
+                        Point(33f, 77f),
+                        Point(35f, 79f),
+                        Point(37f, 81f),
+                        Point(39f, 83f),
+                        Point(41f, 85f),
+                        Point(44f, 86f),
+                        Point(46f, 86f),
+                        Point(49f, 87f),
+                        Point(52f, 86f),
+                        Point(55f, 86f),
+                        Point(58f, 85f),
+                        Point(60f, 84f),
+                        Point(62f, 82f),
+                        Point(64f, 79f),
+                        Point(65f, 77f),
+                        Point(66f, 74f),
+                        Point(66f, 71f),
+                        Point(66f, 68f),
+                        Point(66f, 65f),
+                        Point(65f, 62f),
+                        Point(65f, 60f),
+                        Point(64f, 57f),
+                        Point(63f, 55f),
+                        Point(61f, 52f),
+                        Point(60f, 50f),
+                        Point(58f, 47f),
+                        Point(56f, 45f),
+                        Point(54f, 43f),
+                        Point(53f, 40f),
+                        Point(52f, 37f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "consonant-ttho-matra",
+                points = StrokePoints.line(Point(27f, 37f), Point(73f, 37f)),
+            ),
+        ),
+    ),
 )
