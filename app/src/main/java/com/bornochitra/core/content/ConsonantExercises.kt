@@ -1596,4 +1596,114 @@ internal val consonantExercises: List<Exercise> = listOf(
             ),
         ),
     ),
+    /**
+     * ত is read off its rendered glyph's centreline like the letters before it. It is wider than it
+     * is tall (aspect 1.27), so its ink is fitted by width with y centred, the way ক, জ, ঝ and ড
+     * are; fitting by height would push its headline past the edge of the canvas.
+     *
+     * Its headline does not touch the rest of the letter — the font leaves five canvas units of
+     * blank between the bar and the body — so, unlike every consonant before it, nothing below the
+     * matra hangs off it. The body is one spiral of about 173 canvas units: in from the flat-cut
+     * terminal at the top left, down the long left arm, round the bottom, up the right flank, over
+     * the top and curling inwards into the filled ball at the letter's centre.
+     *
+     * That is far more than a child can hold in one pass, and the spiral turns smoothly from end to
+     * end, so it has no corner or neck to break at. It is split at the foot instead — the lowest
+     * point of the bowl, where the letter sits on the writing line — which is the one landmark
+     * below the headline a child can see, and the split ঢ takes. The arm runs from the tip to the
+     * foot and the bowl takes over at that same point, so the two share a dot.
+     *
+     * The arm starts 2 units short of the midpoint of its flat-cut terminal, as ছ's cut ends do:
+     * the skeleton forks into a prong for each corner of the cut, and the midpoint between them is
+     * where the pen would come down. The bowl ends at the centre of the ball that closes the
+     * spiral — a blunt filled terminal, not a pen cut, whose largest inscribed disc is 11.6 canvas
+     * units against the pen's 4.78 — so the skeleton collapses it to a single point and the curl is
+     * drawn into that centre, the way ক's lobe is drawn into its own ball.
+     *
+     * The matra is the full headline, inset 2 units from each end cap, and is written last.
+     */
+    Exercise(
+        id = "consonant-to",
+        title = "ত",
+        type = ExerciseType.CONSONANT,
+        difficulty = Difficulty.INTERMEDIATE,
+        order = 16,
+        strokes = listOf(
+            Stroke(
+                id = "consonant-to-arm",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(14f, 34f),
+                        Point(15f, 37f),
+                        Point(15f, 40f),
+                        Point(16f, 42f),
+                        Point(17f, 45f),
+                        Point(18f, 48f),
+                        Point(19f, 51f),
+                        Point(20f, 53f),
+                        Point(22f, 56f),
+                        Point(23f, 58f),
+                        Point(24f, 61f),
+                        Point(26f, 63f),
+                        Point(27f, 66f),
+                        Point(29f, 68f),
+                        Point(31f, 70f),
+                        Point(33f, 73f),
+                        Point(35f, 75f),
+                        Point(37f, 76f),
+                        Point(40f, 78f),
+                        Point(43f, 79f),
+                        Point(45f, 80f),
+                        Point(48f, 81f),
+                        Point(51f, 82f),
+                        Point(54f, 82f),
+                        Point(56f, 82f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "consonant-to-bowl",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(56f, 82f),
+                        Point(59f, 82f),
+                        Point(62f, 82f),
+                        Point(65f, 81f),
+                        Point(67f, 81f),
+                        Point(70f, 80f),
+                        Point(73f, 78f),
+                        Point(75f, 77f),
+                        Point(77f, 75f),
+                        Point(79f, 72f),
+                        Point(81f, 70f),
+                        Point(82f, 67f),
+                        Point(83f, 64f),
+                        Point(83f, 62f),
+                        Point(83f, 59f),
+                        Point(83f, 56f),
+                        Point(83f, 53f),
+                        Point(82f, 50f),
+                        Point(82f, 47f),
+                        Point(80f, 45f),
+                        Point(79f, 42f),
+                        Point(77f, 40f),
+                        Point(75f, 38f),
+                        Point(72f, 36f),
+                        Point(70f, 35f),
+                        Point(67f, 34f),
+                        Point(64f, 34f),
+                        Point(61f, 34f),
+                        Point(58f, 34f),
+                        Point(57f, 37f),
+                        Point(55f, 39f),
+                        Point(53f, 42f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "consonant-to-matra",
+                points = StrokePoints.line(Point(5f, 18f), Point(95f, 18f)),
+            ),
+        ),
+    ),
 )
