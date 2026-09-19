@@ -13,11 +13,12 @@ General development conventions — architecture, code quality, testing, build/v
 ## PLAN EXECUTION RULES
 
 1. Read the entire `plan.md` before making changes.
-2. Implement exactly **one numbered step at a time**. Do not implement multiple steps unless explicitly instructed.
+2. Implement exactly **one numbered step at a time** (a lettered sub-step such as 1.3 counts as one step). Do not implement multiple steps unless explicitly instructed.
 3. Do not move to the next step automatically unless explicitly instructed.
 4. Do not use placeholder implementations for a real feature.
 5. Keep the tracing engine independent from ViewModel, Room, Hilt, and Compose UI implementation details.
-6. Before changing behavior, inspect the existing code and reuse the existing patterns (progress calculation, Home screen category buttons, etc.).
+6. Before changing behavior, inspect the existing code and reuse the existing patterns (exercise catalog, category screens, Home/Progress category buttons, progress calculation).
+7. Glyph stroke geometry is derived from the rendered glyph, never drawn by eye (see the glyph stroke derivation workflow in project memory). Every new letter/digit is checked on a device before its step is closed.
 
 ## STEP COMPLETION
 
@@ -31,158 +32,231 @@ After completing a step, **STOP and wait for the next instruction.**
 
 # 1. Context
 
-Practice shows the complete letter/drawing as a final dotted shape from the first touch. The child traces over it. Ink already written stays on screen. Tracing progress is calculated by the existing tracing engine and progress calculation logic.
+The app teaches handwriting by tracing. Today it ships 11 vowels, **5 consonants (ক খ গ ঘ ঙ)** and a set of drawings. Each `Exercise` (`core/model/Exercise.kt`) has an `ExerciseType` (`VOWEL`, `CONSONANT`, `DRAWING`); static content lives in `core/content/*Exercises.kt` and is collected in `ExerciseCatalog`. Home and Progress have one button per category. Progress per exercise is stored through `ProgressRepository` (Room: `exercise_progress`, `practice_sessions`).
 
-The four steps below refine this experience and extend the Progress screen.
+This plan extends the app in five areas, in this order:
+
+| # | Area | Outcome |
+|---|------|---------|
+| 1 | Remaining consonants | All 39 Bengali consonants are practicable |
+| 2 | Practice sets | 5 or 10 repetitions of one character on one screen; averaged progress |
+| 3 | English characters | a–z and A–Z |
+| 4 | Math characters | 1–20 and basic operators |
+| 5 | Fill in the blanks | Sequences with missing items the child fills in |
+
+## The 39 consonants
+
+| Group | Letters | Status |
+|-------|---------|--------|
+| ক-বর্গ | ক খ গ ঘ ঙ | **Done** |
+| চ-বর্গ | চ ছ জ ঝ ঞ | Steps 1.1–1.5 |
+| ট-বর্গ | ট ঠ ড ঢ ণ | Steps 1.6–1.10 |
+| ত-বর্গ | ত থ দ ধ ন | Steps 1.11–1.15 |
+| প-বর্গ | প ফ ব ভ ম | Steps 1.16–1.20 |
+| অন্তঃস্থ / ঊষ্ম | য র ল শ ষ স হ | Steps 1.21–1.27 |
+| অন্যান্য | ড় ঢ় য় ৎ ং ঃ ঁ | Steps 1.28–1.34 |
+
+5 + 5 + 5 + 5 + 5 + 7 + 7 = **39**. Remaining to add: **34**.
 
 ---
 
-# 2. Step 1 — Reset Drawing
+# 2. Step 1 — Remaining Consonants
 
 ## Requirement
 
-If the user makes a mistake while tracing over the dots, tapping the **Reset** button must clear the previously drawn path.
+Add the 34 missing consonants so the Consonants screen lists all 39 in the order above. Each behaves exactly like the existing five: dotted guide, tracing, scoring, result, progress.
 
-The tracing progress shown while drawing must also be reset.
+## Implement (sub-steps 1.1–1.34, **one consonant per step**)
 
-## Implement
+- Each sub-step adds exactly **one** letter, then stops. Do not add a second letter in the same step.
+- Derive the letter's strokes from the rendered Noto Sans Bengali glyph (ink bbox fit; fit by width for letters wider than tall) and add it to `ConsonantExercises.kt` with id `consonant-<romanised>` and the next `order` value.
+- Author strokes in the natural hand-writing order and direction; the matra is drawn last where the letter has one. Letters without a full headline (like ঙ) follow the actual glyph.
+- ড় ঢ় য় need their dot as a separate stroke; ং ঃ ঁ are mark-only shapes; ৎ is a single letter (khanda-ta), not a conjunct.
+- Per letter: `check.py` (every sample on ink), overlay review, unit tests for the catalog, then a device trace at 95%+.
+- The last sub-step (1.34) also confirms the Consonants screen scrolls and lays out 39 items at 720x1280 and 720x1600, and that the Home/Progress consonant bar measures against 39.
 
-- Reset clears all ink drawn so far in the current attempt.
-- Reset returns the tracing progress display to its initial (0) state.
-- Reset goes through the existing MVI flow: `UI → Event → ViewModel → State → UI`.
-- Reset must not persist anything to Room.
+## Sub-steps
 
-## Definition of Done
+- [ ] 1.1 চ
+- [ ] 1.2 ছ
+- [ ] 1.3 জ
+- [ ] 1.4 ঝ
+- [ ] 1.5 ঞ
+- [ ] 1.6 ট
+- [ ] 1.7 ঠ
+- [ ] 1.8 ড
+- [ ] 1.9 ঢ
+- [ ] 1.10 ণ
+- [ ] 1.11 ত
+- [ ] 1.12 থ
+- [ ] 1.13 দ
+- [ ] 1.14 ধ
+- [ ] 1.15 ন
+- [ ] 1.16 প
+- [ ] 1.17 ফ
+- [ ] 1.18 ব
+- [ ] 1.19 ভ
+- [ ] 1.20 ম
+- [ ] 1.21 য
+- [ ] 1.22 র
+- [ ] 1.23 ল
+- [ ] 1.24 শ
+- [ ] 1.25 ষ
+- [ ] 1.26 স
+- [ ] 1.27 হ
+- [ ] 1.28 ড়
+- [ ] 1.29 ঢ়
+- [ ] 1.30 য়
+- [ ] 1.31 ৎ
+- [ ] 1.32 ং
+- [ ] 1.33 ঃ
+- [ ] 1.34 ঁ
 
-- [x] Tapping Reset removes every drawn path from the canvas
-- [x] The progress shown while drawing returns to its initial state
-- [x] After Reset the user can trace again from the beginning
-- [x] Unit test covers the reset state transition
-- [x] Verified by running the app and using Reset mid-trace
+## Definition of Done (applies to every sub-step)
 
-Done. The attempt counter moved from local Composable state into `PracticeState.attemptId`, so Reset
-is a real `UI → Event → ViewModel → State → UI` transition, and `ExerciseTracingContent` keys the
-tracing canvas on it. The ink was the defect: a restart hands `TracingInputCanvas` the same `Stroke`
-instances it already holds ink for, so its `finishedTraces` survived the restart even though the
-engine was rebuilt. Confirmed on the physical RMX3624: before the change, Reset left both traced
-strokes on screen; after it, the canvas is clean and back at stroke 1.
+- [ ] The one letter is added with strokes derived from its rendered glyph
+- [ ] Every guide sample lies on the glyph's ink
+- [ ] It completes at 95%+ on a faithful synthetic trace on the device
+- [ ] `ExerciseCatalogTest` counts, unique ids and contiguous `order` still pass with the new letter
+- [ ] `ConsonantsViewModelTest` still passes
+- [ ] Verified by running the app
+
+Step 1 as a whole is done when all 34 sub-steps are checked, the catalog test asserts 39 consonants, and consonant progress on Home/Progress is computed against 39.
 
 ---
 
-# 3. Step 2 — Resume and Completion Behavior
+# 3. Step 2 — Practice Sets and Averaged Progress
 
 ## Requirement
 
-1. **Resume.** The user can stop tracing at any point and resume from where they left off.
-   Currently, stopping midway through a step forces the user to repeat that step from the beginning. This behavior must change.
-
-2. **Completion.** The entire letter/drawing is displayed as a complete final shape. Tracing is considered complete once the user has traced the entire letter/drawing, **regardless of how they trace it** (any stroke order, any stroke split).
-
-3. **Outside-the-path tracing.** Tracing outside the dotted path continues to be calculated using the existing progress calculation logic. That logic is not changed.
+One screen practises **one character repeated 5 or 10 times**. The child traces every repetition; the screen shows the set's progress; the character's overall progress is the **average** of all its repetitions.
 
 ## Implement
 
-- Keep partial progress when the user lifts their finger mid-step; a new touch continues from the existing progress instead of restarting the step.
-- Determine completion from total coverage of the whole shape, not from an ordered stroke-by-stroke sequence.
-- Keep the existing score/progress calculation for off-path points unchanged.
-- Keep the tracing engine free of ViewModel, Room, Hilt and Compose dependencies.
+- **Set model.** A `PracticeSet` is one `Exercise` plus a set size. Set size is 5 or 10, chosen from a small selector on the Practice entry (default 5). Vowels, consonants, English and math all use it; drawings keep single-attempt practice.
+- **Screen.** Repetitions are shown as a scrollable grid/list of tracing cells (one `TracingInputCanvas` per cell, each with its own dotted guide). Each cell is traced independently, is marked done when complete, and shows its own score. Reset clears one cell; a set-level control restarts the set.
+- **State (MVI).** Extend `PracticeState`/`PracticeEvent` with per-cell state (`cells: List<CellState>` — attempt id, score, completed) and events such as `CellCompleted(index, score)`, `CellReset(index)`, `SetSizeChanged(size)`. The ViewModel owns the state; Composables stay stateless.
+- **Set progress.** Shown on the Practice screen as completed cells / total and the running average score of completed cells. This is derived state in the ViewModel, not stored.
+- **Character progress = average.** Every completed cell is persisted through the existing `ProgressRepository.savePracticeResult` (one `PracticeResult` per cell). The character's progress is the average score across all its recorded cells, computed in the repository (a DAO `AVG` over `practice_sessions`, exposed on `ExerciseProgress` as `averageScore`). Prefer this over adding stored columns so no Room migration is needed; if a migration turns out to be required, add it with an exported schema and a migration test.
+- **Consumers.** Progress per-exercise rows and the category bars use the averaged value; mastery (`MasteryRule`) keeps its meaning and is re-evaluated against the average once the set is complete. Existing scoring tests stay unmodified.
+- **Result.** The Result screen after a set shows the set average and per-cell scores.
+- The tracing engine and scoring are unchanged; only how many canvases the screen hosts changes.
 
 ## Definition of Done
 
-- [x] Lifting the finger mid-step and touching again continues from the previous progress
-- [x] No step has to be repeated from the beginning after an interruption
-- [x] Tracing the whole shape completes the exercise in any order
-- [x] Off-path tracing is still scored by the existing progress calculation
-- [x] Existing scoring tests still pass unmodified
-- [x] New unit tests cover resume, any-order completion and off-path tracing
-- [x] Verified by running the app: stop midway, resume, and finish
-
-Done. The character is one unit now: `MultiStrokeTracker` keeps every point of the attempt across
-touches and, on each lift, measures all of the exercise's strokes against all of those points, so
-no stroke is ever expected next and nothing is discarded when the finger goes up. Coverage and
-distance still come from `PathCoverageCalculator`/`PathDistanceCalculator`, untouched, and
-`TraceScoreCalculator` and its tests are unchanged — out-of-order attempts simply no longer exist,
-so that metric is always satisfied. `TracingInputCanvas` matches the model: it takes the whole
-guide and keeps the ink of every finished touch instead of one stroke's. Lifting early reports
-`TracingAttemptOutcome.Unfinished`, which the ViewModel turns into the
-`ContextualTip.UNFINISHED_TRACE` message, replacing the per-stroke miss tips. Confirmed on the
-physical RMX3624: half the matra, lift (ink kept, "Not finished yet" shown), the other half, then
-the stem before the body and the body in two touches — the letter completed at 100%, and Reset
-still clears.
+- [ ] Practice shows 5 cells by default and 10 when selected
+- [ ] Each cell traces, scores and resets independently
+- [ ] Set progress (done/total, running average) is shown and correct
+- [ ] Every completed cell is saved through `ProgressRepository`
+- [ ] Character progress is the average of its cell scores and appears on Progress
+- [ ] Existing tracing and scoring tests pass unmodified
+- [ ] Unit tests cover cell state transitions, set average, and the repository average (including a character with no cells)
+- [ ] Verified by running the app: finish a 5-cell set, then a 10-cell set, and check Progress
 
 ---
 
-# 4. Step 3 — Tracing Instruction
+# 4. Step 3 — English Characters
 
 ## Requirement
 
-No blinking dots. Show a simple instruction message instead, such as **“Practice tracing over the dots”**.
+Add English letters: lowercase **a–z** and capital **A–Z**, practised like the Bengali letters.
 
 ## Implement
 
-- Remove the blinking-dot animation from Practice.
-- Show the instruction message on the Practice screen.
-- The message is a string resource, not hardcoded in the Composable.
+- Add `ExerciseType.ENGLISH_SMALL` and `ExerciseType.ENGLISH_CAPITAL`; add `EnglishSmallExercises.kt` and `EnglishCapitalExercises.kt`, registered in `ExerciseCatalog`. Ids `english-small-a`, `english-capital-a`, and so on; titles are the glyphs.
+- Stroke geometry is derived from a rendered glyph using the same workflow. Use a print/school-style single-stroke-friendly font so `a`, `g`, `y` follow the shape children are taught; record the chosen font in the source header comment. Author natural stroke order and direction (top-to-bottom, left-to-right, counter-clockwise for round letters).
+- Category plumbing: an English category screen following `ConsonantsScreen`/`ConsonantsViewModel`, a route in `BcDestination`/`BcNavHost` only if the existing pattern needs one, Home buttons for **Small letters** and **Capital letters**, and matching Progress buttons/sections (reuse the existing hub: `ProgressState.openCategory`).
+- `LearningProgress`, `ProgressRepositoryImpl`, `HomeViewModel` and `ProgressViewModel` gain the new categories; overall progress includes them.
+- Strings live in string resources, with the Bengali UI copy consistent with existing category names.
+- Step 2 practice sets apply to these letters without extra code.
 
 ## Definition of Done
 
-- [x] No dot blinks on the Practice screen
-- [x] “Practice tracing over the dots” is displayed
-- [x] The text comes from a string resource
-- [x] Any test or code that depended on the blinking behavior is updated
-- [x] Verified by running the app
-
-Done. `StartMarker` and `StartMarkerTest` are deleted and `TracingInputCanvas` no longer draws or
-hides a marker, so the canvas is guides plus ink only. The instruction is
-`R.string.practice_tracing_instruction`, rendered under the exercise heading in both the portrait
-and landscape Practice layouts. The onboarding copy "Start from the highlighted dot." pointed at the
-removed marker, so it is now "Start at one end of the line." Confirmed on the physical RMX3624: no
-marker on অ, the instruction shows, tracing still inks, and the layout still fits at 720x1280.
+- [ ] 3.1 Category plumbing (type, screen, Home and Progress buttons, progress aggregation) proven with a–e and A–E
+- [ ] 3.2 Small letters f–z added
+- [ ] 3.3 Capital letters F–Z added
+- [ ] Every guide sample lies on the glyph's ink; each letter completes at 95%+ on a device trace
+- [ ] Catalog test asserts 26 small + 26 capital, unique ids, contiguous `order`
+- [ ] ViewModel and progress-aggregation tests cover the new categories
+- [ ] Verified by running the app: Home → English → practise → Progress
 
 ---
 
-# 5. Step 4 — Progress Screen
+# 5. Step 4 — Math Characters
 
 ## Requirement
 
-Add **Vowel** and **Consonant** buttons to the Progress screen, following the same UI pattern as the Home screen.
-
-When the user enters either section, show the individual progress for the respective vowels or consonants.
+Add math characters: numbers **1 to 20**, plus the basic operators, practised like letters.
 
 ## Implement
 
-- Reuse the Home screen's category button component and layout pattern.
-- Vowel button opens the per-vowel progress list.
-- Consonant button opens the per-consonant progress list.
-- Each list shows individual progress per exercise, sourced from the existing `ProgressRepository`.
-- Handle loading, empty and error states explicitly.
-- Follow MVI: `ProgressScreen → ProgressViewModel → ProgressRepository`.
-- Add routes only if the existing navigation pattern requires them.
+- Add `ExerciseType.MATH`; `MathExercises.kt` registered in `ExerciseCatalog`. Ids `math-1` … `math-20`, `math-plus`, and so on.
+- Digits 0–9 have their own derived strokes. **10–20 are composed from digit strokes** by a small content helper that lays two digits side by side inside the 0..100 canvas (scaled and offset), rather than 11 hand-derived glyphs. Composition keeps stroke order: left digit, then right digit.
+- Operators `+ − × ÷ =` are added last as a separate sub-step.
+- Category plumbing as in Step 3 (screen, Home button, Progress button/section, aggregation).
+- Sequence for later steps: math items are ordered by numeric value so Step 5 can build "next number" blanks.
 
 ## Definition of Done
 
-- [x] Progress screen shows Vowel and Consonant buttons styled like Home
-- [x] Vowel section lists each vowel with its individual progress
-- [x] Consonant section lists each consonant with its individual progress
-- [x] Loading, empty and error states are handled
-- [x] Unit tests cover the ViewModel state transitions and progress mapping
-- [x] Verified by running the app
-
-Done. The Progress screen is now a hub like Home: overall progress, then a `BcPrimaryButton` per
-category, and a section behind each one showing that category's bar and its exercises' individual
-stars and learning state. The section is screen state, not a route — `ProgressState.openCategory`
-driven by `ProgressEvent.CategoryOpened`/`CategoryClosed`, so `BcNavHost` is untouched and
-`ProgressViewModel` stays the one source of truth for the mapping. আঁকা gets a button too: the
-screen already listed drawing exercises individually, and hiding them behind nothing would have
-dropped that. `ProgressState` gained `isLoading` and `error`, the latter from `catch` on the Room-
-backed flow, so a failed read says so instead of showing empty progress. Confirmed on the physical
-RMX3624: the buttons open স্বরবর্ণ (অ mastered, আ completed, the rest unstarted), ব্যঞ্জনবর্ণ and আঁকা;
-app-bar and system back both close the section first and only then leave the screen. 330 unit tests
-pass, 11 of them `ProgressViewModelTest`.
+- [ ] 4.1 Digits 1–9 and category plumbing
+- [ ] 4.2 10–20 composed from digit strokes, each fits within the canvas
+- [ ] 4.3 Operators + − × ÷ =
+- [ ] Guides sit on the rendered glyph; each item completes at 95%+ on a device trace
+- [ ] Catalog test asserts the expected items, unique ids and numeric `order`
+- [ ] Unit tests cover the composition helper (bounds, order) and the new category in aggregation
+- [ ] Verified by running the app
 
 ---
 
-# 6. Feature Completion Definition
+# 6. Step 5 — Fill in the Blanks
+
+## Requirement
+
+Show a sequence with gaps, for example **a, _, c, d, _, e**. The child fills each gap by tracing the missing item.
+
+## Implement
+
+- **Sequences** come from the ordered catalog of a category: vowels, consonants, small letters, capital letters, numbers. Category is chosen from a new **Fill in the blanks** entry (Home button) then a category picker.
+- **Generation** is a pure, seedable function (`BlankSequenceGenerator`) producing a window of 5–8 consecutive items with 1–3 blanks (never the first item, blanks may be adjacent only at the higher difficulty). Deterministic given a seed, so it is unit-testable.
+- **Interaction.** Shown items are static glyphs. Each blank is a tracing cell (reusing the existing tracing canvas and scoring) with no dotted guide shown: the child recalls the item and traces it freehand, and a hint control reveals the dotted guide (using a hint lowers that blank's score cap; rule documented in code and tested).
+- **State (MVI).** `FillBlanksState` (sequence, per-blank status), events (`BlankCompleted`, `HintUsed`, `NextSequence`), owned by `FillBlanksViewModel`.
+- **Progress.** Each completed blank is saved through `ProgressRepository.savePracticeResult` against the missing item's exercise id, so it counts in that character's average (Step 2) and in category progress.
+- A finished sequence shows a short result and a "Next sequence" action.
+
+## Definition of Done
+
+- [ ] Fill-in-the-blanks entry on Home, category picker, sequence screen
+- [ ] Sequences generated from vowels, consonants, English and math with correct gaps
+- [ ] Each blank traces and scores; hint reveals the guide and applies its rule
+- [ ] Results feed per-character averages and category progress
+- [ ] Unit tests: generator (seeded, bounds, blank positions, category ends), ViewModel transitions, hint scoring rule
+- [ ] Verified by running the app for at least a Bengali and an English sequence
+
+---
+
+# 7. Step 6 — Integration and Regression
+
+## Requirement
+
+Confirm all new categories and modes behave as one coherent product.
+
+## Implement
+
+- Progress screen lists every category (Vowel, Consonant, Small, Capital, Math, Drawing) with correct bars; overall progress includes all.
+- Home layout fits the added buttons on 720x1280 and 720x1600.
+- Continue/resume points at the most recent unmastered exercise across all categories.
+- Update `CriticalFlowTest`/androidTest and `ProgressRoomTest` for the new types.
+
+## Definition of Done
+
+- [ ] Home and Progress show every category; layouts fit on small and tall screens
+- [ ] Full unit test suite passes
+- [ ] Instrumented tests updated and run on the device
+- [ ] Verified by running the app through one complete flow per category
+
+---
+
+# 8. Feature Completion Definition
 
 A step is complete only when it satisfies:
 
