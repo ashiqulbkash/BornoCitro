@@ -3,9 +3,12 @@ package com.bornochitra.feature.practice
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bornochitra.core.analytics.AnalyticsEvent
+import com.bornochitra.core.analytics.AnalyticsTracker
 import com.bornochitra.core.content.ExerciseRepository
 import com.bornochitra.core.database.repository.ProgressRepository
 import com.bornochitra.core.model.Exercise
+import com.bornochitra.core.model.ExerciseType
 import com.bornochitra.core.model.PracticeResult
 import com.bornochitra.core.model.ScoreLevel
 import com.bornochitra.core.tips.ContextualTip
@@ -16,6 +19,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlin.math.roundToInt
 import javax.inject.Inject
 
 /** Must match [com.bornochitra.app.navigation.BcDestination.Practice.ARG_EXERCISE_ID]. */
@@ -52,11 +56,13 @@ class PracticeViewModel @Inject constructor(
     private val exerciseRepository: ExerciseRepository,
     private val progressRepository: ProgressRepository,
     private val tipSelector: TipSelector,
+    private val analytics: AnalyticsTracker,
 ) : ViewModel() {
 
     private val exerciseId: String = checkNotNull(savedStateHandle[ARG_EXERCISE_ID])
     private var startedAtMs: Long? = null
     private var previousAttempts = 0
+    private var wasMastered = false
     private var consecutiveMisses = 0
 
     private val mutableState = MutableStateFlow(PracticeState())
@@ -67,8 +73,11 @@ class PracticeViewModel @Inject constructor(
             val exercise = exerciseRepository.getExercise(exerciseId)
             mutableState.value = if (exercise != null) {
                 startedAtMs = System.currentTimeMillis()
-                val progressById = progressRepository.observeExerciseProgress(listOf(exerciseId)).first()
-                previousAttempts = progressById[exerciseId]?.attemptCount ?: 0
+                val progress = progressRepository.observeExerciseProgress(listOf(exerciseId)).first()[exerciseId]
+                previousAttempts = progress?.attemptCount ?: 0
+                wasMastered = progress?.isMastered == true
+                analytics.track(AnalyticsEvent.ExerciseStarted(exercise.id, exercise.type))
+                if (previousAttempts > 0) analytics.track(AnalyticsEvent.PracticeRepeated(exercise.id))
                 PracticeState(
                     exercise = exercise,
                     isLoading = false,
@@ -94,6 +103,7 @@ class PracticeViewModel @Inject constructor(
     }
 
     private fun onRestarted() {
+        analytics.track(AnalyticsEvent.PracticeRepeated(exerciseId))
         consecutiveMisses = 0
         mutableState.value = mutableState.value.copy(tip = tipSelector.beforeFirstAttempt(previousAttempts))
     }
@@ -111,6 +121,7 @@ class PracticeViewModel @Inject constructor(
                     completedAtMs = completedAtMs,
                 ),
             )
+            trackCompletion(score, scoreLevel, durationMs = completedAtMs - (startedAtMs ?: completedAtMs))
             mutableState.value = mutableState.value.copy(
                 isExerciseCompleted = true,
                 score = score,
@@ -118,5 +129,16 @@ class PracticeViewModel @Inject constructor(
                 sessionId = sessionId,
             )
         }
+    }
+
+    private suspend fun trackCompletion(score: Float, scoreLevel: ScoreLevel, durationMs: Long) {
+        val type = mutableState.value.exercise?.type ?: return
+        analytics.track(AnalyticsEvent.ExerciseCompleted(exerciseId, type, durationMs))
+        analytics.track(AnalyticsEvent.ScoreReceived(exerciseId, score.roundToInt(), scoreLevel))
+        if (type == ExerciseType.DRAWING) analytics.track(AnalyticsEvent.DrawingCompleted(exerciseId))
+
+        val isMastered = progressRepository.observeExerciseProgress(listOf(exerciseId)).first()[exerciseId]?.isMastered == true
+        if (isMastered && !wasMastered) analytics.track(AnalyticsEvent.ExerciseMastered(exerciseId))
+        wasMastered = isMastered
     }
 }

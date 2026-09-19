@@ -1,6 +1,8 @@
 package com.bornochitra.feature.practice
 
 import androidx.lifecycle.SavedStateHandle
+import com.bornochitra.core.analytics.AnalyticsEvent
+import com.bornochitra.core.analytics.AnalyticsTracker
 import com.bornochitra.core.content.ExerciseRepository
 import com.bornochitra.core.database.repository.ProgressRepository
 import com.bornochitra.core.model.Difficulty
@@ -63,13 +65,15 @@ class PracticeViewModelTest {
 
     private class FakeProgressRepository(
         private val progressById: Map<String, ExerciseProgress> = emptyMap(),
+        /** What the stored progress becomes once a result has been saved, as the real repository would update it. */
+        private val progressAfterSave: Map<String, ExerciseProgress> = progressById,
     ) : ProgressRepository {
         val savedResults = mutableListOf<PracticeResult>()
         var nextSessionId = 1L
 
         override fun observeProgress(): Flow<LearningProgress> = MutableStateFlow(LearningProgress())
         override fun observeExerciseProgress(exerciseIds: List<String>): Flow<Map<String, ExerciseProgress>> =
-            flowOf(progressById.filterKeys { it in exerciseIds })
+            flowOf((if (savedResults.isEmpty()) progressById else progressAfterSave).filterKeys { it in exerciseIds })
 
         override suspend fun savePracticeResult(result: PracticeResult): Long {
             savedResults += result
@@ -81,7 +85,7 @@ class PracticeViewModelTest {
             savedResults.filter { it.exerciseId == exerciseId }.takeLast(limit).reversed()
     }
 
-    private fun previousProgress(attemptCount: Int) = mapOf(
+    private fun previousProgress(attemptCount: Int, isMastered: Boolean = false) = mapOf(
         "vowel-o" to ExerciseProgress(
             exerciseId = "vowel-o",
             attemptCount = attemptCount,
@@ -89,9 +93,17 @@ class PracticeViewModelTest {
             bestScore = 90f,
             lastScore = 90f,
             lastPracticedAt = 0L,
-            isMastered = false,
+            isMastered = isMastered,
         ),
     )
+
+    private val trackedEvents = mutableListOf<AnalyticsEvent>()
+
+    private val analytics = object : AnalyticsTracker {
+        override fun track(event: AnalyticsEvent) {
+            trackedEvents += event
+        }
+    }
 
     private fun viewModel(
         exerciseId: String = "vowel-o",
@@ -102,6 +114,7 @@ class PracticeViewModelTest {
         exerciseRepository = exerciseRepository,
         progressRepository = progressRepository,
         tipSelector = TipSelector(TipRules()),
+        analytics = analytics,
     )
 
     /** Loads the exercise so the ViewModel is ready to receive events. */
@@ -274,5 +287,92 @@ class PracticeViewModelTest {
         assertEquals(92f, state.score)
         assertEquals(ScoreLevel.PERFECT, state.scoreLevel)
         assertEquals(42L, state.sessionId)
+    }
+
+    @Test
+    fun `opening an exercise for the first time tracks it as started, not repeated`() = runTest(dispatcher) {
+        startedViewModel()
+
+        assertEquals(listOf<AnalyticsEvent>(AnalyticsEvent.ExerciseStarted("vowel-o", ExerciseType.VOWEL)), trackedEvents)
+    }
+
+    @Test
+    fun `opening an exercise practised before tracks it as started and repeated`() = runTest(dispatcher) {
+        startedViewModel(FakeProgressRepository(previousProgress(attemptCount = 2)))
+
+        assertEquals(
+            listOf(AnalyticsEvent.ExerciseStarted("vowel-o", ExerciseType.VOWEL), AnalyticsEvent.PracticeRepeated("vowel-o")),
+            trackedEvents,
+        )
+    }
+
+    @Test
+    fun `resetting mid-attempt tracks a repeat`() = runTest(dispatcher) {
+        val viewModel = startedViewModel()
+
+        viewModel.onEvent(PracticeEvent.Restarted)
+
+        assertEquals(AnalyticsEvent.PracticeRepeated("vowel-o"), trackedEvents.last())
+    }
+
+    @Test
+    fun `finishing a letter tracks completion and the rounded score`() = runTest(dispatcher) {
+        val viewModel = startedViewModel()
+        trackedEvents.clear()
+
+        viewModel.onEvent(PracticeEvent.ExerciseCompleted(score = 93.6f, scoreLevel = ScoreLevel.PERFECT))
+        dispatcher.scheduler.advanceUntilIdle()
+
+        assertEquals(2, trackedEvents.size)
+        assertTrue(trackedEvents[0] is AnalyticsEvent.ExerciseCompleted)
+        assertEquals(AnalyticsEvent.ScoreReceived("vowel-o", score = 94, level = ScoreLevel.PERFECT), trackedEvents[1])
+    }
+
+    @Test
+    fun `finishing a drawing also tracks a drawing completed`() = runTest(dispatcher) {
+        val circle = exercise.copy(id = "drawing-circle", title = "Circle", type = ExerciseType.DRAWING)
+        val viewModel = viewModel(exerciseId = "drawing-circle", exerciseRepository = exerciseRepositoryOf(listOf(circle)))
+        backgroundScope.launch(dispatcher) { viewModel.uiState.collect {} }
+        dispatcher.scheduler.advanceUntilIdle()
+
+        viewModel.onEvent(PracticeEvent.ExerciseCompleted(score = 90f, scoreLevel = ScoreLevel.PERFECT))
+        dispatcher.scheduler.advanceUntilIdle()
+
+        assertTrue(AnalyticsEvent.DrawingCompleted("drawing-circle") in trackedEvents)
+    }
+
+    @Test
+    fun `mastery is tracked once, on the attempt that earns it`() = runTest(dispatcher) {
+        val progress = FakeProgressRepository(
+            progressById = previousProgress(attemptCount = 2),
+            progressAfterSave = previousProgress(attemptCount = 3, isMastered = true),
+        )
+        val viewModel = startedViewModel(progress)
+
+        viewModel.onEvent(PracticeEvent.ExerciseCompleted(score = 95f, scoreLevel = ScoreLevel.PERFECT))
+        dispatcher.scheduler.advanceUntilIdle()
+
+        assertEquals(1, trackedEvents.count { it is AnalyticsEvent.ExerciseMastered })
+    }
+
+    @Test
+    fun `an exercise that was already mastered is not tracked as mastered again`() = runTest(dispatcher) {
+        val mastered = previousProgress(attemptCount = 5, isMastered = true)
+        val viewModel = startedViewModel(FakeProgressRepository(progressById = mastered))
+
+        viewModel.onEvent(PracticeEvent.ExerciseCompleted(score = 95f, scoreLevel = ScoreLevel.PERFECT))
+        dispatcher.scheduler.advanceUntilIdle()
+
+        assertTrue(trackedEvents.none { it is AnalyticsEvent.ExerciseMastered })
+    }
+
+    @Test
+    fun `an attempt that does not earn mastery is not tracked as mastered`() = runTest(dispatcher) {
+        val viewModel = startedViewModel(FakeProgressRepository(progressById = previousProgress(attemptCount = 1)))
+
+        viewModel.onEvent(PracticeEvent.ExerciseCompleted(score = 70f, scoreLevel = ScoreLevel.MEDIUM))
+        dispatcher.scheduler.advanceUntilIdle()
+
+        assertTrue(trackedEvents.none { it is AnalyticsEvent.ExerciseMastered })
     }
 }
