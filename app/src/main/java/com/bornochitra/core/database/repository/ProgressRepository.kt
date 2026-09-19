@@ -16,4 +16,7 @@ interface ProgressRepository {
 
     /** The attempt saved under [sessionId], or null if no such session was recorded. */
     suspend fun getPracticeResult(sessionId: Long): PracticeResult?
+
+    /** Up to [limit] of the exercise's latest attempts, newest first. */
+    suspend fun getRecentResults(exerciseId: String, limit: Int): List<PracticeResult>
 }

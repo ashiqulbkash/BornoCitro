@@ -22,6 +22,13 @@ interface PracticeSessionDao {
     @Query("SELECT * FROM practice_session WHERE id = :sessionId")
     suspend fun getSession(sessionId: Long): PracticeSessionEntity?
 
+    /** The exercise's latest sessions, newest first; the id breaks ties between equal timestamps. */
+    @Query(
+        "SELECT * FROM practice_session WHERE exerciseId = :exerciseId " +
+            "ORDER BY createdAt DESC, id DESC LIMIT :limit",
+    )
+    suspend fun getRecentSessions(exerciseId: String, limit: Int): List<PracticeSessionEntity>
+
     @Query("SELECT * FROM exercise_progress WHERE exerciseId = :exerciseId")
     suspend fun getProgress(exerciseId: String): ExerciseProgressEntity?
 

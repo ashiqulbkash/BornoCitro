@@ -7,6 +7,8 @@ import com.bornochitra.core.content.ExerciseRepository
 import com.bornochitra.core.database.repository.ProgressRepository
 import com.bornochitra.core.model.Exercise
 import com.bornochitra.core.model.ScoreLevel
+import com.bornochitra.core.tips.ContextualTip
+import com.bornochitra.core.tips.TipSelector
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -26,6 +28,7 @@ data class ResultAttempt(
     val scorePercent: Int,
     val scoreLevel: ScoreLevel,
     val nextExerciseId: String?,
+    val tip: ContextualTip?,
 )
 
 data class ResultState(
@@ -39,6 +42,7 @@ class ResultViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val exerciseRepository: ExerciseRepository,
     private val progressRepository: ProgressRepository,
+    private val tipSelector: TipSelector,
 ) : ViewModel() {
 
     private val sessionId: Long? = savedStateHandle.get<String>(ARG_SESSION_ID)?.toLongOrNull()
@@ -66,6 +70,12 @@ class ResultViewModel @Inject constructor(
                 scorePercent = result.score.roundToInt(),
                 scoreLevel = result.scoreLevel,
                 nextExerciseId = nextExerciseIdAfter(exercise),
+                tip = tipSelector.afterAttempt(
+                    difficulty = exercise.difficulty,
+                    recentScores = progressRepository
+                        .getRecentResults(exercise.id, tipSelector.recentResultsNeeded)
+                        .map { it.score },
+                ),
             ),
         )
     }

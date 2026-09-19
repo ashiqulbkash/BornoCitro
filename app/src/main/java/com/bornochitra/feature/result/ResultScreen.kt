@@ -1,10 +1,14 @@
 package com.bornochitra.feature.result
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -23,6 +27,7 @@ import com.bornochitra.core.ui.components.BcFeedbackBanner
 import com.bornochitra.core.ui.components.BcFeedbackTone
 import com.bornochitra.core.ui.components.BcPrimaryButton
 import com.bornochitra.core.ui.components.BcSecondaryButton
+import com.bornochitra.core.ui.components.BcTip
 import com.bornochitra.core.ui.components.BcTopAppBar
 import com.bornochitra.core.ui.theme.BcSpacing
 import com.bornochitra.core.ui.theme.BornoChitraTheme
@@ -98,38 +103,47 @@ private fun AttemptSummary(
     modifier: Modifier = Modifier,
 ) {
     val wording = attempt.scoreLevel.wording()
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(BcSpacing.md, Alignment.CenterVertically),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        BcFeedbackBanner(tone = wording.tone, title = wording.headline, message = wording.message)
+    // Scrolls when the content is taller than a short screen or a large font allows, so no button is
+    // ever out of reach; the minimum height keeps it centred when everything fits.
+    BoxWithConstraints(modifier = modifier) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .verticalScroll(rememberScrollState())
+                .heightIn(min = maxHeight),
+            verticalArrangement = Arrangement.spacedBy(BcSpacing.md, Alignment.CenterVertically),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            BcFeedbackBanner(tone = wording.tone, title = wording.headline, message = wording.message)
 
-        BcExerciseHeading(title = attempt.title)
-        Text(text = "${attempt.scorePercent}%", style = MaterialTheme.typography.headlineLarge)
+            BcExerciseHeading(title = attempt.title)
+            Text(text = "${attempt.scorePercent}%", style = MaterialTheme.typography.headlineLarge)
 
-        BcPrimaryButton(
-            text = wording.retryText,
-            onClick = { onPracticeClick(attempt.exerciseId) },
-            modifier = Modifier.fillMaxWidth(),
-        )
+            attempt.tip?.let { BcTip(tip = it) }
 
-        // A low score keeps the child on this exercise: moving on would skip the letter they are
-        // still learning (plan.md section 39).
-        val nextExerciseId = attempt.nextExerciseId
-        if (nextExerciseId != null && attempt.scoreLevel != ScoreLevel.LOW) {
+            BcPrimaryButton(
+                text = wording.retryText,
+                onClick = { onPracticeClick(attempt.exerciseId) },
+                modifier = Modifier.fillMaxWidth(),
+            )
+
+            // A low score keeps the child on this exercise: moving on would skip the letter they are
+            // still learning (plan.md section 39).
+            val nextExerciseId = attempt.nextExerciseId
+            if (nextExerciseId != null && attempt.scoreLevel != ScoreLevel.LOW) {
+                BcSecondaryButton(
+                    text = "Next",
+                    onClick = { onPracticeClick(nextExerciseId) },
+                    modifier = Modifier.fillMaxWidth(),
+                )
+            }
+
             BcSecondaryButton(
-                text = "Next",
-                onClick = { onPracticeClick(nextExerciseId) },
+                text = "View Progress",
+                onClick = onProgressClick,
                 modifier = Modifier.fillMaxWidth(),
             )
         }
-
-        BcSecondaryButton(
-            text = "View Progress",
-            onClick = onProgressClick,
-            modifier = Modifier.fillMaxWidth(),
-        )
     }
 }
 
@@ -176,6 +190,7 @@ private fun ResultScreenPerfectPreview() {
                     scorePercent = 94,
                     scoreLevel = ScoreLevel.PERFECT,
                     nextExerciseId = "vowel-aa",
+                    tip = null,
                 ),
             ),
             onPracticeClick = {},
@@ -197,6 +212,7 @@ private fun ResultScreenMediumPreview() {
                     scorePercent = 76,
                     scoreLevel = ScoreLevel.MEDIUM,
                     nextExerciseId = "vowel-aa",
+                    tip = null,
                 ),
             ),
             onPracticeClick = {},
@@ -218,6 +234,7 @@ private fun ResultScreenLowPreview() {
                     scorePercent = 48,
                     scoreLevel = ScoreLevel.LOW,
                     nextExerciseId = "vowel-aa",
+                    tip = null,
                 ),
             ),
             onPracticeClick = {},

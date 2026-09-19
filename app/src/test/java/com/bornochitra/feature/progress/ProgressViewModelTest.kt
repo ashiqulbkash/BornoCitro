@@ -88,6 +88,7 @@ class ProgressViewModelTest {
 
             override suspend fun savePracticeResult(result: PracticeResult): Long = 0L
             override suspend fun getPracticeResult(sessionId: Long): PracticeResult? = null
+            override suspend fun getRecentResults(exerciseId: String, limit: Int): List<PracticeResult> = emptyList()
         }
         return ProgressViewModel(exerciseRepository, progressRepository)
     }

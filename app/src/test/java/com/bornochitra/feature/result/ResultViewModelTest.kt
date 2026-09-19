@@ -11,6 +11,9 @@ import com.bornochitra.core.model.LearningProgress
 import com.bornochitra.core.model.PracticeResult
 import com.bornochitra.core.model.ScoreLevel
 import com.bornochitra.core.model.Stroke
+import com.bornochitra.core.tips.ContextualTip
+import com.bornochitra.core.tips.TipRules
+import com.bornochitra.core.tips.TipSelector
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -43,11 +46,17 @@ class ResultViewModelTest {
         Dispatchers.resetMain()
     }
 
-    private fun exercise(id: String, title: String, order: Int, type: ExerciseType = ExerciseType.VOWEL) = Exercise(
+    private fun exercise(
+        id: String,
+        title: String,
+        order: Int,
+        type: ExerciseType = ExerciseType.VOWEL,
+        difficulty: Difficulty = Difficulty.BEGINNER,
+    ) = Exercise(
         id = id,
         title = title,
         type = type,
-        difficulty = Difficulty.BEGINNER,
+        difficulty = difficulty,
         strokes = listOf(Stroke(id = "$id-stroke", points = emptyList())),
         order = order,
     )
@@ -58,6 +67,13 @@ class ResultViewModelTest {
         exercise(id = "consonant-ko", title = "ক", order = 1, type = ExerciseType.CONSONANT),
         exercise(id = "drawing-circle", title = "Circle", order = 2, type = ExerciseType.DRAWING),
         exercise(id = "drawing-square", title = "Square", order = 3, type = ExerciseType.DRAWING),
+        exercise(
+            id = "drawing-house",
+            title = "House",
+            order = 5,
+            type = ExerciseType.DRAWING,
+            difficulty = Difficulty.ADVANCED,
+        ),
     )
 
     private fun exerciseRepositoryOf(exercises: List<Exercise>) = object : ExerciseRepository {
@@ -74,6 +90,14 @@ class ResultViewModelTest {
 
         override suspend fun savePracticeResult(result: PracticeResult): Long = 0L
         override suspend fun getPracticeResult(sessionId: Long): PracticeResult? = resultsBySessionId[sessionId]
+
+        // Newest session first, as the database returns them.
+        override suspend fun getRecentResults(exerciseId: String, limit: Int): List<PracticeResult> =
+            resultsBySessionId.entries
+                .filter { it.value.exerciseId == exerciseId }
+                .sortedByDescending { it.key }
+                .map { it.value }
+                .take(limit)
     }
 
     private fun practiceResult(
@@ -97,6 +121,7 @@ class ResultViewModelTest {
         savedStateHandle = SavedStateHandle(mapOf("sessionId" to sessionId)),
         exerciseRepository = exerciseRepositoryOf(exercises),
         progressRepository = progressRepositoryOf(results),
+        tipSelector = TipSelector(TipRules()),
     )
 
     @Test
@@ -117,6 +142,7 @@ class ResultViewModelTest {
                 scorePercent = 94,
                 scoreLevel = ScoreLevel.PERFECT,
                 nextExerciseId = "vowel-aa",
+                tip = null,
             ),
             state.attempt,
         )
@@ -173,9 +199,64 @@ class ResultViewModelTest {
                 scorePercent = 88,
                 scoreLevel = ScoreLevel.MEDIUM,
                 nextExerciseId = "drawing-square",
+                tip = null,
             ),
             viewModel.uiState.value.attempt,
         )
+    }
+
+    @Test
+    fun `repeated attempts below the bar earn the slow-down tip`() = runTest(dispatcher) {
+        val viewModel = viewModel(
+            sessionId = "2",
+            results = mapOf(
+                1L to practiceResult(score = 70f, scoreLevel = ScoreLevel.MEDIUM),
+                2L to practiceResult(score = 72f, scoreLevel = ScoreLevel.MEDIUM),
+            ),
+        )
+
+        backgroundScope.launch(dispatcher) { viewModel.uiState.collect {} }
+        dispatcher.scheduler.advanceUntilIdle()
+
+        assertEquals(ContextualTip.REPEATED_LOW_SCORES, viewModel.uiState.value.attempt?.tip)
+    }
+
+    @Test
+    fun `a single weak attempt is not enough for a tip`() = runTest(dispatcher) {
+        val viewModel = viewModel(
+            results = mapOf(1L to practiceResult(score = 65f, scoreLevel = ScoreLevel.MEDIUM)),
+        )
+
+        backgroundScope.launch(dispatcher) { viewModel.uiState.collect {} }
+        dispatcher.scheduler.advanceUntilIdle()
+
+        assertNull(viewModel.uiState.value.attempt?.tip)
+    }
+
+    @Test
+    fun `an earlier weak attempt followed by a good one earns no tip`() = runTest(dispatcher) {
+        val viewModel = viewModel(
+            sessionId = "2",
+            results = mapOf(
+                1L to practiceResult(score = 60f, scoreLevel = ScoreLevel.MEDIUM),
+                2L to practiceResult(score = 92f),
+            ),
+        )
+
+        backgroundScope.launch(dispatcher) { viewModel.uiState.collect {} }
+        dispatcher.scheduler.advanceUntilIdle()
+
+        assertNull(viewModel.uiState.value.attempt?.tip)
+    }
+
+    @Test
+    fun `finishing a difficult exercise earns the well-done tip`() = runTest(dispatcher) {
+        val viewModel = viewModel(results = mapOf(1L to practiceResult(exerciseId = "drawing-house", score = 95f)))
+
+        backgroundScope.launch(dispatcher) { viewModel.uiState.collect {} }
+        dispatcher.scheduler.advanceUntilIdle()
+
+        assertEquals(ContextualTip.DIFFICULT_COMPLETED, viewModel.uiState.value.attempt?.tip)
     }
 
     @Test

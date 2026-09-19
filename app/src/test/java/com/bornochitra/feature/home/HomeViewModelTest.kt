@@ -51,6 +51,10 @@ class HomeViewModelTest {
             override suspend fun savePracticeResult(result: com.bornochitra.core.model.PracticeResult): Long = 0L
             override suspend fun getPracticeResult(sessionId: Long): com.bornochitra.core.model.PracticeResult? =
                 null
+            override suspend fun getRecentResults(
+                exerciseId: String,
+                limit: Int,
+            ): List<com.bornochitra.core.model.PracticeResult> = emptyList()
         }
 
         val viewModel = HomeViewModel(repository)
@@ -74,6 +78,10 @@ class HomeViewModelTest {
             override suspend fun savePracticeResult(result: com.bornochitra.core.model.PracticeResult): Long = 0L
             override suspend fun getPracticeResult(sessionId: Long): com.bornochitra.core.model.PracticeResult? =
                 null
+            override suspend fun getRecentResults(
+                exerciseId: String,
+                limit: Int,
+            ): List<com.bornochitra.core.model.PracticeResult> = emptyList()
         }
 
         val viewModel = HomeViewModel(repository)

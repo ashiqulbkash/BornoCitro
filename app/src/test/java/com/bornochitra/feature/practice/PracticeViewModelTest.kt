@@ -11,6 +11,9 @@ import com.bornochitra.core.model.LearningProgress
 import com.bornochitra.core.model.PracticeResult
 import com.bornochitra.core.model.ScoreLevel
 import com.bornochitra.core.model.Stroke
+import com.bornochitra.core.tips.ContextualTip
+import com.bornochitra.core.tips.TipRules
+import com.bornochitra.core.tips.TipSelector
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -18,6 +21,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
@@ -57,13 +61,15 @@ class PracticeViewModelTest {
         override suspend fun getExercise(id: String): Exercise? = exercises.find { it.id == id }
     }
 
-    private class FakeProgressRepository : ProgressRepository {
+    private class FakeProgressRepository(
+        private val progressById: Map<String, ExerciseProgress> = emptyMap(),
+    ) : ProgressRepository {
         val savedResults = mutableListOf<PracticeResult>()
         var nextSessionId = 1L
 
         override fun observeProgress(): Flow<LearningProgress> = MutableStateFlow(LearningProgress())
         override fun observeExerciseProgress(exerciseIds: List<String>): Flow<Map<String, ExerciseProgress>> =
-            flowOf(emptyMap())
+            flowOf(progressById.filterKeys { it in exerciseIds })
 
         override suspend fun savePracticeResult(result: PracticeResult): Long {
             savedResults += result
@@ -71,7 +77,21 @@ class PracticeViewModelTest {
         }
 
         override suspend fun getPracticeResult(sessionId: Long): PracticeResult? = savedResults.firstOrNull()
+        override suspend fun getRecentResults(exerciseId: String, limit: Int): List<PracticeResult> =
+            savedResults.filter { it.exerciseId == exerciseId }.takeLast(limit).reversed()
     }
+
+    private fun previousProgress(attemptCount: Int) = mapOf(
+        "vowel-o" to ExerciseProgress(
+            exerciseId = "vowel-o",
+            attemptCount = attemptCount,
+            completedCount = attemptCount,
+            bestScore = 90f,
+            lastScore = 90f,
+            lastPracticedAt = 0L,
+            isMastered = false,
+        ),
+    )
 
     private fun viewModel(
         exerciseId: String = "vowel-o",
@@ -81,7 +101,18 @@ class PracticeViewModelTest {
         savedStateHandle = SavedStateHandle(mapOf("exerciseId" to exerciseId)),
         exerciseRepository = exerciseRepository,
         progressRepository = progressRepository,
+        tipSelector = TipSelector(TipRules()),
     )
+
+    /** Loads the exercise so the ViewModel is ready to receive events. */
+    private fun TestScope.startedViewModel(
+        progressRepository: ProgressRepository = FakeProgressRepository(),
+    ): PracticeViewModel {
+        val viewModel = viewModel(progressRepository = progressRepository)
+        backgroundScope.launch(dispatcher) { viewModel.uiState.collect {} }
+        dispatcher.scheduler.advanceUntilIdle()
+        return viewModel
+    }
 
     @Test
     fun `loads the requested exercise on start`() = runTest(dispatcher) {
@@ -130,6 +161,83 @@ class PracticeViewModelTest {
         assertEquals(88f, savedResult.score)
         assertTrue(savedResult.completed)
         assertEquals(ScoreLevel.MEDIUM, viewModel.uiState.value.scoreLevel)
+    }
+
+    @Test
+    fun `a first-time exercise starts with the first-attempt tip`() = runTest(dispatcher) {
+        val viewModel = startedViewModel()
+
+        assertEquals(ContextualTip.FIRST_ATTEMPT, viewModel.uiState.value.tip)
+    }
+
+    @Test
+    fun `an exercise practised before starts without a tip`() = runTest(dispatcher) {
+        val viewModel = startedViewModel(FakeProgressRepository(previousProgress(attemptCount = 2)))
+
+        assertNull(viewModel.uiState.value.tip)
+    }
+
+    @Test
+    fun `finishing a stroke well clears the first-attempt tip and shows none`() = runTest(dispatcher) {
+        val viewModel = startedViewModel()
+
+        viewModel.onEvent(PracticeEvent.StrokeAttempted(isCompleted = true))
+
+        assertNull(viewModel.uiState.value.tip)
+    }
+
+    @Test
+    fun `missing a stroke once shows the try-again tip`() = runTest(dispatcher) {
+        val viewModel = startedViewModel()
+
+        viewModel.onEvent(PracticeEvent.StrokeAttempted(isCompleted = false))
+
+        assertEquals(ContextualTip.MISSED_STROKE, viewModel.uiState.value.tip)
+    }
+
+    @Test
+    fun `missing the same stroke repeatedly escalates the tip`() = runTest(dispatcher) {
+        val viewModel = startedViewModel()
+
+        repeat(2) { viewModel.onEvent(PracticeEvent.StrokeAttempted(isCompleted = false)) }
+        assertEquals(ContextualTip.MISSED_STROKE, viewModel.uiState.value.tip)
+
+        viewModel.onEvent(PracticeEvent.StrokeAttempted(isCompleted = false))
+        assertEquals(ContextualTip.REPEATED_MISSES, viewModel.uiState.value.tip)
+    }
+
+    @Test
+    fun `completing the stroke resets the miss count for the next one`() = runTest(dispatcher) {
+        val viewModel = startedViewModel()
+        repeat(3) { viewModel.onEvent(PracticeEvent.StrokeAttempted(isCompleted = false)) }
+
+        viewModel.onEvent(PracticeEvent.StrokeAttempted(isCompleted = true))
+        assertNull(viewModel.uiState.value.tip)
+
+        viewModel.onEvent(PracticeEvent.StrokeAttempted(isCompleted = false))
+        assertEquals(ContextualTip.MISSED_STROKE, viewModel.uiState.value.tip)
+    }
+
+    @Test
+    fun `starting over restores the opening tip and forgets earlier misses`() = runTest(dispatcher) {
+        val viewModel = startedViewModel()
+        repeat(3) { viewModel.onEvent(PracticeEvent.StrokeAttempted(isCompleted = false)) }
+
+        viewModel.onEvent(PracticeEvent.Restarted)
+        assertEquals(ContextualTip.FIRST_ATTEMPT, viewModel.uiState.value.tip)
+
+        viewModel.onEvent(PracticeEvent.StrokeAttempted(isCompleted = false))
+        assertEquals(ContextualTip.MISSED_STROKE, viewModel.uiState.value.tip)
+    }
+
+    @Test
+    fun `starting over an exercise practised before leaves no tip`() = runTest(dispatcher) {
+        val viewModel = startedViewModel(FakeProgressRepository(previousProgress(attemptCount = 1)))
+        viewModel.onEvent(PracticeEvent.StrokeAttempted(isCompleted = false))
+
+        viewModel.onEvent(PracticeEvent.Restarted)
+
+        assertNull(viewModel.uiState.value.tip)
     }
 
     @Test

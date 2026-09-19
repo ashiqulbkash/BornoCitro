@@ -8,10 +8,13 @@ import com.bornochitra.core.database.repository.ProgressRepository
 import com.bornochitra.core.model.Exercise
 import com.bornochitra.core.model.PracticeResult
 import com.bornochitra.core.model.ScoreLevel
+import com.bornochitra.core.tips.ContextualTip
+import com.bornochitra.core.tips.TipSelector
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -26,6 +29,7 @@ data class PracticeState(
     val score: Float? = null,
     val scoreLevel: ScoreLevel? = null,
     val sessionId: Long? = null,
+    val tip: ContextualTip? = null,
 )
 
 /**
@@ -34,6 +38,12 @@ data class PracticeState(
  */
 sealed interface PracticeEvent {
     data class ExerciseCompleted(val score: Float, val scoreLevel: ScoreLevel) : PracticeEvent
+
+    /** A stroke was lifted without finishing the exercise; [isCompleted] says whether it was traced well enough. */
+    data class StrokeAttempted(val isCompleted: Boolean) : PracticeEvent
+
+    /** The child started the exercise over. */
+    data object Restarted : PracticeEvent
 }
 
 @HiltViewModel
@@ -41,10 +51,13 @@ class PracticeViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val exerciseRepository: ExerciseRepository,
     private val progressRepository: ProgressRepository,
+    private val tipSelector: TipSelector,
 ) : ViewModel() {
 
     private val exerciseId: String = checkNotNull(savedStateHandle[ARG_EXERCISE_ID])
     private var startedAtMs: Long? = null
+    private var previousAttempts = 0
+    private var consecutiveMisses = 0
 
     private val mutableState = MutableStateFlow(PracticeState())
     val uiState: StateFlow<PracticeState> = mutableState.asStateFlow()
@@ -54,7 +67,13 @@ class PracticeViewModel @Inject constructor(
             val exercise = exerciseRepository.getExercise(exerciseId)
             mutableState.value = if (exercise != null) {
                 startedAtMs = System.currentTimeMillis()
-                PracticeState(exercise = exercise, isLoading = false)
+                val progressById = progressRepository.observeExerciseProgress(listOf(exerciseId)).first()
+                previousAttempts = progressById[exerciseId]?.attemptCount ?: 0
+                PracticeState(
+                    exercise = exercise,
+                    isLoading = false,
+                    tip = tipSelector.beforeFirstAttempt(previousAttempts),
+                )
             } else {
                 PracticeState(isLoading = false, error = "We couldn't find that exercise.")
             }
@@ -64,7 +83,19 @@ class PracticeViewModel @Inject constructor(
     fun onEvent(event: PracticeEvent) {
         when (event) {
             is PracticeEvent.ExerciseCompleted -> onExerciseCompleted(event.score, event.scoreLevel)
+            is PracticeEvent.StrokeAttempted -> onStrokeAttempted(event.isCompleted)
+            PracticeEvent.Restarted -> onRestarted()
         }
+    }
+
+    private fun onStrokeAttempted(isCompleted: Boolean) {
+        consecutiveMisses = if (isCompleted) 0 else consecutiveMisses + 1
+        mutableState.value = mutableState.value.copy(tip = tipSelector.afterStrokeAttempt(consecutiveMisses))
+    }
+
+    private fun onRestarted() {
+        consecutiveMisses = 0
+        mutableState.value = mutableState.value.copy(tip = tipSelector.beforeFirstAttempt(previousAttempts))
     }
 
     private fun onExerciseCompleted(score: Float, scoreLevel: ScoreLevel) {

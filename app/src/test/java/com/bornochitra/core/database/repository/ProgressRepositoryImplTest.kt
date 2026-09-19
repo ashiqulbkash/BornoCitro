@@ -34,6 +34,14 @@ private class FakePracticeSessionDao(private var progress: ExerciseProgressEntit
     override suspend fun getSession(sessionId: Long): PracticeSessionEntity? =
         insertedSessions.getOrNull(sessionId.toInt() - 1)?.copy(id = sessionId)
 
+    // Mirrors the real query: newest first, the insertion order breaking ties between equal timestamps.
+    override suspend fun getRecentSessions(exerciseId: String, limit: Int): List<PracticeSessionEntity> =
+        insertedSessions.withIndex()
+            .filter { it.value.exerciseId == exerciseId }
+            .sortedWith(compareByDescending<IndexedValue<PracticeSessionEntity>> { it.value.createdAt }.thenByDescending { it.index })
+            .take(limit)
+            .map { it.value.copy(id = it.index + 1L) }
+
     override suspend fun getProgress(exerciseId: String): ExerciseProgressEntity? = progress
 
     override suspend fun upsertProgress(progress: ExerciseProgressEntity) {
@@ -368,6 +376,41 @@ class ProgressRepositoryImplTest {
         repository.savePracticeResult(practiceResult(score = 65f, scoreLevel = ScoreLevel.MEDIUM))
 
         assertTrue(practiceSessionDao.upsertedProgress.single().isMastered)
+    }
+
+    @Test
+    fun `recent results are the latest attempts, newest first, up to the limit`() = runTest {
+        val repository = repositoryWith(rows = emptyList())
+        listOf(50f, 60f, 70f, 80f).forEachIndexed { index, score ->
+            repository.savePracticeResult(practiceResult(score = score, completedAtMs = index * 1_000L))
+        }
+
+        val recent = repository.getRecentResults("vowel-o", limit = 3)
+
+        assertEquals(listOf(80f, 70f, 60f), recent.map { it.score })
+    }
+
+    @Test
+    fun `recent results only cover the requested exercise`() = runTest {
+        val repository = repositoryWith(rows = emptyList())
+        repository.savePracticeResult(practiceResult(score = 90f, completedAtMs = 1L))
+        repository.savePracticeResult(practiceResult(score = 40f, completedAtMs = 2L).copy(exerciseId = "vowel-a"))
+
+        assertEquals(listOf(90f), repository.getRecentResults("vowel-o", limit = 5).map { it.score })
+    }
+
+    @Test
+    fun `attempts saved at the same moment still come back in the order they were saved`() = runTest {
+        val repository = repositoryWith(rows = emptyList())
+        repository.savePracticeResult(practiceResult(score = 61f, completedAtMs = 5L))
+        repository.savePracticeResult(practiceResult(score = 62f, completedAtMs = 5L))
+
+        assertEquals(listOf(62f, 61f), repository.getRecentResults("vowel-o", limit = 2).map { it.score })
+    }
+
+    @Test
+    fun `an exercise with no attempts has no recent results`() = runTest {
+        assertEquals(emptyList<PracticeResult>(), repositoryWith(rows = emptyList()).getRecentResults("vowel-o", limit = 3))
     }
 
     @Test

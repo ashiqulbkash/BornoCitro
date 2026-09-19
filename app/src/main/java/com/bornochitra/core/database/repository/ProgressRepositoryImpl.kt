@@ -82,6 +82,9 @@ class ProgressRepositoryImpl @Inject constructor(
 
     override suspend fun getPracticeResult(sessionId: Long): PracticeResult? =
         practiceSessionDao.getSession(sessionId)?.toPracticeResult()
+
+    override suspend fun getRecentResults(exerciseId: String, limit: Int): List<PracticeResult> =
+        practiceSessionDao.getRecentSessions(exerciseId, limit).map { it.toPracticeResult() }
 }
 
 private fun PracticeSessionEntity.toPracticeResult(): PracticeResult = PracticeResult(

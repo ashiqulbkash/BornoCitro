@@ -7,9 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -28,6 +26,7 @@ import com.bornochitra.core.model.ExerciseType
 import com.bornochitra.core.model.Point
 import com.bornochitra.core.model.ScoreLevel
 import com.bornochitra.core.model.Stroke
+import com.bornochitra.core.tips.ContextualTip
 import com.bornochitra.core.tracing.TracingAttemptOutcome
 import com.bornochitra.core.tracing.TracingEngine
 import com.bornochitra.core.tracing.TracingInputCanvas
@@ -35,6 +34,7 @@ import com.bornochitra.core.tracing.TracingPointerEvent
 import com.bornochitra.core.ui.components.BcEmptyState
 import com.bornochitra.core.ui.components.BcExerciseHeading
 import com.bornochitra.core.ui.components.BcPrimaryButton
+import com.bornochitra.core.ui.components.BcTip
 import com.bornochitra.core.ui.components.BcTopAppBar
 import com.bornochitra.core.ui.theme.BcSpacing
 import com.bornochitra.core.ui.theme.BornoChitraTheme
@@ -58,6 +58,8 @@ fun PracticeScreen(
         state = state,
         onBackClick = onBackClick,
         onExerciseCompleted = { score, level -> viewModel.onEvent(PracticeEvent.ExerciseCompleted(score, level)) },
+        onStrokeAttempted = { isCompleted -> viewModel.onEvent(PracticeEvent.StrokeAttempted(isCompleted)) },
+        onRestart = { viewModel.onEvent(PracticeEvent.Restarted) },
         modifier = modifier,
     )
 
@@ -72,6 +74,8 @@ private fun PracticeContent(
     state: PracticeState,
     onBackClick: () -> Unit,
     onExerciseCompleted: (score: Float, level: ScoreLevel) -> Unit,
+    onStrokeAttempted: (isCompleted: Boolean) -> Unit,
+    onRestart: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
@@ -99,7 +103,10 @@ private fun PracticeContent(
 
             else -> ExerciseTracingContent(
                 exercise = state.exercise,
+                tip = state.tip,
                 onExerciseCompleted = onExerciseCompleted,
+                onStrokeAttempted = onStrokeAttempted,
+                onRestart = onRestart,
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding),
@@ -111,7 +118,10 @@ private fun PracticeContent(
 @Composable
 private fun ExerciseTracingContent(
     exercise: Exercise,
+    tip: ContextualTip?,
     onExerciseCompleted: (score: Float, level: ScoreLevel) -> Unit,
+    onStrokeAttempted: (isCompleted: Boolean) -> Unit,
+    onRestart: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var attemptId by remember(exercise) { mutableIntStateOf(0) }
@@ -119,13 +129,11 @@ private fun ExerciseTracingContent(
 
     var currentStroke by remember(engine) { mutableStateOf(engine.currentStroke) }
     var guideStrokes by remember(engine) { mutableStateOf(engine.guideStrokes) }
-    var feedback by remember(engine) { mutableStateOf<String?>(null) }
 
     fun handleStrokeEnd() {
         when (val outcome = engine.onEnd()) {
             is TracingAttemptOutcome.ExerciseCompleted -> onExerciseCompleted(outcome.score, outcome.level)
-            is TracingAttemptOutcome.StrokeAttempted ->
-                feedback = if (outcome.isCompleted) null else "Try again — follow the dots closely"
+            is TracingAttemptOutcome.StrokeAttempted -> onStrokeAttempted(outcome.isCompleted)
             TracingAttemptOutcome.NoAttempt -> Unit
         }
         currentStroke = engine.currentStroke
@@ -156,9 +164,15 @@ private fun ExerciseTracingContent(
             )
         }
 
-        feedback?.let { message -> Text(text = message, style = MaterialTheme.typography.titleMedium) }
+        tip?.let { BcTip(tip = it) }
 
-        BcPrimaryButton(text = "Reset", onClick = { attemptId += 1 })
+        BcPrimaryButton(
+            text = "Reset",
+            onClick = {
+                attemptId += 1
+                onRestart()
+            },
+        )
     }
 }
 
@@ -181,9 +195,11 @@ private val previewExercise = Exercise(
 private fun PracticeScreenTracingPreview() {
     BornoChitraTheme {
         PracticeContent(
-            state = PracticeState(exercise = previewExercise, isLoading = false),
+            state = PracticeState(exercise = previewExercise, isLoading = false, tip = ContextualTip.FIRST_ATTEMPT),
             onBackClick = {},
             onExerciseCompleted = { _, _ -> },
+            onStrokeAttempted = {},
+            onRestart = {},
         )
     }
 }
@@ -192,7 +208,13 @@ private fun PracticeScreenTracingPreview() {
 @Composable
 private fun PracticeScreenLoadingPreview() {
     BornoChitraTheme {
-        PracticeContent(state = PracticeState(isLoading = true), onBackClick = {}, onExerciseCompleted = { _, _ -> })
+        PracticeContent(
+            state = PracticeState(isLoading = true),
+            onBackClick = {},
+            onExerciseCompleted = { _, _ -> },
+            onStrokeAttempted = {},
+            onRestart = {},
+        )
     }
 }
 
@@ -204,6 +226,8 @@ private fun PracticeScreenErrorPreview() {
             state = PracticeState(isLoading = false, error = "We couldn't find that exercise."),
             onBackClick = {},
             onExerciseCompleted = { _, _ -> },
+            onStrokeAttempted = {},
+            onRestart = {},
         )
     }
 }
