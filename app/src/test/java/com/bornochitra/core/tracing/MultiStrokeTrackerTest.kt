@@ -10,6 +10,7 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertThrows
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import kotlin.math.hypot
 
 class MultiStrokeTrackerTest {
 
@@ -50,6 +51,24 @@ class MultiStrokeTrackerTest {
             fraction += STEP
         }
         tracker.onMove(pointAt(toFraction))
+        tracker.onEnd()
+    }
+
+    /** Traces the whole polyline through [vertices] in one touch, sampling about every unit. */
+    private fun traceVertices(tracker: MultiStrokeTracker, vertices: List<Point>) {
+        tracker.onStart(tracePoint(vertices.first().x, vertices.first().y))
+        vertices.zipWithNext { start, end ->
+            val steps = maxOf(1, hypot(end.x - start.x, end.y - start.y).toInt())
+            for (step in 1..steps) {
+                val fraction = step / steps.toFloat()
+                tracker.onMove(
+                    tracePoint(
+                        start.x + (end.x - start.x) * fraction,
+                        start.y + (end.y - start.y) * fraction,
+                    ),
+                )
+            }
+        }
         tracker.onEnd()
     }
 
@@ -197,6 +216,49 @@ class MultiStrokeTrackerTest {
         assertThrows(IllegalArgumentException::class.java) {
             MultiStrokeTracker(exercise(emptyList()))
         }
+    }
+
+    /**
+     * A skipped side used to pass as drawn: the traced sides beside it reach a whole tolerance into
+     * it from each corner, leaving only 0.84 of the square's outline missing — inside the coverage
+     * threshold's slack. The untraced gap it leaves behind is what rules it out.
+     */
+    @Test
+    fun `a square with one side missing is not complete`() {
+        val corners = listOf(Point(20f, 20f), Point(80f, 20f), Point(80f, 80f), Point(20f, 80f))
+        val square = Stroke(id = "square", points = corners + corners.first())
+        val tracker = MultiStrokeTracker(exercise(listOf(square)))
+
+        traceVertices(tracker, corners) // every side but the last one, back up to the start
+
+        val threeSides = strokeResult(tracker, "square")
+        assertTrue("coverage was ${threeSides.coverage}", threeSides.coverage > 0.8f)
+        assertFalse(tracker.isCompleted)
+
+        traceVertices(tracker, listOf(corners.last(), corners.first()))
+
+        assertTrue(tracker.isCompleted)
+    }
+
+    @Test
+    fun `a house with a wall missing is not complete`() {
+        val roof = Stroke(id = "roof", points = listOf(Point(15f, 45f), Point(50f, 15f), Point(85f, 45f)))
+        val body = Stroke(
+            id = "body",
+            points = listOf(Point(15f, 45f), Point(15f, 85f), Point(85f, 85f), Point(85f, 45f)),
+        )
+        val tracker = MultiStrokeTracker(exercise(listOf(roof, body)))
+
+        traceVertices(tracker, roof.points)
+        traceVertices(tracker, body.points.drop(1)) // the left wall is left out
+
+        assertTrue(strokeResult(tracker, "roof").isCompleted)
+        assertFalse(strokeResult(tracker, "body").isCompleted)
+        assertFalse(tracker.isCompleted)
+
+        traceVertices(tracker, body.points.take(2))
+
+        assertTrue(tracker.isCompleted)
     }
 
     @Test

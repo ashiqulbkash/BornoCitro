@@ -22,6 +22,7 @@ class MultiStrokeTracker(
     private val exercise: Exercise,
     private val tolerance: TracingTolerance = TracingTolerance(),
     private val completionThreshold: Float = DEFAULT_COMPLETION_THRESHOLD,
+    private val maxUntracedGap: Float = DEFAULT_MAX_UNTRACED_GAP,
 ) {
 
     init {
@@ -89,18 +90,23 @@ class MultiStrokeTracker(
      * Each stroke's coverage comes from the whole attempt, since a point lands on the guide path it
      * is near whatever the child meant to draw. Accuracy is per stroke, so each point is measured
      * against the stroke it actually falls closest to rather than against all of them.
+     *
+     * A stroke is finished only when enough of it was covered *and* no long stretch of it was left
+     * out, because the covered fraction on its own cannot tell a whole missing segment from ordinary
+     * sloppiness — see [PathCoverage].
      */
     private fun measureStrokes(): List<StrokeTraceResult> {
         val pointsByStroke = attemptPoints.groupBy(::nearestStrokeIndex)
         return exercise.strokes.mapIndexed { index, stroke ->
             val strokePoints = pointsByStroke[index].orEmpty()
-            val coverage = PathCoverageCalculator.coverage(stroke.points, attemptPoints, tolerance)
+            val coverage = PathCoverageCalculator.measure(stroke.points, attemptPoints, tolerance)
             StrokeTraceResult(
                 strokeId = stroke.id,
                 tracePoints = strokePoints,
-                coverage = coverage,
+                coverage = coverage.fraction,
                 averageDistance = averageDistance(stroke, strokePoints),
-                isCompleted = coverage >= completionThreshold,
+                isCompleted = coverage.fraction >= completionThreshold &&
+                    coverage.longestUntracedGap <= maxUntracedGap,
             )
         }
     }
@@ -117,5 +123,14 @@ class MultiStrokeTracker(
     companion object {
         /** Coverage fraction (see [PathCoverageCalculator]) required to consider a stroke correctly traced. */
         const val DEFAULT_COMPLETION_THRESHOLD = 0.8f
+
+        /**
+         * Longest stretch of a stroke, in canvas units, that may go untraced in a finished stroke.
+         * Three checkpoints at the default spacing: long enough to forgive a brief wobble off the
+         * guide, short enough that a skipped side of a shape (which leaves a gap of 20 units or
+         * more, the rest of it hidden by [TracingTolerance] bleeding in from the traced sides
+         * beside it) can never pass as drawn.
+         */
+        const val DEFAULT_MAX_UNTRACED_GAP = 12f
     }
 }
