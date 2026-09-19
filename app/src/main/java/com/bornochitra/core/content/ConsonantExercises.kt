@@ -1706,4 +1706,122 @@ internal val consonantExercises: List<Exercise> = listOf(
             ),
         ),
     ),
+    /**
+     * থ is read off its rendered glyph's centreline like the letters before it. It is taller than
+     * it is wide (aspect 0.89), so its ink is fitted by height with x centred, the way ট, ঠ, ঢ and
+     * ণ are.
+     *
+     * Structurally it is গ and ণ once more: a long post that rises above the headline, a matra bar
+     * only to the right of the post, and the rest of the letter hanging off the post's left. Here
+     * that rest is a spiral with a filled ball curled inside it, whose outer end sweeps down and
+     * right into the post's foot — about 147 canvas units in all, more than a child can hold in
+     * one pass.
+     *
+     * The two parts meet at the loop's leftmost point, where the two arms leave in a 54° fork and a
+     * pen running through swings round by 126°, so that corner is both the only landmark below
+     * the loop a child can see and the natural place to break. The loop is written first, from the
+     * corner round counter-clockwise — along the bottom, up the right flank, back left over the
+     * top, down the left and curling inwards into the ball — the way ও's bowl is written, and the
+     * tail then restarts at that same corner and runs down to the post's foot.
+     *
+     * The corner is taken at (25,54), the point on the skeleton's spur farthest from the junction
+     * where the ink is still a full pen thick. The spur runs on to (19,50), but the ink there has
+     * thinned to 0.27 canvas units against the pen's 4.39 — that is the round cap of the turn, not
+     * a path the pen's centre ever travels — and a guide taken to the spur's tip would hang outside
+     * the stroke, which is what ড's first pass got wrong.
+     *
+     * The loop ends at (22,34), the centre of the ball that closes the spiral: a blunt filled
+     * terminal, not a pen cut, whose largest inscribed disc is 7.09 canvas units against the pen's
+     * 4.39. The skeleton collapses it to a point two units past the centre, so the curl is
+     * truncated at its closest approach and drawn straight in, the way ত's and ণ's are.
+     *
+     * The stem is inset 2 units from each end cap as গ's and ণ's are, and the matra — the short bar
+     * right of the post — is inset 2 units from its own cap and written last.
+     */
+    Exercise(
+        id = "consonant-tho",
+        title = "থ",
+        type = ExerciseType.CONSONANT,
+        difficulty = Difficulty.ADVANCED,
+        order = 17,
+        strokes = listOf(
+            Stroke(
+                id = "consonant-tho-loop",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(25f, 54f),
+                        Point(28f, 55f),
+                        Point(29f, 53f),
+                        Point(32f, 52f),
+                        Point(35f, 51f),
+                        Point(37f, 50f),
+                        Point(40f, 49f),
+                        Point(42f, 48f),
+                        Point(44f, 47f),
+                        Point(47f, 45f),
+                        Point(48f, 43f),
+                        Point(50f, 40f),
+                        Point(50f, 37f),
+                        Point(51f, 35f),
+                        Point(51f, 32f),
+                        Point(50f, 29f),
+                        Point(50f, 26f),
+                        Point(48f, 24f),
+                        Point(47f, 22f),
+                        Point(44f, 20f),
+                        Point(42f, 19f),
+                        Point(39f, 18f),
+                        Point(36f, 18f),
+                        Point(33f, 18f),
+                        Point(30f, 18f),
+                        Point(28f, 19f),
+                        Point(25f, 20f),
+                        Point(23f, 21f),
+                        Point(21f, 23f),
+                        Point(20f, 26f),
+                        Point(19f, 29f),
+                        Point(19f, 31f),
+                        Point(21f, 33f),
+                        Point(22f, 34f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "consonant-tho-tail",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(25f, 54f),
+                        Point(28f, 55f),
+                        Point(29f, 57f),
+                        Point(31f, 60f),
+                        Point(33f, 60f),
+                        Point(36f, 61f),
+                        Point(39f, 62f),
+                        Point(41f, 63f),
+                        Point(44f, 64f),
+                        Point(46f, 66f),
+                        Point(48f, 67f),
+                        Point(51f, 69f),
+                        Point(53f, 70f),
+                        Point(55f, 72f),
+                        Point(57f, 74f),
+                        Point(59f, 76f),
+                        Point(61f, 79f),
+                        Point(63f, 81f),
+                        Point(65f, 82f),
+                        Point(68f, 83f),
+                        Point(69f, 83f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "consonant-tho-stem",
+                points = StrokePoints.line(Point(70f, 9f), Point(70f, 88f), samples = 16),
+            ),
+            Stroke(
+                id = "consonant-tho-matra",
+                points = StrokePoints.line(Point(70f, 19f), Point(85f, 19f)),
+            ),
+        ),
+    ),
 )
