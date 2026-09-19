@@ -975,4 +975,153 @@ internal val consonantExercises: List<Exercise> = listOf(
             ),
         ),
     ),
+    /**
+     * ঞ is read off its rendered glyph's centreline like the letters before it. It is wider than it
+     * is tall (aspect 1.40), so its ink is fitted by width and centred vertically, as ক, জ and ঝ
+     * are. Like ঙ it has no headline bar at all, so no stroke is a matra.
+     *
+     * The letter is a middle stem carrying a sail on the left, two bowls on the right and a
+     * bar-and-base along the bottom. The stem is written first, as চ's is, because everything else
+     * hangs off it. The sail then leaves the stem's top, rises over the apex, comes down the left
+     * flank and stops in the filled ball that ends it — the ball is where the pen comes to rest, so
+     * the sail is drawn into it, the way ক's lobe is drawn into its own ball.
+     *
+     * The right half is one spiral of ~120 canvas units out of the stem's top: up over the upper
+     * bowl, down the right flank, left into a point between the bowls, then back out and round the
+     * lower bowl to the stem. The point is a tapering wedge, not a pen terminal — the pen turns back
+     * on itself there and the skeleton grows a spur into the wedge — so, as জ is split at its point,
+     * the bowl runs into the point and the sweep restarts on the far side of the turn.
+     *
+     * The base is one movement of ~77 canvas units: the left bar from its flat-cut top, down, round
+     * the corner and right along the bottom to the stem's foot. It is written last, in the place a
+     * letter with a headline would write its matra.
+     */
+    Exercise(
+        id = "consonant-nio",
+        title = "ঞ",
+        type = ExerciseType.CONSONANT,
+        difficulty = Difficulty.ADVANCED,
+        order = 10,
+        strokes = listOf(
+            Stroke(
+                id = "consonant-nio-stem",
+                points = StrokePoints.line(Point(62f, 33f), Point(62f, 81f), samples = 12),
+            ),
+            Stroke(
+                id = "consonant-nio-hood",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(62f, 33f),
+                        Point(62f, 30f),
+                        Point(61f, 27f),
+                        Point(60f, 24f),
+                        Point(58f, 22f),
+                        Point(55f, 21f),
+                        Point(52f, 20f),
+                        Point(49f, 20f),
+                        Point(46f, 21f),
+                        Point(43f, 22f),
+                        Point(41f, 23f),
+                        Point(38f, 25f),
+                        Point(36f, 27f),
+                        Point(34f, 29f),
+                        Point(32f, 32f),
+                        Point(31f, 35f),
+                        Point(30f, 38f),
+                        Point(30f, 41f),
+                        Point(30f, 44f),
+                        Point(33f, 45f),
+                        Point(36f, 46f),
+                        Point(38f, 47f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "consonant-nio-bowl",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(62f, 33f),
+                        Point(66f, 32f),
+                        Point(69f, 31f),
+                        Point(71f, 28f),
+                        Point(73f, 26f),
+                        Point(76f, 25f),
+                        Point(79f, 24f),
+                        Point(82f, 24f),
+                        Point(85f, 24f),
+                        Point(88f, 25f),
+                        Point(90f, 27f),
+                        Point(92f, 30f),
+                        Point(92f, 33f),
+                        Point(92f, 36f),
+                        Point(91f, 39f),
+                        Point(90f, 42f),
+                        Point(89f, 44f),
+                        Point(88f, 45f),
+                        Point(85f, 45f),
+                        Point(82f, 46f),
+                        Point(80f, 46f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "consonant-nio-sweep",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(80f, 47f),
+                        Point(84f, 47f),
+                        Point(90f, 48f),
+                        Point(92f, 50f),
+                        Point(92f, 53f),
+                        Point(93f, 56f),
+                        Point(92f, 59f),
+                        Point(92f, 62f),
+                        Point(90f, 65f),
+                        Point(88f, 67f),
+                        Point(85f, 67f),
+                        Point(82f, 68f),
+                        Point(79f, 67f),
+                        Point(76f, 67f),
+                        Point(73f, 65f),
+                        Point(71f, 63f),
+                        Point(69f, 61f),
+                        Point(66f, 60f),
+                        Point(62f, 58f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "consonant-nio-base",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(8f, 46f),
+                        Point(7f, 51f),
+                        Point(7f, 54f),
+                        Point(7f, 57f),
+                        Point(8f, 60f),
+                        Point(9f, 63f),
+                        Point(10f, 66f),
+                        Point(12f, 68f),
+                        Point(15f, 70f),
+                        Point(18f, 71f),
+                        Point(21f, 72f),
+                        Point(24f, 72f),
+                        Point(27f, 72f),
+                        Point(30f, 72f),
+                        Point(33f, 72f),
+                        Point(36f, 71f),
+                        Point(39f, 71f),
+                        Point(42f, 71f),
+                        Point(45f, 70f),
+                        Point(48f, 71f),
+                        Point(51f, 71f),
+                        Point(54f, 72f),
+                        Point(56f, 74f),
+                        Point(59f, 75f),
+                        Point(62f, 77f),
+                    ),
+                ),
+            ),
+        ),
+    ),
 )
