@@ -1459,7 +1459,7 @@ Vowels — `অ` is already done and is the reference implementation. These foll
 ```text
 11.1   আ    vowel-aa    done — 4 strokes (bowl, stem, আ-কার, matra)
 11.2   ই    vowel-i     done — 3 strokes (hook, body, matra)
-11.3   ঈ    vowel-ii    done — 4 strokes (hook, bowl, tail, matra)
+11.3   ঈ    vowel-ii    done — 4 strokes (hook, body, tail, matra)
 11.4   উ    vowel-u     done — 4 strokes (hook, stem, bowl, matra)
 11.5   ঊ    vowel-uu    done — 5 strokes (hook, stem, bowl, arm, matra)
 ```
@@ -1972,7 +1972,7 @@ Tracked here so the catalogue's real state is visible at a glance. Update as Ste
 অ                  done — 3 strokes (bowl, stem, matra), derived from the glyph
 আ                  done — 4 strokes (bowl, stem, আ-কার, matra), derived from the glyph
 ই                  done — 3 strokes (hook, body, matra), derived from the glyph
-ঈ                  done — 4 strokes (hook, bowl, tail, matra), derived from the glyph
+ঈ                  done — 4 strokes (hook, body, tail, matra), derived from the glyph
 উ                  done — 4 strokes (hook, stem, bowl, matra), derived from the glyph
 ঊ                  done — 5 strokes (hook, stem, bowl, arm, matra), derived from the glyph
 ঋ                  done — 6 strokes (curl, diagonal, sweep, stem, hook, arm), derived from
@@ -2009,6 +2009,11 @@ Because every stroke's guide is shown at once, a letter needs no per-letter engi
 Nothing in the catalogue carries placeholder geometry any more, so this step is a re-check of
 metadata and a fresh pass on a device rather than a hunt for defects. Anything that regresses to
 placeholder geometry is a release blocker.
+
+Step 23 sweep (done): metadata and geometry re-checked across all 21 exercises, and every guide
+compared with its glyph on a physical device. Characters and alphabet order, stroke counts and ids,
+matra written last, canvas bounds and centring, and difficulty/order are now pinned catalogue-wide
+by `ExerciseCatalogTest`. No defect was found. Audio is not implemented, so it is not applicable.
 
 This is critical.
 
