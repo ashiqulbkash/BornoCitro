@@ -7,10 +7,11 @@ import com.bornochitra.core.model.Point
 import com.bornochitra.core.model.Stroke
 
 /**
- * Consonant stroke geometry. ক, খ, গ and ঘ are read off their rendered glyphs' centrelines
- * (plan.md Steps 11.11-11.14); ঙ still carries the placeholder geometry described in
- * [vowelExercises]' history and is corrected in plan.md Step 11.15. Step 23 re-validates every
- * letter before release.
+ * Consonant stroke geometry. Every consonant is read off its rendered glyph's centreline (plan.md
+ * Steps 11.11-11.15), never approximated by eye, so each guide sits on the letter shown above it.
+ * Not every consonant carries a matra: ক and ঘ reach the headline across their whole width, খ and গ
+ * only to the right of the stem, and ঙ has no headline bar at all. Step 23 re-validates every letter
+ * before release.
  */
 internal val consonantExercises: List<Exercise> = listOf(
     /**
@@ -371,6 +372,17 @@ internal val consonantExercises: List<Exercise> = listOf(
             ),
         ),
     ),
+    /**
+     * ঙ is read off its rendered glyph's centreline. It has neither a matra nor a dot — the
+     * placeholder's arc-and-circle was wrong on both counts. The glyph is a single unbroken
+     * centreline running from the tail's cut terminal, through the neck, round the closed loop, back
+     * through the neck, down and out to the hairpin on the right and all the way round the bottom to
+     * the left-hand terminal. That is one pen path of roughly 275 canvas units, far too long for a
+     * child to hold in one pass, so it is split where the loop closes on itself at the neck — the
+     * one landmark in the letter a child can actually see. Both halves are real pen movements: make
+     * the loop, then sweep right round. The hairpin under the flat nose on the right stays inside
+     * the sweep, as ক's left point stays inside its knot.
+     */
     Exercise(
         id = "consonant-ngo",
         title = "ঙ",
@@ -379,12 +391,120 @@ internal val consonantExercises: List<Exercise> = listOf(
         order = 5,
         strokes = listOf(
             Stroke(
-                id = "consonant-ngo-body",
-                points = StrokePoints.arc(center = Point(50f, 50f), radius = 30f, startDeg = -30f, sweepDeg = 300f, samples = 24),
+                id = "consonant-ngo-loop",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(24f, 11f),
+                        Point(27f, 14f),
+                        Point(29f, 17f),
+                        Point(31f, 19f),
+                        Point(33f, 21f),
+                        Point(36f, 24f),
+                        Point(38f, 25f),
+                        Point(41f, 27f),
+                        Point(44f, 27f),
+                        Point(47f, 28f),
+                        Point(48f, 25f),
+                        Point(49f, 22f),
+                        Point(50f, 19f),
+                        Point(52f, 17f),
+                        Point(54f, 15f),
+                        Point(56f, 13f),
+                        Point(59f, 12f),
+                        Point(62f, 12f),
+                        Point(65f, 12f),
+                        Point(68f, 12f),
+                        Point(72f, 13f),
+                        Point(74f, 15f),
+                        Point(76f, 17f),
+                        Point(76f, 20f),
+                        Point(76f, 23f),
+                        Point(76f, 26f),
+                        Point(74f, 29f),
+                        Point(72f, 31f),
+                        Point(69f, 32f),
+                        Point(66f, 33f),
+                        Point(63f, 33f),
+                        Point(60f, 33f),
+                        Point(57f, 33f),
+                        Point(54f, 33f),
+                        Point(51f, 33f),
+                        Point(48f, 32f),
+                        Point(47f, 32f),
+                    ),
+                ),
             ),
             Stroke(
-                id = "consonant-ngo-dot",
-                points = StrokePoints.arc(center = Point(50f, 85f), radius = 4f, startDeg = 0f, sweepDeg = 360f, samples = 12),
+                id = "consonant-ngo-sweep",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(46f, 32f),
+                        Point(46f, 35f),
+                        Point(46f, 38f),
+                        Point(46f, 41f),
+                        Point(47f, 44f),
+                        Point(47f, 47f),
+                        Point(47f, 50f),
+                        Point(48f, 53f),
+                        Point(50f, 56f),
+                        Point(52f, 58f),
+                        Point(55f, 58f),
+                        Point(58f, 58f),
+                        Point(61f, 58f),
+                        Point(64f, 57f),
+                        Point(67f, 56f),
+                        Point(70f, 54f),
+                        Point(72f, 52f),
+                        Point(75f, 50f),
+                        Point(77f, 48f),
+                        Point(80f, 47f),
+                        Point(81f, 44f),
+                        Point(84f, 48f),
+                        Point(85f, 50f),
+                        Point(86f, 53f),
+                        Point(86f, 56f),
+                        Point(87f, 59f),
+                        Point(87f, 62f),
+                        Point(86f, 65f),
+                        Point(86f, 68f),
+                        Point(85f, 71f),
+                        Point(84f, 74f),
+                        Point(82f, 76f),
+                        Point(80f, 79f),
+                        Point(77f, 81f),
+                        Point(74f, 82f),
+                        Point(72f, 83f),
+                        Point(69f, 84f),
+                        Point(66f, 84f),
+                        Point(62f, 85f),
+                        Point(59f, 85f),
+                        Point(56f, 85f),
+                        Point(53f, 84f),
+                        Point(50f, 84f),
+                        Point(47f, 83f),
+                        Point(44f, 82f),
+                        Point(42f, 80f),
+                        Point(39f, 79f),
+                        Point(36f, 77f),
+                        Point(34f, 75f),
+                        Point(32f, 72f),
+                        Point(30f, 70f),
+                        Point(28f, 67f),
+                        Point(26f, 65f),
+                        Point(25f, 62f),
+                        Point(23f, 59f),
+                        Point(22f, 56f),
+                        Point(21f, 54f),
+                        Point(20f, 51f),
+                        Point(18f, 48f),
+                        Point(17f, 45f),
+                        Point(16f, 42f),
+                        Point(16f, 39f),
+                        Point(15f, 36f),
+                        Point(14f, 35f),
+                        Point(13f, 31f),
+                    ),
+                ),
             ),
         ),
     ),

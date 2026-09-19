@@ -39,6 +39,7 @@ class LetterTracingPrototypeTest {
     private val consonantKho = consonantExercises.first { it.id == "consonant-kho" }
     private val consonantGo = consonantExercises.first { it.id == "consonant-go" }
     private val consonantGho = consonantExercises.first { it.id == "consonant-gho" }
+    private val consonantNgo = consonantExercises.first { it.id == "consonant-ngo" }
     private val drawingCircle = drawingExercises.first { it.id == "drawing-circle" }
 
     private fun tracePoint(point: Point) = TracePoint(point.x, point.y, timestampMs = 0L)
@@ -729,6 +730,76 @@ class LetterTracingPrototypeTest {
     @Test
     fun `tracing far from consonant-gho's guide path does not complete the exercise`() {
         assertOffPathTraceDoesNotComplete(consonantGho)
+    }
+
+    @Test
+    fun `consonant-ngo is traced as loop then sweep, in that order`() {
+        assertEquals(
+            listOf("consonant-ngo-loop", "consonant-ngo-sweep"),
+            consonantNgo.strokes.map { it.id },
+        )
+        assertEquals(Point(24f, 11f), consonantNgo.strokes.first().points.first())
+    }
+
+    @Test
+    fun `consonant-ngo's loop closes on itself at the neck, where the sweep takes over`() {
+        val loop = consonantNgo.strokes.first().points
+        val sweep = consonantNgo.strokes.last().points
+        assertTrue(loop.last().distanceTo(sweep.first()) < 3f)
+        // The loop really encloses a counter: it comes back to within a pen's width of where it
+        // entered the neck, having been far away in between.
+        val neck = loop.last()
+        assertTrue(loop.any { it.distanceTo(neck) > 30f })
+    }
+
+    @Test
+    fun `consonant-ngo's sweep turns at the hairpin and ends left of where it began`() {
+        val sweep = consonantNgo.strokes.last().points
+        val hairpin = sweep.maxByOrNull { it.x }!!
+        assertTrue(sweep.first().x < hairpin.x && sweep.last().x < hairpin.x)
+        assertTrue(sweep.last().x < sweep.first().x)
+        assertTrue(sweep.maxOf { it.y } > hairpin.y)
+    }
+
+    @Test
+    fun `consonant-ngo has no matra and no dot`() {
+        // The placeholder drew a 300-degree arc plus a small circle; the glyph has neither.
+        assertEquals(2, consonantNgo.strokes.size)
+        consonantNgo.strokes.forEach { stroke ->
+            assertTrue(
+                "${stroke.id} is a flat horizontal bar",
+                stroke.points.map { it.y }.distinct().size > 1,
+            )
+        }
+    }
+
+    @Test
+    fun `consonant-ngo shows every stroke's guide at once`() {
+        assertEquals(consonantNgo.strokes, TracingEngine(consonantNgo).guideStrokes)
+    }
+
+    @Test
+    fun `faithfully tracing consonant-ngo's real stroke path completes the sequence with a perfect score`() {
+        assertFaithfulTraceIsPerfect(consonantNgo)
+    }
+
+    @Test
+    fun `tracing far from consonant-ngo's guide path does not complete the exercise`() {
+        assertOffPathTraceDoesNotComplete(consonantNgo)
+    }
+
+    @Test
+    fun `every consonant is traced with geometry derived from its own glyph`() {
+        // plan.md Steps 11.11-11.15 close out the placeholder consonant content, the way the
+        // matching vowel assertion does for Steps 11.1-11.10.
+        val bodies = consonantExercises.map { exercise -> exercise.strokes.map { it.points } }
+        assertEquals(bodies.size, bodies.distinct().size)
+        consonantExercises.forEach { exercise ->
+            assertTrue(
+                "${exercise.id} has too few waypoints to be glyph-derived",
+                exercise.strokes.sumOf { it.points.size } >= 60,
+            )
+        }
     }
 
     @Test

@@ -1483,7 +1483,7 @@ Consonants:
 11.12  খ    consonant-kho   done — 4 strokes (curl, body, stem, matra)
 11.13  গ    consonant-go    done — 3 strokes (body, stem, matra)
 11.14  ঘ    consonant-gho   done — 4 strokes (hook, body, stem, matra)
-11.15  ঙ    consonant-ngo
+11.15  ঙ    consonant-ngo   done — 2 strokes (loop, sweep); no matra, no dot
 ```
 
 Drawings:
@@ -1492,6 +1492,9 @@ Drawings:
 11.16  Line, Circle, Square, Triangle   verify only
 11.17  House                            composite shape, re-derive if wrong
 ```
+
+Every letter — 11 vowels and 5 consonants — now carries glyph-derived geometry. Only the drawings
+(11.16–11.17) remain, and those are defined by exact geometry rather than handwriting.
 
 Drawings in 11.16 are defined by exact geometry — an arc is a circle, four lines are a square — so they carry no handwriting risk and need verification rather than redrawing. Correct them only if the device check shows a real defect.
 
@@ -1982,9 +1985,11 @@ Tracked here so the catalogue's real state is visible at a glance. Update as Ste
                    headline bar is genuinely short, covering only the stem's right side
 গ                  done — 3 strokes (body, stem, matra), derived from the glyph; the arch and
                    the hook are one movement joined by a hairpin, not two strokes
-ঘ                  done — 4 strokes (hook, body, stem, matra), derived from the glyph; the only
-                   consonant so far whose matra spans the whole letter, as ক's does
-1 consonant        placeholder geometry    → Step 11.15
+ঘ                  done — 4 strokes (hook, body, stem, matra), derived from the glyph; its matra
+                   spans the whole letter, as ক's does
+ঙ                  done — 2 strokes (loop, sweep), derived from the glyph; no matra and no dot,
+                   and its one continuous centreline is split where the loop closes
+5 consonants       all done — no consonant carries placeholder geometry
 5 drawings         unverified              → Steps 11.16–11.17
 ```
 
