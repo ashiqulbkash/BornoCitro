@@ -1489,12 +1489,12 @@ Consonants:
 Drawings:
 
 ```text
-11.16  Line, Circle, Square, Triangle   verify only
+11.16  Line, Circle, Square, Triangle   done — verified exact, no change needed
 11.17  House                            composite shape, re-derive if wrong
 ```
 
-Every letter — 11 vowels and 5 consonants — now carries glyph-derived geometry. Only the drawings
-(11.16–11.17) remain, and those are defined by exact geometry rather than handwriting.
+Every letter — 11 vowels and 5 consonants — now carries glyph-derived geometry, and the four simple
+drawings are verified exact. Only House (11.17) remains.
 
 Drawings in 11.16 are defined by exact geometry — an arc is a circle, four lines are a square — so they carry no handwriting risk and need verification rather than redrawing. Correct them only if the device check shows a real defect.
 
@@ -1990,7 +1990,10 @@ Tracked here so the catalogue's real state is visible at a glance. Update as Ste
 ঙ                  done — 2 strokes (loop, sweep), derived from the glyph; no matra and no dot,
                    and its one continuous centreline is split where the loop closes
 5 consonants       all done — no consonant carries placeholder geometry
-5 drawings         unverified              → Steps 11.16–11.17
+Line, Circle,      done — verified exact on a device, not re-derived: constant radius, four
+Square, Triangle   equal axis-aligned sides, isosceles triangle on a level base, all pinned
+                   by unit test
+House              unverified              → Step 11.17
 ```
 
 Because every stroke's guide is shown at once, a letter needs no per-letter engine work when its real multi-stroke geometry lands.

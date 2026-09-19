@@ -6,7 +6,13 @@ import com.bornochitra.core.model.ExerciseType
 import com.bornochitra.core.model.Point
 import com.bornochitra.core.model.Stroke
 
-/** Simple hand-control drawings; unlike letters these have no handwriting-accuracy concerns. See plan.md section 9. */
+/**
+ * Simple hand-control drawings. Unlike letters these carry no handwriting-accuracy concerns: each
+ * shape is exact geometry rather than a traced glyph, which is why plan.md Step 11.16 verifies Line,
+ * Circle, Square and Triangle instead of re-deriving them. That exactness — a constant radius, four
+ * equal axis-aligned sides, an isosceles triangle on a level base — is pinned by unit test, so an
+ * edit cannot quietly distort a shape. See plan.md section 9.
+ */
 internal val drawingExercises: List<Exercise> = listOf(
     Exercise(
         id = "drawing-line",

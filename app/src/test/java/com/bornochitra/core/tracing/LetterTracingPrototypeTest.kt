@@ -10,16 +10,17 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import kotlin.math.abs
 import kotlin.math.hypot
 
 /**
  * Validates plan.md Steps 10.8-10.10's checklist for real exercise content — the Bengali letters
- * every vowel (plan.md Steps 11.1-11.10) and "ক" (plan.md Step 11.11), plus the non-letter
- * "Circle" drawing — by running each through [TracingEngine], the same reusable component
+ * every vowel (plan.md Steps 11.1-11.10) and every consonant (plan.md Steps 11.11-11.15), plus the
+ * non-letter drawings verified in plan.md Step 11.16 — by running each through [TracingEngine], the same reusable component
  * [LetterTracingPrototype] drives (plan.md Step 10.11). "ক" is structurally different from "অ" — a
  * knot that reverses at a sharp point, a straight stem and a curled lobe rather than a closed loop —
- * and "Circle" is not a letter at all, so passing them all proves the engine is not accidentally
- * specialized for one shape or for letters specifically. Dotted rendering and live finger interaction can only be checked visually/manually
+ * and the drawings are not letters at all, so passing them all proves the engine is not
+ * accidentally specialized for one shape or for letters specifically. Dotted rendering and live finger interaction can only be checked visually/manually
  * via [LetterTracingPrototype]'s previews and a physical device — see the post-task brief.
  */
 class LetterTracingPrototypeTest {
@@ -41,8 +42,16 @@ class LetterTracingPrototypeTest {
     private val consonantGho = consonantExercises.first { it.id == "consonant-gho" }
     private val consonantNgo = consonantExercises.first { it.id == "consonant-ngo" }
     private val drawingCircle = drawingExercises.first { it.id == "drawing-circle" }
+    private val drawingLine = drawingExercises.first { it.id == "drawing-line" }
+    private val drawingSquare = drawingExercises.first { it.id == "drawing-square" }
+    private val drawingTriangle = drawingExercises.first { it.id == "drawing-triangle" }
 
     private fun tracePoint(point: Point) = TracePoint(point.x, point.y, timestampMs = 0L)
+
+    private companion object {
+        /** The square's four edges, in canvas units. */
+        val EDGES = listOf(20f, 80f)
+    }
 
     private fun Point.distanceTo(other: Point) = hypot(x - other.x, y - other.y)
 
@@ -817,6 +826,68 @@ class LetterTracingPrototypeTest {
     @Test
     fun `tracing far from drawing-circle's guide path does not complete the exercise`() {
         assertOffPathTraceDoesNotComplete(drawingCircle)
+    }
+
+    @Test
+    fun `drawing-line is one horizontal stroke centred on the canvas`() {
+        assertEquals(listOf("drawing-line-body"), drawingLine.strokes.map { it.id })
+        val points = drawingLine.strokes.single().points
+        assertEquals(Point(15f, 50f), points.first())
+        assertEquals(Point(85f, 50f), points.last())
+        assertEquals(listOf(50f), points.map { it.y }.distinct())
+        assertEquals(points.first().x, 100f - points.last().x)
+    }
+
+    @Test
+    fun `drawing-circle's guide holds a constant radius about the canvas centre`() {
+        // plan.md Step 11.16 — the drawings are exact geometry, so this pins that exactness rather
+        // than re-deriving anything: a later edit cannot quietly turn the circle into an egg.
+        val points = drawingCircle.strokes.single().points
+        points.forEach { assertEquals(35f, hypot(it.x - 50f, it.y - 50f), 0.01f) }
+        assertEquals(points.first().x, points.last().x, 0.01f)
+        assertEquals(points.first().y, points.last().y, 0.01f)
+    }
+
+    @Test
+    fun `drawing-square is a closed axis-aligned square`() {
+        assertEquals(listOf("drawing-square-body"), drawingSquare.strokes.map { it.id })
+        val points = drawingSquare.strokes.single().points
+        assertEquals(Point(20f, 20f), points.first())
+        assertEquals(points.first(), points.last())
+        points.forEach {
+            assertTrue("$it is off the square's edge", it.x in EDGES || it.y in EDGES)
+            assertTrue("$it is outside the square", it.x in 20f..80f && it.y in 20f..80f)
+        }
+        EDGES.forEach { edge ->
+            assertTrue(points.count { it.x == edge } > 1 && points.count { it.y == edge } > 1)
+        }
+    }
+
+    @Test
+    fun `drawing-triangle is a closed isosceles triangle on a level base`() {
+        assertEquals(listOf("drawing-triangle-body"), drawingTriangle.strokes.map { it.id })
+        val points = drawingTriangle.strokes.single().points
+        assertEquals(Point(50f, 15f), points.first())
+        assertEquals(points.first(), points.last())
+        assertEquals(80f, points.maxOf { it.y })
+        // Mirroring about the canvas centre maps the guide onto itself, so the two slanted sides
+        // are the same length and the apex sits over the middle of the base.
+        points.forEach { point ->
+            assertTrue(
+                "no mirror of $point about x=50",
+                points.any { abs(it.x - (100f - point.x)) < 0.01f && abs(it.y - point.y) < 0.01f },
+            )
+        }
+    }
+
+    @Test
+    fun `faithfully tracing each simple drawing completes it with a perfect score`() {
+        listOf(drawingLine, drawingSquare, drawingTriangle).forEach(::assertFaithfulTraceIsPerfect)
+    }
+
+    @Test
+    fun `tracing far from a simple drawing's guide path does not complete it`() {
+        listOf(drawingLine, drawingSquare, drawingTriangle).forEach(::assertOffPathTraceDoesNotComplete)
     }
 
     private fun assertFaithfulTraceIsPerfect(exercise: Exercise) {
