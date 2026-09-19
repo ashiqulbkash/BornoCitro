@@ -1,5 +1,6 @@
 package com.bornochitra.core.ui.components
 
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -11,6 +12,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.bornochitra.core.ui.theme.BcDimens
 import com.bornochitra.core.ui.theme.BornoChitraTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -25,7 +27,7 @@ fun BcTopAppBar(
         modifier = modifier,
         navigationIcon = {
             if (onBackClick != null) {
-                IconButton(onClick = onBackClick) {
+                IconButton(onClick = onBackClick, modifier = Modifier.size(BcDimens.minTouchTarget)) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = "Back",

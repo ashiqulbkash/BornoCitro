@@ -18,6 +18,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalInspectionMode
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.tooling.preview.Preview
 import com.bornochitra.core.ui.theme.BcDimens
 import com.bornochitra.core.ui.theme.BcSpacing
@@ -43,14 +45,21 @@ fun BcLabeledProgress(
     val filled = remember { Animatable(if (isPreview) target else 0f) }
     LaunchedEffect(target) { filled.animateTo(target, tween(durationMillis = PROGRESS_FILL_MS)) }
 
-    Column(modifier = modifier.fillMaxWidth()) {
+    // One spoken sentence with the real value: the animated bar and the split label/percentage would
+    // otherwise be read as separate, changing pieces.
+    val percent = (progress * 100).roundToInt()
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .clearAndSetSemantics { contentDescription = "$label, $percent percent" },
+    ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
             Text(text = label, style = MaterialTheme.typography.titleMedium)
             Text(
-                text = "${(progress * 100).roundToInt()}%",
+                text = "$percent%",
                 style = MaterialTheme.typography.labelLarge,
             )
         }

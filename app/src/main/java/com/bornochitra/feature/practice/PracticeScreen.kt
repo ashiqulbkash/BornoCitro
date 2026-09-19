@@ -1,11 +1,15 @@
 package com.bornochitra.feature.practice
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -19,6 +23,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -153,19 +159,15 @@ private fun ExerciseTracingContent(
         guideStrokes = engine.guideStrokes
     }
 
-    Column(
-        modifier = modifier.padding(BcSpacing.md),
-        verticalArrangement = Arrangement.spacedBy(BcSpacing.sm),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        BcExerciseHeading(title = exercise.title)
-
+    val canvas: @Composable (Modifier) -> Unit = { canvasModifier ->
         val strokeToTrace = currentStroke
         if (strokeToTrace != null) {
             TracingInputCanvas(
                 stroke = strokeToTrace,
                 guideStrokes = guideStrokes,
-                modifier = Modifier.fillMaxWidth().aspectRatio(1f),
+                modifier = canvasModifier.semantics {
+                    contentDescription = "Tracing area for ${exercise.title}. Follow the dots with your finger."
+                },
                 onPointerEvent = { event ->
                     when (event) {
                         is TracingPointerEvent.Start -> engine.onStart(event.point)
@@ -176,9 +178,8 @@ private fun ExerciseTracingContent(
                 },
             )
         }
-
-        tip?.let { BcTip(tip = it) }
-
+    }
+    val reset: @Composable () -> Unit = {
         BcPrimaryButton(
             text = "Reset",
             onClick = {
@@ -186,6 +187,44 @@ private fun ExerciseTracingContent(
                 onRestart()
             },
         )
+    }
+
+    BoxWithConstraints(modifier = modifier.padding(BcSpacing.md)) {
+        if (maxWidth > maxHeight) {
+            // Side by side, so the canvas takes the full height instead of what a heading, tip and
+            // button leave above and below it.
+            Row(
+                modifier = Modifier.fillMaxSize(),
+                horizontalArrangement = Arrangement.spacedBy(BcSpacing.md),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                canvas(Modifier.fillMaxHeight().aspectRatio(1f))
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .verticalScroll(rememberScrollState()),
+                    verticalArrangement = Arrangement.spacedBy(BcSpacing.sm, Alignment.CenterVertically),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    BcExerciseHeading(title = exercise.title)
+                    tip?.let { BcTip(tip = it) }
+                    reset()
+                }
+            }
+        } else {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.spacedBy(BcSpacing.sm),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                BcExerciseHeading(title = exercise.title)
+                // Square, but never taller than what the heading, tip and button leave, so a short
+                // screen shrinks the canvas rather than pushing Reset off screen.
+                canvas(Modifier.weight(1f, fill = false).aspectRatio(1f))
+                tip?.let { BcTip(tip = it) }
+                reset()
+            }
+        }
     }
 }
 

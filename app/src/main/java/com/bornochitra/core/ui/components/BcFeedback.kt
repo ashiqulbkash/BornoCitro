@@ -45,7 +45,9 @@ fun BcFeedbackBanner(
             modifier = Modifier.padding(BcSpacing.md),
             verticalArrangement = Arrangement.spacedBy(BcSpacing.xs),
         ) {
-            Text(text = title, style = MaterialTheme.typography.titleLarge, color = tone.color)
+            // The tone colours the card; the title stays in the body colour because the tone colours
+            // are too light to read as text on their own tint. The wording carries the meaning too.
+            Text(text = title, style = MaterialTheme.typography.titleLarge)
             Text(text = message, style = MaterialTheme.typography.bodyMedium)
         }
     }
