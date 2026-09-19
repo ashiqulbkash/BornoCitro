@@ -81,6 +81,7 @@ class MultiStrokeTrackerTest {
         assertEquals("exercise-1", result.exerciseId)
         assertEquals(tracker.completedResults, result.strokeResults)
         assertTrue(result.isCompleted)
+        assertEquals(2, result.expectedStrokeCount)
     }
 
     @Test
@@ -177,5 +178,57 @@ class MultiStrokeTrackerTest {
         traceFully(tracker, strokeC.points.first(), strokeC.points.last())
         assertTrue(tracker.isSequenceCompleted)
         assertEquals(listOf("a", "b", "c"), tracker.completedResults.map { it.strokeId })
+    }
+
+    @Test
+    fun `a completed stroke records how many attempts it took`() {
+        val tracker = MultiStrokeTracker(exercise(listOf(strokeA, strokeB)), tolerance = tightTolerance)
+
+        // A first attempt that falls short of the completion threshold, then a full trace.
+        tracker.onStart(tracePoint(0f, 0f))
+        tracker.onMove(tracePoint(1f, 0f))
+        tracker.onEnd()
+        traceFully(tracker, strokeA.points.first(), strokeA.points.last())
+
+        val result = tracker.completedResults.single()
+        assertEquals(2, result.attemptCount)
+        assertEquals(0, result.outOfOrderAttempts)
+    }
+
+    @Test
+    fun `tracing another stroke while a different one is expected is recorded as out of order`() {
+        val tracker = MultiStrokeTracker(exercise(listOf(strokeA, strokeB)), tolerance = tightTolerance)
+
+        traceFully(tracker, strokeB.points.first(), strokeB.points.last())
+
+        val attempt = tracker.lastAttemptResult!!
+        assertFalse(attempt.isCompleted)
+        assertEquals("a", attempt.strokeId)
+        assertEquals(1, attempt.outOfOrderAttempts)
+        assertEquals(0, tracker.currentStrokeIndex)
+    }
+
+    @Test
+    fun `a sloppy retry of the expected stroke is not counted as out of order`() {
+        val tracker = MultiStrokeTracker(exercise(listOf(strokeA, strokeB)), tolerance = tightTolerance)
+
+        tracker.onStart(tracePoint(0f, 0f))
+        tracker.onMove(tracePoint(1f, 0f))
+        tracker.onEnd()
+
+        assertEquals(0, tracker.lastAttemptResult!!.outOfOrderAttempts)
+    }
+
+    @Test
+    fun `attempt counts are per stroke and reset once a stroke is completed`() {
+        val tracker = MultiStrokeTracker(exercise(listOf(strokeA, strokeB)), tolerance = tightTolerance)
+
+        tracker.onStart(tracePoint(0f, 0f))
+        tracker.onMove(tracePoint(1f, 0f))
+        tracker.onEnd()
+        traceFully(tracker, strokeA.points.first(), strokeA.points.last())
+        traceFully(tracker, strokeB.points.first(), strokeB.points.last())
+
+        assertEquals(listOf(2, 1), tracker.completedResults.map { it.attemptCount })
     }
 }

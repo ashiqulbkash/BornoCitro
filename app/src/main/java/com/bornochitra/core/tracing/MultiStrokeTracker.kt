@@ -11,6 +11,11 @@ import com.bornochitra.core.model.Stroke
  * threshold ("incorrect stroke behavior") is discarded without advancing, so the same stroke can
  * simply be retried — starting a new attempt already clears prior points ([TracingSession.onStart]).
  *
+ * Attempts are counted per stroke, and a failed attempt that traced another of the exercise's
+ * strokes well enough to complete it is recorded as an out-of-order attempt. That is the only
+ * stroke-order signal available here: because only the expected stroke is ever matched, a child
+ * cannot actually complete strokes in the wrong order, but they can try the wrong one.
+ *
  * Independent of ViewModel/Room/Hilt/Compose per plan.md section 4. Turning these results into a
  * learning score is the Score Calculator's job (plan.md section 31), not this class's.
  */
@@ -29,6 +34,9 @@ class MultiStrokeTracker(
 
     var currentStrokeIndex = 0
         private set
+
+    private var currentStrokeAttempts = 0
+    private var currentStrokeOutOfOrderAttempts = 0
 
     /** The most recently scored attempt, whether or not it advanced the sequence — reflects incomplete/incorrect strokes too. */
     var lastAttemptResult: StrokeTraceResult? = null
@@ -67,6 +75,7 @@ class MultiStrokeTracker(
             exerciseId = exercise.id,
             strokeResults = completedResults,
             isCompleted = true,
+            expectedStrokeCount = exercise.strokes.size,
         )
     }
 
@@ -80,20 +89,38 @@ class MultiStrokeTracker(
         val coverage = PathCoverageCalculator.coverage(stroke.points, tracedPoints, tolerance)
         val isCompleted = coverage >= completionThreshold
 
+        currentStrokeAttempts += 1
+        if (!isCompleted && tracesAnotherStroke(tracedPoints)) currentStrokeOutOfOrderAttempts += 1
+
         val result = StrokeTraceResult(
             strokeId = stroke.id,
             tracePoints = tracedPoints,
             coverage = coverage,
             averageDistance = averageDistance(stroke, tracedPoints),
             isCompleted = isCompleted,
+            attemptCount = currentStrokeAttempts,
+            outOfOrderAttempts = currentStrokeOutOfOrderAttempts,
         )
         lastAttemptResult = result
 
         if (isCompleted) {
             mutableCompletedResults += result
             currentStrokeIndex += 1
+            currentStrokeAttempts = 0
+            currentStrokeOutOfOrderAttempts = 0
         }
     }
+
+    /**
+     * Whether a failed attempt in fact traced one of the exercise's other strokes well enough to
+     * have completed it — the child drew a real stroke, just not the expected one. Only evaluated
+     * for failed attempts, never per pointer event.
+     */
+    private fun tracesAnotherStroke(tracedPoints: List<TracePoint>): Boolean =
+        exercise.strokes.withIndex().any { (index, stroke) ->
+            index != currentStrokeIndex &&
+                PathCoverageCalculator.coverage(stroke.points, tracedPoints, tolerance) >= completionThreshold
+        }
 
     private fun averageDistance(stroke: Stroke, tracedPoints: List<TracePoint>): Float {
         if (tracedPoints.isEmpty()) return 0f

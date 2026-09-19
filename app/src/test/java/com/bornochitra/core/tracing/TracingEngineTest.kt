@@ -116,4 +116,52 @@ class TracingEngineTest {
         assertEquals(strokeA, engine.currentStroke)
         assertFalse(engine.isExerciseCompleted)
     }
+
+    /** Traces the whole exercise cleanly and returns the score it earns, as a reference point. */
+    private fun cleanScore(): Float {
+        val engine = TracingEngine(exercise, tolerance = TracingTolerance(maxDistance = 0.5f))
+        traceFully(engine, strokeA.points.first(), strokeA.points.last())
+        val outcome = traceFully(engine, strokeB.points.first(), strokeB.points.last())
+        require(outcome is TracingAttemptOutcome.ExerciseCompleted)
+        return outcome.score
+    }
+
+    @Test
+    fun `retrying a stroke does not lower the final score`() {
+        val engine = TracingEngine(exercise, tolerance = TracingTolerance(maxDistance = 0.5f))
+
+        engine.onStart(tracePoint(0f, 0f))
+        engine.onMove(tracePoint(1f, 0f)) // a first attempt well short of strokeA
+        engine.onEnd()
+        traceFully(engine, strokeA.points.first(), strokeA.points.last())
+        val outcome = traceFully(engine, strokeB.points.first(), strokeB.points.last())
+
+        require(outcome is TracingAttemptOutcome.ExerciseCompleted)
+        assertEquals(cleanScore(), outcome.score, 0.01f)
+        assertEquals(ScoreLevel.PERFECT, outcome.level)
+    }
+
+    @Test
+    fun `tracing the wrong stroke lowers the final score through the order metric`() {
+        val engine = TracingEngine(exercise, tolerance = TracingTolerance(maxDistance = 0.5f))
+
+        traceFully(engine, strokeB.points.first(), strokeB.points.last()) // strokeA was expected
+        traceFully(engine, strokeA.points.first(), strokeA.points.last())
+        val outcome = traceFully(engine, strokeB.points.first(), strokeB.points.last())
+
+        require(outcome is TracingAttemptOutcome.ExerciseCompleted)
+        assertTrue("score was ${outcome.score}", outcome.score < cleanScore())
+    }
+
+    @Test
+    fun `a letter and a drawing with the same strokes score identically`() {
+        val letter = exercise.copy(id = "vowel-a", type = ExerciseType.VOWEL)
+        val engine = TracingEngine(letter, tolerance = TracingTolerance(maxDistance = 0.5f))
+
+        traceFully(engine, strokeA.points.first(), strokeA.points.last())
+        val outcome = traceFully(engine, strokeB.points.first(), strokeB.points.last())
+
+        require(outcome is TracingAttemptOutcome.ExerciseCompleted)
+        assertEquals(cleanScore(), outcome.score, 0.01f)
+    }
 }

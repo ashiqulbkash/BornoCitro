@@ -1536,9 +1536,13 @@ A multi-stroke attempt produces one stroke result per stroke of the single whole
 Existing behavior carried in from Step 10.6 averages every stroke into one score. Choose the model deliberately in this step rather than inheriting it:
 
 ```text
-A. Equal weight      average every stroke equally (current)
+A. Equal weight      average every stroke equally (current)   chosen
 B. Weighted          some strokes count for more
 ```
+
+Model A was chosen: every stroke of a letter is equally worth learning, so none counts for more
+than another. It is applied through `StrokeWeighting`, whose default is equal weight, so model B
+is a configuration rather than a code change.
 
 Whichever is chosen:
 
