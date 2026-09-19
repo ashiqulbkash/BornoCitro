@@ -1,5 +1,6 @@
 package com.bornochitra.feature.progress
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -9,6 +10,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -25,6 +29,7 @@ import com.bornochitra.core.model.ExerciseType
 import com.bornochitra.core.model.LearningState
 import com.bornochitra.core.ui.components.BcEmptyState
 import com.bornochitra.core.ui.components.BcLabeledProgress
+import com.bornochitra.core.ui.components.BcPrimaryButton
 import com.bornochitra.core.ui.components.BcTopAppBar
 import com.bornochitra.core.ui.theme.BcFeedbackGood
 import com.bornochitra.core.ui.theme.BcSpacing
@@ -34,8 +39,9 @@ private const val FILLED_STAR = "★"
 private const val EMPTY_STAR = "☆"
 
 /**
- * Shows how much of each category has been learned and how well each exercise has gone
- * (plan.md section 40). Everything here comes from persisted progress, so it survives a restart.
+ * Shows how much has been learned overall and, behind a category button per section, how well each
+ * exercise has gone (plan.md sections 40 and 5). Everything here comes from persisted progress, so
+ * it survives a restart.
  */
 @Composable
 fun ProgressScreen(
@@ -44,56 +50,138 @@ fun ProgressScreen(
     viewModel: ProgressViewModel = hiltViewModel(),
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
-    ProgressContent(state = state, onBackClick = onBackClick, modifier = modifier)
+    ProgressContent(
+        state = state,
+        onEvent = viewModel::onEvent,
+        onBackClick = onBackClick,
+        modifier = modifier,
+    )
 }
 
 @Composable
 private fun ProgressContent(
     state: ProgressState,
+    onEvent: (ProgressEvent) -> Unit,
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val openCategory = state.categories.firstOrNull { it.type == state.openCategory }
+
+    // Inside a section, back closes the section rather than leaving the screen.
+    BackHandler(enabled = openCategory != null) { onEvent(ProgressEvent.CategoryClosed) }
+
     Scaffold(
         modifier = modifier,
-        topBar = { BcTopAppBar(title = "My Progress", onBackClick = onBackClick) },
+        topBar = {
+            BcTopAppBar(
+                title = openCategory?.type?.label() ?: "My Progress",
+                onBackClick = {
+                    if (openCategory != null) onEvent(ProgressEvent.CategoryClosed) else onBackClick()
+                },
+            )
+        },
     ) { innerPadding ->
-        if (state.categories.isEmpty()) {
-            BcEmptyState(
+        val contentModifier = Modifier
+            .fillMaxSize()
+            .padding(innerPadding)
+
+        when {
+            state.error != null -> BcEmptyState(
+                title = "Progress unavailable",
+                message = state.error,
+                modifier = contentModifier,
+            )
+
+            state.isLoading -> Column(
+                modifier = contentModifier,
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                CircularProgressIndicator()
+            }
+
+            openCategory != null -> CategoryProgressList(
+                category = openCategory,
+                innerPadding = innerPadding,
+                modifier = Modifier.fillMaxSize(),
+            )
+
+            state.categories.isEmpty() -> BcEmptyState(
                 title = "No progress yet",
                 message = "Practice a letter and your stars will show up here.",
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding),
+                modifier = contentModifier,
             )
-        } else {
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(
-                    start = BcSpacing.md,
-                    end = BcSpacing.md,
-                    top = innerPadding.calculateTopPadding() + BcSpacing.md,
-                    bottom = innerPadding.calculateBottomPadding() + BcSpacing.md,
-                ),
-                verticalArrangement = Arrangement.spacedBy(BcSpacing.md),
-            ) {
-                item(key = "overall") {
-                    BcLabeledProgress(label = "Overall", progress = state.overallProgress)
-                }
 
-                state.categories.forEach { category ->
-                    item(key = "category-${category.type}") {
-                        BcLabeledProgress(label = category.type.label(), progress = category.progress)
-                    }
+            else -> CategoryButtons(
+                state = state,
+                onCategoryClick = { onEvent(ProgressEvent.CategoryOpened(it)) },
+                modifier = contentModifier,
+            )
+        }
+    }
+}
 
-                    items(category.exercises, key = { it.id }) { exercise ->
-                        ExerciseStarsRow(
-                            title = exercise.title,
-                            stars = exercise.stars,
-                            stateText = exercise.state.label(),
-                        )
-                    }
-                }
-            }
+/** The way into each section, following the Home screen's category buttons. */
+@Composable
+private fun CategoryButtons(
+    state: ProgressState,
+    onCategoryClick: (ExerciseType) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier
+            .verticalScroll(rememberScrollState())
+            .padding(BcSpacing.md),
+        verticalArrangement = Arrangement.spacedBy(BcSpacing.md),
+    ) {
+        BcLabeledProgress(label = "Overall", progress = state.overallProgress)
+
+        state.categories.forEach { category ->
+            BcPrimaryButton(
+                text = category.type.label(),
+                onClick = { onCategoryClick(category.type) },
+                modifier = Modifier.fillMaxWidth(),
+            )
+        }
+    }
+}
+
+/** How far the category has got, then how well each of its exercises has gone. */
+@Composable
+private fun CategoryProgressList(
+    category: ProgressCategory,
+    innerPadding: PaddingValues,
+    modifier: Modifier = Modifier,
+) {
+    if (category.exercises.isEmpty()) {
+        BcEmptyState(
+            title = "No exercises yet",
+            message = "Check back soon for letters to practice.",
+            modifier = modifier.padding(innerPadding),
+        )
+        return
+    }
+
+    LazyColumn(
+        modifier = modifier,
+        contentPadding = PaddingValues(
+            start = BcSpacing.md,
+            end = BcSpacing.md,
+            top = innerPadding.calculateTopPadding() + BcSpacing.md,
+            bottom = innerPadding.calculateBottomPadding() + BcSpacing.md,
+        ),
+        verticalArrangement = Arrangement.spacedBy(BcSpacing.md),
+    ) {
+        item(key = "category-${category.type}") {
+            BcLabeledProgress(label = category.type.label(), progress = category.progress)
+        }
+
+        items(category.exercises, key = { it.id }) { exercise ->
+            ExerciseStarsRow(
+                title = exercise.title,
+                stars = exercise.stars,
+                stateText = exercise.state.label(),
+            )
         }
     }
 }
@@ -158,6 +246,7 @@ private fun ExerciseType.label(): String = when (this) {
 }
 
 private val previewState = ProgressState(
+    isLoading = false,
     overallProgress = 0.5f,
     categories = listOf(
         ProgressCategory(
@@ -187,11 +276,31 @@ private val previewState = ProgressState(
     ),
 )
 
-@Preview(showBackground = true, name = "With progress")
+@Preview(showBackground = true, name = "Categories")
 @Composable
 private fun ProgressScreenPreview() {
     BornoChitraTheme {
-        ProgressContent(state = previewState, onBackClick = {})
+        ProgressContent(state = previewState, onEvent = {}, onBackClick = {})
+    }
+}
+
+@Preview(showBackground = true, name = "Vowel section")
+@Composable
+private fun ProgressScreenCategoryPreview() {
+    BornoChitraTheme {
+        ProgressContent(
+            state = previewState.copy(openCategory = ExerciseType.VOWEL),
+            onEvent = {},
+            onBackClick = {},
+        )
+    }
+}
+
+@Preview(showBackground = true, name = "Loading")
+@Composable
+private fun ProgressScreenLoadingPreview() {
+    BornoChitraTheme {
+        ProgressContent(state = ProgressState(), onEvent = {}, onBackClick = {})
     }
 }
 
@@ -199,6 +308,18 @@ private fun ProgressScreenPreview() {
 @Composable
 private fun ProgressScreenEmptyPreview() {
     BornoChitraTheme {
-        ProgressContent(state = ProgressState(), onBackClick = {})
+        ProgressContent(state = ProgressState(isLoading = false), onEvent = {}, onBackClick = {})
+    }
+}
+
+@Preview(showBackground = true, name = "Error")
+@Composable
+private fun ProgressScreenErrorPreview() {
+    BornoChitraTheme {
+        ProgressContent(
+            state = ProgressState(isLoading = false, error = "We couldn't load your progress."),
+            onEvent = {},
+            onBackClick = {},
+        )
     }
 }

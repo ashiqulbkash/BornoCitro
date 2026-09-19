@@ -13,6 +13,7 @@ import com.bornochitra.core.model.Stroke
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -21,6 +22,10 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 
@@ -74,6 +79,7 @@ class ProgressViewModelTest {
         learningProgress: LearningProgress = LearningProgress(),
         progressByExerciseId: Map<String, ExerciseProgress> = emptyMap(),
         catalogue: List<Exercise> = this.catalogue,
+        progressFails: Boolean = false,
     ): ProgressViewModel {
         val exerciseRepository = object : ExerciseRepository {
             override fun observeExercises(type: ExerciseType): Flow<List<Exercise>> =
@@ -82,7 +88,9 @@ class ProgressViewModelTest {
             override suspend fun getExercise(id: String): Exercise? = catalogue.find { it.id == id }
         }
         val progressRepository = object : ProgressRepository {
-            override fun observeProgress(): Flow<LearningProgress> = flowOf(learningProgress)
+            override fun observeProgress(): Flow<LearningProgress> =
+                if (progressFails) flow { throw IllegalStateException("progress unavailable") } else flowOf(learningProgress)
+
             override fun observeExerciseProgress(exerciseIds: List<String>): Flow<Map<String, ExerciseProgress>> =
                 flowOf(progressByExerciseId.filterKeys { it in exerciseIds })
 
@@ -94,10 +102,81 @@ class ProgressViewModelTest {
     }
 
     @Test
-    fun `default ui state has no categories and zero overall progress`() {
+    fun `the screen starts loading, with no categories and zero overall progress`() {
         val viewModel = viewModel()
 
         assertEquals(ProgressState(), viewModel.uiState.value)
+        assertTrue(viewModel.uiState.value.isLoading)
+    }
+
+    @Test
+    fun `the first read ends the loading state`() = runTest(dispatcher) {
+        val viewModel = viewModel()
+        backgroundScope.launch(dispatcher) { viewModel.uiState.collect {} }
+        dispatcher.scheduler.advanceUntilIdle()
+
+        val state = viewModel.uiState.value
+        assertFalse(state.isLoading)
+        assertNull(state.error)
+    }
+
+    @Test
+    fun `a failing read reports an error instead of empty progress`() = runTest(dispatcher) {
+        val viewModel = viewModel(progressFails = true)
+        backgroundScope.launch(dispatcher) { viewModel.uiState.collect {} }
+        dispatcher.scheduler.advanceUntilIdle()
+
+        val state = viewModel.uiState.value
+        assertFalse(state.isLoading)
+        assertNotNull(state.error)
+        assertEquals(emptyList<ProgressCategory>(), state.categories)
+    }
+
+    @Test
+    fun `no category is open until one is chosen`() = runTest(dispatcher) {
+        val viewModel = viewModel()
+        backgroundScope.launch(dispatcher) { viewModel.uiState.collect {} }
+        dispatcher.scheduler.advanceUntilIdle()
+
+        assertNull(viewModel.uiState.value.openCategory)
+    }
+
+    @Test
+    fun `opening a category keeps its own exercises, and closing returns to the buttons`() = runTest(dispatcher) {
+        val viewModel = viewModel()
+        backgroundScope.launch(dispatcher) { viewModel.uiState.collect {} }
+        dispatcher.scheduler.advanceUntilIdle()
+
+        viewModel.onEvent(ProgressEvent.CategoryOpened(ExerciseType.VOWEL))
+        dispatcher.scheduler.advanceUntilIdle()
+        val opened = viewModel.uiState.value
+        assertEquals(ExerciseType.VOWEL, opened.openCategory)
+        assertEquals(
+            listOf("vowel-o", "vowel-aa"),
+            opened.categories.first { it.type == opened.openCategory }.exercises.map { it.id },
+        )
+
+        viewModel.onEvent(ProgressEvent.CategoryClosed)
+        dispatcher.scheduler.advanceUntilIdle()
+        assertNull(viewModel.uiState.value.openCategory)
+    }
+
+    @Test
+    fun `opening another category replaces the open one`() = runTest(dispatcher) {
+        val viewModel = viewModel()
+        backgroundScope.launch(dispatcher) { viewModel.uiState.collect {} }
+        dispatcher.scheduler.advanceUntilIdle()
+
+        viewModel.onEvent(ProgressEvent.CategoryOpened(ExerciseType.VOWEL))
+        viewModel.onEvent(ProgressEvent.CategoryOpened(ExerciseType.CONSONANT))
+        dispatcher.scheduler.advanceUntilIdle()
+
+        val state = viewModel.uiState.value
+        assertEquals(ExerciseType.CONSONANT, state.openCategory)
+        assertEquals(
+            listOf("consonant-ko"),
+            state.categories.first { it.type == ExerciseType.CONSONANT }.exercises.map { it.id },
+        )
     }
 
     @Test

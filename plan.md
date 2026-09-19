@@ -161,12 +161,24 @@ When the user enters either section, show the individual progress for the respec
 
 ## Definition of Done
 
-- [ ] Progress screen shows Vowel and Consonant buttons styled like Home
-- [ ] Vowel section lists each vowel with its individual progress
-- [ ] Consonant section lists each consonant with its individual progress
-- [ ] Loading, empty and error states are handled
-- [ ] Unit tests cover the ViewModel state transitions and progress mapping
-- [ ] Verified by running the app
+- [x] Progress screen shows Vowel and Consonant buttons styled like Home
+- [x] Vowel section lists each vowel with its individual progress
+- [x] Consonant section lists each consonant with its individual progress
+- [x] Loading, empty and error states are handled
+- [x] Unit tests cover the ViewModel state transitions and progress mapping
+- [x] Verified by running the app
+
+Done. The Progress screen is now a hub like Home: overall progress, then a `BcPrimaryButton` per
+category, and a section behind each one showing that category's bar and its exercises' individual
+stars and learning state. The section is screen state, not a route — `ProgressState.openCategory`
+driven by `ProgressEvent.CategoryOpened`/`CategoryClosed`, so `BcNavHost` is untouched and
+`ProgressViewModel` stays the one source of truth for the mapping. আঁকা gets a button too: the
+screen already listed drawing exercises individually, and hiding them behind nothing would have
+dropped that. `ProgressState` gained `isLoading` and `error`, the latter from `catch` on the Room-
+backed flow, so a failed read says so instead of showing empty progress. Confirmed on the physical
+RMX3624: the buttons open স্বরবর্ণ (অ mastered, আ completed, the rest unstarted), ব্যঞ্জনবর্ণ and আঁকা;
+app-bar and system back both close the section first and only then leave the screen. 330 unit tests
+pass, 11 of them `ProgressViewModelTest`.
 
 ---
 
