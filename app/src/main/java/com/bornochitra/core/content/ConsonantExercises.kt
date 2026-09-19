@@ -1321,4 +1321,127 @@ internal val consonantExercises: List<Exercise> = listOf(
             ),
         ),
     ),
+    /**
+     * ড is read off its rendered glyph's centreline like the letters before it. It is wider than it
+     * is tall (aspect 1.23), so its ink is fitted by width with y centred, the way ক, জ and ঝ are.
+     *
+     * Below the headline the letter is one continuous movement: down the short middle stem, right
+     * and down through the shallow V, up to the sharp point at the top right, then back down the
+     * right flank, round the bottom and up the long left arm to the flat cut where the pen lifts.
+     * That is about 190 canvas units, more than a child can hold in one pass, so it is split at the
+     * point — where the arm and the flank converge into one tapered tip and the pen turns back on
+     * itself, the same split জ and ঞ take.
+     *
+     * The arm therefore runs from the matra crossing down into the V and up into the point, and the
+     * bowl restarts at the junction just below it, runs down the flank and round the bottom and
+     * stops 2 units short of the midpoint of the left arm's flat-cut terminal, as ছ's cut ends do.
+     * Neither tip touches the headline: below the matra the letter hangs from the stem alone.
+     *
+     * The arm ends one unit past the skeleton's spur, on the apex of the ink wedge, which is where
+     * the pen actually turns. That also carries it to 78.9 canvas units: the guide drops a dot
+     * every 6 units from a stroke's start, so a stroke that stops just short of a multiple of the
+     * spacing — 77.9 at the spur's end — draws almost a whole spacing of bare path past its last
+     * dot, which shows on the device as a tail hanging off the tip.
+     *
+     * The matra is the full headline and is written last.
+     */
+    Exercise(
+        id = "consonant-ddo",
+        title = "ড",
+        type = ExerciseType.CONSONANT,
+        difficulty = Difficulty.INTERMEDIATE,
+        order = 13,
+        strokes = listOf(
+            Stroke(
+                id = "consonant-ddo-arm",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(45f, 16f),
+                        Point(45f, 20f),
+                        Point(45f, 22f),
+                        Point(45f, 26f),
+                        Point(45f, 28f),
+                        Point(45f, 32f),
+                        Point(45f, 34f),
+                        Point(45f, 38f),
+                        Point(45f, 40f),
+                        Point(45f, 44f),
+                        Point(46f, 46f),
+                        Point(46f, 50f),
+                        Point(47f, 52f),
+                        Point(50f, 54f),
+                        Point(53f, 55f),
+                        Point(56f, 55f),
+                        Point(59f, 55f),
+                        Point(62f, 54f),
+                        Point(64f, 52f),
+                        Point(67f, 50f),
+                        Point(69f, 48f),
+                        Point(71f, 46f),
+                        Point(73f, 44f),
+                        Point(76f, 42f),
+                        Point(77f, 39f),
+                        Point(79f, 37f),
+                        Point(79f, 36f),
+                        Point(79f, 35f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "consonant-ddo-bowl",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(76f, 42f),
+                        Point(79f, 44f),
+                        Point(81f, 46f),
+                        Point(82f, 49f),
+                        Point(83f, 52f),
+                        Point(83f, 55f),
+                        Point(83f, 58f),
+                        Point(83f, 61f),
+                        Point(83f, 64f),
+                        Point(83f, 67f),
+                        Point(81f, 70f),
+                        Point(80f, 73f),
+                        Point(78f, 76f),
+                        Point(76f, 78f),
+                        Point(73f, 80f),
+                        Point(71f, 81f),
+                        Point(68f, 82f),
+                        Point(65f, 83f),
+                        Point(62f, 83f),
+                        Point(59f, 84f),
+                        Point(56f, 83f),
+                        Point(53f, 83f),
+                        Point(50f, 83f),
+                        Point(47f, 82f),
+                        Point(44f, 81f),
+                        Point(41f, 80f),
+                        Point(38f, 78f),
+                        Point(36f, 76f),
+                        Point(33f, 74f),
+                        Point(31f, 72f),
+                        Point(29f, 69f),
+                        Point(27f, 67f),
+                        Point(26f, 64f),
+                        Point(24f, 61f),
+                        Point(23f, 59f),
+                        Point(21f, 56f),
+                        Point(20f, 53f),
+                        Point(19f, 50f),
+                        Point(18f, 47f),
+                        Point(17f, 44f),
+                        Point(16f, 41f),
+                        Point(15f, 38f),
+                        Point(14f, 35f),
+                        Point(13f, 33f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "consonant-ddo-matra",
+                points = StrokePoints.line(Point(5f, 16f), Point(95f, 16f)),
+            ),
+        ),
+    ),
 )
