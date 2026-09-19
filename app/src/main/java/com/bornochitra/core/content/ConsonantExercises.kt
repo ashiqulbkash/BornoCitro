@@ -1520,4 +1520,80 @@ internal val consonantExercises: List<Exercise> = listOf(
             ),
         ),
     ),
+    /**
+     * ণ is read off its rendered glyph's centreline like the letters before it. It is taller than
+     * it is wide (aspect 0.86), so its ink is fitted by height with x centred, the way ট, ঠ and ঢ
+     * are.
+     *
+     * It is built like গ: a long post, a short headline bar that sits only to the right of the
+     * post, the post rising a little above that bar, and the whole letter hanging off the post's
+     * left. Here what hangs there is a spiral of about 98 canvas units — short enough to hold in
+     * one pass, so unlike জ's and ঞ's spirals it is not split.
+     *
+     * The loop therefore leaves the post at mid-height, where the letter's arm tapers into it,
+     * arches over the top, comes down the left flank, runs along the bottom and curls inwards into
+     * the centre of the filled ball that ends it. That ball is a blunt filled terminal rather than
+     * a pen cut, so the skeleton collapses it to a single point and the loop is drawn into that
+     * centre, the way ক's lobe is drawn into its own ball.
+     *
+     * The stem follows, top to foot and inset 2 units from each end cap, as গ's does, and the
+     * matra — the short bar right of the post — is written last.
+     */
+    Exercise(
+        id = "consonant-nno",
+        title = "ণ",
+        type = ExerciseType.CONSONANT,
+        difficulty = Difficulty.INTERMEDIATE,
+        order = 15,
+        strokes = listOf(
+            Stroke(
+                id = "consonant-nno-loop",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(68f, 33f),
+                        Point(65f, 32f),
+                        Point(62f, 30f),
+                        Point(60f, 28f),
+                        Point(58f, 26f),
+                        Point(56f, 24f),
+                        Point(53f, 22f),
+                        Point(50f, 21f),
+                        Point(47f, 20f),
+                        Point(44f, 19f),
+                        Point(41f, 18f),
+                        Point(38f, 18f),
+                        Point(35f, 18f),
+                        Point(32f, 19f),
+                        Point(30f, 20f),
+                        Point(27f, 21f),
+                        Point(24f, 23f),
+                        Point(22f, 25f),
+                        Point(21f, 28f),
+                        Point(20f, 31f),
+                        Point(20f, 34f),
+                        Point(20f, 37f),
+                        Point(20f, 40f),
+                        Point(21f, 43f),
+                        Point(22f, 46f),
+                        Point(24f, 48f),
+                        Point(26f, 51f),
+                        Point(28f, 52f),
+                        Point(31f, 53f),
+                        Point(34f, 54f),
+                        Point(37f, 54f),
+                        Point(40f, 52f),
+                        Point(41f, 50f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "consonant-nno-stem",
+                points = StrokePoints.line(Point(68f, 9f), Point(68f, 88f), samples = 16),
+            ),
+            Stroke(
+                id = "consonant-nno-matra",
+                points = StrokePoints.line(Point(68f, 19f), Point(83f, 19f)),
+            ),
+        ),
+    ),
 )
