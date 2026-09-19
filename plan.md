@@ -87,7 +87,9 @@ copied forward between sessions. Copy `glyph.py`, `canvas.py`, `skel_branches.py
 canvas) from the newest scratchpad that has them into the current one before starting. A letter
 wider than it is tall uses the width-fit set instead — `wide_norm.py` (branches, skeleton/ink grids
 and the pen half-width), `wide_ink.py`, `wide_check.py` and `wide_overlay.py`, written for জ in 1.3
-and taking the character as an argument. `calib_practice.py` and `trace_letter.py` do the device
+and taking the character as an argument. `tall_norm.py` is its height-fit mirror, written for ট in
+1.6, so a tall letter's `<letter>_build.py` can use the same setup/branches/half_width API.
+`calib_practice.py` and `trace_letter.py` do the device
 check for any letter, except that `calib_practice.py` measures the *topmost* row of guide dots as
 the matra: a letter whose headline is not its highest stroke, or whose headline is broken into two
 bars, needs `jho_calib.py` instead (written for ঝ in 1.4 — it takes the densest row of dots and
@@ -159,7 +161,7 @@ else in that file passes on its own. Baseline after 1.1: **336 unit tests, 0 fai
 - [x] 1.3 জ
 - [x] 1.4 ঝ
 - [x] 1.5 ঞ
-- [ ] 1.6 ট
+- [x] 1.6 ট
 - [ ] 1.7 ঠ
 - [ ] 1.8 ড
 - [ ] 1.9 ঢ
@@ -209,6 +211,8 @@ Step 1 as a whole is done when all 34 sub-steps are checked, the catalog test as
 - **1.4 ঝ** — wider than tall (aspect 1.19), so fitted by width like জ. Its headline is genuinely broken: a long bar over the body and a short one over the right post, with 14 canvas units of blank canvas between them, so it takes two strokes. Below it the body is ক's shape exactly — `wedge` leaves the middle stem, runs down-left, rounds the blunt left point (an arc at x=12, where the skeleton forks into a spur to the ink's tip) and comes back down-right to the stem's foot — so it is written as ক's knot is: `wedge`, then `stem`. `arm` then leaves the stem halfway down and runs into `post`, the right vertical, which rises above the headline as খ's and গ's stems do. `cap` and `matra` are the two headline bars, written last; only the long one carries the `-matra` name the catalog orders on. Every guide sample is on ink; traced on the RMX3624 it completed at 97% (PERFECT).
 
 - **1.5 ঞ** — wider than tall (aspect 1.40), so fitted by width like জ and ঝ; like ঙ it has no headline bar at all, so no stroke is a matra. It is a middle stem carrying a sail on the left, two bowls on the right and a bar-and-base along the bottom. `stem` is written first, as চ's is, because everything else hangs off it. `hood` then leaves the stem's top, rises over the apex, comes down the left flank and stops in the filled ball that ends the sail — the outline's own terminal there is a disc, not a cut, and the skeleton's branch already ends at its centre, so the sail is drawn *into* it the way ক's lobe is drawn into its ball. The right half is one spiral of ~120 canvas units out of the stem's top; the leftward point between its two bowls is a tapering wedge rather than a pen terminal — the ink narrows to a rounded tip and the skeleton grows a spur into it, so the pen turns back on itself there — and it is split at that point exactly as জ is: `bowl` runs into the point, `sweep` restarts on the far side of the turn and runs round the lower bowl back to the stem. `base` is the last stroke, in the place a letter with a headline would write its matra: the left bar from its flat-cut top, down, round the corner and right along the bottom to the stem's foot. Every guide sample is on ink; traced on the RMX3624 it completed at 99% (PERFECT).
+
+- **1.6 ট** — taller than it is wide (aspect 0.64), so it is fitted by height like চ and ছ. `hook` is written first, being the topmost and leftmost stroke: down the short bar from its flat-cut top, then right across the whole letter above the headline and down onto the headline at the far right. `stem` is straight from the headline to where its foot starts to curve, and `bowl` carries that curve — out of the filled ball that heads it, down the right flank, round the bottom and back left into the stem's foot, the way চ's body closes onto its own stem. The ball is a blunt filled terminal, not a pen cut: the skeleton collapses it to a single point at its centre, so the bowl is drawn out of that centre exactly as ক's lobe is drawn into its own ball. `matra` is the full headline, last. Every guide sample is on ink; traced on the RMX3624 it completed at 99.6% (PERFECT).
 
 ---
 

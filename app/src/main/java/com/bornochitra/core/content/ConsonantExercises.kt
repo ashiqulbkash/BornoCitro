@@ -1124,4 +1124,93 @@ internal val consonantExercises: List<Exercise> = listOf(
             ),
         ),
     ),
+    /**
+     * ট is read off its rendered glyph's centreline like the letters before it. It is taller than
+     * it is wide (aspect 0.64), so its ink is fitted by height with x centred, the way চ and ছ are.
+     *
+     * The hook is written first, being the letter's topmost and leftmost stroke: down the short bar
+     * from its flat-cut top, then right across the whole letter above the headline and down onto
+     * the headline at the far right, where it ends.
+     *
+     * The stem is straight, from the headline down to the point where its foot starts to curve, and
+     * the bowl carries that curve: it leaves the filled ball that heads it, runs down the right
+     * flank, round the bottom and back left into the stem's foot, the way চ's body closes onto its
+     * own stem. The ball is a blunt filled terminal rather than a pen cut — the skeleton collapses
+     * it to a single point at its centre — so the bowl is drawn out of that centre, as ক's lobe is
+     * drawn into the centre of its own ball.
+     *
+     * The matra is the full headline and is written last.
+     */
+    Exercise(
+        id = "consonant-tto",
+        title = "ট",
+        type = ExerciseType.CONSONANT,
+        difficulty = Difficulty.INTERMEDIATE,
+        order = 11,
+        strokes = listOf(
+            Stroke(
+                id = "consonant-tto-hook",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(29f, 9f),
+                        Point(29f, 11f),
+                        Point(29f, 14f),
+                        Point(30f, 17f),
+                        Point(31f, 19f),
+                        Point(34f, 21f),
+                        Point(37f, 22f),
+                        Point(40f, 23f),
+                        Point(43f, 23f),
+                        Point(46f, 23f),
+                        Point(49f, 23f),
+                        Point(52f, 23f),
+                        Point(55f, 23f),
+                        Point(58f, 24f),
+                        Point(61f, 25f),
+                        Point(63f, 27f),
+                        Point(64f, 29f),
+                        Point(65f, 32f),
+                        Point(65f, 35f),
+                        Point(65f, 37f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "consonant-tto-stem",
+                points = StrokePoints.line(Point(37f, 37f), Point(37f, 80f), samples = 12),
+            ),
+            Stroke(
+                id = "consonant-tto-bowl",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(58f, 58f),
+                        Point(61f, 58f),
+                        Point(64f, 59f),
+                        Point(67f, 61f),
+                        Point(67f, 64f),
+                        Point(67f, 67f),
+                        Point(66f, 70f),
+                        Point(65f, 73f),
+                        Point(64f, 76f),
+                        Point(62f, 78f),
+                        Point(60f, 80f),
+                        Point(58f, 82f),
+                        Point(56f, 84f),
+                        Point(53f, 85f),
+                        Point(50f, 86f),
+                        Point(47f, 86f),
+                        Point(44f, 86f),
+                        Point(41f, 85f),
+                        Point(39f, 83f),
+                        Point(38f, 80f),
+                        Point(37f, 80f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "consonant-tto-matra",
+                points = StrokePoints.line(Point(26f, 37f), Point(74f, 37f)),
+            ),
+        ),
+    ),
 )
