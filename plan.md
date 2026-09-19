@@ -124,7 +124,7 @@ canvas) from the newest scratchpad that has them into the current one before sta
 ### Tests to update for every letter
 
 `ExerciseCatalogTest` holds two hand-maintained assertions that fail until the new letter is added:
-the consonant title string (`কখগঘঙচ` after 1.1) and the per-exercise stroke-count map. Everything
+the consonant title string (`কখগঘঙচছ` after 1.2) and the per-exercise stroke-count map. Everything
 else in that file passes on its own. Baseline after 1.1: **336 unit tests, 0 failures**.
 
 ### Device check
@@ -144,7 +144,7 @@ else in that file passes on its own. Baseline after 1.1: **336 unit tests, 0 fai
 ## Sub-steps
 
 - [x] 1.1 চ
-- [ ] 1.2 ছ
+- [x] 1.2 ছ
 - [ ] 1.3 জ
 - [ ] 1.4 ঝ
 - [ ] 1.5 ঞ
@@ -193,6 +193,7 @@ Step 1 as a whole is done when all 34 sub-steps are checked, the catalog test as
 ## Notes
 
 - **1.1 চ** — derived from the glyph's centreline: below the headline চ is one closed bowl whose left edge is the stem, so it is `stem` (matra line down to the foot), `body` (foot round the bottom, up the right, back along the top to the stem) and `matra`. Every guide sample is on ink; traced on the RMX3624 it completed at 99% (PERFECT).
+- **1.2 ছ** — চ plus a ২-shaped lobe and tail on the right, so it is `bowl` (the whole চ part in one movement — only ~100 canvas units here, where চ alone is 185 and has to be split), `lobe` (out of the top of the bowl, clockwise down the right and back left along the bottom bar to its blunt tip), `tail` (from the bottom of the lobe down to the right) and `matra`. The bottom bar belongs to the lobe, not the tail: the ink there is one pen width thick, so the tail cannot reach that far left. Both flat-cut ends are where the skeleton forks into two prongs, and each guide stops 2 units short of the cut's midpoint. Every guide sample is on ink; traced on the RMX3624 it completed at 99% (PERFECT).
 
 ---
 

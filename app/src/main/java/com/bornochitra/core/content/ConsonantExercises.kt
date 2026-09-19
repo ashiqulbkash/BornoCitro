@@ -606,4 +606,134 @@ internal val consonantExercises: List<Exercise> = listOf(
             ),
         ),
     ),
+    /**
+     * ছ is read off its rendered glyph's centreline like the letters before it. It is চ with a large
+     * lobe and a tail added on the right — the same shape Bengali ২ has — so it is written in that
+     * order: the চ part first (down the stem, round the bowl, up its right side and back along the
+     * top edge to the stem, one continuous movement of ~100 canvas units, where চ alone is twice
+     * that and has to be split), then the lobe out of the top of the bowl, clockwise down the right
+     * and back left along the bottom to its blunt tip, then the tail springing from the bottom of
+     * the lobe down to the right, and the matra last.
+     *
+     * The bottom bar at the lower left belongs to the lobe, not to the tail: the ink there is a
+     * single pen width thick, so the tail cannot reach that far left without leaving ink below it,
+     * and there is none. The lobe's tip and the tail's end are flat cuts, where the skeleton forks
+     * into two prongs; each guide stops two units short of the cut's midpoint, as the matra stops
+     * short of its own end caps. ছ is ADVANCED like ঙ and ঔ: the lobe is a long curve that reverses
+     * direction at the bottom, and the tail leaves the letter from a point in the middle of it.
+     */
+    Exercise(
+        id = "consonant-chho",
+        title = "ছ",
+        type = ExerciseType.CONSONANT,
+        difficulty = Difficulty.ADVANCED,
+        order = 7,
+        strokes = listOf(
+            Stroke(
+                id = "consonant-chho-bowl",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(29f, 12f),
+                        Point(29f, 14f),
+                        Point(29f, 18f),
+                        Point(29f, 21f),
+                        Point(29f, 22f),
+                        Point(29f, 25f),
+                        Point(29f, 28f),
+                        Point(29f, 31f),
+                        Point(29f, 34f),
+                        Point(29f, 37f),
+                        Point(29f, 40f),
+                        Point(30f, 43f),
+                        Point(31f, 46f),
+                        Point(32f, 49f),
+                        Point(35f, 50f),
+                        Point(38f, 50f),
+                        Point(41f, 50f),
+                        Point(44f, 50f),
+                        Point(46f, 48f),
+                        Point(49f, 46f),
+                        Point(51f, 44f),
+                        Point(52f, 41f),
+                        Point(53f, 38f),
+                        Point(53f, 35f),
+                        Point(54f, 32f),
+                        Point(54f, 29f),
+                        Point(53f, 29f),
+                        Point(53f, 28f),
+                        Point(50f, 28f),
+                        Point(47f, 28f),
+                        Point(44f, 27f),
+                        Point(41f, 27f),
+                        Point(38f, 26f),
+                        Point(36f, 24f),
+                        Point(33f, 23f),
+                        Point(30f, 22f),
+                        Point(29f, 22f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "consonant-chho-lobe",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(53f, 28f),
+                        Point(56f, 28f),
+                        Point(59f, 28f),
+                        Point(62f, 28f),
+                        Point(65f, 29f),
+                        Point(68f, 31f),
+                        Point(70f, 33f),
+                        Point(71f, 36f),
+                        Point(72f, 39f),
+                        Point(73f, 42f),
+                        Point(73f, 45f),
+                        Point(73f, 48f),
+                        Point(72f, 51f),
+                        Point(71f, 54f),
+                        Point(69f, 56f),
+                        Point(68f, 59f),
+                        Point(65f, 61f),
+                        Point(63f, 62f),
+                        Point(60f, 64f),
+                        Point(57f, 65f),
+                        Point(54f, 66f),
+                        Point(52f, 68f),
+                        Point(49f, 68f),
+                        Point(46f, 67f),
+                        Point(43f, 67f),
+                        Point(40f, 67f),
+                        Point(36f, 66f),
+                        Point(34f, 66f),
+                        Point(33f, 66f),
+                        Point(31f, 66f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "consonant-chho-tail",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(52f, 68f),
+                        Point(53f, 71f),
+                        Point(56f, 73f),
+                        Point(59f, 74f),
+                        Point(62f, 75f),
+                        Point(65f, 76f),
+                        Point(67f, 77f),
+                        Point(70f, 79f),
+                        Point(73f, 80f),
+                        Point(76f, 82f),
+                        Point(78f, 83f),
+                        Point(80f, 84f),
+                        Point(82f, 85f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "consonant-chho-matra",
+                points = StrokePoints.line(Point(15f, 11f), Point(85f, 11f)),
+            ),
+        ),
+    ),
 )
