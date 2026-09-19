@@ -2,15 +2,19 @@ package com.bornochitra.core.tracing
 
 import com.bornochitra.core.model.ScoreLevel
 
-/** Outcome of ending one stroke attempt via [TracingEngine.onEnd]. */
+/** Outcome of lifting the finger once, via [TracingEngine.onEnd]. */
 sealed interface TracingAttemptOutcome {
 
     /** [TracingEngine.onEnd] was called with no active attempt to score. */
     data object NoAttempt : TracingAttemptOutcome
 
-    /** A stroke attempt finished; [isCompleted] says whether it met the threshold and advanced. */
-    data class StrokeAttempted(val isCompleted: Boolean) : TracingAttemptOutcome
+    /**
+     * The finger was lifted with part of the shape still untraced. The attempt keeps everything
+     * traced so far, so the child can carry on from where they stopped; [coverage] (0..1) is how
+     * much of the whole shape they have covered.
+     */
+    data class Unfinished(val coverage: Float) : TracingAttemptOutcome
 
-    /** Every stroke is now complete, with the exercise's overall [score] (0..100) and [level]. */
+    /** The whole shape is now traced, with the exercise's overall [score] (0..100) and [level]. */
     data class ExerciseCompleted(val score: Float, val level: ScoreLevel) : TracingAttemptOutcome
 }

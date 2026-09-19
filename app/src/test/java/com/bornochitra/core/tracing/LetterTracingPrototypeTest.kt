@@ -937,7 +937,7 @@ class LetterTracingPrototypeTest {
         val engine = TracingEngine(exercise)
         var outcome: TracingAttemptOutcome = TracingAttemptOutcome.NoAttempt
 
-        // The whole letter is on screen throughout; its strokes are traced in their teaching order.
+        // The whole letter is on screen throughout and is traced as one shape, a touch per stroke.
         for (stroke in exercise.strokes) {
             engine.onStart(tracePoint(stroke.points.first()))
             stroke.points.drop(1).forEach { engine.onMove(tracePoint(it)) }
@@ -957,7 +957,7 @@ class LetterTracingPrototypeTest {
         engine.onMove(tracePoint(Point(5f, 5f)))
         val outcome = engine.onEnd()
 
-        assertEquals(TracingAttemptOutcome.StrokeAttempted(isCompleted = false), outcome)
+        require(outcome is TracingAttemptOutcome.Unfinished) { "expected Unfinished, was $outcome" }
         assertFalse(engine.isExerciseCompleted)
     }
 }

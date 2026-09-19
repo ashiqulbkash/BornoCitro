@@ -10,11 +10,8 @@ enum class ContextualTip(val message: String) {
     /** Before the first finished attempt at an exercise. */
     FIRST_ATTEMPT("Try tracing slowly."),
 
-    /** A stroke was lifted before it was traced well enough. */
-    MISSED_STROKE("Try again — follow the dots closely"),
-
-    /** The same stroke has been missed several times in a row. */
-    REPEATED_MISSES("Keep your finger close to the dots — you can do it!"),
+    /** The finger was lifted with part of the shape still untraced. */
+    UNFINISHED_TRACE("Not finished yet — keep tracing the rest of the dots"),
 
     /** Several recent attempts at this exercise fell short of the bar. */
     REPEATED_LOW_SCORES("Try going a little slower — steady fingers stay on the dots."),

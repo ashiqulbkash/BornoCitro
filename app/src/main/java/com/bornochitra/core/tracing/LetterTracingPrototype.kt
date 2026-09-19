@@ -38,18 +38,15 @@ fun LetterTracingPrototype(exercise: Exercise, modifier: Modifier = Modifier) {
     var attemptId by remember(exercise) { mutableIntStateOf(0) }
     val engine = remember(exercise, attemptId) { TracingEngine(exercise) }
 
-    var currentStroke by remember(engine) { mutableStateOf(engine.currentStroke) }
     var guideStrokes by remember(engine) { mutableStateOf(engine.guideStrokes) }
     var feedback by remember(engine) { mutableStateOf<String?>(null) }
 
-    fun handleStrokeEnd() {
+    fun handleTraceEnd() {
         feedback = when (val outcome = engine.onEnd()) {
             is TracingAttemptOutcome.ExerciseCompleted -> "Score ${outcome.score.toInt()} — ${outcome.level}"
-            is TracingAttemptOutcome.StrokeAttempted ->
-                if (outcome.isCompleted) null else "Try again — follow the dots closely"
+            is TracingAttemptOutcome.Unfinished -> "Not finished yet — ${(outcome.coverage * 100).toInt()}% traced"
             TracingAttemptOutcome.NoAttempt -> feedback
         }
-        currentStroke = engine.currentStroke
         guideStrokes = engine.guideStrokes
     }
 
@@ -60,17 +57,15 @@ fun LetterTracingPrototype(exercise: Exercise, modifier: Modifier = Modifier) {
     ) {
         Text(text = exercise.title, style = MaterialTheme.typography.displayMedium)
 
-        val strokeToTrace = currentStroke
-        if (strokeToTrace != null) {
+        if (guideStrokes.isNotEmpty()) {
             TracingInputCanvas(
-                stroke = strokeToTrace,
                 guideStrokes = guideStrokes,
                 modifier = Modifier.fillMaxWidth().aspectRatio(1f),
                 onPointerEvent = { event ->
                     when (event) {
                         is TracingPointerEvent.Start -> engine.onStart(event.point)
                         is TracingPointerEvent.Move -> engine.onMove(event.point)
-                        is TracingPointerEvent.End -> handleStrokeEnd()
+                        is TracingPointerEvent.End -> handleTraceEnd()
                         TracingPointerEvent.Cancel -> engine.onCancel()
                     }
                 },

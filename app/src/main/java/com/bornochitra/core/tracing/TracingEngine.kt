@@ -5,14 +5,14 @@ import com.bornochitra.core.model.Stroke
 
 /**
  * Reusable domain-level façade over [MultiStrokeTracker] and [TraceScoreCalculator] — the
- * "domain engine" deliverable of plan.md Step 10.11. Bundles stroke sequencing and scoring
+ * "domain engine" deliverable of plan.md Step 10.11. Bundles whole-shape tracking and scoring
  * behind one small, UI-agnostic API so a driving ViewModel (plan.md Step 11's PracticeViewModel)
  * can run an exercise attempt without reaching into tracker/calculator internals directly.
  * Stays independent of ViewModel/Room/Hilt/Compose per plan.md section 4.
  *
- * An exercise is practised in a single pass with every stroke's guide on screen, so the child sees
- * the complete letter or shape and traces on top of it (plan.md Step 10.6). The strokes are still
- * traced in their teaching order, and the final score averages all of them.
+ * An exercise is one letter or drawing, practised with every stroke's guide on screen and traced
+ * in a single attempt (plan.md Steps 10.6 and 2): touches may be lifted and resumed freely, the
+ * strokes may be traced in any order, and the exercise finishes once the whole shape is covered.
  */
 class TracingEngine(
     private val exercise: Exercise,
@@ -23,13 +23,10 @@ class TracingEngine(
 
     private val tracker = MultiStrokeTracker(exercise, tolerance, completionThreshold)
 
-    /** The stroke the child is currently expected to trace, or null once the exercise is complete. */
-    val currentStroke: Stroke? get() = tracker.currentStroke
-
     /** Guides to draw right now: the whole exercise, so the complete letter or shape is visible. */
     val guideStrokes: List<Stroke> get() = if (isExerciseCompleted) emptyList() else exercise.strokes
 
-    val isExerciseCompleted: Boolean get() = tracker.isSequenceCompleted
+    val isExerciseCompleted: Boolean get() = tracker.isCompleted
 
     fun onStart(point: TracePoint) {
         tracker.onStart(point)
@@ -43,17 +40,17 @@ class TracingEngine(
         tracker.onCancel()
     }
 
-    /** Ends the current stroke attempt and reports what happened: retry, advance, or exercise complete with a score. */
+    /** Ends the touch and reports what happened: nothing traced, the shape still unfinished, or done with a score. */
     fun onEnd(): TracingAttemptOutcome {
-        if (isExerciseCompleted) return TracingAttemptOutcome.NoAttempt
-        tracker.onEnd()
+        if (!tracker.onEnd()) return TracingAttemptOutcome.NoAttempt
 
-        if (tracker.isSequenceCompleted) {
+        if (tracker.isCompleted) {
             val score = scoreCalculator.scoreTrace(tracker.toTraceResult())
             return TracingAttemptOutcome.ExerciseCompleted(score = score, level = scoreCalculator.scoreLevel(score))
         }
 
-        val attempt = tracker.lastAttemptResult ?: return TracingAttemptOutcome.NoAttempt
-        return TracingAttemptOutcome.StrokeAttempted(isCompleted = attempt.isCompleted)
+        return TracingAttemptOutcome.Unfinished(
+            coverage = tracker.strokeResults.map { it.coverage }.average().toFloat(),
+        )
     }
 }

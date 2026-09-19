@@ -54,11 +54,18 @@ The tracing progress shown while drawing must also be reset.
 
 ## Definition of Done
 
-- [ ] Tapping Reset removes every drawn path from the canvas
-- [ ] The progress shown while drawing returns to its initial state
-- [ ] After Reset the user can trace again from the beginning
-- [ ] Unit test covers the reset state transition
-- [ ] Verified by running the app and using Reset mid-trace
+- [x] Tapping Reset removes every drawn path from the canvas
+- [x] The progress shown while drawing returns to its initial state
+- [x] After Reset the user can trace again from the beginning
+- [x] Unit test covers the reset state transition
+- [x] Verified by running the app and using Reset mid-trace
+
+Done. The attempt counter moved from local Composable state into `PracticeState.attemptId`, so Reset
+is a real `UI → Event → ViewModel → State → UI` transition, and `ExerciseTracingContent` keys the
+tracing canvas on it. The ink was the defect: a restart hands `TracingInputCanvas` the same `Stroke`
+instances it already holds ink for, so its `finishedTraces` survived the restart even though the
+engine was rebuilt. Confirmed on the physical RMX3624: before the change, Reset left both traced
+strokes on screen; after it, the canvas is clean and back at stroke 1.
 
 ---
 
@@ -82,13 +89,26 @@ The tracing progress shown while drawing must also be reset.
 
 ## Definition of Done
 
-- [ ] Lifting the finger mid-step and touching again continues from the previous progress
-- [ ] No step has to be repeated from the beginning after an interruption
-- [ ] Tracing the whole shape completes the exercise in any order
-- [ ] Off-path tracing is still scored by the existing progress calculation
-- [ ] Existing scoring tests still pass unmodified
-- [ ] New unit tests cover resume, any-order completion and off-path tracing
-- [ ] Verified by running the app: stop midway, resume, and finish
+- [x] Lifting the finger mid-step and touching again continues from the previous progress
+- [x] No step has to be repeated from the beginning after an interruption
+- [x] Tracing the whole shape completes the exercise in any order
+- [x] Off-path tracing is still scored by the existing progress calculation
+- [x] Existing scoring tests still pass unmodified
+- [x] New unit tests cover resume, any-order completion and off-path tracing
+- [x] Verified by running the app: stop midway, resume, and finish
+
+Done. The character is one unit now: `MultiStrokeTracker` keeps every point of the attempt across
+touches and, on each lift, measures all of the exercise's strokes against all of those points, so
+no stroke is ever expected next and nothing is discarded when the finger goes up. Coverage and
+distance still come from `PathCoverageCalculator`/`PathDistanceCalculator`, untouched, and
+`TraceScoreCalculator` and its tests are unchanged — out-of-order attempts simply no longer exist,
+so that metric is always satisfied. `TracingInputCanvas` matches the model: it takes the whole
+guide and keeps the ink of every finished touch instead of one stroke's. Lifting early reports
+`TracingAttemptOutcome.Unfinished`, which the ViewModel turns into the
+`ContextualTip.UNFINISHED_TRACE` message, replacing the per-stroke miss tips. Confirmed on the
+physical RMX3624: half the matra, lift (ink kept, "Not finished yet" shown), the other half, then
+the stem before the body and the body in two touches — the letter completed at 100%, and Reset
+still clears.
 
 ---
 
@@ -106,11 +126,18 @@ No blinking dots. Show a simple instruction message instead, such as **“Practi
 
 ## Definition of Done
 
-- [ ] No dot blinks on the Practice screen
-- [ ] “Practice tracing over the dots” is displayed
-- [ ] The text comes from a string resource
-- [ ] Any test or code that depended on the blinking behavior is updated
-- [ ] Verified by running the app
+- [x] No dot blinks on the Practice screen
+- [x] “Practice tracing over the dots” is displayed
+- [x] The text comes from a string resource
+- [x] Any test or code that depended on the blinking behavior is updated
+- [x] Verified by running the app
+
+Done. `StartMarker` and `StartMarkerTest` are deleted and `TracingInputCanvas` no longer draws or
+hides a marker, so the canvas is guides plus ink only. The instruction is
+`R.string.practice_tracing_instruction`, rendered under the exercise heading in both the portrait
+and landscape Practice layouts. The onboarding copy "Start from the highlighted dot." pointed at the
+removed marker, so it is now "Start at one end of the line." Confirmed on the physical RMX3624: no
+marker on অ, the instruction shows, tracing still inks, and the layout still fits at 720x1280.
 
 ---
 

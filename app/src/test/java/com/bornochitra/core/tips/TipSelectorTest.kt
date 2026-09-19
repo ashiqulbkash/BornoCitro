@@ -21,20 +21,8 @@ class TipSelectorTest {
     }
 
     @Test
-    fun `a stroke traced well needs no tip`() {
-        assertNull(selector.afterStrokeAttempt(consecutiveMisses = 0))
-    }
-
-    @Test
-    fun `a first or second miss gets the gentle try-again tip`() {
-        assertEquals(ContextualTip.MISSED_STROKE, selector.afterStrokeAttempt(consecutiveMisses = 1))
-        assertEquals(ContextualTip.MISSED_STROKE, selector.afterStrokeAttempt(consecutiveMisses = 2))
-    }
-
-    @Test
-    fun `missing the same stroke three times in a row escalates the tip`() {
-        assertEquals(ContextualTip.REPEATED_MISSES, selector.afterStrokeAttempt(consecutiveMisses = 3))
-        assertEquals(ContextualTip.REPEATED_MISSES, selector.afterStrokeAttempt(consecutiveMisses = 9))
+    fun `stopping with the shape unfinished says what is left to do`() {
+        assertEquals(ContextualTip.UNFINISHED_TRACE, selector.afterUnfinishedTrace())
     }
 
     @Test
@@ -97,15 +85,12 @@ class TipSelectorTest {
     fun `thresholds are configurable`() {
         val patient = TipSelector(
             TipRules(
-                repeatedMissesThreshold = 5,
                 repeatedLowScoreCount = 3,
                 lowScoreBelow = 60f,
                 difficultFrom = Difficulty.INTERMEDIATE,
             ),
         )
 
-        assertEquals(ContextualTip.MISSED_STROKE, patient.afterStrokeAttempt(consecutiveMisses = 4))
-        assertEquals(ContextualTip.REPEATED_MISSES, patient.afterStrokeAttempt(consecutiveMisses = 5))
         assertNull(patient.afterAttempt(Difficulty.BEGINNER, recentScores = listOf(70f, 70f, 70f)))
         assertEquals(
             ContextualTip.REPEATED_LOW_SCORES,

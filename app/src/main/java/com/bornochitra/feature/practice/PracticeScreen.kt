@@ -11,11 +11,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -23,11 +25,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.bornochitra.R
 import com.bornochitra.core.model.Difficulty
 import com.bornochitra.core.model.Exercise
 import com.bornochitra.core.model.ExerciseType
@@ -66,7 +71,7 @@ fun PracticeScreen(
         state = state,
         onBackClick = onBackClick,
         onExerciseCompleted = { score, level -> viewModel.onEvent(PracticeEvent.ExerciseCompleted(score, level)) },
-        onStrokeAttempted = { isCompleted -> viewModel.onEvent(PracticeEvent.StrokeAttempted(isCompleted)) },
+        onTraceUnfinished = { viewModel.onEvent(PracticeEvent.TraceUnfinished) },
         onRestart = { viewModel.onEvent(PracticeEvent.Restarted) },
         modifier = modifier,
     )
@@ -82,7 +87,7 @@ private fun PracticeContent(
     state: PracticeState,
     onBackClick: () -> Unit,
     onExerciseCompleted: (score: Float, level: ScoreLevel) -> Unit,
-    onStrokeAttempted: (isCompleted: Boolean) -> Unit,
+    onTraceUnfinished: () -> Unit,
     onRestart: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -111,9 +116,10 @@ private fun PracticeContent(
 
             else -> ExerciseTracingContent(
                 exercise = state.exercise,
+                attemptId = state.attemptId,
                 tip = state.tip,
                 onExerciseCompleted = onExerciseCompleted,
-                onStrokeAttempted = onStrokeAttempted,
+                onTraceUnfinished = onTraceUnfinished,
                 onRestart = onRestart,
                 modifier = Modifier
                     .fillMaxSize()
@@ -126,67 +132,60 @@ private fun PracticeContent(
 @Composable
 private fun ExerciseTracingContent(
     exercise: Exercise,
+    attemptId: Int,
     tip: ContextualTip?,
     onExerciseCompleted: (score: Float, level: ScoreLevel) -> Unit,
-    onStrokeAttempted: (isCompleted: Boolean) -> Unit,
+    onTraceUnfinished: () -> Unit,
     onRestart: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    var attemptId by remember(exercise) { mutableIntStateOf(0) }
     val engine = remember(exercise, attemptId) { TracingEngine(exercise) }
 
-    var currentStroke by remember(engine) { mutableStateOf(engine.currentStroke) }
     var guideStrokes by remember(engine) { mutableStateOf(engine.guideStrokes) }
 
     val haptics = LocalHapticFeedback.current
 
-    // Success is felt, a miss is not: a child who slips should never be buzzed for it.
-    fun handleStrokeEnd() {
+    // Finishing the whole letter is felt; stopping part way through is not, since pausing is
+    // allowed and a child who stops should never be buzzed for it.
+    fun handleTraceEnd() {
         when (val outcome = engine.onEnd()) {
             is TracingAttemptOutcome.ExerciseCompleted -> {
                 haptics.performHapticFeedback(HapticFeedbackType.Confirm)
                 onExerciseCompleted(outcome.score, outcome.level)
             }
 
-            is TracingAttemptOutcome.StrokeAttempted -> {
-                if (outcome.isCompleted) haptics.performHapticFeedback(HapticFeedbackType.SegmentTick)
-                onStrokeAttempted(outcome.isCompleted)
-            }
+            is TracingAttemptOutcome.Unfinished -> onTraceUnfinished()
 
             TracingAttemptOutcome.NoAttempt -> Unit
         }
-        currentStroke = engine.currentStroke
         guideStrokes = engine.guideStrokes
     }
 
     val canvas: @Composable (Modifier) -> Unit = { canvasModifier ->
-        val strokeToTrace = currentStroke
-        if (strokeToTrace != null) {
-            TracingInputCanvas(
-                stroke = strokeToTrace,
-                guideStrokes = guideStrokes,
-                modifier = canvasModifier.semantics {
-                    contentDescription = "Tracing area for ${exercise.title}. Follow the dots with your finger."
-                },
-                onPointerEvent = { event ->
-                    when (event) {
-                        is TracingPointerEvent.Start -> engine.onStart(event.point)
-                        is TracingPointerEvent.Move -> engine.onMove(event.point)
-                        is TracingPointerEvent.End -> handleStrokeEnd()
-                        TracingPointerEvent.Cancel -> engine.onCancel()
-                    }
-                },
-            )
+        if (guideStrokes.isNotEmpty()) {
+            // A restart hands the canvas the same stroke instances it already holds ink for, so it
+            // cannot tell the new attempt from the old one. Keying it on the attempt discards that
+            // ink along with the progress drawn on top of the guides.
+            key(attemptId) {
+                TracingInputCanvas(
+                    guideStrokes = guideStrokes,
+                    modifier = canvasModifier.semantics {
+                        contentDescription = "Tracing area for ${exercise.title}. Follow the dots with your finger."
+                    },
+                    onPointerEvent = { event ->
+                        when (event) {
+                            is TracingPointerEvent.Start -> engine.onStart(event.point)
+                            is TracingPointerEvent.Move -> engine.onMove(event.point)
+                            is TracingPointerEvent.End -> handleTraceEnd()
+                            TracingPointerEvent.Cancel -> engine.onCancel()
+                        }
+                    },
+                )
+            }
         }
     }
     val reset: @Composable () -> Unit = {
-        BcPrimaryButton(
-            text = "Reset",
-            onClick = {
-                attemptId += 1
-                onRestart()
-            },
-        )
+        BcPrimaryButton(text = "Reset", onClick = onRestart)
     }
 
     BoxWithConstraints(modifier = modifier.padding(BcSpacing.md)) {
@@ -207,6 +206,7 @@ private fun ExerciseTracingContent(
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     BcExerciseHeading(title = exercise.title)
+                    TracingInstruction()
                     tip?.let { BcTip(tip = it) }
                     reset()
                 }
@@ -218,6 +218,7 @@ private fun ExerciseTracingContent(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 BcExerciseHeading(title = exercise.title)
+                TracingInstruction()
                 // Square, but never taller than what the heading, tip and button leave, so a short
                 // screen shrinks the canvas rather than pushing Reset off screen.
                 canvas(Modifier.weight(1f, fill = false).aspectRatio(1f))
@@ -226,6 +227,18 @@ private fun ExerciseTracingContent(
             }
         }
     }
+}
+
+/** Tells the child what to do on the canvas, in place of a marker drawn on it (plan.md step 3). */
+@Composable
+private fun TracingInstruction(modifier: Modifier = Modifier) {
+    Text(
+        text = stringResource(R.string.practice_tracing_instruction),
+        modifier = modifier,
+        style = MaterialTheme.typography.titleMedium,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        textAlign = TextAlign.Center,
+    )
 }
 
 private val previewExercise = Exercise(
@@ -250,7 +263,7 @@ private fun PracticeScreenTracingPreview() {
             state = PracticeState(exercise = previewExercise, isLoading = false, tip = ContextualTip.FIRST_ATTEMPT),
             onBackClick = {},
             onExerciseCompleted = { _, _ -> },
-            onStrokeAttempted = {},
+            onTraceUnfinished = {},
             onRestart = {},
         )
     }
@@ -264,7 +277,7 @@ private fun PracticeScreenLoadingPreview() {
             state = PracticeState(isLoading = true),
             onBackClick = {},
             onExerciseCompleted = { _, _ -> },
-            onStrokeAttempted = {},
+            onTraceUnfinished = {},
             onRestart = {},
         )
     }
@@ -278,7 +291,7 @@ private fun PracticeScreenErrorPreview() {
             state = PracticeState(isLoading = false, error = "We couldn't find that exercise."),
             onBackClick = {},
             onExerciseCompleted = { _, _ -> },
-            onStrokeAttempted = {},
+            onTraceUnfinished = {},
             onRestart = {},
         )
     }

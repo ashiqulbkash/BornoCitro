@@ -32,20 +32,16 @@ import com.bornochitra.core.ui.theme.BornoChitraTheme
  * traced path for immediate visual feedback. This is the pointer-tracking prototype from
  * plan.md Step 10.3: raw touch capture only — no distance/coverage scoring and no persistence.
  *
- * [stroke] is the one being traced now; [guideStrokes] is everything drawn as a guide — the whole
- * letter or shape, so the child always sees the complete exercise. Ink from strokes already
- * finished against the current [guideStrokes] stays on screen, so the letter builds up as it is
- * written; a retry of the same stroke replaces its own ink rather than layering on it.
- *
- * Where to start [stroke] is marked with a pulsing dot (plan.md section 44). It is a separate
- * layer, so its animation never redraws the guides, and it steps aside while a finger is down so it
- * cannot get in the way of tracing.
+ * [guideStrokes] is everything drawn as a guide — the whole letter or shape, so the child always
+ * sees the complete exercise and traces it as one thing. Ink from every touch that has been lifted
+ * stays on screen, so stopping and starting again continues the drawing instead of wiping it
+ * (plan.md Step 2); it is cleared by handing the canvas a new [guideStrokes] or by recomposing it
+ * under a new key, which is how Practice resets an attempt.
  */
 @Composable
 fun TracingInputCanvas(
-    stroke: Stroke,
+    guideStrokes: List<Stroke>,
     modifier: Modifier = Modifier,
-    guideStrokes: List<Stroke> = listOf(stroke),
     style: DottedPathStyle = DottedPathStyle(),
     tracedColor: Color? = null,
     onPointerEvent: (TracingPointerEvent) -> Unit = {},
@@ -56,15 +52,14 @@ fun TracingInputCanvas(
     val guides = remember(guideStrokes, style.dotSpacing) {
         guideStrokes.map { guide -> guide.points to DottedPathSampler.sample(guide.points, style.dotSpacing) }
     }
-    val session = remember(stroke, onPointerEvent) { TracingSession(onEvent = onPointerEvent) }
+    val session = remember(guideStrokes, onPointerEvent) { TracingSession(onEvent = onPointerEvent) }
     // Bumped on every pointer event so the ink redraws from the session's live points without a copy.
-    var traceRevision by remember(stroke) { mutableIntStateOf(0) }
-    var isFingerDown by remember(stroke) { mutableStateOf(false) }
-    var finishedTraces by remember(guideStrokes) { mutableStateOf<Map<String, List<TracePoint>>>(emptyMap()) }
+    var traceRevision by remember(guideStrokes) { mutableIntStateOf(0) }
+    var finishedTraces by remember(guideStrokes) { mutableStateOf<List<List<TracePoint>>>(emptyList()) }
 
     Box(modifier = modifier) {
         // The guides never change while a finger moves, so they sit on their own layer and are not
-        // redrawn for every pointer event or every step of the start marker's pulse.
+        // redrawn for every pointer event.
         Canvas(modifier = Modifier.fillMaxSize().graphicsLayer()) {
             val scale = size.minDimension / GUIDE_CANVAS_UNIT
             guides.forEach { (guidePoints, guideDots) ->
@@ -73,7 +68,7 @@ fun TracingInputCanvas(
         }
 
         Canvas(
-            modifier = Modifier.fillMaxSize().graphicsLayer().pointerInput(stroke) {
+            modifier = Modifier.fillMaxSize().graphicsLayer().pointerInput(guideStrokes) {
                 val scale = minOf(size.width, size.height) / GUIDE_CANVAS_UNIT
                 fun toTracePoint(offset: Offset) = TracePoint(
                     x = offset.x / scale,
@@ -83,8 +78,6 @@ fun TracingInputCanvas(
 
                 detectDragGestures(
                     onDragStart = { offset ->
-                        isFingerDown = true
-                        finishedTraces = finishedTraces - stroke.id
                         session.onStart(toTracePoint(offset))
                         traceRevision++
                     },
@@ -94,12 +87,10 @@ fun TracingInputCanvas(
                         traceRevision++
                     },
                     onDragEnd = {
-                        isFingerDown = false
-                        finishedTraces = finishedTraces + (stroke.id to session.tracedPoints)
+                        finishedTraces = finishedTraces + listOf(session.tracedPoints)
                         session.onEnd()
                     },
                     onDragCancel = {
-                        isFingerDown = false
                         session.onCancel()
                         traceRevision++
                     },
@@ -110,7 +101,7 @@ fun TracingInputCanvas(
             // Read so this layer is redrawn when the live points change.
             traceRevision
 
-            (finishedTraces.values + listOf(session.livePoints)).forEach { trace ->
+            (finishedTraces + listOf(session.livePoints)).forEach { trace ->
                 if (trace.size < 2) return@forEach
                 val tracedPath = Path().apply {
                     val first = trace.first()
@@ -128,16 +119,6 @@ fun TracingInputCanvas(
                 )
             }
         }
-
-        val start = stroke.points.firstOrNull()
-        if (start != null && !isFingerDown) {
-            StartMarker(
-                start = start,
-                style = style,
-                color = resolvedTracedColor,
-                modifier = Modifier.matchParentSize(),
-            )
-        }
     }
 }
 
@@ -147,14 +128,16 @@ private fun TracingInputCanvasPreview() {
     BornoChitraTheme {
         Surface {
             TracingInputCanvas(
-                stroke = Stroke(
-                    id = "curve",
-                    points = listOf(
-                        Point(20f, 80f),
-                        Point(20f, 30f),
-                        Point(50f, 15f),
-                        Point(80f, 30f),
-                        Point(80f, 80f),
+                guideStrokes = listOf(
+                    Stroke(
+                        id = "curve",
+                        points = listOf(
+                            Point(20f, 80f),
+                            Point(20f, 30f),
+                            Point(50f, 15f),
+                            Point(80f, 30f),
+                            Point(80f, 80f),
+                        ),
                     ),
                 ),
                 modifier = Modifier.aspectRatio(1f),

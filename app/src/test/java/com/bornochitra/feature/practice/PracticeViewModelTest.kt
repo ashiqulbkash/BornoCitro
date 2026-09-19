@@ -191,62 +191,58 @@ class PracticeViewModelTest {
     }
 
     @Test
-    fun `finishing a stroke well clears the first-attempt tip and shows none`() = runTest(dispatcher) {
+    fun `stopping with the character unfinished says it is not finished yet`() = runTest(dispatcher) {
         val viewModel = startedViewModel()
 
-        viewModel.onEvent(PracticeEvent.StrokeAttempted(isCompleted = true))
+        viewModel.onEvent(PracticeEvent.TraceUnfinished)
 
-        assertNull(viewModel.uiState.value.tip)
+        assertEquals(ContextualTip.UNFINISHED_TRACE, viewModel.uiState.value.tip)
     }
 
     @Test
-    fun `missing a stroke once shows the try-again tip`() = runTest(dispatcher) {
+    fun `stopping again keeps saying the character is unfinished`() = runTest(dispatcher) {
         val viewModel = startedViewModel()
 
-        viewModel.onEvent(PracticeEvent.StrokeAttempted(isCompleted = false))
+        repeat(3) { viewModel.onEvent(PracticeEvent.TraceUnfinished) }
 
-        assertEquals(ContextualTip.MISSED_STROKE, viewModel.uiState.value.tip)
+        assertEquals(ContextualTip.UNFINISHED_TRACE, viewModel.uiState.value.tip)
     }
 
     @Test
-    fun `missing the same stroke repeatedly escalates the tip`() = runTest(dispatcher) {
+    fun `starting over restores the opening tip`() = runTest(dispatcher) {
         val viewModel = startedViewModel()
-
-        repeat(2) { viewModel.onEvent(PracticeEvent.StrokeAttempted(isCompleted = false)) }
-        assertEquals(ContextualTip.MISSED_STROKE, viewModel.uiState.value.tip)
-
-        viewModel.onEvent(PracticeEvent.StrokeAttempted(isCompleted = false))
-        assertEquals(ContextualTip.REPEATED_MISSES, viewModel.uiState.value.tip)
-    }
-
-    @Test
-    fun `completing the stroke resets the miss count for the next one`() = runTest(dispatcher) {
-        val viewModel = startedViewModel()
-        repeat(3) { viewModel.onEvent(PracticeEvent.StrokeAttempted(isCompleted = false)) }
-
-        viewModel.onEvent(PracticeEvent.StrokeAttempted(isCompleted = true))
-        assertNull(viewModel.uiState.value.tip)
-
-        viewModel.onEvent(PracticeEvent.StrokeAttempted(isCompleted = false))
-        assertEquals(ContextualTip.MISSED_STROKE, viewModel.uiState.value.tip)
-    }
-
-    @Test
-    fun `starting over restores the opening tip and forgets earlier misses`() = runTest(dispatcher) {
-        val viewModel = startedViewModel()
-        repeat(3) { viewModel.onEvent(PracticeEvent.StrokeAttempted(isCompleted = false)) }
+        viewModel.onEvent(PracticeEvent.TraceUnfinished)
 
         viewModel.onEvent(PracticeEvent.Restarted)
-        assertEquals(ContextualTip.FIRST_ATTEMPT, viewModel.uiState.value.tip)
 
-        viewModel.onEvent(PracticeEvent.StrokeAttempted(isCompleted = false))
-        assertEquals(ContextualTip.MISSED_STROKE, viewModel.uiState.value.tip)
+        assertEquals(ContextualTip.FIRST_ATTEMPT, viewModel.uiState.value.tip)
+    }
+
+    @Test
+    fun `starting over begins a new attempt so the drawn path and its progress are cleared`() = runTest(dispatcher) {
+        val viewModel = startedViewModel()
+        assertEquals(0, viewModel.uiState.value.attemptId)
+
+        viewModel.onEvent(PracticeEvent.Restarted)
+        assertEquals(1, viewModel.uiState.value.attemptId)
+
+        viewModel.onEvent(PracticeEvent.Restarted)
+        assertEquals(2, viewModel.uiState.value.attemptId)
+    }
+
+    @Test
+    fun `tracing without starting over keeps the same attempt`() = runTest(dispatcher) {
+        val viewModel = startedViewModel()
+
+        repeat(2) { viewModel.onEvent(PracticeEvent.TraceUnfinished) }
+
+        assertEquals(0, viewModel.uiState.value.attemptId)
     }
 
     @Test
     fun `starting over an exercise practised before leaves no tip`() = runTest(dispatcher) {
         val viewModel = startedViewModel(FakeProgressRepository(previousProgress(attemptCount = 1)))
-        viewModel.onEvent(PracticeEvent.StrokeAttempted(isCompleted = false))
+        viewModel.onEvent(PracticeEvent.TraceUnfinished)
 
         viewModel.onEvent(PracticeEvent.Restarted)
 

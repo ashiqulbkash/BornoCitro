@@ -11,20 +11,17 @@ import com.bornochitra.core.model.Difficulty
  * score a child needs for mastery, so the tip appears when attempts keep falling short of it.
  */
 data class TipRules(
-    val repeatedMissesThreshold: Int = DEFAULT_REPEATED_MISSES_THRESHOLD,
     val repeatedLowScoreCount: Int = DEFAULT_REPEATED_LOW_SCORE_COUNT,
     val lowScoreBelow: Float = DEFAULT_LOW_SCORE_BELOW,
     val difficultFrom: Difficulty = DEFAULT_DIFFICULT_FROM,
 ) {
 
     init {
-        require(repeatedMissesThreshold > 0) { "repeatedMissesThreshold must be positive" }
         require(repeatedLowScoreCount > 0) { "repeatedLowScoreCount must be positive" }
         require(lowScoreBelow in 0f..100f) { "lowScoreBelow must be within 0..100" }
     }
 
     companion object {
-        const val DEFAULT_REPEATED_MISSES_THRESHOLD = 3
         const val DEFAULT_REPEATED_LOW_SCORE_COUNT = 2
         const val DEFAULT_LOW_SCORE_BELOW = 80f
         val DEFAULT_DIFFICULT_FROM = Difficulty.ADVANCED

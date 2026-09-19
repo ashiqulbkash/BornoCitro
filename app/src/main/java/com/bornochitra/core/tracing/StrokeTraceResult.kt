@@ -6,10 +6,10 @@ package com.bornochitra.core.tracing
  * (plan.md section 31).
  *
  * [attemptCount] and [outOfOrderAttempts] describe how the stroke was reached, not how well it
- * was traced: an ordinary retry only raises [attemptCount], while an attempt that traced a
- * different stroke of the exercise instead of the expected one also raises [outOfOrderAttempts].
- * That separation lets the Score Calculator measure stroke order without charging a child for
- * simply trying the same stroke again (plan.md section 38).
+ * was traced. A whole letter or drawing is now traced as one attempt in any stroke order
+ * (plan.md Step 2), so nothing the child does counts as out of order and both keep their
+ * defaults; the Score Calculator's order metric (plan.md section 38) is satisfied by every
+ * attempt as a result.
  */
 data class StrokeTraceResult(
     val strokeId: String,

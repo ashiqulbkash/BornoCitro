@@ -7,7 +7,6 @@ import com.bornochitra.core.model.Point
 import com.bornochitra.core.model.Stroke
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
-import org.junit.Assert.assertNull
 import org.junit.Assert.assertThrows
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -30,44 +29,86 @@ class MultiStrokeTrackerTest {
     private fun tracePoint(x: Float, y: Float) = TracePoint(x, y, timestampMs = 0L)
 
     /** Traces every 2 units along a straight stroke from [from] to [to], then lifts the finger. */
-    private fun traceFully(tracker: MultiStrokeTracker, from: Point, to: Point) {
-        tracker.onStart(tracePoint(from.x, from.y))
-        var t = 0.2f
-        while (t < 1f) {
-            val x = from.x + (to.x - from.x) * t
-            val y = from.y + (to.y - from.y) * t
-            tracker.onMove(tracePoint(x, y))
-            t += 0.2f
+    private fun traceFully(tracker: MultiStrokeTracker, from: Point, to: Point) =
+        tracePart(tracker, from, to, fromFraction = 0f, toFraction = 1f)
+
+    /** Traces the [fromFraction]..[toFraction] part of the straight stroke [from]–[to], then lifts. */
+    private fun tracePart(
+        tracker: MultiStrokeTracker,
+        from: Point,
+        to: Point,
+        fromFraction: Float,
+        toFraction: Float,
+    ) {
+        fun pointAt(fraction: Float) =
+            tracePoint(from.x + (to.x - from.x) * fraction, from.y + (to.y - from.y) * fraction)
+
+        tracker.onStart(pointAt(fromFraction))
+        var fraction = fromFraction + STEP
+        while (fraction < toFraction) {
+            tracker.onMove(pointAt(fraction))
+            fraction += STEP
         }
-        tracker.onMove(tracePoint(to.x, to.y))
+        tracker.onMove(pointAt(toFraction))
         tracker.onEnd()
     }
 
     private val tightTolerance = TracingTolerance(maxDistance = 0.5f)
 
+    private fun strokeResult(tracker: MultiStrokeTracker, strokeId: String) =
+        tracker.strokeResults.single { it.strokeId == strokeId }
+
     @Test
-    fun `completing a stroke advances to the next stroke`() {
+    fun `the shape is only complete once every stroke is covered`() {
         val tracker = MultiStrokeTracker(exercise(listOf(strokeA, strokeB)), tolerance = tightTolerance)
 
         traceFully(tracker, strokeA.points.first(), strokeA.points.last())
 
-        assertEquals(1, tracker.currentStrokeIndex)
-        assertEquals(strokeB, tracker.currentStroke)
-        assertEquals(listOf("a"), tracker.completedResults.map { it.strokeId })
-        assertTrue(tracker.completedResults.single().isCompleted)
-        assertFalse(tracker.isSequenceCompleted)
+        assertFalse(tracker.isCompleted)
+        assertTrue(strokeResult(tracker, "a").isCompleted)
+        assertFalse(strokeResult(tracker, "b").isCompleted)
+
+        traceFully(tracker, strokeB.points.first(), strokeB.points.last())
+
+        assertTrue(tracker.isCompleted)
+        assertEquals(listOf("a", "b"), tracker.strokeResults.map { it.strokeId })
     }
 
     @Test
-    fun `completing all strokes marks the sequence complete`() {
-        val tracker = MultiStrokeTracker(exercise(listOf(strokeA, strokeB)), tolerance = tightTolerance)
+    fun `lifting the finger part way keeps the progress and a new touch continues it`() {
+        val tracker = MultiStrokeTracker(exercise(listOf(strokeA)), tolerance = tightTolerance)
+
+        tracePart(tracker, strokeA.points.first(), strokeA.points.last(), fromFraction = 0f, toFraction = 0.5f)
+        val halfway = strokeResult(tracker, "a").coverage
+        assertFalse(tracker.isCompleted)
+        assertTrue("coverage was $halfway", halfway > 0.4f && halfway < 0.7f)
+
+        tracePart(tracker, strokeA.points.first(), strokeA.points.last(), fromFraction = 0.5f, toFraction = 1f)
+
+        assertTrue("coverage was ${strokeResult(tracker, "a").coverage}", tracker.isCompleted)
+    }
+
+    @Test
+    fun `strokes may be traced in any order`() {
+        val tracker = MultiStrokeTracker(exercise(listOf(strokeA, strokeB, strokeC)), tolerance = tightTolerance)
+
+        traceFully(tracker, strokeC.points.first(), strokeC.points.last())
+        traceFully(tracker, strokeB.points.first(), strokeB.points.last())
+        assertFalse(tracker.isCompleted)
 
         traceFully(tracker, strokeA.points.first(), strokeA.points.last())
-        traceFully(tracker, strokeB.points.first(), strokeB.points.last())
 
-        assertTrue(tracker.isSequenceCompleted)
-        assertNull(tracker.currentStroke)
-        assertEquals(listOf("a", "b"), tracker.completedResults.map { it.strokeId })
+        assertTrue(tracker.isCompleted)
+        assertTrue(tracker.strokeResults.all { it.outOfOrderAttempts == 0 })
+    }
+
+    @Test
+    fun `a stroke traced backwards still completes it`() {
+        val tracker = MultiStrokeTracker(exercise(listOf(strokeA)), tolerance = tightTolerance)
+
+        traceFully(tracker, strokeA.points.last(), strokeA.points.first())
+
+        assertTrue(tracker.isCompleted)
     }
 
     @Test
@@ -79,64 +120,76 @@ class MultiStrokeTrackerTest {
         val result = tracker.toTraceResult()
 
         assertEquals("exercise-1", result.exerciseId)
-        assertEquals(tracker.completedResults, result.strokeResults)
+        assertEquals(tracker.strokeResults, result.strokeResults)
         assertTrue(result.isCompleted)
         assertEquals(2, result.expectedStrokeCount)
     }
 
     @Test
-    fun `toTraceResult before the sequence is complete throws`() {
+    fun `toTraceResult before the shape is fully traced throws`() {
         val tracker = MultiStrokeTracker(exercise(listOf(strokeA, strokeB)), tolerance = tightTolerance)
 
         assertThrows(IllegalStateException::class.java) { tracker.toTraceResult() }
     }
 
     @Test
-    fun `an attempt below the completion threshold does not advance and can be retried`() {
+    fun `tracing off the guide path covers nothing`() {
         val tracker = MultiStrokeTracker(exercise(listOf(strokeA, strokeB)), tolerance = tightTolerance)
 
-        // Only trace a small portion near the start of strokeA - well short of its full path.
-        tracker.onStart(tracePoint(0f, 0f))
-        tracker.onMove(tracePoint(1f, 0f))
+        tracker.onStart(tracePoint(50f, 50f))
+        tracker.onMove(tracePoint(55f, 55f))
         tracker.onEnd()
 
-        assertFalse(tracker.lastAttemptResult!!.isCompleted)
-        assertEquals(0, tracker.currentStrokeIndex)
-        assertTrue(tracker.completedResults.isEmpty())
-
-        // Retrying by starting again succeeds.
-        traceFully(tracker, strokeA.points.first(), strokeA.points.last())
-
-        assertEquals(1, tracker.currentStrokeIndex)
-        assertEquals(listOf("a"), tracker.completedResults.map { it.strokeId })
+        assertFalse(tracker.isCompleted)
+        assertTrue(tracker.strokeResults.all { it.coverage == 0f })
     }
 
     @Test
-    fun `cancelling a stroke discards points without scoring`() {
+    fun `each point is measured against the stroke it falls closest to`() {
         val tracker = MultiStrokeTracker(exercise(listOf(strokeA, strokeB)), tolerance = tightTolerance)
 
-        tracker.onStart(tracePoint(0f, 0f))
-        tracker.onMove(tracePoint(2f, 0f))
+        traceFully(tracker, strokeA.points.first(), strokeA.points.last())
+        traceFully(tracker, strokeB.points.first(), strokeB.points.last())
+
+        assertTrue(tracker.strokeResults.all { it.averageDistance < 0.01f })
+        assertEquals(tracker.tracedPoints.size, tracker.strokeResults.sumOf { it.tracePoints.size })
+    }
+
+    @Test
+    fun `cancelling discards the touch in progress but keeps earlier ones`() {
+        val tracker = MultiStrokeTracker(exercise(listOf(strokeA, strokeB)), tolerance = tightTolerance)
+        traceFully(tracker, strokeA.points.first(), strokeA.points.last())
+        val pointsBefore = tracker.tracedPoints
+
+        tracker.onStart(tracePoint(50f, 50f))
+        tracker.onMove(tracePoint(55f, 55f))
         tracker.onCancel()
 
-        assertNull(tracker.lastAttemptResult)
-        assertEquals(0, tracker.currentStrokeIndex)
-        assertTrue(tracker.completedResults.isEmpty())
+        assertEquals(pointsBefore, tracker.tracedPoints)
+        assertTrue(strokeResult(tracker, "a").isCompleted)
     }
 
     @Test
-    fun `input is ignored once the sequence is already complete`() {
+    fun `ending without a touch in progress measures nothing`() {
+        val tracker = MultiStrokeTracker(exercise(listOf(strokeA)), tolerance = tightTolerance)
+
+        assertFalse(tracker.onEnd())
+        assertTrue(tracker.strokeResults.isEmpty())
+        assertTrue(tracker.tracedPoints.isEmpty())
+    }
+
+    @Test
+    fun `input is ignored once the shape is already complete`() {
         val tracker = MultiStrokeTracker(exercise(listOf(strokeA)), tolerance = tightTolerance)
         traceFully(tracker, strokeA.points.first(), strokeA.points.last())
-        assertTrue(tracker.isSequenceCompleted)
-        val resultBefore = tracker.lastAttemptResult
+        val resultsBefore = tracker.strokeResults
 
-        tracker.onStart(tracePoint(0f, 0f))
-        tracker.onMove(tracePoint(5f, 5f))
+        tracker.onStart(tracePoint(50f, 50f))
+        tracker.onMove(tracePoint(55f, 55f))
         tracker.onEnd()
 
-        assertEquals(resultBefore, tracker.lastAttemptResult)
-        assertTrue(tracker.isSequenceCompleted)
+        assertEquals(resultsBefore, tracker.strokeResults)
+        assertTrue(tracker.isCompleted)
     }
 
     @Test
@@ -149,86 +202,18 @@ class MultiStrokeTrackerTest {
     @Test
     fun `a custom completion threshold changes what counts as complete`() {
         val lenientTracker = MultiStrokeTracker(
-            exercise(listOf(strokeA, strokeB)),
+            exercise(listOf(strokeA)),
             tolerance = tightTolerance,
             completionThreshold = 0.3f,
         )
 
-        // Partial trace: covers only the first checkpoint of a 3-checkpoint straight stroke.
-        lenientTracker.onStart(tracePoint(0f, 0f))
-        lenientTracker.onMove(tracePoint(1f, 0f))
-        lenientTracker.onEnd()
+        tracePart(lenientTracker, strokeA.points.first(), strokeA.points.last(), fromFraction = 0f, toFraction = 0.4f)
 
-        assertTrue(lenientTracker.lastAttemptResult!!.isCompleted)
-        assertEquals(1, lenientTracker.currentStrokeIndex)
+        assertTrue(lenientTracker.isCompleted)
     }
 
-    @Test
-    fun `strokes are tracked in the given order across three strokes`() {
-        val tracker = MultiStrokeTracker(exercise(listOf(strokeA, strokeB, strokeC)), tolerance = tightTolerance)
-
-        assertEquals(strokeA, tracker.currentStroke)
-
-        traceFully(tracker, strokeA.points.first(), strokeA.points.last())
-        assertEquals(strokeB, tracker.currentStroke)
-
-        traceFully(tracker, strokeB.points.first(), strokeB.points.last())
-        assertEquals(strokeC, tracker.currentStroke)
-
-        traceFully(tracker, strokeC.points.first(), strokeC.points.last())
-        assertTrue(tracker.isSequenceCompleted)
-        assertEquals(listOf("a", "b", "c"), tracker.completedResults.map { it.strokeId })
-    }
-
-    @Test
-    fun `a completed stroke records how many attempts it took`() {
-        val tracker = MultiStrokeTracker(exercise(listOf(strokeA, strokeB)), tolerance = tightTolerance)
-
-        // A first attempt that falls short of the completion threshold, then a full trace.
-        tracker.onStart(tracePoint(0f, 0f))
-        tracker.onMove(tracePoint(1f, 0f))
-        tracker.onEnd()
-        traceFully(tracker, strokeA.points.first(), strokeA.points.last())
-
-        val result = tracker.completedResults.single()
-        assertEquals(2, result.attemptCount)
-        assertEquals(0, result.outOfOrderAttempts)
-    }
-
-    @Test
-    fun `tracing another stroke while a different one is expected is recorded as out of order`() {
-        val tracker = MultiStrokeTracker(exercise(listOf(strokeA, strokeB)), tolerance = tightTolerance)
-
-        traceFully(tracker, strokeB.points.first(), strokeB.points.last())
-
-        val attempt = tracker.lastAttemptResult!!
-        assertFalse(attempt.isCompleted)
-        assertEquals("a", attempt.strokeId)
-        assertEquals(1, attempt.outOfOrderAttempts)
-        assertEquals(0, tracker.currentStrokeIndex)
-    }
-
-    @Test
-    fun `a sloppy retry of the expected stroke is not counted as out of order`() {
-        val tracker = MultiStrokeTracker(exercise(listOf(strokeA, strokeB)), tolerance = tightTolerance)
-
-        tracker.onStart(tracePoint(0f, 0f))
-        tracker.onMove(tracePoint(1f, 0f))
-        tracker.onEnd()
-
-        assertEquals(0, tracker.lastAttemptResult!!.outOfOrderAttempts)
-    }
-
-    @Test
-    fun `attempt counts are per stroke and reset once a stroke is completed`() {
-        val tracker = MultiStrokeTracker(exercise(listOf(strokeA, strokeB)), tolerance = tightTolerance)
-
-        tracker.onStart(tracePoint(0f, 0f))
-        tracker.onMove(tracePoint(1f, 0f))
-        tracker.onEnd()
-        traceFully(tracker, strokeA.points.first(), strokeA.points.last())
-        traceFully(tracker, strokeB.points.first(), strokeB.points.last())
-
-        assertEquals(listOf(2, 1), tracker.completedResults.map { it.attemptCount })
+    private companion object {
+        /** Fraction of a stroke's length between traced samples, fine enough to cover its checkpoints. */
+        const val STEP = 0.05f
     }
 }

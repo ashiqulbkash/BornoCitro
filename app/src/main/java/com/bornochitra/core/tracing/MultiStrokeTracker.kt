@@ -4,17 +4,16 @@ import com.bornochitra.core.model.Exercise
 import com.bornochitra.core.model.Stroke
 
 /**
- * Coordinates tracing across all of an exercise's ordered strokes — the multi-stroke tracking
- * subsystem from plan.md Step 10.6. Wraps a single [TracingSession] and, on every stroke's End
- * event, scores it via [PathCoverageCalculator]/[PathDistanceCalculator]. A stroke only advances
- * the sequence once its coverage meets [completionThreshold]; an attempt that misses the
- * threshold ("incorrect stroke behavior") is discarded without advancing, so the same stroke can
- * simply be retried — starting a new attempt already clears prior points ([TracingSession.onStart]).
+ * Tracks one attempt at a whole letter or drawing — the multi-stroke tracking subsystem from
+ * plan.md Step 10.6, reworked for plan.md Step 2: the exercise is one shape, not a sequence of
+ * steps. Every point the child traces is kept for the whole attempt, across as many touches as
+ * they take, and on each lift every stroke's coverage is measured against all of them via
+ * [PathCoverageCalculator]/[PathDistanceCalculator].
  *
- * Attempts are counted per stroke, and a failed attempt that traced another of the exercise's
- * strokes well enough to complete it is recorded as an out-of-order attempt. That is the only
- * stroke-order signal available here: because only the expected stroke is ever matched, a child
- * cannot actually complete strokes in the wrong order, but they can try the wrong one.
+ * Two things follow from measuring the shape rather than a step. Lifting the finger keeps the
+ * progress made so far, so a new touch continues the attempt instead of restarting it; and the
+ * strokes may be traced in any order and split across touches however the child likes, because
+ * nothing here expects a particular stroke next.
  *
  * Independent of ViewModel/Room/Hilt/Compose per plan.md section 4. Turning these results into a
  * learning score is the Score Calculator's job (plan.md section 31), not this class's.
@@ -30,97 +29,84 @@ class MultiStrokeTracker(
     }
 
     private val session = TracingSession(onEvent = ::onPointerEvent)
-    private val mutableCompletedResults = mutableListOf<StrokeTraceResult>()
+    private val attemptPoints = mutableListOf<TracePoint>()
+    private var isTouchInProgress = false
 
-    var currentStrokeIndex = 0
+    /** Everything traced so far in this attempt, from every touch that has been lifted. */
+    val tracedPoints: List<TracePoint> get() = attemptPoints.toList()
+
+    /** Per-stroke measurements from every point traced so far; empty until the first lift. */
+    var strokeResults: List<StrokeTraceResult> = emptyList()
         private set
 
-    private var currentStrokeAttempts = 0
-    private var currentStrokeOutOfOrderAttempts = 0
-
-    /** The most recently scored attempt, whether or not it advanced the sequence — reflects incomplete/incorrect strokes too. */
-    var lastAttemptResult: StrokeTraceResult? = null
-        private set
-
-    val completedResults: List<StrokeTraceResult> get() = mutableCompletedResults.toList()
-
-    val currentStroke: Stroke? get() = exercise.strokes.getOrNull(currentStrokeIndex)
-
-    val isSequenceCompleted: Boolean get() = currentStrokeIndex >= exercise.strokes.size
+    /** Whether every stroke of the shape has now been covered, however it was traced. */
+    val isCompleted: Boolean get() = strokeResults.isNotEmpty() && strokeResults.all { it.isCompleted }
 
     fun onStart(point: TracePoint) {
-        if (isSequenceCompleted) return
+        if (isCompleted) return
+        isTouchInProgress = true
         session.onStart(point)
     }
 
     fun onMove(point: TracePoint) {
-        if (isSequenceCompleted) return
+        if (!isTouchInProgress) return
         session.onMove(point)
     }
 
-    fun onEnd() {
-        if (isSequenceCompleted) return
+    /** Ends the touch in progress and remeasures the shape; false if there was no touch to end. */
+    fun onEnd(): Boolean {
+        if (!isTouchInProgress) return false
+        isTouchInProgress = false
         session.onEnd()
+        return true
     }
 
+    /** The system cancelled the touch in progress; the attempt keeps what earlier touches traced. */
     fun onCancel() {
-        if (isSequenceCompleted) return
+        if (!isTouchInProgress) return
+        isTouchInProgress = false
         session.onCancel()
     }
 
-    /** Builds the aggregate result once every stroke has met the completion threshold. */
+    /** Builds the aggregate result once the whole shape has been covered. */
     fun toTraceResult(): TraceResult {
-        check(isSequenceCompleted) { "sequence is not complete yet" }
+        check(isCompleted) { "the shape is not fully traced yet" }
         return TraceResult(
             exerciseId = exercise.id,
-            strokeResults = completedResults,
+            strokeResults = strokeResults,
             isCompleted = true,
             expectedStrokeCount = exercise.strokes.size,
         )
     }
 
     private fun onPointerEvent(event: TracingPointerEvent) {
-        if (event is TracingPointerEvent.End) scoreCurrentAttempt()
-    }
-
-    private fun scoreCurrentAttempt() {
-        val stroke = currentStroke ?: return
-        val tracedPoints = session.tracedPoints
-        val coverage = PathCoverageCalculator.coverage(stroke.points, tracedPoints, tolerance)
-        val isCompleted = coverage >= completionThreshold
-
-        currentStrokeAttempts += 1
-        if (!isCompleted && tracesAnotherStroke(tracedPoints)) currentStrokeOutOfOrderAttempts += 1
-
-        val result = StrokeTraceResult(
-            strokeId = stroke.id,
-            tracePoints = tracedPoints,
-            coverage = coverage,
-            averageDistance = averageDistance(stroke, tracedPoints),
-            isCompleted = isCompleted,
-            attemptCount = currentStrokeAttempts,
-            outOfOrderAttempts = currentStrokeOutOfOrderAttempts,
-        )
-        lastAttemptResult = result
-
-        if (isCompleted) {
-            mutableCompletedResults += result
-            currentStrokeIndex += 1
-            currentStrokeAttempts = 0
-            currentStrokeOutOfOrderAttempts = 0
-        }
+        if (event !is TracingPointerEvent.End) return
+        attemptPoints += session.tracedPoints
+        strokeResults = measureStrokes()
     }
 
     /**
-     * Whether a failed attempt in fact traced one of the exercise's other strokes well enough to
-     * have completed it — the child drew a real stroke, just not the expected one. Only evaluated
-     * for failed attempts, never per pointer event.
+     * Each stroke's coverage comes from the whole attempt, since a point lands on the guide path it
+     * is near whatever the child meant to draw. Accuracy is per stroke, so each point is measured
+     * against the stroke it actually falls closest to rather than against all of them.
      */
-    private fun tracesAnotherStroke(tracedPoints: List<TracePoint>): Boolean =
-        exercise.strokes.withIndex().any { (index, stroke) ->
-            index != currentStrokeIndex &&
-                PathCoverageCalculator.coverage(stroke.points, tracedPoints, tolerance) >= completionThreshold
+    private fun measureStrokes(): List<StrokeTraceResult> {
+        val pointsByStroke = attemptPoints.groupBy(::nearestStrokeIndex)
+        return exercise.strokes.mapIndexed { index, stroke ->
+            val strokePoints = pointsByStroke[index].orEmpty()
+            val coverage = PathCoverageCalculator.coverage(stroke.points, attemptPoints, tolerance)
+            StrokeTraceResult(
+                strokeId = stroke.id,
+                tracePoints = strokePoints,
+                coverage = coverage,
+                averageDistance = averageDistance(stroke, strokePoints),
+                isCompleted = coverage >= completionThreshold,
+            )
         }
+    }
+
+    private fun nearestStrokeIndex(point: TracePoint): Int =
+        exercise.strokes.indices.minBy { PathDistanceCalculator.distanceToPath(point, exercise.strokes[it].points) }
 
     private fun averageDistance(stroke: Stroke, tracedPoints: List<TracePoint>): Float {
         if (tracedPoints.isEmpty()) return 0f

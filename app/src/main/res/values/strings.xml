@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">BornoChitra</string>
+    <string name="practice_tracing_instruction">Practice tracing over the dots</string>
 </resources>

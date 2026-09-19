@@ -27,14 +27,27 @@ class TracingEngineTest {
 
     private fun tracePoint(x: Float, y: Float) = TracePoint(x, y, timestampMs = 0L)
 
-    private fun traceFully(engine: TracingEngine, from: Point, to: Point): TracingAttemptOutcome {
-        engine.onStart(tracePoint(from.x, from.y))
-        var t = 0.2f
-        while (t < 1f) {
-            engine.onMove(tracePoint(from.x + (to.x - from.x) * t, from.y + (to.y - from.y) * t))
-            t += 0.2f
+    private fun traceFully(engine: TracingEngine, from: Point, to: Point): TracingAttemptOutcome =
+        tracePart(engine, from, to, fromFraction = 0f, toFraction = 1f)
+
+    /** Traces the [fromFraction]..[toFraction] part of the straight stroke [from]–[to], then lifts. */
+    private fun tracePart(
+        engine: TracingEngine,
+        from: Point,
+        to: Point,
+        fromFraction: Float,
+        toFraction: Float,
+    ): TracingAttemptOutcome {
+        fun pointAt(fraction: Float) =
+            tracePoint(from.x + (to.x - from.x) * fraction, from.y + (to.y - from.y) * fraction)
+
+        engine.onStart(pointAt(fromFraction))
+        var fraction = fromFraction + STEP
+        while (fraction < toFraction) {
+            engine.onMove(pointAt(fraction))
+            fraction += STEP
         }
-        engine.onMove(tracePoint(to.x, to.y))
+        engine.onMove(pointAt(toFraction))
         return engine.onEnd()
     }
 
@@ -46,18 +59,18 @@ class TracingEngineTest {
     }
 
     @Test
-    fun `completing a stroke advances the current stroke and reports it as completed`() {
+    fun `lifting the finger with the shape unfinished reports how much is traced`() {
         val engine = TracingEngine(exercise, tolerance = TracingTolerance(maxDistance = 0.5f))
 
         val outcome = traceFully(engine, strokeA.points.first(), strokeA.points.last())
 
-        assertEquals(TracingAttemptOutcome.StrokeAttempted(isCompleted = true), outcome)
-        assertEquals(strokeB, engine.currentStroke)
+        require(outcome is TracingAttemptOutcome.Unfinished)
+        assertTrue("coverage was ${outcome.coverage}", outcome.coverage > 0f && outcome.coverage < 1f)
         assertFalse(engine.isExerciseCompleted)
     }
 
     @Test
-    fun `every stroke's guide is shown from the start so the whole letter is visible`() {
+    fun `every stroke's guide is shown until the whole shape is traced`() {
         val engine = TracingEngine(exercise, tolerance = TracingTolerance(maxDistance = 0.5f))
         assertEquals(listOf(strokeA, strokeB), engine.guideStrokes)
 
@@ -67,7 +80,7 @@ class TracingEngineTest {
     }
 
     @Test
-    fun `the exercise completes with a perfect score once every stroke is written`() {
+    fun `the exercise completes with a perfect score once the whole shape is written`() {
         val engine = TracingEngine(exercise, tolerance = TracingTolerance(maxDistance = 0.5f))
         traceFully(engine, strokeA.points.first(), strokeA.points.last())
 
@@ -77,8 +90,30 @@ class TracingEngineTest {
         assertTrue("score was ${outcome.score}", outcome.score >= 90f)
         assertEquals(ScoreLevel.PERFECT, outcome.level)
         assertTrue(engine.isExerciseCompleted)
-        assertEquals(null, engine.currentStroke)
         assertEquals(emptyList<Stroke>(), engine.guideStrokes)
+    }
+
+    @Test
+    fun `a stroke stopped part way through is resumed rather than restarted`() {
+        val engine = TracingEngine(exercise, tolerance = TracingTolerance(maxDistance = 0.5f))
+
+        tracePart(engine, strokeA.points.first(), strokeA.points.last(), fromFraction = 0f, toFraction = 0.5f)
+        tracePart(engine, strokeA.points.first(), strokeA.points.last(), fromFraction = 0.5f, toFraction = 1f)
+        val outcome = traceFully(engine, strokeB.points.first(), strokeB.points.last())
+
+        require(outcome is TracingAttemptOutcome.ExerciseCompleted) { "expected completion, was $outcome" }
+        assertEquals(cleanScore(), outcome.score, 0.01f)
+    }
+
+    @Test
+    fun `the shape completes whatever order its strokes are traced in`() {
+        val engine = TracingEngine(exercise, tolerance = TracingTolerance(maxDistance = 0.5f))
+
+        traceFully(engine, strokeB.points.first(), strokeB.points.last())
+        val outcome = traceFully(engine, strokeA.points.first(), strokeA.points.last())
+
+        require(outcome is TracingAttemptOutcome.ExerciseCompleted) { "expected completion, was $outcome" }
+        assertEquals(cleanScore(), outcome.score, 0.01f)
     }
 
     @Test
@@ -93,31 +128,30 @@ class TracingEngineTest {
     }
 
     @Test
-    fun `an attempt below the completion threshold does not advance`() {
+    fun `tracing away from the guide path does not complete the exercise`() {
         val engine = TracingEngine(exercise, tolerance = TracingTolerance(maxDistance = 0.5f))
 
-        engine.onStart(tracePoint(0f, 0f))
-        engine.onMove(tracePoint(1f, 0f)) // well short of strokeA's full path
+        engine.onStart(tracePoint(50f, 50f))
+        engine.onMove(tracePoint(55f, 55f))
         val outcome = engine.onEnd()
 
-        assertEquals(TracingAttemptOutcome.StrokeAttempted(isCompleted = false), outcome)
-        assertEquals(strokeA, engine.currentStroke)
+        assertEquals(TracingAttemptOutcome.Unfinished(coverage = 0f), outcome)
         assertFalse(engine.isExerciseCompleted)
     }
 
     @Test
-    fun `cancelling discards the attempt without reporting an outcome`() {
+    fun `cancelling discards the touch without reporting an outcome`() {
         val engine = TracingEngine(exercise, tolerance = TracingTolerance(maxDistance = 0.5f))
 
         engine.onStart(tracePoint(0f, 0f))
         engine.onMove(tracePoint(2f, 0f))
         engine.onCancel()
 
-        assertEquals(strokeA, engine.currentStroke)
+        assertEquals(TracingAttemptOutcome.NoAttempt, engine.onEnd())
         assertFalse(engine.isExerciseCompleted)
     }
 
-    /** Traces the whole exercise cleanly and returns the score it earns, as a reference point. */
+    /** Traces the whole exercise cleanly in one touch per stroke, as a score reference point. */
     private fun cleanScore(): Float {
         val engine = TracingEngine(exercise, tolerance = TracingTolerance(maxDistance = 0.5f))
         traceFully(engine, strokeA.points.first(), strokeA.points.last())
@@ -127,29 +161,19 @@ class TracingEngineTest {
     }
 
     @Test
-    fun `retrying a stroke does not lower the final score`() {
-        val engine = TracingEngine(exercise, tolerance = TracingTolerance(maxDistance = 0.5f))
+    fun `sloppy tracing off the path lowers the score without blocking completion`() {
+        val engine = TracingEngine(exercise, tolerance = TracingTolerance(maxDistance = 4f))
 
-        engine.onStart(tracePoint(0f, 0f))
-        engine.onMove(tracePoint(1f, 0f)) // a first attempt well short of strokeA
+        engine.onStart(tracePoint(0f, 1.5f))
+        var x = 0f
+        while (x <= 10f) {
+            engine.onMove(tracePoint(x, 1.5f))
+            x += 0.5f
+        }
         engine.onEnd()
-        traceFully(engine, strokeA.points.first(), strokeA.points.last())
         val outcome = traceFully(engine, strokeB.points.first(), strokeB.points.last())
 
-        require(outcome is TracingAttemptOutcome.ExerciseCompleted)
-        assertEquals(cleanScore(), outcome.score, 0.01f)
-        assertEquals(ScoreLevel.PERFECT, outcome.level)
-    }
-
-    @Test
-    fun `tracing the wrong stroke lowers the final score through the order metric`() {
-        val engine = TracingEngine(exercise, tolerance = TracingTolerance(maxDistance = 0.5f))
-
-        traceFully(engine, strokeB.points.first(), strokeB.points.last()) // strokeA was expected
-        traceFully(engine, strokeA.points.first(), strokeA.points.last())
-        val outcome = traceFully(engine, strokeB.points.first(), strokeB.points.last())
-
-        require(outcome is TracingAttemptOutcome.ExerciseCompleted)
+        require(outcome is TracingAttemptOutcome.ExerciseCompleted) { "expected completion, was $outcome" }
         assertTrue("score was ${outcome.score}", outcome.score < cleanScore())
     }
 
@@ -163,5 +187,10 @@ class TracingEngineTest {
 
         require(outcome is TracingAttemptOutcome.ExerciseCompleted)
         assertEquals(cleanScore(), outcome.score, 0.01f)
+    }
+
+    private companion object {
+        /** Fraction of a stroke's length between traced samples, fine enough to cover its checkpoints. */
+        const val STEP = 0.05f
     }
 }

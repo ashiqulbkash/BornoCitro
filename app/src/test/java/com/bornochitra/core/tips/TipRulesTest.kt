@@ -9,18 +9,12 @@ import org.junit.Test
 class TipRulesTest {
 
     @Test
-    fun `defaults are three misses, two low scores below eighty, from advanced`() {
+    fun `defaults are two low scores below eighty, from advanced`() {
         val rules = TipRules()
 
-        assertEquals(3, rules.repeatedMissesThreshold)
         assertEquals(2, rules.repeatedLowScoreCount)
         assertEquals(80f, rules.lowScoreBelow)
         assertEquals(Difficulty.ADVANCED, rules.difficultFrom)
-    }
-
-    @Test(expected = IllegalArgumentException::class)
-    fun `a miss threshold that can never be reached is rejected`() {
-        TipRules(repeatedMissesThreshold = 0)
     }
 
     @Test(expected = IllegalArgumentException::class)

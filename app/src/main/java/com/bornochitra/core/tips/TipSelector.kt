@@ -19,14 +19,10 @@ class TipSelector @Inject constructor(private val rules: TipRules) {
         ContextualTip.FIRST_ATTEMPT.takeIf { previousAttempts == 0 }
 
     /**
-     * After a stroke was lifted. [consecutiveMisses] is how many times in a row the stroke being
-     * traced was not traced well enough; zero means it was, and no tip is needed.
+     * After the finger was lifted with the letter or drawing still unfinished. Stopping is allowed
+     * and the trace is kept, so this only says what is left to do (plan.md Step 2).
      */
-    fun afterStrokeAttempt(consecutiveMisses: Int): ContextualTip? = when {
-        consecutiveMisses >= rules.repeatedMissesThreshold -> ContextualTip.REPEATED_MISSES
-        consecutiveMisses > 0 -> ContextualTip.MISSED_STROKE
-        else -> null
-    }
+    fun afterUnfinishedTrace(): ContextualTip = ContextualTip.UNFINISHED_TRACE
 
     /**
      * After an exercise was finished. [recentScores] are its latest scores, newest first,

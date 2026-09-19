@@ -26,7 +26,7 @@ private data class Tip(val stepNumber: Int, val text: String)
 // Static onboarding copy — see plan.md section 18. Not dynamic, so no ViewModel/repository needed.
 private val tips = listOf(
     Tip(1, "Follow the dots."),
-    Tip(2, "Start from the highlighted dot."),
+    Tip(2, "Start at one end of the line."),
     Tip(3, "Move your finger slowly."),
     Tip(4, "Stay close to the dotted line."),
     Tip(5, "Complete all strokes."),

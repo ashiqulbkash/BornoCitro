@@ -34,6 +34,12 @@ data class PracticeState(
     val scoreLevel: ScoreLevel? = null,
     val sessionId: Long? = null,
     val tip: ContextualTip? = null,
+    /**
+     * Which attempt is being traced. A restart reuses the same exercise and stroke instances, so
+     * this is what tells the tracing UI that the ink and progress on screen belong to an attempt
+     * that is over and must be cleared.
+     */
+    val attemptId: Int = 0,
 )
 
 /**
@@ -43,8 +49,8 @@ data class PracticeState(
 sealed interface PracticeEvent {
     data class ExerciseCompleted(val score: Float, val scoreLevel: ScoreLevel) : PracticeEvent
 
-    /** A stroke was lifted without finishing the exercise; [isCompleted] says whether it was traced well enough. */
-    data class StrokeAttempted(val isCompleted: Boolean) : PracticeEvent
+    /** The finger was lifted with the letter or drawing still unfinished; the trace so far is kept. */
+    data object TraceUnfinished : PracticeEvent
 
     /** The child started the exercise over. */
     data object Restarted : PracticeEvent
@@ -63,7 +69,6 @@ class PracticeViewModel @Inject constructor(
     private var startedAtMs: Long? = null
     private var previousAttempts = 0
     private var wasMastered = false
-    private var consecutiveMisses = 0
 
     private val mutableState = MutableStateFlow(PracticeState())
     val uiState: StateFlow<PracticeState> = mutableState.asStateFlow()
@@ -92,20 +97,21 @@ class PracticeViewModel @Inject constructor(
     fun onEvent(event: PracticeEvent) {
         when (event) {
             is PracticeEvent.ExerciseCompleted -> onExerciseCompleted(event.score, event.scoreLevel)
-            is PracticeEvent.StrokeAttempted -> onStrokeAttempted(event.isCompleted)
+            PracticeEvent.TraceUnfinished -> onTraceUnfinished()
             PracticeEvent.Restarted -> onRestarted()
         }
     }
 
-    private fun onStrokeAttempted(isCompleted: Boolean) {
-        consecutiveMisses = if (isCompleted) 0 else consecutiveMisses + 1
-        mutableState.value = mutableState.value.copy(tip = tipSelector.afterStrokeAttempt(consecutiveMisses))
+    private fun onTraceUnfinished() {
+        mutableState.value = mutableState.value.copy(tip = tipSelector.afterUnfinishedTrace())
     }
 
     private fun onRestarted() {
         analytics.track(AnalyticsEvent.PracticeRepeated(exerciseId))
-        consecutiveMisses = 0
-        mutableState.value = mutableState.value.copy(tip = tipSelector.beforeFirstAttempt(previousAttempts))
+        mutableState.value = mutableState.value.copy(
+            tip = tipSelector.beforeFirstAttempt(previousAttempts),
+            attemptId = mutableState.value.attemptId + 1,
+        )
     }
 
     private fun onExerciseCompleted(score: Float, scoreLevel: ScoreLevel) {
