@@ -1,11 +1,16 @@
 package com.bornochitra.core.database.repository
 
+import com.bornochitra.core.content.ExerciseRepository
 import com.bornochitra.core.database.dao.ExerciseProgressDao
 import com.bornochitra.core.database.dao.PracticeSessionDao
 import com.bornochitra.core.database.entity.ExerciseProgressEntity
 import com.bornochitra.core.database.entity.PracticeSessionEntity
+import com.bornochitra.core.model.Difficulty
+import com.bornochitra.core.model.Exercise
+import com.bornochitra.core.model.ExerciseType
 import com.bornochitra.core.model.PracticeResult
 import com.bornochitra.core.model.ScoreLevel
+import com.bornochitra.core.model.Stroke
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
@@ -38,24 +43,49 @@ private class FakePracticeSessionDao(private var progress: ExerciseProgressEntit
 
 class ProgressRepositoryImplTest {
 
+    private fun exercise(id: String, type: ExerciseType) = Exercise(
+        id = id,
+        title = id,
+        type = type,
+        difficulty = Difficulty.BEGINNER,
+        strokes = listOf(Stroke(id = "$id-stroke", points = emptyList())),
+        order = 1,
+    )
+
+    /** Two vowels, one consonant and one drawing, so a category ratio has a known denominator. */
+    private val catalogue = listOf(
+        exercise("vowel-o", ExerciseType.VOWEL),
+        exercise("vowel-a", ExerciseType.VOWEL),
+        exercise("consonant-ko", ExerciseType.CONSONANT),
+        exercise("drawing-circle", ExerciseType.DRAWING),
+    )
+
     private fun repositoryWith(
         rows: List<ExerciseProgressEntity>,
         practiceSessionDao: PracticeSessionDao = FakePracticeSessionDao(progress = null),
+        catalogue: List<Exercise> = this.catalogue,
     ): ProgressRepositoryImpl {
         val fakeDao = object : ExerciseProgressDao {
             override fun observeAll(): Flow<List<ExerciseProgressEntity>> = flowOf(rows)
         }
-        return ProgressRepositoryImpl(fakeDao, practiceSessionDao)
+        val exerciseRepository = object : ExerciseRepository {
+            override fun observeExercises(type: ExerciseType): Flow<List<Exercise>> =
+                flowOf(catalogue.filter { it.type == type })
+
+            override suspend fun getExercise(id: String): Exercise? = catalogue.find { it.id == id }
+        }
+        return ProgressRepositoryImpl(fakeDao, practiceSessionDao, exerciseRepository)
     }
 
     private fun progress(
         exerciseId: String,
-        isMastered: Boolean,
+        isMastered: Boolean = false,
+        completedCount: Int = 1,
         lastPracticedAt: Long = 0L,
     ) = ExerciseProgressEntity(
         exerciseId = exerciseId,
         attemptCount = 1,
-        completedCount = 1,
+        completedCount = completedCount,
         bestScore = 90f,
         lastScore = 90f,
         scoreLevel = "PERFECT",
@@ -75,12 +105,11 @@ class ProgressRepositoryImplTest {
     }
 
     @Test
-    fun `progress is grouped by exerciseId category prefix`() = runTest {
+    fun `progress is the share of each category's exercises completed at least once`() = runTest {
         val rows = listOf(
-            progress("vowel-o", isMastered = true),
-            progress("vowel-a", isMastered = false),
-            progress("consonant-ko", isMastered = true),
-            progress("drawing-circle", isMastered = false),
+            progress("vowel-o"),
+            progress("consonant-ko"),
+            progress("drawing-circle", completedCount = 0),
         )
 
         val result = repositoryWith(rows).observeProgress().first()
@@ -89,6 +118,34 @@ class ProgressRepositoryImplTest {
         assertEquals(1f, result.consonantProgress)
         assertEquals(0f, result.drawingProgress)
         assertEquals(0.5f, result.overallProgress)
+    }
+
+    @Test
+    fun `an attempt that was never completed does not count towards progress`() = runTest {
+        val rows = listOf(progress("vowel-o", completedCount = 0))
+
+        val result = repositoryWith(rows).observeProgress().first()
+
+        assertEquals(0f, result.vowelProgress)
+        assertEquals(0f, result.overallProgress)
+    }
+
+    @Test
+    fun `progress is measured against the whole catalogue, not only what was attempted`() = runTest {
+        val rows = listOf(progress("vowel-o"), progress("vowel-a"))
+
+        val result = repositoryWith(rows).observeProgress().first()
+
+        assertEquals(1f, result.vowelProgress)
+        assertEquals(0.5f, result.overallProgress)
+    }
+
+    @Test
+    fun `an empty category is zero rather than undefined`() = runTest {
+        val result = repositoryWith(rows = emptyList(), catalogue = emptyList()).observeProgress().first()
+
+        assertEquals(0f, result.vowelProgress)
+        assertEquals(0f, result.overallProgress)
     }
 
     @Test

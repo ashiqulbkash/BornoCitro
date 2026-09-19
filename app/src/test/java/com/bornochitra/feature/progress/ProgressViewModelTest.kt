@@ -1,0 +1,169 @@
+package com.bornochitra.feature.progress
+
+import com.bornochitra.core.content.ExerciseRepository
+import com.bornochitra.core.database.repository.ProgressRepository
+import com.bornochitra.core.model.Difficulty
+import com.bornochitra.core.model.Exercise
+import com.bornochitra.core.model.ExerciseProgress
+import com.bornochitra.core.model.ExerciseType
+import com.bornochitra.core.model.LearningProgress
+import com.bornochitra.core.model.PracticeResult
+import com.bornochitra.core.model.Stroke
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.test.setMain
+import org.junit.After
+import org.junit.Assert.assertEquals
+import org.junit.Before
+import org.junit.Test
+
+@OptIn(ExperimentalCoroutinesApi::class)
+class ProgressViewModelTest {
+
+    private val dispatcher = StandardTestDispatcher()
+
+    @Before
+    fun setUp() {
+        Dispatchers.setMain(dispatcher)
+    }
+
+    @After
+    fun tearDown() {
+        Dispatchers.resetMain()
+    }
+
+    private fun exercise(id: String, title: String, type: ExerciseType, order: Int = 1) = Exercise(
+        id = id,
+        title = title,
+        type = type,
+        difficulty = Difficulty.BEGINNER,
+        strokes = listOf(Stroke(id = "$id-stroke", points = emptyList())),
+        order = order,
+    )
+
+    private val catalogue = listOf(
+        exercise("vowel-o", "অ", ExerciseType.VOWEL, order = 1),
+        exercise("vowel-aa", "আ", ExerciseType.VOWEL, order = 2),
+        exercise("consonant-ko", "ক", ExerciseType.CONSONANT),
+        exercise("drawing-line", "Line", ExerciseType.DRAWING),
+    )
+
+    private fun exerciseProgress(exerciseId: String, bestScore: Float, attemptCount: Int = 1) = ExerciseProgress(
+        exerciseId = exerciseId,
+        attemptCount = attemptCount,
+        completedCount = 1,
+        bestScore = bestScore,
+        lastScore = bestScore,
+        lastPracticedAt = 0L,
+        isMastered = false,
+    )
+
+    private fun viewModel(
+        learningProgress: LearningProgress = LearningProgress(),
+        progressByExerciseId: Map<String, ExerciseProgress> = emptyMap(),
+        catalogue: List<Exercise> = this.catalogue,
+    ): ProgressViewModel {
+        val exerciseRepository = object : ExerciseRepository {
+            override fun observeExercises(type: ExerciseType): Flow<List<Exercise>> =
+                flowOf(catalogue.filter { it.type == type })
+
+            override suspend fun getExercise(id: String): Exercise? = catalogue.find { it.id == id }
+        }
+        val progressRepository = object : ProgressRepository {
+            override fun observeProgress(): Flow<LearningProgress> = flowOf(learningProgress)
+            override fun observeExerciseProgress(exerciseIds: List<String>): Flow<Map<String, ExerciseProgress>> =
+                flowOf(progressByExerciseId.filterKeys { it in exerciseIds })
+
+            override suspend fun savePracticeResult(result: PracticeResult): Long = 0L
+            override suspend fun getPracticeResult(sessionId: Long): PracticeResult? = null
+        }
+        return ProgressViewModel(exerciseRepository, progressRepository)
+    }
+
+    @Test
+    fun `default ui state has no categories and zero overall progress`() {
+        val viewModel = viewModel()
+
+        assertEquals(ProgressState(), viewModel.uiState.value)
+    }
+
+    @Test
+    fun `each category carries its own ratio and its exercises in order`() = runTest(dispatcher) {
+        val viewModel = viewModel(
+            learningProgress = LearningProgress(
+                overallProgress = 0.5f,
+                vowelProgress = 0.5f,
+                consonantProgress = 1f,
+                drawingProgress = 0f,
+            ),
+        )
+        backgroundScope.launch(dispatcher) { viewModel.uiState.collect {} }
+        dispatcher.scheduler.advanceUntilIdle()
+
+        val state = viewModel.uiState.value
+        assertEquals(0.5f, state.overallProgress)
+        assertEquals(
+            listOf(ExerciseType.VOWEL, ExerciseType.CONSONANT, ExerciseType.DRAWING),
+            state.categories.map { it.type },
+        )
+        assertEquals(0.5f, state.categories.first { it.type == ExerciseType.VOWEL }.progress)
+        assertEquals(1f, state.categories.first { it.type == ExerciseType.CONSONANT }.progress)
+        assertEquals(
+            listOf("অ", "আ"),
+            state.categories.first { it.type == ExerciseType.VOWEL }.exercises.map { it.title },
+        )
+    }
+
+    @Test
+    fun `stars come from the best score band, and an untried exercise has none`() = runTest(dispatcher) {
+        val viewModel = viewModel(
+            progressByExerciseId = mapOf(
+                "vowel-o" to exerciseProgress("vowel-o", bestScore = 94f),
+                "vowel-aa" to exerciseProgress("vowel-aa", bestScore = 72f),
+                "consonant-ko" to exerciseProgress("consonant-ko", bestScore = 41f),
+            ),
+        )
+        backgroundScope.launch(dispatcher) { viewModel.uiState.collect {} }
+        dispatcher.scheduler.advanceUntilIdle()
+
+        val starsById = viewModel.uiState.value.categories
+            .flatMap { it.exercises }
+            .associate { it.id to it.stars }
+
+        assertEquals(3, starsById["vowel-o"])
+        assertEquals(2, starsById["vowel-aa"])
+        assertEquals(1, starsById["consonant-ko"])
+        assertEquals(0, starsById["drawing-line"])
+    }
+
+    @Test
+    fun `a recorded row with no attempts yet shows no stars`() = runTest(dispatcher) {
+        val viewModel = viewModel(
+            progressByExerciseId = mapOf(
+                "vowel-o" to exerciseProgress("vowel-o", bestScore = 0f, attemptCount = 0),
+            ),
+        )
+        backgroundScope.launch(dispatcher) { viewModel.uiState.collect {} }
+        dispatcher.scheduler.advanceUntilIdle()
+
+        val vowels = viewModel.uiState.value.categories.first { it.type == ExerciseType.VOWEL }
+        assertEquals(0, vowels.exercises.first { it.id == "vowel-o" }.stars)
+    }
+
+    @Test
+    fun `an empty catalogue yields empty categories rather than missing ones`() = runTest(dispatcher) {
+        val viewModel = viewModel(catalogue = emptyList())
+        backgroundScope.launch(dispatcher) { viewModel.uiState.collect {} }
+        dispatcher.scheduler.advanceUntilIdle()
+
+        val state = viewModel.uiState.value
+        assertEquals(3, state.categories.size)
+        assertEquals(emptyList<ProgressExerciseItem>(), state.categories.flatMap { it.exercises })
+    }
+}
