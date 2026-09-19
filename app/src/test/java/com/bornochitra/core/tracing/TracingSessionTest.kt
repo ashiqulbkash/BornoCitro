@@ -95,4 +95,17 @@ class TracingSessionTest {
 
         assertEquals(listOf(newStart), session.tracedPoints)
     }
+
+    @Test
+    fun `live points follow the finger without copying, while traced points are a snapshot`() {
+        session.onStart(point(0f, 0f))
+        val snapshot = session.tracedPoints
+        val live = session.livePoints
+
+        session.onMove(point(5f, 5f))
+
+        assertEquals(1, snapshot.size)
+        assertEquals(2, live.size)
+        assertEquals(session.tracedPoints, live)
+    }
 }

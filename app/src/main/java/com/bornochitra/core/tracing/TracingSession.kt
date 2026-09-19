@@ -10,7 +10,14 @@ class TracingSession(private val onEvent: (TracingPointerEvent) -> Unit) {
 
     private val mutablePoints = mutableListOf<TracePoint>()
 
+    /** A copy that stays valid after the session moves on. Use it once per stroke, not per event. */
     val tracedPoints: List<TracePoint> get() = mutablePoints.toList()
+
+    /**
+     * The points so far without copying them, for drawing on every pointer event. It changes as the
+     * finger moves, so read it right away and never keep it.
+     */
+    val livePoints: List<TracePoint> get() = mutablePoints
 
     /** Starts a new trace, discarding any points left over from a previous attempt. */
     fun onStart(point: TracePoint) {

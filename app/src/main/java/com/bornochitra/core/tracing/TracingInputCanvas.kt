@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
@@ -18,6 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.StrokeJoin
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.drawscope.Stroke as PathStrokeStyle
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.tooling.preview.Preview
@@ -55,13 +57,23 @@ fun TracingInputCanvas(
         guideStrokes.map { guide -> guide.points to DottedPathSampler.sample(guide.points, style.dotSpacing) }
     }
     val session = remember(stroke, onPointerEvent) { TracingSession(onEvent = onPointerEvent) }
-    var tracedPoints by remember(stroke) { mutableStateOf<List<TracePoint>>(emptyList()) }
+    // Bumped on every pointer event so the ink redraws from the session's live points without a copy.
+    var traceRevision by remember(stroke) { mutableIntStateOf(0) }
     var isFingerDown by remember(stroke) { mutableStateOf(false) }
     var finishedTraces by remember(guideStrokes) { mutableStateOf<Map<String, List<TracePoint>>>(emptyMap()) }
 
     Box(modifier = modifier) {
+        // The guides never change while a finger moves, so they sit on their own layer and are not
+        // redrawn for every pointer event or every step of the start marker's pulse.
+        Canvas(modifier = Modifier.fillMaxSize().graphicsLayer()) {
+            val scale = size.minDimension / GUIDE_CANVAS_UNIT
+            guides.forEach { (guidePoints, guideDots) ->
+                drawDottedGuide(guidePoints, guideDots, style, scale, resolvedDotColor, resolvedPathColor)
+            }
+        }
+
         Canvas(
-            modifier = Modifier.fillMaxSize().pointerInput(stroke) {
+            modifier = Modifier.fillMaxSize().graphicsLayer().pointerInput(stroke) {
                 val scale = minOf(size.width, size.height) / GUIDE_CANVAS_UNIT
                 fun toTracePoint(offset: Offset) = TracePoint(
                     x = offset.x / scale,
@@ -74,12 +86,12 @@ fun TracingInputCanvas(
                         isFingerDown = true
                         finishedTraces = finishedTraces - stroke.id
                         session.onStart(toTracePoint(offset))
-                        tracedPoints = session.tracedPoints
+                        traceRevision++
                     },
                     onDrag = { change, _ ->
                         change.consume()
                         session.onMove(toTracePoint(change.position))
-                        tracedPoints = session.tracedPoints
+                        traceRevision++
                     },
                     onDragEnd = {
                         isFingerDown = false
@@ -89,17 +101,16 @@ fun TracingInputCanvas(
                     onDragCancel = {
                         isFingerDown = false
                         session.onCancel()
-                        tracedPoints = session.tracedPoints
+                        traceRevision++
                     },
                 )
             },
         ) {
             val scale = size.minDimension / GUIDE_CANVAS_UNIT
-            guides.forEach { (guidePoints, guideDots) ->
-                drawDottedGuide(guidePoints, guideDots, style, scale, resolvedDotColor, resolvedPathColor)
-            }
+            // Read so this layer is redrawn when the live points change.
+            traceRevision
 
-            (finishedTraces.values + listOf(tracedPoints)).forEach { trace ->
+            (finishedTraces.values + listOf(session.livePoints)).forEach { trace ->
                 if (trace.size < 2) return@forEach
                 val tracedPath = Path().apply {
                     val first = trace.first()
