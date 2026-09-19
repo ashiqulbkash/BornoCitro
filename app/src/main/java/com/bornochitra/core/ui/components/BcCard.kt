@@ -21,10 +21,6 @@ import com.bornochitra.core.ui.theme.BcDimens
 import com.bornochitra.core.ui.theme.BcSpacing
 import com.bornochitra.core.ui.theme.BornoChitraTheme
 
-/** Single Bengali letters get the large glyph style; longer titles (e.g. drawing names) get a smaller
- * single-line style so they don't wrap or overflow the fixed-size tile. */
-private const val SHORT_LABEL_MAX_LENGTH = 2
-
 @Composable
 fun BcCard(
     modifier: Modifier = Modifier,
@@ -59,7 +55,9 @@ fun BcExerciseTile(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
         ) {
-            val labelStyle = if (label.length <= SHORT_LABEL_MAX_LENGTH) {
+            // Longer titles (e.g. drawing names) get a smaller style so they don't wrap or
+            // overflow the fixed-size tile.
+            val labelStyle = if (label.isSingleGlyph()) {
                 MaterialTheme.typography.headlineLarge
             } else {
                 MaterialTheme.typography.titleMedium

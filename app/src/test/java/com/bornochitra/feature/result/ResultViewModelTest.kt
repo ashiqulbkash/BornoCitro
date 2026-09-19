@@ -56,6 +56,8 @@ class ResultViewModelTest {
         exercise(id = "vowel-o", title = "অ", order = 1),
         exercise(id = "vowel-aa", title = "আ", order = 2),
         exercise(id = "consonant-ko", title = "ক", order = 1, type = ExerciseType.CONSONANT),
+        exercise(id = "drawing-circle", title = "Circle", order = 2, type = ExerciseType.DRAWING),
+        exercise(id = "drawing-square", title = "Square", order = 3, type = ExerciseType.DRAWING),
     )
 
     private fun exerciseRepositoryOf(exercises: List<Exercise>) = object : ExerciseRepository {
@@ -150,6 +152,30 @@ class ResultViewModelTest {
         dispatcher.scheduler.advanceUntilIdle()
 
         assertNull(viewModel.uiState.value.attempt?.nextExerciseId)
+    }
+
+    @Test
+    fun `a drawing's result reports the drawing and offers the next one`() = runTest(dispatcher) {
+        // plan.md Step 16 — a drawing ends in the same result as a letter.
+        val viewModel = viewModel(
+            results = mapOf(
+                1L to practiceResult(exerciseId = "drawing-circle", score = 88f, scoreLevel = ScoreLevel.MEDIUM),
+            ),
+        )
+
+        backgroundScope.launch(dispatcher) { viewModel.uiState.collect {} }
+        dispatcher.scheduler.advanceUntilIdle()
+
+        assertEquals(
+            ResultAttempt(
+                exerciseId = "drawing-circle",
+                title = "Circle",
+                scorePercent = 88,
+                scoreLevel = ScoreLevel.MEDIUM,
+                nextExerciseId = "drawing-square",
+            ),
+            viewModel.uiState.value.attempt,
+        )
     }
 
     @Test

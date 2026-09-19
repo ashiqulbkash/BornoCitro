@@ -33,6 +33,7 @@ import com.bornochitra.core.tracing.TracingEngine
 import com.bornochitra.core.tracing.TracingInputCanvas
 import com.bornochitra.core.tracing.TracingPointerEvent
 import com.bornochitra.core.ui.components.BcEmptyState
+import com.bornochitra.core.ui.components.BcExerciseHeading
 import com.bornochitra.core.ui.components.BcPrimaryButton
 import com.bornochitra.core.ui.components.BcTopAppBar
 import com.bornochitra.core.ui.theme.BcSpacing
@@ -136,7 +137,7 @@ private fun ExerciseTracingContent(
         verticalArrangement = Arrangement.spacedBy(BcSpacing.sm),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Text(text = exercise.title, style = MaterialTheme.typography.displayMedium)
+        BcExerciseHeading(title = exercise.title)
 
         val strokeToTrace = currentStroke
         if (strokeToTrace != null) {

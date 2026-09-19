@@ -98,6 +98,41 @@ class PracticeViewModelTest {
     }
 
     @Test
+    fun `a drawing runs through the same practice lifecycle as a letter`() = runTest(dispatcher) {
+        // plan.md Step 16 — drawings use the same infrastructure; nothing here is letter-specific.
+        val house = Exercise(
+            id = "drawing-house",
+            title = "House",
+            type = ExerciseType.DRAWING,
+            difficulty = Difficulty.ADVANCED,
+            strokes = listOf(
+                Stroke(id = "drawing-house-roof", points = emptyList()),
+                Stroke(id = "drawing-house-body", points = emptyList()),
+            ),
+            order = 5,
+        )
+        val progressRepository = FakeProgressRepository()
+        val viewModel = viewModel(
+            exerciseId = "drawing-house",
+            exerciseRepository = exerciseRepositoryOf(listOf(house)),
+            progressRepository = progressRepository,
+        )
+        backgroundScope.launch(dispatcher) { viewModel.uiState.collect {} }
+        dispatcher.scheduler.advanceUntilIdle()
+
+        assertEquals(house, viewModel.uiState.value.exercise)
+
+        viewModel.onEvent(PracticeEvent.ExerciseCompleted(score = 88f, scoreLevel = ScoreLevel.MEDIUM))
+        dispatcher.scheduler.advanceUntilIdle()
+
+        val savedResult = progressRepository.savedResults.single()
+        assertEquals("drawing-house", savedResult.exerciseId)
+        assertEquals(88f, savedResult.score)
+        assertTrue(savedResult.completed)
+        assertEquals(ScoreLevel.MEDIUM, viewModel.uiState.value.scoreLevel)
+    }
+
+    @Test
     fun `unknown exercise id surfaces an error instead of a stuck loading state`() = runTest(dispatcher) {
         val viewModel = viewModel(exerciseId = "missing", exerciseRepository = exerciseRepositoryOf(emptyList()))
 

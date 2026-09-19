@@ -18,6 +18,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bornochitra.core.model.ScoreLevel
 import com.bornochitra.core.ui.components.BcEmptyState
+import com.bornochitra.core.ui.components.BcExerciseHeading
 import com.bornochitra.core.ui.components.BcFeedbackBanner
 import com.bornochitra.core.ui.components.BcFeedbackTone
 import com.bornochitra.core.ui.components.BcPrimaryButton
@@ -104,7 +105,7 @@ private fun AttemptSummary(
     ) {
         BcFeedbackBanner(tone = wording.tone, title = wording.headline, message = wording.message)
 
-        Text(text = attempt.title, style = MaterialTheme.typography.displayMedium)
+        BcExerciseHeading(title = attempt.title)
         Text(text = "${attempt.scorePercent}%", style = MaterialTheme.typography.headlineLarge)
 
         BcPrimaryButton(
