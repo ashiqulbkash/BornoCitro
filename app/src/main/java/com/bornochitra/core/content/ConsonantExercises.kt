@@ -508,4 +508,102 @@ internal val consonantExercises: List<Exercise> = listOf(
             ),
         ),
     ),
+    /**
+     * চ is read off its rendered glyph's centreline like the letters before it. The letter below the
+     * headline is a single closed bowl whose left edge is the stem, so the pen path a child is
+     * taught is one continuous movement: down the left side, round the bottom, up the right and back
+     * along the top to where it started. That is roughly 185 canvas units, too long to hold in one
+     * pass, so it is split at the stem's foot — the corner where the left edge turns into the bottom
+     * curve, and the one landmark in the letter a child can see. The stem is not quite straight, so
+     * it is a polyline rather than a line like গ's. The matra is written last, as Bengali is.
+     */
+    Exercise(
+        id = "consonant-cho",
+        title = "চ",
+        type = ExerciseType.CONSONANT,
+        difficulty = Difficulty.INTERMEDIATE,
+        order = 6,
+        strokes = listOf(
+            Stroke(
+                id = "consonant-cho-stem",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(31f, 12f),
+                        Point(31f, 15f),
+                        Point(31f, 18f),
+                        Point(31f, 21f),
+                        Point(31f, 24f),
+                        Point(32f, 27f),
+                        Point(31f, 30f),
+                        Point(31f, 33f),
+                        Point(31f, 36f),
+                        Point(31f, 39f),
+                        Point(31f, 42f),
+                        Point(31f, 45f),
+                        Point(31f, 48f),
+                        Point(31f, 51f),
+                        Point(31f, 54f),
+                        Point(31f, 58f),
+                        Point(31f, 60f),
+                        Point(31f, 64f),
+                        Point(31f, 67f),
+                        Point(32f, 70f),
+                        Point(32f, 73f),
+                        Point(32f, 76f),
+                        Point(33f, 79f),
+                        Point(35f, 81f),
+                        Point(36f, 82f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "consonant-cho-body",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(36f, 82f),
+                        Point(38f, 83f),
+                        Point(41f, 84f),
+                        Point(44f, 85f),
+                        Point(47f, 85f),
+                        Point(50f, 84f),
+                        Point(53f, 83f),
+                        Point(56f, 82f),
+                        Point(58f, 81f),
+                        Point(61f, 79f),
+                        Point(63f, 76f),
+                        Point(65f, 74f),
+                        Point(67f, 72f),
+                        Point(69f, 69f),
+                        Point(70f, 66f),
+                        Point(72f, 63f),
+                        Point(73f, 60f),
+                        Point(73f, 58f),
+                        Point(74f, 54f),
+                        Point(74f, 52f),
+                        Point(74f, 48f),
+                        Point(73f, 45f),
+                        Point(71f, 42f),
+                        Point(69f, 41f),
+                        Point(66f, 40f),
+                        Point(63f, 39f),
+                        Point(60f, 38f),
+                        Point(57f, 38f),
+                        Point(54f, 37f),
+                        Point(51f, 37f),
+                        Point(48f, 36f),
+                        Point(45f, 34f),
+                        Point(42f, 33f),
+                        Point(40f, 31f),
+                        Point(37f, 29f),
+                        Point(35f, 28f),
+                        Point(32f, 27f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "consonant-cho-matra",
+                points = StrokePoints.line(Point(13f, 11f), Point(87f, 11f)),
+            ),
+        ),
+    ),
 )

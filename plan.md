@@ -75,9 +75,75 @@ Add the 34 missing consonants so the Consonants screen lists all 39 in the order
 - Per letter: `check.py` (every sample on ink), overlay review, unit tests for the catalog, then a device trace at 95%+.
 - The last sub-step (1.34) also confirms the Consonants screen scrolls and lays out 39 items at 720x1280 and 720x1600, and that the Home/Progress consonant bar measures against 39.
 
+## Per-letter recipe
+
+Worked out while implementing 1.1; follow it for every remaining letter.
+
+### Toolchain
+
+The derivation scripts are **not in the repository** — they live in the Claude scratchpad and are
+copied forward between sessions. Copy `glyph.py`, `canvas.py`, `skel_branches.py`, `check.py`,
+`overlay.py` and `noto2.ttf` (Noto Sans Bengali, the font Android draws the character with above the
+canvas) from the newest scratchpad that has them into the current one before starting.
+
+1. `skel_branches.py <letter>` — the ordered centreline branches in the 0..100 canvas, and the mean
+   pen half-width. Branches are returned longest first, so identify each one before using it.
+2. Print the ink and skeleton grids (`canvas.py`) as ascii to see the shape, its junctions and where
+   one stroke should end and the next begin.
+3. Write `<letter>_build.py` exporting `STROKES = {name: [(x, y), ...]}`: orient each branch so the
+   pen travels the way the letter is written, resample at ~3 canvas units, round to whole units.
+   A closed loop's two ends sit on the same junction, so orient it by its second point, not by
+   which end is nearer.
+4. `check.py <letter> <letter>_build` — **every stroke must report off-ink 0**, and its centreline
+   distance must stay well inside the mean pen half-width.
+5. `overlay.py <letter> <letter>_build out.png` — look at the guide drawn over the glyph.
+6. `apply_<letter>.py` — append the Kotlin `Exercise` before the closing `)` of `consonantExercises`,
+   with a KDoc recording how the letter was derived and why the strokes were split where they were.
+
+### Constraints the catalog test already enforces
+
+- **Normalization.** `canvas.py`/`skel_branches.py` fit the *ink* bbox to y 7..90 with x centred.
+  A letter wider than it is tall must be fitted by width with y centred instead (`ko_norm.py`), or
+  its matra leaves the canvas. `ExerciseCatalogTest` checks every point is in 0..100 and that the
+  guide's bbox centre is within 3 units of (50, 50).
+- **Stroke ids** must start with the exercise id, be unique, and a `-matra` stroke must be last.
+- **`order`** must stay contiguous from 1 within the type, so each letter takes the next value.
+
+### Authoring conventions
+
+- **Stroke length.** Keep one stroke under roughly 140 canvas units — a child cannot hold a longer
+  pass. ঙ (275) and চ (185) are both split. Split only at a landmark the child can see, such as a
+  corner, a neck or a foot, never at an arbitrary midpoint.
+- **Matra.** A straight `StrokePoints.line` at the skeleton's headline y, its extent taken from the
+  ink and inset ~2 units so the guide stops short of the end caps. Written last.
+- **Straight strokes** use `StrokePoints.line`, curved or slightly bent ones the dense polyline from
+  the skeleton — a line through a bend drifts off the centreline.
+- **Difficulty** reflects the letter's own complexity, not a progression through the alphabet.
+  `ADVANCED` also switches on the extra tip via `TipRules.DEFAULT_DIFFICULT_FROM`.
+
+### Tests to update for every letter
+
+`ExerciseCatalogTest` holds two hand-maintained assertions that fail until the new letter is added:
+the consonant title string (`কখগঘঙচ` after 1.1) and the per-exercise stroke-count map. Everything
+else in that file passes on its own. Baseline after 1.1: **336 unit tests, 0 failures**.
+
+### Device check
+
+- Navigate Home → ব্যঞ্জনবর্ণ (360, 697 at 720x1600) → the letter's cell in the 3-column grid
+  (columns x = 136 / 360 / 583; rows y = 351 / 560 / …). From the 10th letter the grid needs
+  scrolling before the cell is tappable.
+- **Re-measure the canvas mapping from a screenshot** rather than reusing remembered coefficients —
+  it moves whenever the Practice layout changes. The dotted guide is sampled at `dotSpacing = 6f`
+  canvas units with the first dot on the path start, so the matra's dot centres give both scale and
+  offset. It is `sx = 31.8 + 6.556x`, `sy = 503.9 + 6.556y` as of 1.1.
+- Densify the synthetic trace to ~1.5 canvas units; feeding only a stroke's authored points leaves
+  most of the guide untraced and the attempt silently never completes.
+- Read the score back with `run-as com.bornochitra cat databases/bornochitra.db`. A faithful trace
+  of a correctly derived letter scores 95–99.
+
 ## Sub-steps
 
-- [ ] 1.1 চ
+- [x] 1.1 চ
 - [ ] 1.2 ছ
 - [ ] 1.3 জ
 - [ ] 1.4 ঝ
@@ -117,11 +183,16 @@ Add the 34 missing consonants so the Consonants screen lists all 39 in the order
 - [ ] The one letter is added with strokes derived from its rendered glyph
 - [ ] Every guide sample lies on the glyph's ink
 - [ ] It completes at 95%+ on a faithful synthetic trace on the device
-- [ ] `ExerciseCatalogTest` counts, unique ids and contiguous `order` still pass with the new letter
+- [ ] `ExerciseCatalogTest`'s consonant title string and stroke-count map include the new
+      letter, and its id, `order`, canvas-bounds, centring and matra-last assertions pass
 - [ ] `ConsonantsViewModelTest` still passes
 - [ ] Verified by running the app
 
 Step 1 as a whole is done when all 34 sub-steps are checked, the catalog test asserts 39 consonants, and consonant progress on Home/Progress is computed against 39.
+
+## Notes
+
+- **1.1 চ** — derived from the glyph's centreline: below the headline চ is one closed bowl whose left edge is the stem, so it is `stem` (matra line down to the foot), `body` (foot round the bottom, up the right, back along the top to the stem) and `matra`. Every guide sample is on ink; traced on the RMX3624 it completed at 99% (PERFECT).
 
 ---
 
