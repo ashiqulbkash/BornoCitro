@@ -2809,4 +2809,106 @@ internal val consonantExercises: List<Exercise> = listOf(
             ),
         ),
     ),
+    /**
+     * র is read off the glyph the phone renders, like ন, প, ফ, ব, ভ, ম and য. It comes out all but
+     * square (aspect 0.981), so its ink is fitted by height with x centred, like ব, ন, ঢ, দ and ধ.
+     *
+     * Above the baseline it is ব exactly — a full headline, a post from the headline to the foot,
+     * and one wide "<" hanging off the post's left whose two ends both run back into the post —
+     * with a filled dot added under the body's left. That dot is a separate piece of ink, so it
+     * gets a stroke of its own, the way the plan calls for on ড়, ঢ় and য়.
+     *
+     * A dot is a disc rather than a path: its largest inscribed circle is 7.80 canvas units, at
+     * (35,82). The guide has to be something a finger can follow, so it is a small ring inside
+     * that disc — radius 4.8, drawn with `StrokePoints.arc` as `drawing-circle` is. That leaves
+     * 2.65 canvas units of ink under every sample, so the guide's own dots sit well inside the
+     * blob, and its 30.2 units come to five dot spacings, so the ring's last dot closes back onto
+     * its first. `check.py` reports the ring's distance from the centreline as 4.8 units, which is
+     * simply the radius: the disc skeletonizes to a single point at its centre, so there is no
+     * centreline to be near.
+     *
+     * The body's corner is the junction where the two centrelines cross. The skeleton's spur past
+     * it runs into the ink's outer mitre and thins from 5.08 to 0.33 canvas units against the pen's
+     * 4.89, so the pen's centre turns at the junction, as ব's, ধ's and প's do.
+     *
+     * The body comes first, then the post, then the dot — where a writer adds it, once the letter
+     * itself is there — and the matra last.
+     */
+    Exercise(
+        id = "consonant-ro",
+        title = "র",
+        type = ExerciseType.CONSONANT,
+        difficulty = Difficulty.INTERMEDIATE,
+        order = 27,
+        strokes = listOf(
+            Stroke(
+                id = "consonant-ro-body",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(72f, 26f),
+                        Point(69f, 26f),
+                        Point(66f, 27f),
+                        Point(64f, 27f),
+                        Point(61f, 28f),
+                        Point(58f, 29f),
+                        Point(56f, 30f),
+                        Point(53f, 31f),
+                        Point(51f, 32f),
+                        Point(48f, 33f),
+                        Point(46f, 34f),
+                        Point(43f, 35f),
+                        Point(41f, 36f),
+                        Point(38f, 38f),
+                        Point(36f, 39f),
+                        Point(33f, 40f),
+                        Point(31f, 41f),
+                        Point(28f, 43f),
+                        Point(26f, 44f),
+                        Point(24f, 46f),
+                        Point(24f, 49f),
+                        Point(24f, 51f),
+                        Point(25f, 53f),
+                        Point(28f, 54f),
+                        Point(31f, 55f),
+                        Point(33f, 56f),
+                        Point(36f, 56f),
+                        Point(38f, 58f),
+                        Point(41f, 59f),
+                        Point(43f, 60f),
+                        Point(46f, 61f),
+                        Point(48f, 63f),
+                        Point(51f, 64f),
+                        Point(53f, 66f),
+                        Point(55f, 68f),
+                        Point(57f, 70f),
+                        Point(59f, 72f),
+                        Point(61f, 74f),
+                        Point(63f, 76f),
+                        Point(65f, 78f),
+                        Point(67f, 79f),
+                        Point(70f, 80f),
+                        Point(72f, 80f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "consonant-ro-post",
+                points = StrokePoints.line(Point(72f, 12f), Point(72f, 86f)),
+            ),
+            Stroke(
+                id = "consonant-ro-dot",
+                points = StrokePoints.arc(
+                    center = Point(35f, 82f),
+                    radius = 4.8f,
+                    startDeg = 0f,
+                    sweepDeg = 360f,
+                    samples = 32,
+                ),
+            ),
+            Stroke(
+                id = "consonant-ro-matra",
+                points = StrokePoints.line(Point(11f, 12f), Point(89f, 12f)),
+            ),
+        ),
+    ),
 )
