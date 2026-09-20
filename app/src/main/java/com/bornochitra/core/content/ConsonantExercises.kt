@@ -2143,4 +2143,121 @@ internal val consonantExercises: List<Exercise> = listOf(
             ),
         ),
     ),
+    /**
+     * প is read off the glyph the phone renders, as ন is. It is a shade wider than it is tall
+     * (aspect 1.023), but height-fitting leaves its ink at x 7..92, comfortably inside the canvas
+     * and the same size as every other consonant, where a width fit would stretch it to y 4..96 —
+     * so it is fitted by height, like ন, ঢ, দ and ধ.
+     *
+     * Structurally it is গ, ণ, থ and ধ once more: a post rising above the headline, a matra bar
+     * only to its right, and the body hanging off the post's left. Here that body is a triangular
+     * sail. The hood leaves the post at mid-height, arches up over the top and comes down to a
+     * sharp turn at the far left; the tongue comes back right out of that turn and down to the
+     * sail's bottom corner; and the arm — the diagonal — hangs off the hood and runs down-left
+     * past that corner to a flat cut.
+     *
+     * Which bands the pen runs through is the glyph's own answer, taken from the angles the
+     * branches leave each junction at. Where the hood reaches the post, the hood and the link into
+     * the post leave at 43 degrees and the arm at 75, so the hood flows into the post and the arm
+     * is joined onto it; at the sail's bottom corner the arm and its tail leave at 34 degrees and
+     * the tongue at 59, so the arm runs through and the tongue ends on it. That makes `sail` one
+     * movement of 107 canvas units — post, hood, turn, tongue — inside what a child can hold in
+     * one pass, and `arm` a second of 43.
+     *
+     * The far-left corner is a real turn rather than a terminal: the skeleton crosses it at full
+     * pen thickness, and its two spurs, to (11,35) and (19,36), are the corner's outer mitre and
+     * the ink's wedge into the counter — thin places the pen's centre never travels, as ধ's mitre
+     * at (13,49) is. The mitre is why the guide turns nine units short of the letter's leftmost
+     * ink: at a turn this sharp the outer corner runs out to twice the pen's half-width.
+     *
+     * `arm` ends 2 units short of the midpoint of the flat cut that closes it, as ছ's, ত's and ন's
+     * cut ends do; the cut runs from (25,59.5) to (31.5,66). The post follows, inset 2 units from
+     * each end cap as ণ's is, and the matra — the short bar right of the post — is last.
+     */
+    Exercise(
+        id = "consonant-po",
+        title = "প",
+        type = ExerciseType.CONSONANT,
+        difficulty = Difficulty.ADVANCED,
+        order = 21,
+        strokes = listOf(
+            Stroke(
+                id = "consonant-po-sail",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(74f, 39f),
+                        Point(72f, 38f),
+                        Point(69f, 36f),
+                        Point(67f, 35f),
+                        Point(65f, 34f),
+                        Point(62f, 33f),
+                        Point(61f, 30f),
+                        Point(60f, 27f),
+                        Point(58f, 26f),
+                        Point(56f, 24f),
+                        Point(54f, 22f),
+                        Point(51f, 21f),
+                        Point(49f, 20f),
+                        Point(46f, 19f),
+                        Point(43f, 19f),
+                        Point(40f, 19f),
+                        Point(37f, 19f),
+                        Point(35f, 19f),
+                        Point(32f, 20f),
+                        Point(30f, 21f),
+                        Point(27f, 22f),
+                        Point(25f, 24f),
+                        Point(23f, 26f),
+                        Point(20f, 28f),
+                        Point(18f, 30f),
+                        Point(16f, 32f),
+                        Point(16f, 34f),
+                        Point(16f, 37f),
+                        Point(18f, 39f),
+                        Point(21f, 39f),
+                        Point(24f, 38f),
+                        Point(27f, 38f),
+                        Point(30f, 39f),
+                        Point(32f, 40f),
+                        Point(34f, 42f),
+                        Point(35f, 45f),
+                        Point(35f, 48f),
+                        Point(35f, 51f),
+                        Point(36f, 53f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "consonant-po-arm",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(62f, 33f),
+                        Point(60f, 34f),
+                        Point(58f, 36f),
+                        Point(56f, 38f),
+                        Point(53f, 40f),
+                        Point(51f, 42f),
+                        Point(49f, 44f),
+                        Point(47f, 46f),
+                        Point(45f, 48f),
+                        Point(43f, 50f),
+                        Point(40f, 52f),
+                        Point(38f, 52f),
+                        Point(36f, 54f),
+                        Point(34f, 56f),
+                        Point(32f, 58f),
+                        Point(30f, 61f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "consonant-po-post",
+                points = StrokePoints.line(Point(75f, 9f), Point(75f, 88f)),
+            ),
+            Stroke(
+                id = "consonant-po-matra",
+                points = StrokePoints.line(Point(75f, 19f), Point(90f, 19f)),
+            ),
+        ),
+    ),
 )
