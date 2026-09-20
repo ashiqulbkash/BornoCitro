@@ -2260,4 +2260,123 @@ internal val consonantExercises: List<Exercise> = listOf(
             ),
         ),
     ),
+    /**
+     * ফ is read off the glyph the phone renders, like ন and প. It is wider than it is tall
+     * (aspect 1.379), so its ink is fitted by width with y centred, the way জ, ঝ, ড and ত are;
+     * height-fitting it would push the headline past the edge of the canvas.
+     *
+     * It is a full headline, a post hanging free below it, a bowl off the post's top, and a
+     * zigzag sail on the left. Like ত, the right half does not touch the bar: the post's top is a
+     * flat cut five canvas units clear of it.
+     *
+     * The sail is one movement of 107 canvas units, inside what a child can hold in one pass —
+     * down the short stem from the matra, down-right to the first corner, back down-left to the
+     * second, then the long diagonal down-right into the post's foot. Each of its three sharp
+     * corners grows a skeleton spur into the ink's outer mitre, to (10,29), (40,42) and (10,51);
+     * those thin to 0.2-1.4 canvas units against the pen's 3.93, so the pen's centre turns at the
+     * junction and never travels out along the spur, as ধ's and প's corners do.
+     *
+     * The bowl is joined onto the post rather than continuous with it, which is what the angles at
+     * the post's top say: the two halves of the post leave at 34 degrees and the bowl at 57, so
+     * the post runs straight through and the bowl starts on it, the way ণ's loop starts on its own
+     * post. The bowl ends 2 units short of the midpoint of the vertical flat cut that closes it —
+     * the cut runs from (69,58) to (69,66.5) and grows a skeleton prong into each corner, as ছ's,
+     * ত's and ন's cut ends do.
+     *
+     * The sail and the bowl come first, then the post from its top cut to its foot, then the
+     * matra, inset 2 units from each end cap so the bar is a whole 15 dot spacings.
+     */
+    Exercise(
+        id = "consonant-pho",
+        title = "ফ",
+        type = ExerciseType.CONSONANT,
+        difficulty = Difficulty.ADVANCED,
+        order = 22,
+        strokes = listOf(
+            Stroke(
+                id = "consonant-pho-sail",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(16f, 20f),
+                        Point(16f, 23f),
+                        Point(16f, 26f),
+                        Point(18f, 27f),
+                        Point(21f, 28f),
+                        Point(23f, 29f),
+                        Point(26f, 31f),
+                        Point(28f, 32f),
+                        Point(31f, 33f),
+                        Point(33f, 35f),
+                        Point(35f, 37f),
+                        Point(36f, 40f),
+                        Point(34f, 42f),
+                        Point(32f, 43f),
+                        Point(29f, 44f),
+                        Point(27f, 46f),
+                        Point(24f, 47f),
+                        Point(22f, 48f),
+                        Point(19f, 49f),
+                        Point(17f, 51f),
+                        Point(16f, 53f),
+                        Point(16f, 56f),
+                        Point(18f, 58f),
+                        Point(21f, 58f),
+                        Point(23f, 59f),
+                        Point(26f, 60f),
+                        Point(28f, 61f),
+                        Point(31f, 62f),
+                        Point(34f, 63f),
+                        Point(36f, 64f),
+                        Point(38f, 66f),
+                        Point(41f, 67f),
+                        Point(43f, 69f),
+                        Point(45f, 71f),
+                        Point(47f, 72f),
+                        Point(49f, 75f),
+                        Point(52f, 76f),
+                        Point(54f, 77f),
+                        Point(57f, 78f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "consonant-pho-bowl",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(57f, 33f),
+                        Point(60f, 33f),
+                        Point(63f, 33f),
+                        Point(66f, 33f),
+                        Point(68f, 34f),
+                        Point(71f, 35f),
+                        Point(74f, 36f),
+                        Point(76f, 37f),
+                        Point(78f, 38f),
+                        Point(81f, 40f),
+                        Point(83f, 42f),
+                        Point(84f, 44f),
+                        Point(85f, 47f),
+                        Point(86f, 50f),
+                        Point(86f, 52f),
+                        Point(86f, 55f),
+                        Point(85f, 58f),
+                        Point(83f, 60f),
+                        Point(81f, 61f),
+                        Point(78f, 62f),
+                        Point(75f, 62f),
+                        Point(72f, 62f),
+                        Point(71f, 62f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "consonant-pho-post",
+                points = StrokePoints.line(Point(57f, 30f), Point(57f, 84f)),
+            ),
+            Stroke(
+                id = "consonant-pho-matra",
+                points = StrokePoints.line(Point(5f, 20f), Point(95f, 20f)),
+            ),
+        ),
+    ),
 )
