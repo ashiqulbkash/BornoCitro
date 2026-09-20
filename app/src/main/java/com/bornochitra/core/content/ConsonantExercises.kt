@@ -3938,4 +3938,85 @@ internal val consonantExercises: List<Exercise> = listOf(
             ),
         ),
     ),
+    /**
+     * ং is অনুস্বার — a mark rather than a letter with a body, and the first of the three in the
+     * catalog (ঃ and ঁ follow).
+     *
+     * It is much taller than it is wide (aspect 0.528), so it is fitted by height like ট, ঠ, ণ,
+     * হ and ৎ, and it has no headline, so no stroke is a matra. The mark is two separate pieces
+     * of ink — a closed ring, and clear of it a crescent tail — so it is two strokes, written
+     * ring first because it sits above.
+     *
+     * `ring` is a genuine annulus with a centreline of its own, not a disc like র's dot: its band
+     * is 3.77 canvas units half-thick even at its thinnest. That centreline measures as a circle
+     * to within a canvas unit — centre (46.3,24.0), mean radius 13.17, 13.02 to 13.32 by octant —
+     * so it is authored with `StrokePoints.arc`, at 0 degrees sweeping 360 as `drawing-circle`
+     * and র's dot are, rather than as a polyline off the skeleton. The radius is nudged to 13.4,
+     * still inside the measured spread of 12.64 to 13.59: that makes the ring 84.2 canvas units
+     * round, a whole 14 dot spacings, so its last dot closes back onto its first.
+     *
+     * `tail` runs from the thin tip below the ring's left, down through the crescent's belly and
+     * out to the flat cut at the bottom right — 49 canvas units, well inside one pass. Three
+     * skeleton branches meet in that belly at (35.3,52.3), and over a 6-unit baseline the tip
+     * turns only 25 degrees into the sweep, against 89 for tip-to-spur and 66 for spur-to-sweep,
+     * so the pen runs from the tip straight through into the sweep. The third branch, to
+     * (28.7,53.5), is the ink's outer mitre — it has thinned to 0.44 units there against the 4.93
+     * under the junction — so the pen's centre never travels out along it, as ধ's, প's and ফ's
+     * mitres do.
+     *
+     * Both of the tail's ends are set by the guide's own dot radius, 2.5 canvas units. The top is
+     * a taper rather than a cut: the ink's half-thickness runs 0.28, 1.09, 1.70, 2.40, 2.98 at
+     * y = 46 to 50, so there is no terminal to inset from, and the stroke starts at the highest
+     * point where the ink is at least 2.5 units half-thick — the last place the first dot still
+     * lies wholly inside the letter. Running it up to the skeleton's tip at (34.5,47.1) would
+     * hang that dot outside the ink, the fault ড's first pass had. The bottom is a flat cut with
+     * a prong into each corner, 8.4 canvas units apart against an 8.1-wide band, and stopping 3
+     * short of the midpoint between them both keeps the last dot inside the ink and leaves the
+     * least bare path past it — 1.0 units, where 1 and 2 leave 3.2 and 2.4 with the dot hanging
+     * out.
+     */
+    Exercise(
+        id = "consonant-anusvar",
+        title = "ং",
+        type = ExerciseType.CONSONANT,
+        difficulty = Difficulty.BEGINNER,
+        order = 37,
+        strokes = listOf(
+            Stroke(
+                id = "consonant-anusvar-ring",
+                points = StrokePoints.arc(
+                    center = Point(46.3f, 24f),
+                    radius = 13.4f,
+                    startDeg = 0f,
+                    sweepDeg = 360f,
+                    samples = 32,
+                ),
+            ),
+            Stroke(
+                id = "consonant-anusvar-tail",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(35f, 49f),
+                        Point(35f, 52f),
+                        Point(37f, 53f),
+                        Point(39f, 55f),
+                        Point(42f, 57f),
+                        Point(44f, 59f),
+                        Point(46f, 61f),
+                        Point(48f, 63f),
+                        Point(50f, 65f),
+                        Point(52f, 67f),
+                        Point(54f, 69f),
+                        Point(56f, 71f),
+                        Point(58f, 73f),
+                        Point(60f, 75f),
+                        Point(61f, 78f),
+                        Point(63f, 80f),
+                        Point(64f, 82f),
+                        Point(66f, 85f),
+                    ),
+                ),
+            ),
+        ),
+    ),
 )

@@ -194,7 +194,7 @@ else in that file passes on its own. Baseline after 1.1: **336 unit tests, 0 fai
 - [x] 1.29 ঢ়
 - [x] 1.30 য়
 - [x] 1.31 ৎ
-- [ ] 1.32 ং
+- [x] 1.32 ং
 - [ ] 1.33 ঃ
 - [ ] 1.34 ঁ
 
@@ -302,6 +302,18 @@ Step 1 as a whole is done when all 34 sub-steps are checked, the catalog test as
   191 units is far past one pass, and — like ত — the movement turns smoothly from end to end, by at most 31° per 6 canvas units, so it has no cusp, corner or neck to break at. It is split at the letter's leftmost point instead, (22,32), where the pen is travelling straight down and the bowl's descent turns into the sweep out to the tail: the same extremum ত and ঢ break at (their bowls sit upright, so for them it is the foot), the one landmark below the dome a child can see, leaving `bowl` 102 units and `tail` 83. Both free ends are flat cuts with a skeleton prong into each corner — the prongs sit 9.1 canvas units apart against a band 9.0 wide, and the ink under each tip has thinned to 0.14-0.41 units against the pen's 4.51 — so `bowl` starts 2 units short of the midpoint between its prongs and `tail` stops 3 short.
 
   **The tail's 3 is ড়'s trade-off, and it needed the guide's own dot size to settle it.** A guide dot has a radius of 2.5 canvas units (`DottedPathCanvas`'s `dotRadius`), so an inset under 2.5 hangs part of the last dot out past the cut. 1 unit leaves much the least bare path of the 1-to-3 range — 0.7 units against 3's 4.6 — but the ink under that tip is only 1.16 units half-thick, so over half the dot would sit outside the letter, which is ড's first-pass fault; 3 is the shortest inset that keeps the whole dot inside the ink, and its 4.6 units of bare path are what হ's descender already ships with. Every guide sample is on ink; on the RMX3624 the x and y scales agreed to 0.14% and the trace completed at 99.8% (PERFECT).
+
+- **1.32 ং** — অনুস্বার, `consonant-anusvar`, and the first of the three marks. A mark has no base to sit on, so the shaper renders it beside a U+25CC dotted-circle placeholder and `glyph.render` was cropping the two together. It now drops the placeholder for any Mn/Mc/Me character, splitting on the widest blank run in the ink's column profile — the gutter between placeholder and mark is far wider than any gap inside the mark itself. Re-rendering all 33 shipped letters against the change gives byte-identical masks, so nothing already derived moves.
+
+  Much taller than it is wide (aspect 0.528), so fitted by height like ট, ঠ, ণ, হ and ৎ; no headline, so no stroke is a matra. The mark is two separate pieces of ink — a closed ring and, clear of it, a crescent tail — so it is two strokes, ring first because it sits above.
+
+  `ring` is a genuine annulus with a centreline of its own, not a disc like র's dot: the band is 3.77 canvas units half-thick even at its thinnest, and `check.py` reports its centreline distance as 0.22 rather than the radius a disc gives back. Measured, that centreline is a circle to within a canvas unit — centre (46.3,24.0), mean radius 13.17, 13.02-13.32 by octant, 12.64-13.59 overall — so it is authored with `StrokePoints.arc` at 0° sweeping 360°, as `drawing-circle` and র's dot are. The radius is nudged to 13.4, still inside the measured spread, to make the ring 84.2 units round: a whole 14 dot spacings, so its last dot closes onto its first.
+
+  `tail` is 49 units, one pass: from the thin tip below the ring's left, down through the crescent's belly and out to the flat cut at the bottom right. Three branches meet in the belly at (35.3,52.3) and over a 6-unit baseline the tip turns only 25° into the sweep, against 89° tip-to-spur and 66° spur-to-sweep, so the pen runs straight through; the third branch, to (28.7,53.5), is the ink's outer mitre, thinned to 0.44 units against the 4.93 under the junction.
+
+  **Both of the tail's ends were set by the guide's own dot radius**, the measurement ৎ's tail first needed: `DottedPathCanvas`'s `dotRadius` is 2.5 canvas units. The tail's top is a taper with no terminal to inset from — half-thickness 0.28, 1.09, 1.70, 2.40, 2.98 at y = 46-50 — so the stroke starts at the highest point where the ink is still 2.5 units half-thick, the last place the first dot lies wholly inside the letter; running it to the skeleton's tip at (34.5,47.1) would hang it outside, as ড's first pass did. At the bottom cut a 3-unit inset both keeps the last dot inside the ink and leaves the least bare path past it (1.0 unit, where 1 and 2 leave 3.2 and 2.4 with the dot hanging out). Every guide sample is on ink; on the RMX3624 the x and y scales agreed to 0.05% and the trace completed at 99.7% (PERFECT).
+
+  **Open question for 1.33 and 1.34: the reference character shows its dotted circle.** Android renders the bare mark exactly as the shaper does, so the grid cell and the Practice heading read `◌ং` while the guide traces only ং. It is the standard way to print a diacritic in isolation and the placeholder is visually distinct from the mark, so it was left as it is rather than changed unasked. Probing the device font through HarfBuzz, prefixing the title with U+00A0 suppresses the placeholder for all three of ং ঃ ঁ, where ZWSP, ZWNJ and a plain space do not; it costs the NBSP's advance width, nudging the glyph right of centre, and would need the catalog test's alphabet string to compare on the mark alone.
 
 ---
 
