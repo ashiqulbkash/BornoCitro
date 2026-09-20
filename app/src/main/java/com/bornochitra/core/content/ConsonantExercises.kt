@@ -3114,4 +3114,123 @@ internal val consonantExercises: List<Exercise> = listOf(
             ),
         ),
     ),
+    /**
+     * ষ — মূর্ধন্য ষ — is read off the glyph the phone renders, like the letters before it. It is a
+     * shade wider than it is tall (aspect 1.050), so, as with প, ম and য, height-fitting keeps its
+     * ink inside the canvas at the same size as every other consonant.
+     *
+     * On the page it is য with one bar added: a full headline, a post from the bar to the foot, a
+     * stem hanging from the matra at x=21, a zigzag down to two corners, a long diagonal into the
+     * post's foot — and, new here, a bar from the upper corner (48,35) across to the post at
+     * (74,48).
+     *
+     * That bar changes how the letter is written, so ষ is not য plus a stroke. Three bands meet at
+     * the upper corner, and over a 6-unit baseline the band coming down from the matra turns only
+     * 42.6 degrees into the bar, against 75.2 into the zigzag's next leg, with the leg and the bar
+     * 62.2 apart. So the pen runs from the matra through that corner and out along the bar into the
+     * post — `arm`, 69 canvas units — and `sweep` starts on it at the same corner, runs down-left
+     * to the second corner and on down-right into the post's foot, 95 units.
+     *
+     * The split does double duty: stem, zigzag and diagonal together come to 144 canvas units, past
+     * what one pass can hold, which is why য breaks its own zigzag too.
+     *
+     * Both corners are turns rather than terminals. Each grows a skeleton spur into the ink's outer
+     * mitre — to (14.4,22.9) and (14.6,49.6), thinning to 0.21 and 0.33 canvas units against the
+     * pen's 4.83 — so the pen's centre turns at the junction and never travels out along the spur,
+     * as য's, ফ's and প's corners do. The post stops 3 units short of its end cap and the matra,
+     * inset 2 units from each cap for a whole 14 dot spacings, is last.
+     */
+    Exercise(
+        id = "consonant-ssho",
+        title = "ষ",
+        type = ExerciseType.CONSONANT,
+        difficulty = Difficulty.ADVANCED,
+        order = 30,
+        strokes = listOf(
+            Stroke(
+                id = "consonant-ssho-arm",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(21f, 12f),
+                        Point(21f, 15f),
+                        Point(21f, 18f),
+                        Point(22f, 20f),
+                        Point(25f, 21f),
+                        Point(28f, 22f),
+                        Point(30f, 23f),
+                        Point(33f, 24f),
+                        Point(35f, 25f),
+                        Point(38f, 26f),
+                        Point(40f, 27f),
+                        Point(43f, 29f),
+                        Point(45f, 30f),
+                        Point(47f, 32f),
+                        Point(48f, 35f),
+                        Point(51f, 35f),
+                        Point(53f, 36f),
+                        Point(56f, 37f),
+                        Point(58f, 38f),
+                        Point(60f, 40f),
+                        Point(63f, 42f),
+                        Point(65f, 44f),
+                        Point(67f, 45f),
+                        Point(70f, 46f),
+                        Point(72f, 47f),
+                        Point(74f, 48f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "consonant-ssho-sweep",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(48f, 35f),
+                        Point(47f, 37f),
+                        Point(44f, 39f),
+                        Point(42f, 40f),
+                        Point(39f, 41f),
+                        Point(37f, 42f),
+                        Point(34f, 43f),
+                        Point(32f, 45f),
+                        Point(30f, 46f),
+                        Point(27f, 47f),
+                        Point(25f, 49f),
+                        Point(23f, 51f),
+                        Point(22f, 53f),
+                        Point(23f, 56f),
+                        Point(24f, 58f),
+                        Point(27f, 58f),
+                        Point(30f, 59f),
+                        Point(32f, 60f),
+                        Point(35f, 60f),
+                        Point(38f, 61f),
+                        Point(40f, 62f),
+                        Point(43f, 63f),
+                        Point(45f, 64f),
+                        Point(48f, 66f),
+                        Point(50f, 67f),
+                        Point(52f, 68f),
+                        Point(55f, 70f),
+                        Point(57f, 72f),
+                        Point(59f, 73f),
+                        Point(61f, 75f),
+                        Point(63f, 77f),
+                        Point(65f, 79f),
+                        Point(68f, 80f),
+                        Point(71f, 81f),
+                        Point(73f, 82f),
+                        Point(74f, 82f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "consonant-ssho-post",
+                points = StrokePoints.line(Point(74f, 12f), Point(74f, 87f)),
+            ),
+            Stroke(
+                id = "consonant-ssho-matra",
+                points = StrokePoints.line(Point(8f, 12f), Point(92f, 12f)),
+            ),
+        ),
+    ),
 )

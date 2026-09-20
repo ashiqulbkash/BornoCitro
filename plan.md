@@ -187,7 +187,7 @@ else in that file passes on its own. Baseline after 1.1: **336 unit tests, 0 fai
 - [x] 1.22 র
 - [x] 1.23 ল
 - [x] 1.24 শ
-- [ ] 1.25 ষ
+- [x] 1.25 ষ
 - [ ] 1.26 স
 - [ ] 1.27 হ
 - [ ] 1.28 ড়
@@ -272,6 +272,10 @@ Step 1 as a whole is done when all 34 sub-steps are checked, the catalog test as
 - **1.24 শ** — all but square (aspect 1.011), so fitted by height like ন, প, ম, য and ব. Above the baseline it is গ, ণ, থ, ধ and প again — a post rising above a short matra bar only to its right — but the body is new: a bowtie whose four arms cross at a waist at (36.5,33), two rising (to a flat cut at the top left and into the post) and two falling (to flat cuts at the bottom left and bottom right).
 
   **That waist is a crossing, not two curves kissing**, and the two readings give different letters. The skeleton renders it as a 6-unit vertical link between two junctions, so the arms were paired over a 6-unit baseline as ম's and ল's were: top-left to bottom-right turns 0.1° and post to bottom-left 1.2°, against 81° and 80° for the same-side pairings; the ink agrees, with the counters biting in from both sides and leaving a neck the two bands share. So শ is two strokes that cross, each running straight through the link: `sweep` from the top-left cut down through the waist to the bottom-right cut (60 units) and `arm` from the post, over the crest and down through the waist to the bottom-left cut (75). Both cover the same few units of ink, which is what a crossing is — and on the device that shows as one set of dots at the neck. All three free ends are flat cuts with a prong into each corner, each inset 2 units from the midpoint between them; `post` is inset 2 from each cap as ণ's is, and the short `matra` right of the post is last. Every guide sample is on ink; traced on the RMX3624 it completed at 99.8% (PERFECT).
+
+- **1.25 ষ** — মূর্ধন্য ষ, `consonant-ssho` after ট/ঠ/ড/ণ's doubling. A shade wider than it is tall (aspect 1.050), so fitted by height like প, ম and য. On the page it is য with one bar added: full headline, a post from the bar to the foot, a stem from the matra at x=21, a zigzag to two corners, a long diagonal into the post's foot, and a new bar from the upper corner (48,35) across to the post at (74,48).
+
+  **That bar changes how the letter is written, so ষ is not য plus a stroke.** Three bands meet at the upper corner, and over a 6-unit baseline the band coming down from the matra turns only 42.6° into the bar, against 75.2° into the zigzag's next leg (leg-to-bar is 62.2°). So the pen runs from the matra through that corner and out along the bar into the post — `arm`, 69 canvas units — and `sweep` starts on it at the same corner, runs down-left to the second corner and on down-right into the post's foot, 95 units. The split does double duty: stem, zigzag and diagonal together come to 144 units, past what one pass can hold, which is why য breaks its own zigzag too. Both corners are turns, not terminals — each grows a spur into the ink's outer mitre, (14.4,22.9) and (14.6,49.6), thinning to 0.21 and 0.33 canvas units against the pen's 4.83 — so the pen turns at the junction. `post` stops 3 units short of its cap; `matra`, inset 2 from each cap for a whole 14 dot spacings, is last. Every guide sample is on ink; traced on the RMX3624 it completed at 99.7% (PERFECT).
 
 ---
 
