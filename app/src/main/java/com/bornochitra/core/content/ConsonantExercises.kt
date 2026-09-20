@@ -3697,4 +3697,120 @@ internal val consonantExercises: List<Exercise> = listOf(
             ),
         ),
     ),
+    /**
+     * য় is য with a dot under it, `consonant-yyo` after য's `consonant-yo`, and the last of the
+     * three dotted letters.
+     *
+     * The dot is a separate piece of ink and takes a stroke of its own, as র's, ড়'s and ঢ়'s do.
+     * Both letters are height-fitted and their aspects are near enough — 1.028 here against য's
+     * 1.038 — that the body is drawn at almost the same scale, unlike ড় and ঢ়, whose dots pushed
+     * them onto a different fit from ড's and ঢ's.
+     *
+     * Above the dot it is য exactly: a full headline, a post hanging from the bar, and ফ's zigzag
+     * sail — down a short stem from the matra, down-right to the first corner, back down-left to
+     * the second, then a long diagonal down-right into the post's foot. That is 138.5 canvas units
+     * in one movement, at the ceiling where য's own 138.7 sits, so it breaks at the same place:
+     * the second corner, (22.7,52), where the zigzag stops and the sweep to the post begins,
+     * leaving `sail` 67 units and `tail` 63.
+     *
+     * Each of the three corners grows a skeleton spur into the ink's outer mitre — to (15.3,22.7),
+     * (52.1,38.2) and (15.4,49.2), thinning to 0.21-1.62 canvas units against the pen's 4.81 — so
+     * the pen's centre turns at the junction and never travels out along the spur.
+     *
+     * `dot` is a ring inside the dot's disc, as র's is. The disc's largest inscribed circle is 7.80
+     * canvas units at (32,82), wider than ড়'s and ঢ়'s 6.3, so the ring takes র's radius of 4.8
+     * rather than their 3.8: that leaves 2.93 units of ink under every sample and measures 30.2
+     * units round, five dot spacings, so the ring's last dot closes back onto its first.
+     */
+    Exercise(
+        id = "consonant-yyo",
+        title = "য়",
+        type = ExerciseType.CONSONANT,
+        difficulty = Difficulty.ADVANCED,
+        order = 35,
+        strokes = listOf(
+            Stroke(
+                id = "consonant-yyo-sail",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(23f, 12f),
+                        Point(23f, 15f),
+                        Point(23f, 18f),
+                        Point(24f, 20f),
+                        Point(27f, 21f),
+                        Point(30f, 22f),
+                        Point(32f, 23f),
+                        Point(34f, 24f),
+                        Point(37f, 26f),
+                        Point(39f, 27f),
+                        Point(42f, 29f),
+                        Point(44f, 30f),
+                        Point(46f, 32f),
+                        Point(46f, 35f),
+                        Point(46f, 37f),
+                        Point(44f, 39f),
+                        Point(41f, 40f),
+                        Point(39f, 41f),
+                        Point(36f, 42f),
+                        Point(34f, 44f),
+                        Point(32f, 45f),
+                        Point(29f, 46f),
+                        Point(27f, 48f),
+                        Point(24f, 49f),
+                        Point(23f, 51f),
+                        Point(23f, 52f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "consonant-yyo-tail",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(23f, 52f),
+                        Point(23f, 55f),
+                        Point(24f, 57f),
+                        Point(27f, 58f),
+                        Point(30f, 58f),
+                        Point(32f, 59f),
+                        Point(35f, 60f),
+                        Point(38f, 61f),
+                        Point(40f, 62f),
+                        Point(43f, 62f),
+                        Point(45f, 64f),
+                        Point(48f, 65f),
+                        Point(50f, 66f),
+                        Point(52f, 68f),
+                        Point(55f, 69f),
+                        Point(57f, 71f),
+                        Point(59f, 73f),
+                        Point(61f, 75f),
+                        Point(63f, 77f),
+                        Point(65f, 79f),
+                        Point(68f, 80f),
+                        Point(70f, 81f),
+                        Point(73f, 82f),
+                        Point(74f, 82f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "consonant-yyo-dot",
+                points = StrokePoints.arc(
+                    center = Point(32f, 82f),
+                    radius = 4.8f,
+                    startDeg = 0f,
+                    sweepDeg = 360f,
+                    samples = 32,
+                ),
+            ),
+            Stroke(
+                id = "consonant-yyo-post",
+                points = StrokePoints.line(Point(74f, 12f), Point(74f, 86f)),
+            ),
+            Stroke(
+                id = "consonant-yyo-matra",
+                points = StrokePoints.line(Point(10f, 12f), Point(90f, 12f)),
+            ),
+        ),
+    ),
 )
