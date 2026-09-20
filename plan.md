@@ -188,7 +188,7 @@ else in that file passes on its own. Baseline after 1.1: **336 unit tests, 0 fai
 - [x] 1.23 ল
 - [x] 1.24 শ
 - [x] 1.25 ষ
-- [ ] 1.26 স
+- [x] 1.26 স
 - [ ] 1.27 হ
 - [ ] 1.28 ড়
 - [ ] 1.29 ঢ়
@@ -276,6 +276,10 @@ Step 1 as a whole is done when all 34 sub-steps are checked, the catalog test as
 - **1.25 ষ** — মূর্ধন্য ষ, `consonant-ssho` after ট/ঠ/ড/ণ's doubling. A shade wider than it is tall (aspect 1.050), so fitted by height like প, ম and য. On the page it is য with one bar added: full headline, a post from the bar to the foot, a stem from the matra at x=21, a zigzag to two corners, a long diagonal into the post's foot, and a new bar from the upper corner (48,35) across to the post at (74,48).
 
   **That bar changes how the letter is written, so ষ is not য plus a stroke.** Three bands meet at the upper corner, and over a 6-unit baseline the band coming down from the matra turns only 42.6° into the bar, against 75.2° into the zigzag's next leg (leg-to-bar is 62.2°). So the pen runs from the matra through that corner and out along the bar into the post — `arm`, 69 canvas units — and `sweep` starts on it at the same corner, runs down-left to the second corner and on down-right into the post's foot, 95 units. The split does double duty: stem, zigzag and diagonal together come to 144 units, past what one pass can hold, which is why য breaks its own zigzag too. Both corners are turns, not terminals — each grows a spur into the ink's outer mitre, (14.4,22.9) and (14.6,49.6), thinning to 0.21 and 0.33 canvas units against the pen's 4.83 — so the pen turns at the junction. `post` stops 3 units short of its cap; `matra`, inset 2 from each cap for a whole 14 dot spacings, is last. Every guide sample is on ink; traced on the RMX3624 it completed at 99.7% (PERFECT).
+
+- **1.26 স** — দন্ত্য স. Wider than it is tall (aspect 1.129), so fitted by width with y centred like ঝ, ল, ড and ভ. Under a full headline it is a post on the right and one long S on the left: a stem hangs from the matra at x=15, turns at (15,21) and sweeps right and down to the middle of the letter at (46,49), then turns back left and round the lower bowl to a flat cut at (14,59); a bar joins that middle point to the post.
+
+  **The first junction where the measurement did not decide.** Three bands meet in the middle and the 6-unit angles tie: the stem's band turns 46.5° into the bowl and the bowl turns 45.3° into the bar, with stem-to-bar out of the running at 88.3°; the band widths are nearly as close (7.9, 8.5, 9.3 canvas units). What settles it is the letter's own construction — the body hangs from the headline and sweeps down in one S with the bar joined onto it, the reading ম, ফ, য and ষ all take. So `body` runs from the matra through the middle to the cut, 103 canvas units, and `arm` starts on it at the middle and runs to the post, 39. The turn under the matra is a turn, not a terminal (its spur runs to (9.7,25) into the outer mitre, thinning from 4.77 to 0.30 against the pen's 4.76), and the bowl's end is a flat cut with a prong per corner, inset 2 units. `matra`, a whole 15 dot spacings, is last. Every guide sample is on ink; traced on the RMX3624 it completed at 99.7% (PERFECT).
 
 ---
 

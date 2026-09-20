@@ -3233,4 +3233,112 @@ internal val consonantExercises: List<Exercise> = listOf(
             ),
         ),
     ),
+    /**
+     * স — দন্ত্য স — is read off the glyph the phone renders, like the letters before it. It is
+     * wider than it is tall (aspect 1.129), so its ink is fitted by width with y centred, the way
+     * ঝ, ল, ড and ভ are.
+     *
+     * Under a full headline it is a post on the right and one long S on the left: a stem hangs from
+     * the matra at x=15, turns at (15,21) and sweeps right and down to the middle of the letter at
+     * (46,49), then turns back left and round the lower bowl to a flat cut at (14,59). A bar joins
+     * that middle point to the post.
+     *
+     * Three bands meet in the middle and, unusually, the 6-unit angles do not separate them: the
+     * stem's band turns 46.5 degrees into the bowl and the bowl turns 45.3 into the bar, with
+     * stem-to-bar out of the running at 88.3. The band widths are nearly as close — 7.9, 8.5 and
+     * 9.3 canvas units. What decides it is the letter's own construction: the body hangs from the
+     * headline and sweeps down in one S with the bar joined onto it, the reading ম, ফ, য and ষ all
+     * take. So `body` runs from the matra through the middle to the cut, 103 canvas units, and
+     * `arm` starts on it at the middle and runs to the post, 39.
+     *
+     * The turn under the matra is a turn rather than a terminal: its skeleton spur runs to (9.7,25)
+     * into the ink's outer mitre, thinning from 4.77 to 0.30 canvas units against the pen's 4.76,
+     * so the pen's centre turns at the junction. The bowl's end is a flat cut with a prong into
+     * each corner, so it stops 2 units short of the midpoint between them, as ছ's, ত's, ন's, ফ's
+     * and ল's do. The post follows and the matra, inset 2 units from each end cap for a whole 15
+     * dot spacings, is last.
+     */
+    Exercise(
+        id = "consonant-so",
+        title = "স",
+        type = ExerciseType.CONSONANT,
+        difficulty = Difficulty.ADVANCED,
+        order = 31,
+        strokes = listOf(
+            Stroke(
+                id = "consonant-so-body",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(15f, 13f),
+                        Point(15f, 16f),
+                        Point(15f, 19f),
+                        Point(16f, 22f),
+                        Point(18f, 22f),
+                        Point(21f, 23f),
+                        Point(24f, 23f),
+                        Point(27f, 24f),
+                        Point(29f, 25f),
+                        Point(32f, 26f),
+                        Point(34f, 27f),
+                        Point(36f, 29f),
+                        Point(38f, 31f),
+                        Point(40f, 34f),
+                        Point(41f, 36f),
+                        Point(42f, 39f),
+                        Point(42f, 41f),
+                        Point(43f, 44f),
+                        Point(43f, 47f),
+                        Point(46f, 49f),
+                        Point(45f, 52f),
+                        Point(45f, 54f),
+                        Point(44f, 57f),
+                        Point(42f, 59f),
+                        Point(41f, 62f),
+                        Point(39f, 64f),
+                        Point(37f, 66f),
+                        Point(35f, 68f),
+                        Point(33f, 69f),
+                        Point(30f, 69f),
+                        Point(27f, 69f),
+                        Point(24f, 68f),
+                        Point(22f, 67f),
+                        Point(19f, 65f),
+                        Point(18f, 63f),
+                        Point(16f, 61f),
+                        Point(15f, 58f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "consonant-so-arm",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(46f, 49f),
+                        Point(48f, 48f),
+                        Point(50f, 46f),
+                        Point(52f, 44f),
+                        Point(53f, 41f),
+                        Point(55f, 39f),
+                        Point(58f, 38f),
+                        Point(60f, 37f),
+                        Point(63f, 38f),
+                        Point(66f, 38f),
+                        Point(68f, 39f),
+                        Point(71f, 41f),
+                        Point(73f, 42f),
+                        Point(76f, 43f),
+                        Point(78f, 44f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "consonant-so-post",
+                points = StrokePoints.line(Point(78f, 13f), Point(78f, 88f)),
+            ),
+            Stroke(
+                id = "consonant-so-matra",
+                points = StrokePoints.line(Point(5f, 13f), Point(95f, 13f)),
+            ),
+        ),
+    ),
 )
