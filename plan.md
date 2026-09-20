@@ -189,7 +189,7 @@ else in that file passes on its own. Baseline after 1.1: **336 unit tests, 0 fai
 - [x] 1.24 শ
 - [x] 1.25 ষ
 - [x] 1.26 স
-- [ ] 1.27 হ
+- [x] 1.27 হ
 - [ ] 1.28 ড়
 - [ ] 1.29 ঢ়
 - [ ] 1.30 য়
@@ -280,6 +280,8 @@ Step 1 as a whole is done when all 34 sub-steps are checked, the catalog test as
 - **1.26 স** — দন্ত্য স. Wider than it is tall (aspect 1.129), so fitted by width with y centred like ঝ, ল, ড and ভ. Under a full headline it is a post on the right and one long S on the left: a stem hangs from the matra at x=15, turns at (15,21) and sweeps right and down to the middle of the letter at (46,49), then turns back left and round the lower bowl to a flat cut at (14,59); a bar joins that middle point to the post.
 
   **The first junction where the measurement did not decide.** Three bands meet in the middle and the 6-unit angles tie: the stem's band turns 46.5° into the bowl and the bowl turns 45.3° into the bar, with stem-to-bar out of the running at 88.3°; the band widths are nearly as close (7.9, 8.5, 9.3 canvas units). What settles it is the letter's own construction — the body hangs from the headline and sweeps down in one S with the bar joined onto it, the reading ম, ফ, য and ষ all take. So `body` runs from the matra through the middle to the cut, 103 canvas units, and `arm` starts on it at the middle and runs to the post, 39. The turn under the matra is a turn, not a terminal (its spur runs to (9.7,25) into the outer mitre, thinning from 4.77 to 0.30 against the pen's 4.76), and the bowl's end is a flat cut with a prong per corner, inset 2 units. `matra`, a whole 15 dot spacings, is last. Every guide sample is on ink; traced on the RMX3624 it completed at 99.7% (PERFECT).
+
+- **1.27 হ** — taller than it is wide (aspect 0.804), so fitted by height like ট, ঠ and ণ, and the first consonant since ঞ with **no post at all**: below a full headline it is one big bowl, a short stem up to the bar, a little hook at the upper left and two tails at the bottom. Both junctions read cleanly over a 6-unit baseline. Where the stem, the hook and the bowl meet, hook-to-bowl turns only 26.6°, against 71° for stem-to-bowl and 82° for stem-to-hook; where the bowl, the left tail and the descender meet, bowl-to-tail turns 29.3°, against 100.7° for bowl-to-descender and 50° for tail-to-descender. So the main movement is one pass of 110 canvas units — in from the hook's flat cut, up to the top junction, clockwise round the whole bowl and out along the left tail to its own cut — with `stem` (16) and `descender` (40) joined onto it at those junctions, as প's arm, ম's arc and স's bar are onto theirs; `stem` is written before `descender` because it sits higher, and the matra is last. All three free ends are flat cuts with a prong per corner: the hook's cut starts the bowl 2 units short of its prongs' midpoint, while the two ends that *finish* a stroke stop 3 units short, which of the usual 1-to-3 range leaves the least bare path past the last dot (2.3 units on the bowl, 4.0 on the descender, whose 40 units sit awkwardly between six and seven dot spacings whatever the inset). Every guide sample is on ink; traced on the RMX3624 it completed at 99.7% (PERFECT). **This closes অন্তঃস্থ/ঊষ্ম — 32 of the 39 consonants are in the catalog, with only the seven অন্যান্য left.**
 
 ---
 

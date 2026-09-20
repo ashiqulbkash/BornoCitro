@@ -3341,4 +3341,125 @@ internal val consonantExercises: List<Exercise> = listOf(
             ),
         ),
     ),
+    /**
+     * হ is read off the glyph the phone renders, like the letters before it. It is taller than it
+     * is wide (aspect 0.804), so its ink is fitted by height with x centred, the way ট, ঠ and ণ
+     * are, and it is the first consonant since ঞ with no post at all: below a full headline it is
+     * one big bowl, a short stem up to the bar, a little hook at the upper left and two tails at
+     * the bottom.
+     *
+     * Both junctions read cleanly over a 6-unit baseline. Where the stem, the hook and the bowl
+     * meet, the hook and the bowl turn only 26.6 degrees into each other, against 71 for stem to
+     * bowl and 82 for stem to hook. Where the bowl, the left tail and the descender meet, the bowl
+     * and the tail turn 29.3, against 100.7 for bowl to descender and 50 for tail to descender.
+     *
+     * So the letter's main movement is one pass of 110 canvas units: in from the hook's flat cut,
+     * up to the top junction, clockwise round the whole bowl, and out along the left tail to its
+     * own cut. `stem`, 16 units, and `descender`, 40, are joined onto it at those junctions, the
+     * way প's arm, ম's arc and স's bar are joined onto theirs. `stem` is written before
+     * `descender` because it sits higher on the page, and the matra is last.
+     *
+     * All three free ends are flat cuts with a skeleton prong into each corner. The hook's cut
+     * starts the bowl 2 units short of the midpoint between its prongs; the two ends that finish a
+     * stroke stop 3 units short instead, which of the usual 1-to-3 range leaves the least bare
+     * path past each stroke's last dot — 2.3 canvas units on the bowl and 4.0 on the descender,
+     * whose 40 units sit awkwardly between six and seven dot spacings whatever the inset.
+     */
+    Exercise(
+        id = "consonant-ho",
+        title = "হ",
+        type = ExerciseType.CONSONANT,
+        difficulty = Difficulty.ADVANCED,
+        order = 32,
+        strokes = listOf(
+            Stroke(
+                id = "consonant-ho-bowl",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(32f, 40f),
+                        Point(31f, 37f),
+                        Point(32f, 34f),
+                        Point(33f, 31f),
+                        Point(35f, 29f),
+                        Point(37f, 28f),
+                        Point(39f, 27f),
+                        Point(42f, 26f),
+                        Point(45f, 26f),
+                        Point(48f, 26f),
+                        Point(50f, 26f),
+                        Point(53f, 27f),
+                        Point(56f, 27f),
+                        Point(59f, 28f),
+                        Point(61f, 29f),
+                        Point(63f, 31f),
+                        Point(65f, 33f),
+                        Point(67f, 35f),
+                        Point(68f, 38f),
+                        Point(69f, 40f),
+                        Point(69f, 43f),
+                        Point(69f, 46f),
+                        Point(68f, 49f),
+                        Point(67f, 51f),
+                        Point(66f, 54f),
+                        Point(64f, 56f),
+                        Point(62f, 57f),
+                        Point(59f, 59f),
+                        Point(57f, 60f),
+                        Point(54f, 60f),
+                        Point(51f, 61f),
+                        Point(49f, 61f),
+                        Point(46f, 63f),
+                        Point(43f, 63f),
+                        Point(41f, 62f),
+                        Point(38f, 62f),
+                        Point(35f, 62f),
+                        Point(32f, 61f),
+                        Point(29f, 61f),
+                        Point(27f, 60f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "consonant-ho-stem",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(43f, 26f),
+                        Point(42f, 23f),
+                        Point(41f, 20f),
+                        Point(40f, 18f),
+                        Point(40f, 15f),
+                        Point(38f, 12f),
+                        Point(38f, 11f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "consonant-ho-descender",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(46f, 63f),
+                        Point(47f, 66f),
+                        Point(49f, 68f),
+                        Point(51f, 69f),
+                        Point(54f, 70f),
+                        Point(56f, 71f),
+                        Point(58f, 72f),
+                        Point(61f, 74f),
+                        Point(63f, 75f),
+                        Point(66f, 77f),
+                        Point(68f, 78f),
+                        Point(70f, 80f),
+                        Point(73f, 81f),
+                        Point(75f, 83f),
+                        Point(77f, 84f),
+                        Point(78f, 85f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "consonant-ho-matra",
+                points = StrokePoints.line(Point(19f, 11f), Point(81f, 11f)),
+            ),
+        ),
+    ),
 )
