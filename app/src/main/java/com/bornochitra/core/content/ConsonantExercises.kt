@@ -1824,4 +1824,117 @@ internal val consonantExercises: List<Exercise> = listOf(
             ),
         ),
     ),
+    /**
+     * দ is read off its rendered glyph's centreline like the letters before it. It is a shade
+     * taller than it is wide (aspect 0.91), so its ink is fitted by height with x centred, the way
+     * ট, ঠ, ঢ, ণ and থ are.
+     *
+     * Below the full headline the glyph is one continuous movement of ~148 canvas units: down the
+     * left stem, into the sharp V at the bottom, up the long diagonal to the peak at the top right,
+     * then back down the post to the baseline. That is more than a child can hold in one pass, so
+     * it is split at the peak — the letter's highest point below the headline, where the pen turns
+     * back on itself — the same split ড, জ and ঞ take. The arm runs from the headline into the V
+     * and up into the peak, the post starts again at that same point and descends.
+     *
+     * The V's vertex is taken at (31,55), where the stem's and the diagonal's centrelines cross.
+     * The ink runs on to a tip at (31,66), but that overhang is the corner's outer taper, not a
+     * path the pen's centre travels: the skeleton's spur into it thins from 4.9 to 1.87 canvas
+     * units against the pen's 4.88, so a guide taken to the spur's tip would hang outside the
+     * stroke — the mistake ড's first pass made — and would double back over itself for no ink.
+     *
+     * The peak is taken at (68,30), the highest point of the wedge between the diagonal and the
+     * post that is still a full pen thick. The skeleton's own arch tops out two units lower,
+     * dragged down by the ink filled in below the peak, and stopping there would leave the glyph's
+     * pointed cap uncovered.
+     *
+     * The post ends 1 unit short of the midpoint of its slanted end cap, whose two corners are
+     * where the skeleton forks at (69,84), as ছ's flat-cut ends do — closer than the usual 2 units
+     * because the guide drops a dot every 6 canvas units from a stroke's start, so a stroke ending
+     * just short of a multiple of that spacing hangs a whole spacing of bare path past its last
+     * dot (ড's grey tail). At 60.2 units the post clears ten spacings with 0.2 to spare.
+     *
+     * The matra is the full headline, inset 2 units from each end cap, and is written last.
+     */
+    Exercise(
+        id = "consonant-do",
+        title = "দ",
+        type = ExerciseType.CONSONANT,
+        difficulty = Difficulty.BEGINNER,
+        order = 18,
+        strokes = listOf(
+            Stroke(
+                id = "consonant-do-arm",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(30f, 12f),
+                        Point(30f, 15f),
+                        Point(30f, 18f),
+                        Point(30f, 21f),
+                        Point(30f, 24f),
+                        Point(30f, 27f),
+                        Point(30f, 30f),
+                        Point(30f, 33f),
+                        Point(30f, 36f),
+                        Point(30f, 39f),
+                        Point(30f, 42f),
+                        Point(30f, 45f),
+                        Point(30f, 48f),
+                        Point(30f, 51f),
+                        Point(30f, 54f),
+                        Point(31f, 55f),
+                        Point(34f, 54f),
+                        Point(37f, 54f),
+                        Point(39f, 52f),
+                        Point(41f, 50f),
+                        Point(43f, 48f),
+                        Point(45f, 46f),
+                        Point(47f, 44f),
+                        Point(49f, 42f),
+                        Point(51f, 41f),
+                        Point(54f, 39f),
+                        Point(56f, 37f),
+                        Point(58f, 36f),
+                        Point(61f, 34f),
+                        Point(63f, 33f),
+                        Point(66f, 33f),
+                        Point(68f, 31f),
+                        Point(68f, 30f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "consonant-do-post",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(68f, 30f),
+                        Point(68f, 33f),
+                        Point(70f, 35f),
+                        Point(70f, 37f),
+                        Point(69f, 40f),
+                        Point(69f, 43f),
+                        Point(68f, 46f),
+                        Point(67f, 48f),
+                        Point(67f, 51f),
+                        Point(66f, 54f),
+                        Point(66f, 57f),
+                        Point(66f, 60f),
+                        Point(66f, 63f),
+                        Point(66f, 66f),
+                        Point(66f, 69f),
+                        Point(67f, 72f),
+                        Point(67f, 74f),
+                        Point(67f, 77f),
+                        Point(68f, 80f),
+                        Point(69f, 83f),
+                        Point(69f, 85f),
+                        Point(70f, 88f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "consonant-do-matra",
+                points = StrokePoints.line(Point(14f, 12f), Point(86f, 12f)),
+            ),
+        ),
+    ),
 )
