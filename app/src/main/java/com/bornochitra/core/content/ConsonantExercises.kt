@@ -2063,4 +2063,84 @@ internal val consonantExercises: List<Exercise> = listOf(
             ),
         ),
     ),
+    /**
+     * ন is read off its rendered glyph's centreline like the letters before it, but off the
+     * phone's own font rather than the scratchpad's: Noto Sans Bengali redrew ন between v2.001,
+     * which Android ships and the app therefore shows above the canvas, and the newer v3.011. v3
+     * ends the curl early in a filled ball; v2 carries the spiral a half-turn further, round a
+     * closed counter, and ends it in a flat slanted cut. The guide follows the letter the child
+     * actually sees.
+     *
+     * It renders square (aspect 1.004), so its ink is fitted by height with x centred, the way ঢ,
+     * দ and ধ are. Above the baseline it is built like ঢ — a full headline with a post running
+     * from it down to the foot — and below it like ণ: one curl hangs off the post's middle-left.
+     * That curl is 86 canvas units, inside what a child can hold in one pass, so unlike জ's, ঞ's
+     * and ত's spirals it is not split.
+     *
+     * The curl therefore leaves the post at mid-height, where the letter's arm tapers into it,
+     * arches up over the crest, comes down the left flank and sweeps along the bottom back to the
+     * right. It stops 2 units short of the midpoint of the flat cut that ends it, as ছ's and ত's
+     * cut ends do: the skeleton forks into a prong for each corner of the cut — here (38,66) and
+     * (33,74) — and the midpoint between them is where the pen lifts.
+     *
+     * The post follows, from the headline down to the foot and stopping 3 units short of the end
+     * cap, and the matra — the full headline, inset from each cap so the bar is a whole 13 dot
+     * spacings — is written last, as Bengali writes it.
+     */
+    Exercise(
+        id = "consonant-no",
+        title = "ন",
+        type = ExerciseType.CONSONANT,
+        difficulty = Difficulty.INTERMEDIATE,
+        order = 20,
+        strokes = listOf(
+            Stroke(
+                id = "consonant-no-curl",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(72f, 55f),
+                        Point(69f, 54f),
+                        Point(67f, 53f),
+                        Point(64f, 52f),
+                        Point(62f, 50f),
+                        Point(60f, 48f),
+                        Point(58f, 46f),
+                        Point(55f, 45f),
+                        Point(53f, 43f),
+                        Point(51f, 42f),
+                        Point(48f, 41f),
+                        Point(46f, 40f),
+                        Point(43f, 39f),
+                        Point(40f, 39f),
+                        Point(37f, 38f),
+                        Point(34f, 39f),
+                        Point(32f, 39f),
+                        Point(29f, 40f),
+                        Point(27f, 42f),
+                        Point(25f, 44f),
+                        Point(23f, 46f),
+                        Point(22f, 49f),
+                        Point(22f, 51f),
+                        Point(22f, 54f),
+                        Point(22f, 57f),
+                        Point(23f, 60f),
+                        Point(24f, 62f),
+                        Point(26f, 64f),
+                        Point(28f, 66f),
+                        Point(30f, 68f),
+                        Point(33f, 69f),
+                        Point(34f, 69f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "consonant-no-post",
+                points = StrokePoints.line(Point(72f, 12f), Point(72f, 87f)),
+            ),
+            Stroke(
+                id = "consonant-no-matra",
+                points = StrokePoints.line(Point(11f, 12f), Point(89f, 12f)),
+            ),
+        ),
+    ),
 )
