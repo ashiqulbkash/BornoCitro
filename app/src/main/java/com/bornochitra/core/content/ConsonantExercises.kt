@@ -1937,4 +1937,130 @@ internal val consonantExercises: List<Exercise> = listOf(
             ),
         ),
     ),
+    /**
+     * ধ is read off its rendered glyph's centreline like the letters before it. It is a shade
+     * taller than it is wide (aspect 0.90), so its ink is fitted by height with x centred, the way
+     * ট, ঠ, ঢ, ণ, থ and দ are.
+     *
+     * Structurally it is গ, ণ and থ once more: a post on the right, a matra bar only to the right
+     * of the post, and the body hanging off the post's left. Here the body is a wide "<" whose two
+     * ends both run into the post — an arm leaving the post's side at (68,29) where it tapers in,
+     * down-left to the corner at (20,51), then a long sweep down-right into the post's foot at
+     * (68,82) — with a loop spiralling up out of the arm's middle, over the top-left of the letter
+     * and inwards to the blunt tongue that ends it.
+     *
+     * The body is one movement of ~116 canvas units. At the junction (35,39) the arm and the sweep
+     * leave in a 15° fork, so a pen running through barely changes heading, while the loop leaves
+     * at 96° to the arm and 69° to the sweep. The glyph itself therefore says arm-and-sweep is the
+     * pen's path and the loop is joined onto it, so the body is written first and the loop starts
+     * on it, the way ক's knot starts on a stem it has yet to draw.
+     *
+     * The corner is the junction where the arm's and the sweep's centrelines cross. The ink runs on
+     * up-left to a tip at (13,49) and the skeleton grows a spur into it, but that is the corner's
+     * outer mitre rather than a path the pen's centre travels: it thins from 4.9 to 0.92 canvas
+     * units against the pen's 4.89, exactly the taper দ's V has.
+     *
+     * The loop ends at (42,20), the lowest point inside the tongue whose ink is still a full pen
+     * thick. The tongue is wider than it is tall, so the skeleton stops at its top edge instead of
+     * running into it, the way it collapses ক's and ণ's filled balls to a point; the curl is drawn
+     * into it as ক's lobe is drawn into its own ball.
+     *
+     * The post runs from the matra's centreline to its end cap and the matra is the bar right of
+     * the post, each stopping 1 to 3 units short of its cap — whichever leaves the least bare path
+     * past the stroke's last dot, since the guide drops a dot every 6 canvas units from a stroke's
+     * start and a longer remainder hangs off the tip as a grey tail (ড's, then দ's). The matra is
+     * written last.
+     */
+    Exercise(
+        id = "consonant-dho",
+        title = "ধ",
+        type = ExerciseType.CONSONANT,
+        difficulty = Difficulty.ADVANCED,
+        order = 19,
+        strokes = listOf(
+            Stroke(
+                id = "consonant-dho-body",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(68f, 29f),
+                        Point(65f, 30f),
+                        Point(63f, 30f),
+                        Point(60f, 31f),
+                        Point(57f, 31f),
+                        Point(55f, 32f),
+                        Point(52f, 33f),
+                        Point(50f, 34f),
+                        Point(47f, 35f),
+                        Point(45f, 36f),
+                        Point(42f, 37f),
+                        Point(39f, 38f),
+                        Point(36f, 38f),
+                        Point(35f, 40f),
+                        Point(33f, 42f),
+                        Point(31f, 43f),
+                        Point(28f, 45f),
+                        Point(26f, 46f),
+                        Point(24f, 48f),
+                        Point(21f, 49f),
+                        Point(20f, 51f),
+                        Point(21f, 54f),
+                        Point(21f, 57f),
+                        Point(24f, 57f),
+                        Point(26f, 58f),
+                        Point(29f, 59f),
+                        Point(32f, 60f),
+                        Point(35f, 60f),
+                        Point(37f, 61f),
+                        Point(40f, 62f),
+                        Point(42f, 64f),
+                        Point(44f, 65f),
+                        Point(47f, 66f),
+                        Point(49f, 68f),
+                        Point(51f, 69f),
+                        Point(53f, 71f),
+                        Point(56f, 73f),
+                        Point(58f, 75f),
+                        Point(60f, 77f),
+                        Point(62f, 79f),
+                        Point(64f, 80f),
+                        Point(67f, 81f),
+                        Point(68f, 82f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "consonant-dho-loop",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(36f, 39f),
+                        Point(34f, 36f),
+                        Point(32f, 34f),
+                        Point(30f, 33f),
+                        Point(28f, 30f),
+                        Point(27f, 28f),
+                        Point(26f, 25f),
+                        Point(26f, 22f),
+                        Point(26f, 20f),
+                        Point(27f, 17f),
+                        Point(29f, 15f),
+                        Point(32f, 14f),
+                        Point(34f, 13f),
+                        Point(37f, 13f),
+                        Point(40f, 13f),
+                        Point(42f, 15f),
+                        Point(43f, 17f),
+                        Point(42f, 20f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "consonant-dho-post",
+                points = StrokePoints.line(Point(68f, 13f), Point(68f, 87f)),
+            ),
+            Stroke(
+                id = "consonant-dho-matra",
+                points = StrokePoints.line(Point(68f, 13f), Point(86f, 13f)),
+            ),
+        ),
+    ),
 )
