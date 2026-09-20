@@ -195,7 +195,7 @@ else in that file passes on its own. Baseline after 1.1: **336 unit tests, 0 fai
 - [x] 1.30 য়
 - [x] 1.31 ৎ
 - [x] 1.32 ং
-- [ ] 1.33 ঃ
+- [x] 1.33 ঃ
 - [ ] 1.34 ঁ
 
 ## Definition of Done (applies to every sub-step)
@@ -314,6 +314,14 @@ Step 1 as a whole is done when all 34 sub-steps are checked, the catalog test as
   **Both of the tail's ends were set by the guide's own dot radius**, the measurement ৎ's tail first needed: `DottedPathCanvas`'s `dotRadius` is 2.5 canvas units. The tail's top is a taper with no terminal to inset from — half-thickness 0.28, 1.09, 1.70, 2.40, 2.98 at y = 46-50 — so the stroke starts at the highest point where the ink is still 2.5 units half-thick, the last place the first dot lies wholly inside the letter; running it to the skeleton's tip at (34.5,47.1) would hang it outside, as ড's first pass did. At the bottom cut a 3-unit inset both keeps the last dot inside the ink and leaves the least bare path past it (1.0 unit, where 1 and 2 leave 3.2 and 2.4 with the dot hanging out). Every guide sample is on ink; on the RMX3624 the x and y scales agreed to 0.05% and the trace completed at 99.7% (PERFECT).
 
   **Open question for 1.33 and 1.34: the reference character shows its dotted circle.** Android renders the bare mark exactly as the shaper does, so the grid cell and the Practice heading read `◌ং` while the guide traces only ং. It is the standard way to print a diacritic in isolation and the placeholder is visually distinct from the mark, so it was left as it is rather than changed unasked. Probing the device font through HarfBuzz, prefixing the title with U+00A0 suppresses the placeholder for all three of ং ঃ ঁ, where ZWSP, ZWNJ and a plain space do not; it costs the NBSP's advance width, nudging the glyph right of centre, and would need the catalog test's alphabet string to compare on the mark alone.
+
+- **1.33 ঃ** — বিসর্গ, `consonant-bisargo`, the second mark and the simplest shape in the catalog: two rings, one above the other, and nothing else. Very much taller than it is wide (aspect 0.454), so fitted by height like ং, ট, ঠ, ণ, হ and ৎ; no headline, so no stroke is a matra.
+
+  Both are annuli with centrelines of their own, not discs like র's dot — each band is 4.02 canvas units half-thick at its thinnest against a 4.37 pen — and the font draws one shape twice: the two centrelines measure identically, centres (50.0,25.1) and (50.0,71.8), mean radius 14.03 and 14.04, 13.88-14.19 by octant. So both are authored with `StrokePoints.arc` at 0° sweeping 360°, as ং's ring, `drawing-circle` and র's dot are, upper first — the order a writer marks them in.
+
+  **The radius is chosen for the dots, not just the ink.** 14.3 is inside the measured spread of 13.50-14.51 and 0.27 off the mean, which the 4.02-unit band swallows, and it makes the 32-segment polyline the arc samples to 89.7 canvas units round: dots land at 0, 6 … 84, so each ring carries 15 evenly spaced dots and the gap closing it is 5.7, one spacing to within 5%. The measured mean of 14.0 would instead leave a 3.8-unit closing gap, two dots visibly bunched at the start. (ং's own ring is the other case: its 84.1 units put a 15th dot 0.06 short of the first, exactly on top of it, which is invisible.)
+
+  Every guide sample is on ink, centreline distance at most 0.74 units; on the RMX3624 the x and y scales agreed to 0.25% and the trace completed at 99.6% (PERFECT). The reference character shows its dotted circle here too, as ং's does — the open question above stands for 1.34.
 
 ---
 

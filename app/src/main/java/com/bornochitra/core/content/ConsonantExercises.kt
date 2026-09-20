@@ -4019,4 +4019,53 @@ internal val consonantExercises: List<Exercise> = listOf(
             ),
         ),
     ),
+    /**
+     * ঃ is বিসর্গ, the second of the three marks and the simplest shape in the catalog: two rings,
+     * one above the other, and nothing else.
+     *
+     * Very much taller than it is wide (aspect 0.454), so it is fitted by height like ং, ট, ঠ, ণ,
+     * হ and ৎ, and it has no headline, so no stroke is a matra.
+     *
+     * Both rings are annuli with centrelines of their own, not discs like র's dot: each band is
+     * 4.02 canvas units half-thick at its thinnest against a 4.37 pen. The font draws one shape
+     * twice — the two centrelines measure identically, centres (50.0,25.1) and (50.0,71.8), mean
+     * radius 14.03 and 14.04, 13.88 to 14.19 by octant — so both are authored with
+     * `StrokePoints.arc` at 0 degrees sweeping 360, as ং's ring, `drawing-circle` and র's dot are.
+     *
+     * The radius is nudged to 14.3: that is inside the measured spread of 13.50 to 14.51 and only
+     * 0.27 off the mean, which the 4.02-unit band swallows, and it makes the 32-segment polyline
+     * the arc samples to 89.7 canvas units round. Dots then land at 0, 6, ... 84, so each ring
+     * carries 15 evenly spaced dots and the gap that closes it is 5.7 — one spacing to within 5%.
+     *
+     * The upper ring is written first, the order a writer marks them in.
+     */
+    Exercise(
+        id = "consonant-bisargo",
+        title = "ঃ",
+        type = ExerciseType.CONSONANT,
+        difficulty = Difficulty.BEGINNER,
+        order = 38,
+        strokes = listOf(
+            Stroke(
+                id = "consonant-bisargo-upper",
+                points = StrokePoints.arc(
+                    center = Point(50f, 25.1f),
+                    radius = 14.3f,
+                    startDeg = 0f,
+                    sweepDeg = 360f,
+                    samples = 32,
+                ),
+            ),
+            Stroke(
+                id = "consonant-bisargo-lower",
+                points = StrokePoints.arc(
+                    center = Point(50f, 71.8f),
+                    radius = 14.3f,
+                    startDeg = 0f,
+                    sweepDeg = 360f,
+                    samples = 32,
+                ),
+            ),
+        ),
+    ),
 )
