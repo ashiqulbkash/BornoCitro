@@ -3813,4 +3813,129 @@ internal val consonantExercises: List<Exercise> = listOf(
             ),
         ),
     ),
+    /**
+     * ৎ is খণ্ড ত — one letter, not a conjunct — and the first of the four অন্যান্য shapes.
+     *
+     * It is taller than it is wide (aspect 0.786), so it is fitted by height like ট, ঠ, ণ and হ,
+     * and like ঙ and ঞ it has no headline bar at all: the top of the letter is a dome, not a
+     * matra, so no stroke carries the `-matra` name.
+     *
+     * The skeleton makes the whole letter a single open path of 191 canvas units — in from the
+     * tongue's cut inside the bowl, right along the tongue, up the right flank, over the dome from
+     * right to left, down the left flank and out along the long tail. That is the same rotational
+     * sense ত, ঢ and ণ are written in, over the top from right to left; ত spirals inward to the
+     * ball at its centre, and ৎ spirals outward because its free end has been drawn down into a
+     * descender, so the pen starts at the tongue's cut and finishes at the tail's tip.
+     *
+     * 191 units is far past one pass, and the movement turns smoothly from end to end: the heading
+     * changes by at most 31 degrees per 6 canvas units anywhere along it, so there is no cusp,
+     * corner or neck to break at. It is split at the letter's leftmost point instead, (22,32),
+     * where the pen is travelling straight down and the bowl's descent turns into the sweep out to
+     * the tail — the same extremum ত and ঢ break at (their bowls sit upright, so for them it is
+     * the foot), the one landmark below the dome a child can see. That leaves `bowl` 102 canvas
+     * units and `tail` 83.
+     *
+     * Both free ends are flat cuts, each forking the skeleton into a prong per corner: the prongs
+     * sit 9.1 canvas units apart against a band 9.0 wide, and the ink under each tip has thinned
+     * to 0.14-0.41 units against the pen's 4.51. `bowl` therefore starts 2 units short of the
+     * midpoint between its prongs, as ছ's, ত's and ন's cut ends do, and `tail` stops 3 short.
+     *
+     * The tail's 3 is ড়'s trade-off rather than the usual hunt for the shortest bare tail. A guide
+     * dot has a radius of 2.5 canvas units, so an inset under 2.5 hangs part of the last dot out
+     * past the cut: 1 unit leaves the least bare path of the 1-to-3 range — 0.7 units against 3's
+     * 4.6 — but the ink under that tip is only 1.16 units half-thick, so over half the dot would
+     * sit outside the letter, the fault ড's first pass had. 3 is the shortest inset that keeps the
+     * whole dot inside the ink, and its 4.6 units of bare path are what হ's descender ships with.
+     */
+    Exercise(
+        id = "consonant-khanda-to",
+        title = "ৎ",
+        type = ExerciseType.CONSONANT,
+        difficulty = Difficulty.INTERMEDIATE,
+        order = 36,
+        strokes = listOf(
+            Stroke(
+                id = "consonant-khanda-to-bowl",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(32f, 35f),
+                        Point(35f, 36f),
+                        Point(38f, 37f),
+                        Point(40f, 38f),
+                        Point(43f, 38f),
+                        Point(46f, 38f),
+                        Point(49f, 39f),
+                        Point(52f, 38f),
+                        Point(55f, 38f),
+                        Point(57f, 37f),
+                        Point(60f, 36f),
+                        Point(62f, 34f),
+                        Point(63f, 32f),
+                        Point(64f, 29f),
+                        Point(64f, 26f),
+                        Point(64f, 23f),
+                        Point(63f, 21f),
+                        Point(62f, 18f),
+                        Point(61f, 16f),
+                        Point(58f, 14f),
+                        Point(56f, 13f),
+                        Point(53f, 12f),
+                        Point(50f, 12f),
+                        Point(47f, 12f),
+                        Point(45f, 12f),
+                        Point(42f, 12f),
+                        Point(39f, 13f),
+                        Point(36f, 13f),
+                        Point(34f, 15f),
+                        Point(31f, 16f),
+                        Point(29f, 18f),
+                        Point(27f, 20f),
+                        Point(26f, 22f),
+                        Point(24f, 24f),
+                        Point(23f, 27f),
+                        Point(23f, 30f),
+                        Point(22f, 32f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "consonant-khanda-to-tail",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(22f, 32f),
+                        Point(22f, 35f),
+                        Point(23f, 38f),
+                        Point(23f, 41f),
+                        Point(24f, 43f),
+                        Point(25f, 46f),
+                        Point(27f, 48f),
+                        Point(29f, 50f),
+                        Point(31f, 52f),
+                        Point(33f, 54f),
+                        Point(36f, 56f),
+                        Point(38f, 57f),
+                        Point(40f, 58f),
+                        Point(43f, 60f),
+                        Point(45f, 61f),
+                        Point(48f, 62f),
+                        Point(50f, 63f),
+                        Point(53f, 64f),
+                        Point(55f, 65f),
+                        Point(58f, 67f),
+                        Point(60f, 68f),
+                        Point(62f, 69f),
+                        Point(65f, 70f),
+                        Point(67f, 72f),
+                        Point(69f, 74f),
+                        Point(72f, 76f),
+                        Point(74f, 78f),
+                        Point(75f, 80f),
+                        Point(76f, 82f),
+                        Point(77f, 85f),
+                        Point(77f, 86f),
+                    ),
+                ),
+            ),
+        ),
+    ),
 )
