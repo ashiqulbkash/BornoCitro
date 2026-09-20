@@ -185,7 +185,7 @@ else in that file passes on its own. Baseline after 1.1: **336 unit tests, 0 fai
 - [x] 1.20 ম
 - [x] 1.21 য
 - [x] 1.22 র
-- [ ] 1.23 ল
+- [x] 1.23 ল
 - [ ] 1.24 শ
 - [ ] 1.25 ষ
 - [ ] 1.26 স
@@ -266,6 +266,8 @@ Step 1 as a whole is done when all 34 sub-steps are checked, the catalog test as
   **The first dot in the alphabet needed a rule.** A dot is a disc, not a path — its largest inscribed circle is 7.80 canvas units at (35,82) — and a guide has to be something a finger can follow, so `dot` is a small ring inside that disc: radius 4.8, drawn with `StrokePoints.arc` exactly as `drawing-circle` is. That leaves 2.65 canvas units of ink under every sample, so the guide's own dots sit well inside the blob, and its 30.2 units come to five dot spacings, so the ring's last dot closes back onto its first. `check.py` reports the ring's distance from the centreline as 4.8 units, which is just the radius: a disc skeletonizes to a single point, so there is no centreline to be near. The dot is written after the body and the post — where a writer adds it — and the matra last. Traced on the RMX3624 it completed at 99.7% (PERFECT).
 
   Two device-script fixes this step: the phone had gone to sleep, so the launch landed on a dark, locked screen with the notification shade holding the focus and the guard correctly refused to go on; the guard now sends `KEYCODE_WAKEUP` and `wm dismiss-keyguard` before each attempt. And the catalog test's consonant string picked up a stray U+09BC nukta when it was edited by hand (`ময` + `র` came out as `ময়র`); it is now edited by code point and asserted at 27 characters.
+
+- **1.23 ল** — wider than it is tall (aspect 1.207), so fitted by width with y centred like ত, ড, ঝ and ভ. Under a full headline it is a post on the right and a body of two humps meeting at (49,44), with a short tab hanging down from that meeting point and ending in a flat cut; the left hump carries on past its crest into a big hook — down the far-left flank, round the bottom and back up-right to a second flat cut inside the curl — and the right hump runs from the meeting point into the post. Three bands meet there, so which two the pen runs through was measured over a 6-unit baseline, as ম's junction had to be: the left hump and the tab turn 50° into each other, against 56° for hump-to-tab and 74° for hump-to-hump. So `curl` is one movement of 80 canvas units — in from the tab's cut, up to the meeting point, over the left hump and round the hook — and `hump`, 34 units, is joined onto it, as প's arm and ম's arc are onto theirs. `curl` ends inside the hook rather than starting there, the way ন's, ণ's and ত's curls end inside their own; both its ends are flat cuts with a prong into each corner, so each stops 2 units short of the midpoint between the prongs. `post` is 72 units — exactly 12 dot spacings — and `matra`, inset 2 units from each cap for a whole 15, is last. Every guide sample is on ink; traced on the RMX3624 it completed at 99.8% (PERFECT).
 
 ---
 

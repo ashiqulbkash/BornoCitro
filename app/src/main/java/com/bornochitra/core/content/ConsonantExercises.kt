@@ -2911,4 +2911,100 @@ internal val consonantExercises: List<Exercise> = listOf(
             ),
         ),
     ),
+    /**
+     * ল is read off the glyph the phone renders, like the letters before it. It is wider than it is
+     * tall (aspect 1.207), so its ink is fitted by width with y centred, the way ত, ড, ঝ and ভ are.
+     *
+     * Under a full headline it is a post on the right and a body of two humps meeting at (49,44),
+     * with a short tab hanging down from that meeting point and ending in a flat cut. The left hump
+     * carries on past its crest into a big hook — down the far-left flank, round the bottom and
+     * back up-right to a second flat cut inside the curl — and the right hump runs from the meeting
+     * point into the post.
+     *
+     * Three bands meet at (49,44), so which two the pen runs through is measured over a 6-unit
+     * baseline, as ম's junction had to be: the left hump and the tab turn 50 degrees into each
+     * other, against 56 for hump-to-tab and 74 for hump-to-hump. So `curl` is one movement of 80
+     * canvas units — in from the tab's cut, up to the meeting point, over the left hump and round
+     * the hook — and `hump`, 34 units, is joined onto it, the way প's arm and ম's arc are joined
+     * onto theirs.
+     *
+     * `curl` ends inside the hook rather than starting there, the way ন's, ণ's and ত's curls end
+     * inside their own. Both of its ends are flat cuts with a skeleton prong into each corner, so
+     * each stops 2 units short of the midpoint between the prongs. The post follows — 72 units,
+     * exactly 12 dot spacings — and the matra, inset 2 units from each end cap for a whole 15
+     * spacings, is last.
+     */
+    Exercise(
+        id = "consonant-lo",
+        title = "ল",
+        type = ExerciseType.CONSONANT,
+        difficulty = Difficulty.INTERMEDIATE,
+        order = 28,
+        strokes = listOf(
+            Stroke(
+                id = "consonant-lo-curl",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(50f, 53f),
+                        Point(50f, 50f),
+                        Point(50f, 47f),
+                        Point(49f, 44f),
+                        Point(47f, 43f),
+                        Point(45f, 41f),
+                        Point(42f, 39f),
+                        Point(40f, 37f),
+                        Point(38f, 36f),
+                        Point(35f, 36f),
+                        Point(32f, 35f),
+                        Point(29f, 35f),
+                        Point(26f, 36f),
+                        Point(24f, 36f),
+                        Point(21f, 38f),
+                        Point(19f, 39f),
+                        Point(17f, 42f),
+                        Point(16f, 44f),
+                        Point(16f, 47f),
+                        Point(15f, 50f),
+                        Point(16f, 52f),
+                        Point(16f, 55f),
+                        Point(17f, 58f),
+                        Point(19f, 60f),
+                        Point(21f, 62f),
+                        Point(23f, 64f),
+                        Point(26f, 65f),
+                        Point(28f, 66f),
+                        Point(31f, 67f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "consonant-lo-hump",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(49f, 44f),
+                        Point(52f, 42f),
+                        Point(54f, 40f),
+                        Point(56f, 39f),
+                        Point(58f, 38f),
+                        Point(61f, 37f),
+                        Point(64f, 38f),
+                        Point(67f, 38f),
+                        Point(69f, 39f),
+                        Point(72f, 41f),
+                        Point(74f, 42f),
+                        Point(77f, 42f),
+                        Point(79f, 43f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "consonant-lo-post",
+                points = StrokePoints.line(Point(79f, 15f), Point(79f, 87f)),
+            ),
+            Stroke(
+                id = "consonant-lo-matra",
+                points = StrokePoints.line(Point(5f, 15f), Point(95f, 15f)),
+            ),
+        ),
+    ),
 )
