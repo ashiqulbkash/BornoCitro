@@ -2466,4 +2466,132 @@ internal val consonantExercises: List<Exercise> = listOf(
             ),
         ),
     ),
+    /**
+     * ভ is read off the glyph the phone renders, like ন, প, ফ and ব. It is wider than it is tall
+     * (aspect 1.280), so its ink is fitted by width with y centred, the way ত, জ, ঝ, ড and ফ are.
+     *
+     * Like ত and ফ, the headline stands clear of the rest of the letter. Below it ভ is a single
+     * spiral of 191 canvas units: in from the flat cut at the top left, down the long left flank,
+     * round the foot, up the right flank, round the sharp corner at the top right, then back
+     * down-left into the inner bowl and up to the flat cut at the top middle.
+     *
+     * That is far past one pass, so it is split twice, both times at a landmark the child can see.
+     * The outer arc alone is 139 canvas units — at the ceiling — so it breaks at the foot, the
+     * lowest point of the bowl where the letter sits on the writing line, the split ত and ঢ take.
+     * The second break is the corner at the top right, where the outer arc and the inner hook leave
+     * at 66 degrees and the pen turns back on itself, the split জ, ঞ and ড take. The skeleton's
+     * spur there runs up-right into the corner's outer mitre and thins from 5.01 to 0.56 canvas
+     * units against the pen's 4.49, so the pen's centre turns at the junction and never travels
+     * out along it.
+     *
+     * Both free ends are flat cuts with a skeleton prong into each corner, as ছ's, ত's, ন's and
+     * ফ's are. `arm` starts 2 units short of the midpoint between its prongs; `hook` ends 3 units
+     * short of its own, which is what leaves the least bare path past the stroke's last dot — it
+     * is the only one of the three whose end is a free tip, the other two handing straight over to
+     * the next stroke. The matra, inset 2 units from each end cap for a whole 15 dot spacings, is
+     * written last.
+     */
+    Exercise(
+        id = "consonant-bho",
+        title = "ভ",
+        type = ExerciseType.CONSONANT,
+        difficulty = Difficulty.ADVANCED,
+        order = 24,
+        strokes = listOf(
+            Stroke(
+                id = "consonant-bho-arm",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(13f, 34f),
+                        Point(14f, 37f),
+                        Point(15f, 39f),
+                        Point(16f, 42f),
+                        Point(17f, 45f),
+                        Point(18f, 47f),
+                        Point(19f, 50f),
+                        Point(20f, 52f),
+                        Point(21f, 55f),
+                        Point(22f, 57f),
+                        Point(23f, 60f),
+                        Point(25f, 62f),
+                        Point(26f, 64f),
+                        Point(28f, 66f),
+                        Point(29f, 69f),
+                        Point(31f, 71f),
+                        Point(33f, 73f),
+                        Point(36f, 75f),
+                        Point(38f, 76f),
+                        Point(40f, 78f),
+                        Point(43f, 79f),
+                        Point(45f, 80f),
+                        Point(48f, 81f),
+                        Point(51f, 81f),
+                        Point(54f, 82f),
+                        Point(56f, 82f),
+                        Point(57f, 82f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "consonant-bho-bowl",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(57f, 82f),
+                        Point(60f, 82f),
+                        Point(63f, 82f),
+                        Point(66f, 81f),
+                        Point(68f, 80f),
+                        Point(71f, 79f),
+                        Point(73f, 78f),
+                        Point(76f, 76f),
+                        Point(78f, 74f),
+                        Point(80f, 72f),
+                        Point(81f, 70f),
+                        Point(82f, 67f),
+                        Point(83f, 65f),
+                        Point(83f, 62f),
+                        Point(84f, 59f),
+                        Point(83f, 56f),
+                        Point(83f, 53f),
+                        Point(82f, 50f),
+                        Point(82f, 48f),
+                        Point(81f, 45f),
+                        Point(80f, 43f),
+                        Point(78f, 40f),
+                        Point(76f, 39f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "consonant-bho-hook",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(75f, 39f),
+                        Point(73f, 40f),
+                        Point(71f, 42f),
+                        Point(69f, 44f),
+                        Point(67f, 46f),
+                        Point(65f, 48f),
+                        Point(62f, 49f),
+                        Point(60f, 50f),
+                        Point(57f, 51f),
+                        Point(54f, 51f),
+                        Point(52f, 51f),
+                        Point(49f, 51f),
+                        Point(46f, 50f),
+                        Point(44f, 48f),
+                        Point(42f, 46f),
+                        Point(42f, 43f),
+                        Point(42f, 41f),
+                        Point(42f, 38f),
+                        Point(43f, 35f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "consonant-bho-matra",
+                points = StrokePoints.line(Point(5f, 18f), Point(95f, 18f)),
+            ),
+        ),
+    ),
 )

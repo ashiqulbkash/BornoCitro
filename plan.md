@@ -181,7 +181,7 @@ else in that file passes on its own. Baseline after 1.1: **336 unit tests, 0 fai
 - [x] 1.16 প
 - [x] 1.17 ফ
 - [x] 1.18 ব
-- [ ] 1.19 ভ
+- [x] 1.19 ভ
 - [ ] 1.20 ম
 - [ ] 1.21 য
 - [ ] 1.22 র
@@ -252,6 +252,8 @@ Step 1 as a whole is done when all 34 sub-steps are checked, the catalog test as
 - **1.18 ব** — all but square (aspect 0.989), so fitted by height like ন, ঢ, দ and ধ. It is ধ's body without the loop: a full headline, a post from the headline to the foot, and one wide "<" hanging off the post's left whose two ends both run back into the post. `body` is one movement of 119 canvas units, inside one pass as ধ's 116-unit body is: the arm leaves the post at (72,26) where it tapers in, runs down-left to the corner at (23,48), and the sweep carries on down-right into the post's foot at (72,81). The corner is the junction where the two centrelines cross; the ink runs on up-left to a tip and the skeleton grows a spur into it, but that is the corner's outer mitre — it thins from 4.94 to 0.74 canvas units against the pen's 4.93 — so the pen's centre turns at the junction, as ধ's and প's do. `post` stops 3 units short of its end cap and `matra`, inset 2 units from each cap for a whole 13 dot spacings, is last. Every guide sample is on ink; traced on the RMX3624 it completed at 99.8% (PERFECT).
 
   The first trace run saved nothing: `monkey` did not bring the app to the front, so every tap and swipe landed on the launcher and ended up scrolling its app drawer. The trace script now proves the app is foreground (`dumpsys window | grep mCurrentFocus` names com.bornochitra) before it navigates, and retries the launch if it is not.
+
+- **1.19 ভ** — wider than it is tall (aspect 1.280), so fitted by width with y centred like ত, জ, ঝ, ড and ফ. Like ত and ফ the headline stands clear of the rest of the letter, and below it ভ is a single spiral of 191 canvas units: in from the flat cut at the top left, down the long left flank, round the foot, up the right flank, round the sharp corner at the top right, then back down-left into the inner bowl and up to the flat cut at the top middle. Far past one pass, so it is split twice, both at landmarks a child can see. The outer arc alone is 139 units — at the ceiling — so it breaks at the foot, the lowest point of the bowl where the letter sits on the writing line, the split ত and ঢ take, leaving `arm` 71 and `bowl` 62. The second break is the corner at the top right, where the outer arc and the inner hook leave at 66° and the pen turns back on itself, the split জ, ঞ and ড take; the skeleton's spur there runs up-right into the corner's outer mitre and thins from 5.01 to 0.56 canvas units against the pen's 4.49, so the pen's centre turns at the junction. `hook` is 50 units. Both free ends are flat cuts with a prong into each corner: `arm` starts 2 units short of the midpoint between its prongs, `hook` ends 3 short of its own — it is the only one of the three whose end is a free tip, the other two handing straight over to the next stroke, and 3 leaves the least bare path past its last dot, as দ's and ধ's ends are tuned. `matra`, inset 2 units from each cap for a whole 15 dot spacings, is last. Every guide sample is on ink; traced on the RMX3624 it completed at 99.7% (PERFECT).
 
 ---
 
