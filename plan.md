@@ -196,7 +196,7 @@ else in that file passes on its own. Baseline after 1.1: **336 unit tests, 0 fai
 - [x] 1.31 ৎ
 - [x] 1.32 ং
 - [x] 1.33 ঃ
-- [ ] 1.34 ঁ
+- [x] 1.34 ঁ
 
 ## Definition of Done (applies to every sub-step)
 
@@ -322,6 +322,18 @@ Step 1 as a whole is done when all 34 sub-steps are checked, the catalog test as
   **The radius is chosen for the dots, not just the ink.** 14.3 is inside the measured spread of 13.50-14.51 and 0.27 off the mean, which the 4.02-unit band swallows, and it makes the 32-segment polyline the arc samples to 89.7 canvas units round: dots land at 0, 6 … 84, so each ring carries 15 evenly spaced dots and the gap closing it is 5.7, one spacing to within 5%. The measured mean of 14.0 would instead leave a 3.8-unit closing gap, two dots visibly bunched at the start. (ং's own ring is the other case: its 84.1 units put a 15th dot 0.06 short of the first, exactly on top of it, which is invisible.)
 
   Every guide sample is on ink, centreline distance at most 0.74 units; on the RMX3624 the x and y scales agreed to 0.25% and the trace completed at 99.6% (PERFECT). The reference character shows its dotted circle here too, as ং's does — the open question above stands for 1.34.
+
+- **1.34 ঁ** — চন্দ্রবিন্দু, `consonant-chandrabindu`, the last of the three marks and the 39th consonant.
+
+  **It forced the placeholder handling to change.** ং and ঃ are spacing marks, so the shaper sets the dotted circle *beside* them and 1.32's widest-column-gap split separated the two; ঁ is non-spacing and is drawn *over* the circle, overlapping it in x, so no column split can work. `glyph.render` now gives every Mn/Mc/Me character a U+00A0 base instead — the only base tried that leaves no placeholder for all three marks, where ZWSP, ZWNJ and a plain space still leave it on ং and ঃ. All 33 letters re-render byte-identical against the pre-mark `glyph.py`, and ং and ঃ byte-identical against the gap-split version they were derived with, so nothing already shipped moves.
+
+  Much wider than it is tall (aspect 1.876), so fitted by width with y centred like জ, ঝ, ড, ত, ফ, ভ, ল and স — the only one of the three marks that is. No headline, so no stroke is a matra. Two pieces of ink and so two strokes, written চন্দ্র then বিন্দু: the crescent first, the dot into its cup afterwards, the order র, ড়, ঢ় and য় add their dots in.
+
+  `crescent` is one movement of 116 canvas units, inside one pass: down the left horn from its flat cut, round the bottom of the cup and up the right horn to its own cut. The band around it is a thick 8.4-9.5 units half-thick throughout, so no part of it is a hairline. Both horns end in flat cuts with a prong into each corner — 17.4 and 17.6 units apart against a band about 15.4 wide — and each end stops 3 units short of the midpoint between its prongs: that is both the shortest inset of the 1-to-3 range keeping the end dot inside the ink (3.97 and 3.29 units of ink there against the guide dot's 2.5 radius, where 2 leaves 2.08) and the one leaving the least bare path past the last dot, 1.9 against 4.8 at 2 and 5.9 at 1.
+
+  `dot` is a filled disc, not an annulus like ং's and ঃ's rings: it skeletonizes to a single point, so the guide is a small ring inside it drawn with `StrokePoints.arc`, as র's, ড়'s, ঢ়'s and য়'s dots are, and `check.py` reports its centreline distance as the radius — expected for a disc. The disc's largest inscribed circle is 11.55 canvas units at (50.0,36.3), the widest dot in the alphabet against র's 7.80 and ড়'s 6.35, and the ring takes radius 6.7 (58% of it), leaving 4.9 units of ink under every sample and measuring 42.0 units round: seven whole dot spacings, so its last dot closes onto its first. Every guide sample is on ink; on the RMX3624 the x and y scales agreed to 0.18% and the trace completed at 99.6% (PERFECT).
+
+  **Step 1 closing checks.** The catalog test now asserts the alphabet is complete — 11 vowels and 39 consonants — as its own case, and the consonant title string is 42 code points for 39 letters, the three nuktas being ড় ঢ় য় exactly as the 1.28 note predicted. The Consonants screen scrolls to a full 13x3 grid ending ৎ ং ঁ at both **720x1600** and **720x1280** (360x640dp, set with `wm size` and reset afterwards), with nothing clipped at either size. The Home and Progress consonant bars both read **90%** against 35 of 39 letters completed on the device — 35/39 is 89.7%, where a denominator of 38 would show 92% and 36 would show 97% — and overall reads 67% for 37 of 39+11+5=55, so both bars are computed against 39. `completedRatio` divides by the catalog list itself, so this follows by construction as well as by measurement. **Step 1 is complete: all 39 Bengali consonants are practicable.**
 
 ---
 

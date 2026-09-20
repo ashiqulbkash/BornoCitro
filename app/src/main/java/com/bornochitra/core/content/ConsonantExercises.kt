@@ -4068,4 +4068,99 @@ internal val consonantExercises: List<Exercise> = listOf(
             ),
         ),
     ),
+    /**
+     * ঁ is চন্দ্রবিন্দু, the last of the three marks and the 39th and last consonant.
+     *
+     * Much wider than it is tall (aspect 1.876), so it is fitted by width with y centred, like জ,
+     * ঝ, ড, ত, ফ, ভ, ল and স — the only one of the three marks that is, ং and ঃ both being tall.
+     * It has no headline, so no stroke is a matra. It is two pieces of ink and so two strokes,
+     * written চন্দ্র then বিন্দু: the crescent first, the dot into its cup afterwards, the order র,
+     * ড়, ঢ় and য় add their own dots in.
+     *
+     * `crescent` is one movement of 116 canvas units, inside one pass: down the left horn from its
+     * flat cut, round the bottom of the cup and up the right horn to its own cut. The band around
+     * it is a thick 8.4 to 9.5 canvas units half-thick all the way, so no part of it is a
+     * hairline. Both horns end in flat cuts with a skeleton prong into each corner, 17.4 and 17.6
+     * canvas units apart against a band about 15.4 wide, and each end stops 3 units short of the
+     * midpoint between its prongs — that is both the shortest inset of the usual 1-to-3 range that
+     * keeps the end dot inside the ink (3.97 and 3.29 units of ink under the ends, against a guide
+     * dot's radius of 2.5, where 2 leaves 2.08) and the one leaving the least bare path past the
+     * last dot, 1.9 units against 4.8 at 2 and 5.9 at 1.
+     *
+     * `dot` is a filled disc, not an annulus like ং's and ঃ's rings: it skeletonizes to a single
+     * point, so there is no centreline to follow and the guide is a small ring inside it, drawn
+     * with `StrokePoints.arc` as র's, ড়'s, ঢ়'s and য়'s dots are. The disc's largest inscribed
+     * circle is 11.55 canvas units at (50.0,36.3) — the widest dot in the alphabet, against র's
+     * 7.80 and ড়'s 6.35 — and the ring takes radius 6.7, 58% of it, which leaves 4.9 units of ink
+     * under every sample and measures 42.0 units round: seven whole dot spacings, so the ring's
+     * last dot closes back onto its first.
+     */
+    Exercise(
+        id = "consonant-chandrabindu",
+        title = "ঁ",
+        type = ExerciseType.CONSONANT,
+        difficulty = Difficulty.INTERMEDIATE,
+        order = 39,
+        strokes = listOf(
+            Stroke(
+                id = "consonant-chandrabindu-crescent",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(13f, 31f),
+                        Point(13f, 34f),
+                        Point(14f, 36f),
+                        Point(15f, 39f),
+                        Point(16f, 42f),
+                        Point(16f, 44f),
+                        Point(17f, 47f),
+                        Point(19f, 49f),
+                        Point(20f, 52f),
+                        Point(22f, 54f),
+                        Point(23f, 56f),
+                        Point(26f, 58f),
+                        Point(28f, 60f),
+                        Point(30f, 62f),
+                        Point(33f, 63f),
+                        Point(35f, 64f),
+                        Point(38f, 65f),
+                        Point(41f, 65f),
+                        Point(44f, 66f),
+                        Point(47f, 66f),
+                        Point(49f, 66f),
+                        Point(52f, 66f),
+                        Point(55f, 66f),
+                        Point(58f, 66f),
+                        Point(61f, 65f),
+                        Point(64f, 64f),
+                        Point(66f, 63f),
+                        Point(69f, 62f),
+                        Point(71f, 61f),
+                        Point(74f, 59f),
+                        Point(76f, 57f),
+                        Point(78f, 55f),
+                        Point(79f, 53f),
+                        Point(81f, 50f),
+                        Point(82f, 48f),
+                        Point(83f, 45f),
+                        Point(84f, 43f),
+                        Point(85f, 40f),
+                        Point(86f, 37f),
+                        Point(86f, 34f),
+                        Point(87f, 31f),
+                        Point(87f, 30f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "consonant-chandrabindu-dot",
+                points = StrokePoints.arc(
+                    center = Point(50f, 36.3f),
+                    radius = 6.7f,
+                    startDeg = 0f,
+                    sweepDeg = 360f,
+                    samples = 32,
+                ),
+            ),
+        ),
+    ),
 )

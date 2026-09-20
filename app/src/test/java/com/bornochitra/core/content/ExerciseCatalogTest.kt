@@ -43,12 +43,20 @@ class ExerciseCatalogTest {
     }
 
     @Test
+    fun `the alphabet is complete - 11 vowels and all 39 consonants`() {
+        fun count(type: ExerciseType) = ExerciseCatalog.all.count { it.type == type }
+
+        assertEquals(11, count(ExerciseType.VOWEL))
+        assertEquals(39, count(ExerciseType.CONSONANT))
+    }
+
+    @Test
     fun `vowels and consonants carry the right characters in alphabet order`() {
         fun titles(type: ExerciseType) =
             ExerciseCatalog.all.filter { it.type == type }.sortedBy { it.order }.joinToString("") { it.title }
 
         assertEquals("অআইঈউঊঋএঐওঔ", titles(ExerciseType.VOWEL))
-        assertEquals("কখগঘঙচছজঝঞটঠডঢণতথদধনপফবভমযরলশষসহড়ঢ়য়ৎংঃ", titles(ExerciseType.CONSONANT))
+        assertEquals("কখগঘঙচছজঝঞটঠডঢণতথদধনপফবভমযরলশষসহড়ঢ়য়ৎংঃঁ", titles(ExerciseType.CONSONANT))
     }
 
     @Test
@@ -88,6 +96,7 @@ class ExerciseCatalogTest {
             "consonant-khanda-to" to 2,
             "consonant-anusvar" to 2,
             "consonant-bisargo" to 2,
+            "consonant-chandrabindu" to 2,
             "drawing-line" to 1, "drawing-circle" to 1, "drawing-square" to 1, "drawing-triangle" to 1,
             "drawing-house" to 2,
         )
