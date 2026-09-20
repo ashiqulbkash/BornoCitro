@@ -3462,4 +3462,131 @@ internal val consonantExercises: List<Exercise> = listOf(
             ),
         ),
     ),
+    /**
+     * ড় is ড with a dot under it. র already holds `consonant-ro`, so this retroflex one doubles its
+     * consonant the way ট, ঠ, ড, ণ and ষ do: `consonant-rro`.
+     *
+     * The dot is a separate piece of ink, so it takes a stroke of its own, as র's does, and because
+     * it hangs below the baseline the letter as a whole comes out taller than it is wide (aspect
+     * 0.950) where ড alone is 1.23. So ড় is fitted by height with x centred, not by width like ড,
+     * and its body is drawn at a different scale from ড's own entry; the shape is the same.
+     *
+     * Above the dot it is ড exactly: `arm` runs from the matra crossing down the stem, through the
+     * shallow V and up to the point at (72,32) where the arm and the bowl's flank converge, and
+     * `bowl` starts again at that same point, runs down the right flank, round the bottom and up
+     * the long left arm to its flat cut. The point is the junction, not the skeleton's spur to
+     * (74,28): that spur runs into the taper where the turn's two edges meet, which is not a path
+     * the pen's centre travels — ড's first pass made exactly that mistake.
+     *
+     * `dot` is a ring inside the dot's disc, as র's is. The disc's largest inscribed circle is 6.35
+     * canvas units at (51,84); a ring of radius 3.8 leaves about 2.5 units of ink under every
+     * sample and measures 23.9 units round, which is four dot spacings, so the guide draws four
+     * evenly spaced dots that close the ring.
+     *
+     * `bowl` stops 3 units short of the midpoint between its cut's prongs rather than the usual 2.
+     * Rounding the path to whole canvas units quantises where the tip lands, and across the usual
+     * 1-to-3 range the bare path past the last dot goes 6.0, 5.1, 3.8 — so 3 is the best of them.
+     * Half a unit would leave only 1.0, but then the last dot's own radius would hang outside the
+     * ink at the cut, which is the fault ড's first pass had.
+     */
+    Exercise(
+        id = "consonant-rro",
+        title = "ড়",
+        type = ExerciseType.CONSONANT,
+        difficulty = Difficulty.INTERMEDIATE,
+        order = 33,
+        strokes = listOf(
+            Stroke(
+                id = "consonant-rro-arm",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(46f, 11f),
+                        Point(46f, 14f),
+                        Point(46f, 17f),
+                        Point(46f, 20f),
+                        Point(46f, 23f),
+                        Point(46f, 26f),
+                        Point(46f, 29f),
+                        Point(46f, 32f),
+                        Point(46f, 35f),
+                        Point(46f, 38f),
+                        Point(47f, 40f),
+                        Point(49f, 42f),
+                        Point(52f, 43f),
+                        Point(55f, 44f),
+                        Point(58f, 43f),
+                        Point(60f, 42f),
+                        Point(62f, 40f),
+                        Point(64f, 39f),
+                        Point(66f, 36f),
+                        Point(68f, 34f),
+                        Point(71f, 33f),
+                        Point(72f, 32f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "consonant-rro-bowl",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(72f, 32f),
+                        Point(75f, 34f),
+                        Point(76f, 36f),
+                        Point(77f, 39f),
+                        Point(77f, 42f),
+                        Point(78f, 44f),
+                        Point(78f, 47f),
+                        Point(78f, 50f),
+                        Point(77f, 53f),
+                        Point(77f, 56f),
+                        Point(75f, 58f),
+                        Point(74f, 60f),
+                        Point(72f, 62f),
+                        Point(70f, 64f),
+                        Point(67f, 65f),
+                        Point(64f, 66f),
+                        Point(62f, 67f),
+                        Point(59f, 67f),
+                        Point(56f, 67f),
+                        Point(53f, 67f),
+                        Point(50f, 67f),
+                        Point(47f, 66f),
+                        Point(45f, 65f),
+                        Point(42f, 64f),
+                        Point(40f, 63f),
+                        Point(38f, 61f),
+                        Point(36f, 59f),
+                        Point(34f, 57f),
+                        Point(32f, 54f),
+                        Point(30f, 52f),
+                        Point(29f, 50f),
+                        Point(28f, 47f),
+                        Point(26f, 45f),
+                        Point(25f, 42f),
+                        Point(24f, 40f),
+                        Point(23f, 37f),
+                        Point(22f, 35f),
+                        Point(22f, 32f),
+                        Point(21f, 29f),
+                        Point(20f, 27f),
+                        Point(20f, 26f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "consonant-rro-dot",
+                points = StrokePoints.arc(
+                    center = Point(51f, 84f),
+                    radius = 3.8f,
+                    startDeg = 0f,
+                    sweepDeg = 360f,
+                    samples = 32,
+                ),
+            ),
+            Stroke(
+                id = "consonant-rro-matra",
+                points = StrokePoints.line(Point(13f, 11f), Point(87f, 11f)),
+            ),
+        ),
+    ),
 )
