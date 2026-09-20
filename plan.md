@@ -191,7 +191,7 @@ else in that file passes on its own. Baseline after 1.1: **336 unit tests, 0 fai
 - [x] 1.26 স
 - [x] 1.27 হ
 - [x] 1.28 ড়
-- [ ] 1.29 ঢ়
+- [x] 1.29 ঢ়
 - [ ] 1.30 য়
 - [ ] 1.31 ৎ
 - [ ] 1.32 ং
@@ -288,6 +288,10 @@ Step 1 as a whole is done when all 34 sub-steps are checked, the catalog test as
   `bowl` stops **3** units short of its cut's midpoint rather than 2: rounding the path to whole canvas units quantises where the tip lands, and across the 1-to-3 range the bare path past the last dot goes 6.0, 5.1, 3.8. Half a unit would leave only 1.0, but then the last dot's own radius would hang outside the ink at the cut — the fault ড's first pass had, so the shorter bare tail loses to the dot staying inside the letter. Every guide sample is on ink; traced on the RMX3624 it completed at 99.7% (PERFECT).
 
   Note for the closing sub-step: ড়, ঢ় and য় are two code points each (letter + U+09BC), so the catalog test's consonant title string will end up 42 code points long for 39 letters.
+
+- **1.29 ঢ়** — ঢ with a dot under it, `consonant-rrho` after ড়'s `consonant-rro`. The dot pulls the letter's proportions down with it — aspect 0.759 against ঢ's own 0.95 — and both are height-fitted, so the body is simply drawn smaller here than in ঢ's entry. Below the headline the body is one movement of 128 canvas units (down the straight stem, round the foot, up the right flank, over the top and curling back left), close to what one pass can hold, so it breaks where ঢ breaks: at the foot, where the stem stops running straight and the curve begins — `stem` 48 units, `bowl` 79. `dot` is a ring inside the disc as ড়'s is (disc 6.33 at (50,84), ring radius 3.8, 23.9 units round, four evenly spaced dots).
+
+  **The curl's end is not the filled ball ঢ's own entry describes.** That entry was derived from Noto Sans Bengali v3; in the v2 the phone ships, the terminal is a blunt end whose largest inscribed disc is 4.48 canvas units against the pen's 3.97 — barely wider than the band — and the skeleton forks into a prong per corner, so `bowl` is ended the way a flat cut is. Checking ঢ itself in the device font gives the same picture (5.80 against a 5.14 pen, two prongs), so **ঢ's shipped KDoc describes a ball the device does not draw**; its guide still sits within a pen half-width of the v2 ink, as the 1.15 audit found, so this is a stale description rather than a wrong guide — worth fixing if ঢ is ever revisited. `bowl` stops 1 unit short of the prongs' midpoint rather than 2, as দ's post does: across the 1-to-3 range the bare path past its last dot goes 0.8, 5.8, 4.8. Every guide sample is on ink; traced on the RMX3624 it completed at 99.7% (PERFECT).
 
 ---
 

@@ -3589,4 +3589,112 @@ internal val consonantExercises: List<Exercise> = listOf(
             ),
         ),
     ),
+    /**
+     * ঢ় is ঢ with a dot under it, `consonant-rrho` after ড়'s `consonant-rro`.
+     *
+     * The dot is a separate piece of ink and takes a stroke of its own, as র's and ড়'s do, and it
+     * pulls the letter's proportions down with it: aspect 0.759 against ঢ's own 0.95. Both are
+     * fitted by height, so the body is simply drawn smaller here than in ঢ's entry.
+     *
+     * Below the headline the body is one movement of 128 canvas units — down the straight stem,
+     * round the foot, up the right flank, over the top and curling back left to the terminal that
+     * closes it. That is close to what one pass can hold, and ঢ breaks the same shape at the foot,
+     * where the stem stops running straight and the curve begins, so ঢ় breaks there too: `stem` 48
+     * units, `bowl` 79.
+     *
+     * The curl's end is not the filled ball ঢ's own entry describes. That entry was derived from
+     * Noto Sans Bengali v3; in the v2 the phone ships, the terminal is a blunt end whose largest
+     * inscribed disc is 4.48 canvas units against the pen's 3.97 — barely wider than the band —
+     * and the skeleton forks into a prong for each of its corners. So `bowl` is ended the way a
+     * flat cut is: short of the midpoint between those prongs. It stops 1 unit short rather than
+     * the usual 2, as দ's post does — across the 1-to-3 range the bare path past its last dot goes
+     * 0.8, 5.8, 4.8, and 5.8 is the near-whole-spacing grey tail ড's device screenshot showed.
+     *
+     * `dot` is a ring inside the dot's disc, as ড়'s is: the disc's largest inscribed circle is 6.33
+     * canvas units at (50,84), and a ring of radius 3.8 leaves about 2.5 units of ink under every
+     * sample while measuring 23.9 units round — four evenly spaced dots that close the ring.
+     */
+    Exercise(
+        id = "consonant-rrho",
+        title = "ঢ়",
+        type = ExerciseType.CONSONANT,
+        difficulty = Difficulty.INTERMEDIATE,
+        order = 34,
+        strokes = listOf(
+            Stroke(
+                id = "consonant-rrho-stem",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(34f, 11f),
+                        Point(34f, 14f),
+                        Point(34f, 17f),
+                        Point(34f, 20f),
+                        Point(34f, 23f),
+                        Point(34f, 26f),
+                        Point(34f, 29f),
+                        Point(34f, 32f),
+                        Point(34f, 35f),
+                        Point(34f, 38f),
+                        Point(34f, 41f),
+                        Point(34f, 44f),
+                        Point(35f, 47f),
+                        Point(35f, 50f),
+                        Point(35f, 53f),
+                        Point(35f, 56f),
+                        Point(35f, 59f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "consonant-rrho-bowl",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(35f, 59f),
+                        Point(35f, 61f),
+                        Point(37f, 64f),
+                        Point(39f, 66f),
+                        Point(41f, 67f),
+                        Point(44f, 67f),
+                        Point(47f, 67f),
+                        Point(50f, 67f),
+                        Point(53f, 66f),
+                        Point(55f, 65f),
+                        Point(58f, 64f),
+                        Point(60f, 62f),
+                        Point(62f, 60f),
+                        Point(64f, 58f),
+                        Point(66f, 56f),
+                        Point(67f, 54f),
+                        Point(69f, 51f),
+                        Point(70f, 49f),
+                        Point(70f, 46f),
+                        Point(71f, 43f),
+                        Point(71f, 40f),
+                        Point(70f, 37f),
+                        Point(69f, 35f),
+                        Point(67f, 33f),
+                        Point(65f, 31f),
+                        Point(62f, 31f),
+                        Point(59f, 31f),
+                        Point(56f, 31f),
+                        Point(54f, 31f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "consonant-rrho-dot",
+                points = StrokePoints.arc(
+                    center = Point(50f, 84f),
+                    radius = 3.8f,
+                    startDeg = 0f,
+                    sweepDeg = 360f,
+                    samples = 32,
+                ),
+            ),
+            Stroke(
+                id = "consonant-rrho-matra",
+                points = StrokePoints.line(Point(20f, 11f), Point(80f, 11f)),
+            ),
+        ),
+    ),
 )
