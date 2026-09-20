@@ -186,7 +186,7 @@ else in that file passes on its own. Baseline after 1.1: **336 unit tests, 0 fai
 - [x] 1.21 য
 - [x] 1.22 র
 - [x] 1.23 ল
-- [ ] 1.24 শ
+- [x] 1.24 শ
 - [ ] 1.25 ষ
 - [ ] 1.26 স
 - [ ] 1.27 হ
@@ -268,6 +268,10 @@ Step 1 as a whole is done when all 34 sub-steps are checked, the catalog test as
   Two device-script fixes this step: the phone had gone to sleep, so the launch landed on a dark, locked screen with the notification shade holding the focus and the guard correctly refused to go on; the guard now sends `KEYCODE_WAKEUP` and `wm dismiss-keyguard` before each attempt. And the catalog test's consonant string picked up a stray U+09BC nukta when it was edited by hand (`ময` + `র` came out as `ময়র`); it is now edited by code point and asserted at 27 characters.
 
 - **1.23 ল** — wider than it is tall (aspect 1.207), so fitted by width with y centred like ত, ড, ঝ and ভ. Under a full headline it is a post on the right and a body of two humps meeting at (49,44), with a short tab hanging down from that meeting point and ending in a flat cut; the left hump carries on past its crest into a big hook — down the far-left flank, round the bottom and back up-right to a second flat cut inside the curl — and the right hump runs from the meeting point into the post. Three bands meet there, so which two the pen runs through was measured over a 6-unit baseline, as ম's junction had to be: the left hump and the tab turn 50° into each other, against 56° for hump-to-tab and 74° for hump-to-hump. So `curl` is one movement of 80 canvas units — in from the tab's cut, up to the meeting point, over the left hump and round the hook — and `hump`, 34 units, is joined onto it, as প's arm and ম's arc are onto theirs. `curl` ends inside the hook rather than starting there, the way ন's, ণ's and ত's curls end inside their own; both its ends are flat cuts with a prong into each corner, so each stops 2 units short of the midpoint between the prongs. `post` is 72 units — exactly 12 dot spacings — and `matra`, inset 2 units from each cap for a whole 15, is last. Every guide sample is on ink; traced on the RMX3624 it completed at 99.8% (PERFECT).
+
+- **1.24 শ** — all but square (aspect 1.011), so fitted by height like ন, প, ম, য and ব. Above the baseline it is গ, ণ, থ, ধ and প again — a post rising above a short matra bar only to its right — but the body is new: a bowtie whose four arms cross at a waist at (36.5,33), two rising (to a flat cut at the top left and into the post) and two falling (to flat cuts at the bottom left and bottom right).
+
+  **That waist is a crossing, not two curves kissing**, and the two readings give different letters. The skeleton renders it as a 6-unit vertical link between two junctions, so the arms were paired over a 6-unit baseline as ম's and ল's were: top-left to bottom-right turns 0.1° and post to bottom-left 1.2°, against 81° and 80° for the same-side pairings; the ink agrees, with the counters biting in from both sides and leaving a neck the two bands share. So শ is two strokes that cross, each running straight through the link: `sweep` from the top-left cut down through the waist to the bottom-right cut (60 units) and `arm` from the post, over the crest and down through the waist to the bottom-left cut (75). Both cover the same few units of ink, which is what a crossing is — and on the device that shows as one set of dots at the neck. All three free ends are flat cuts with a prong into each corner, each inset 2 units from the midpoint between them; `post` is inset 2 from each cap as ণ's is, and the short `matra` right of the post is last. Every guide sample is on ink; traced on the RMX3624 it completed at 99.8% (PERFECT).
 
 ---
 

@@ -3007,4 +3007,111 @@ internal val consonantExercises: List<Exercise> = listOf(
             ),
         ),
     ),
+    /**
+     * শ is read off the glyph the phone renders, like the letters before it. It comes out all but
+     * square (aspect 1.011), so its ink is fitted by height with x centred, the way ন, প, ম, য and
+     * ব are.
+     *
+     * Above the baseline it is গ, ণ, থ, ধ and প again — a post rising above a short matra bar that
+     * sits only to its right — but the body is new: a bowtie whose four arms cross at a waist at
+     * (36.5,33). Two arms rise, one to a flat cut at the top left and one into the post; two fall,
+     * to flat cuts at the bottom left and the bottom right.
+     *
+     * That waist is a genuine crossing, not two curves kissing, and it matters because the two
+     * readings give different letters. The skeleton renders it as a 6-unit vertical link between
+     * two junctions, so the arms are paired over a 6-unit baseline as ম's and ল's were: top-left to
+     * bottom-right turns 0.1 degrees and post to bottom-left 1.2, against 81 and 80 degrees for the
+     * same-side pairings. The ink agrees — the counters bite in from both sides and leave a neck
+     * the two bands share. So শ is two strokes that cross, each running straight through the link:
+     * `sweep` from the top-left cut down through the waist to the bottom-right cut, 60 canvas
+     * units, and `arm` from the post, over the crest and down through the waist to the bottom-left
+     * cut, 75 units. Both pass through the same few units of ink, which is what a crossing is.
+     *
+     * All three free ends are flat cuts with a skeleton prong into each corner, so each stops 2
+     * units short of the midpoint between its prongs, as ছ's, ত's, ন's, ফ's and ল's do. The post
+     * follows, inset 2 units from each end cap as ণ's is, and the matra — the short bar right of
+     * the post — is last.
+     */
+    Exercise(
+        id = "consonant-sho",
+        title = "শ",
+        type = ExerciseType.CONSONANT,
+        difficulty = Difficulty.ADVANCED,
+        order = 29,
+        strokes = listOf(
+            Stroke(
+                id = "consonant-sho-sweep",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(11f, 19f),
+                        Point(14f, 19f),
+                        Point(17f, 19f),
+                        Point(20f, 19f),
+                        Point(22f, 19f),
+                        Point(25f, 20f),
+                        Point(28f, 21f),
+                        Point(30f, 22f),
+                        Point(32f, 24f),
+                        Point(33f, 27f),
+                        Point(35f, 29f),
+                        Point(36f, 31f),
+                        Point(36f, 34f),
+                        Point(37f, 37f),
+                        Point(39f, 39f),
+                        Point(41f, 41f),
+                        Point(42f, 43f),
+                        Point(44f, 45f),
+                        Point(47f, 47f),
+                        Point(49f, 48f),
+                        Point(52f, 48f),
+                        Point(55f, 49f),
+                        Point(56f, 49f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "consonant-sho-arm",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(74f, 28f),
+                        Point(71f, 27f),
+                        Point(69f, 26f),
+                        Point(67f, 25f),
+                        Point(64f, 23f),
+                        Point(62f, 21f),
+                        Point(60f, 20f),
+                        Point(57f, 19f),
+                        Point(54f, 19f),
+                        Point(51f, 19f),
+                        Point(48f, 19f),
+                        Point(46f, 20f),
+                        Point(43f, 22f),
+                        Point(41f, 23f),
+                        Point(40f, 26f),
+                        Point(38f, 28f),
+                        Point(37f, 30f),
+                        Point(36f, 33f),
+                        Point(36f, 36f),
+                        Point(34f, 38f),
+                        Point(33f, 41f),
+                        Point(31f, 43f),
+                        Point(29f, 45f),
+                        Point(27f, 46f),
+                        Point(25f, 48f),
+                        Point(22f, 48f),
+                        Point(19f, 49f),
+                        Point(18f, 49f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "consonant-sho-post",
+                points = StrokePoints.line(Point(74f, 9f), Point(74f, 88f)),
+            ),
+            Stroke(
+                id = "consonant-sho-matra",
+                points = StrokePoints.line(Point(75f, 19f), Point(89f, 19f)),
+            ),
+        ),
+    ),
 )

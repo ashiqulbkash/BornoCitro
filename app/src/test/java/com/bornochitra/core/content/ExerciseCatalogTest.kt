@@ -48,7 +48,7 @@ class ExerciseCatalogTest {
             ExerciseCatalog.all.filter { it.type == type }.sortedBy { it.order }.joinToString("") { it.title }
 
         assertEquals("অআইঈউঊঋএঐওঔ", titles(ExerciseType.VOWEL))
-        assertEquals("কখগঘঙচছজঝঞটঠডঢণতথদধনপফবভমযরল", titles(ExerciseType.CONSONANT))
+        assertEquals("কখগঘঙচছজঝঞটঠডঢণতথদধনপফবভমযরলশ", titles(ExerciseType.CONSONANT))
     }
 
     @Test
@@ -78,6 +78,7 @@ class ExerciseCatalogTest {
             "consonant-yo" to 4,
             "consonant-ro" to 4,
             "consonant-lo" to 4,
+            "consonant-sho" to 4,
             "drawing-line" to 1, "drawing-circle" to 1, "drawing-square" to 1, "drawing-triangle" to 1,
             "drawing-house" to 2,
         )
