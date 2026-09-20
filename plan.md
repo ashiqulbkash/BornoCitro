@@ -182,7 +182,7 @@ else in that file passes on its own. Baseline after 1.1: **336 unit tests, 0 fai
 - [x] 1.17 ফ
 - [x] 1.18 ব
 - [x] 1.19 ভ
-- [ ] 1.20 ম
+- [x] 1.20 ম
 - [ ] 1.21 য
 - [ ] 1.22 র
 - [ ] 1.23 ল
@@ -254,6 +254,10 @@ Step 1 as a whole is done when all 34 sub-steps are checked, the catalog test as
   The first trace run saved nothing: `monkey` did not bring the app to the front, so every tap and swipe landed on the launcher and ended up scrolling its app drawer. The trace script now proves the app is foreground (`dumpsys window | grep mCurrentFocus` names com.bornochitra) before it navigates, and retries the launch if it is not.
 
 - **1.19 ভ** — wider than it is tall (aspect 1.280), so fitted by width with y centred like ত, জ, ঝ, ড and ফ. Like ত and ফ the headline stands clear of the rest of the letter, and below it ভ is a single spiral of 191 canvas units: in from the flat cut at the top left, down the long left flank, round the foot, up the right flank, round the sharp corner at the top right, then back down-left into the inner bowl and up to the flat cut at the top middle. Far past one pass, so it is split twice, both at landmarks a child can see. The outer arc alone is 139 units — at the ceiling — so it breaks at the foot, the lowest point of the bowl where the letter sits on the writing line, the split ত and ঢ take, leaving `arm` 71 and `bowl` 62. The second break is the corner at the top right, where the outer arc and the inner hook leave at 66° and the pen turns back on itself, the split জ, ঞ and ড take; the skeleton's spur there runs up-right into the corner's outer mitre and thins from 5.01 to 0.56 canvas units against the pen's 4.49, so the pen's centre turns at the junction. `hook` is 50 units. Both free ends are flat cuts with a prong into each corner: `arm` starts 2 units short of the midpoint between its prongs, `hook` ends 3 short of its own — it is the only one of the three whose end is a free tip, the other two handing straight over to the next stroke, and 3 leaves the least bare path past its last dot, as দ's and ধ's ends are tuned. `matra`, inset 2 units from each cap for a whole 15 dot spacings, is last. Every guide sample is on ink; traced on the RMX3624 it completed at 99.7% (PERFECT).
+
+- **1.20 ম** — a shade wider than it is tall (aspect 1.032); as with প, height-fitting leaves its ink at x 7..93, comfortably inside the canvas and the same size as every other consonant, where a width fit would stretch it to y 4.5..95.5 — so it is fitted by height like ন, ব, ঢ, দ and ধ. It is a full headline, a post from the headline to the foot, and a body of two bands meeting at a junction under the middle of the letter at (43,47): an arc hanging from the matra at x=20 that curves down-right into it, and a long band running from the post at (73,67) up-left through it, round the big left bowl and back down to a flat cut at the bottom.
+
+  Which two of the three bands the pen runs through had to be measured over a **6-unit baseline** rather than the skeleton's last few pixels: read from three points the arms came out 51° and 59° apart and said almost nothing. Over 6 units the bowl and the sweep into the post turn only 27° into each other, against 65° for arc-to-sweep and 87° for arc-to-bowl, so the bowl and the sweep are one movement of 90 canvas units and `arc`, 48 units, is joined onto it — the same reading ধ's and প's junctions got. Where the arc leaves the matra is a turn, not a terminal: the skeleton's spur runs down-left to (13.5,24) into the ink's outer mitre and thins from 5.25 to 0.15 canvas units against the pen's 4.93, as ফ's (10,29) mitre does. `bowl` ends 2 units short of the midpoint of the flat cut that closes it, whose corners carry a prong each, (37.5,85) and (40,75.6). `arc` is written first, hanging from the headline, then `bowl`, then `post`, then `matra`. Every guide sample is on ink; traced on the RMX3624 it completed at 99.8% (PERFECT). This closes প-বর্গ.
 
 ---
 

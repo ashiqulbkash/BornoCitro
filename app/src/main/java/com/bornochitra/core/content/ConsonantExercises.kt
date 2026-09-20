@@ -2594,4 +2594,114 @@ internal val consonantExercises: List<Exercise> = listOf(
             ),
         ),
     ),
+    /**
+     * ম is read off the glyph the phone renders, like ন, প, ফ, ব and ভ. It is a shade wider than
+     * it is tall (aspect 1.032); as with প, height-fitting leaves its ink at x 7..93, comfortably
+     * inside the canvas and the same size as every other consonant, where a width fit would
+     * stretch it to y 4.5..95.5 — so it is fitted by height, like ন, ব, ঢ, দ and ধ.
+     *
+     * It is a full headline, a post from the headline to the foot, and a body of two bands meeting
+     * at a junction under the middle of the letter, at (43,47): an arc that hangs from the matra at
+     * x=20 and curves down-right into that junction, and a long band that runs from the post at
+     * (73,67) up-left through it, round the big left bowl and back down to a flat cut at the
+     * bottom.
+     *
+     * Which two of the three bands the pen runs through is measured over a 6-unit baseline rather
+     * than the skeleton's last few pixels, which are noisy at a junction — read from three points
+     * the arm angles come out 51 and 59 degrees apart and say almost nothing. Over 6 units the
+     * bowl and the sweep into the post turn only 27 degrees into each other, against 65 for
+     * arc-to-sweep and 87 for arc-to-bowl, so the bowl and the sweep are one movement of 90 canvas
+     * units and the arc, 48 units, is joined onto it — the same reading ধ's and প's junctions got.
+     *
+     * Where the arc leaves the matra is a turn, not a terminal: the skeleton's spur there runs
+     * down-left to (13.5,24), into the ink's outer mitre, and thins from 5.25 to 0.15 canvas units
+     * against the pen's 4.93, as ফ's (10,29) mitre does, so the guide turns at the junction. The
+     * bowl ends 2 units short of the midpoint of the flat cut that closes it, whose corners carry
+     * a skeleton prong each, (37.5,85) and (40,75.6).
+     *
+     * The arc is written first, hanging from the headline, then the bowl, then the post, and the
+     * matra — inset from each end cap — last.
+     */
+    Exercise(
+        id = "consonant-mo",
+        title = "ম",
+        type = ExerciseType.CONSONANT,
+        difficulty = Difficulty.ADVANCED,
+        order = 25,
+        strokes = listOf(
+            Stroke(
+                id = "consonant-mo-arc",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(20f, 12f),
+                        Point(20f, 15f),
+                        Point(20f, 18f),
+                        Point(20f, 20f),
+                        Point(23f, 21f),
+                        Point(26f, 22f),
+                        Point(29f, 22f),
+                        Point(31f, 24f),
+                        Point(33f, 25f),
+                        Point(36f, 26f),
+                        Point(38f, 29f),
+                        Point(39f, 31f),
+                        Point(40f, 33f),
+                        Point(41f, 36f),
+                        Point(42f, 39f),
+                        Point(42f, 41f),
+                        Point(43f, 44f),
+                        Point(43f, 47f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "consonant-mo-bowl",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(74f, 67f),
+                        Point(71f, 66f),
+                        Point(69f, 65f),
+                        Point(66f, 64f),
+                        Point(64f, 62f),
+                        Point(62f, 60f),
+                        Point(61f, 58f),
+                        Point(59f, 56f),
+                        Point(56f, 54f),
+                        Point(54f, 52f),
+                        Point(52f, 51f),
+                        Point(49f, 50f),
+                        Point(46f, 49f),
+                        Point(44f, 48f),
+                        Point(41f, 48f),
+                        Point(38f, 48f),
+                        Point(35f, 48f),
+                        Point(33f, 49f),
+                        Point(30f, 50f),
+                        Point(28f, 51f),
+                        Point(26f, 53f),
+                        Point(24f, 56f),
+                        Point(24f, 58f),
+                        Point(23f, 61f),
+                        Point(23f, 64f),
+                        Point(24f, 67f),
+                        Point(24f, 69f),
+                        Point(26f, 72f),
+                        Point(28f, 74f),
+                        Point(30f, 76f),
+                        Point(32f, 77f),
+                        Point(35f, 78f),
+                        Point(37f, 80f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "consonant-mo-post",
+                points = StrokePoints.line(Point(74f, 12f), Point(74f, 87f)),
+            ),
+            Stroke(
+                id = "consonant-mo-matra",
+                points = StrokePoints.line(Point(10f, 12f), Point(90f, 12f)),
+            ),
+        ),
+    ),
 )
