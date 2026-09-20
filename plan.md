@@ -183,7 +183,7 @@ else in that file passes on its own. Baseline after 1.1: **336 unit tests, 0 fai
 - [x] 1.18 ব
 - [x] 1.19 ভ
 - [x] 1.20 ম
-- [ ] 1.21 য
+- [x] 1.21 য
 - [ ] 1.22 র
 - [ ] 1.23 ল
 - [ ] 1.24 শ
@@ -258,6 +258,8 @@ Step 1 as a whole is done when all 34 sub-steps are checked, the catalog test as
 - **1.20 ম** — a shade wider than it is tall (aspect 1.032); as with প, height-fitting leaves its ink at x 7..93, comfortably inside the canvas and the same size as every other consonant, where a width fit would stretch it to y 4.5..95.5 — so it is fitted by height like ন, ব, ঢ, দ and ধ. It is a full headline, a post from the headline to the foot, and a body of two bands meeting at a junction under the middle of the letter at (43,47): an arc hanging from the matra at x=20 that curves down-right into it, and a long band running from the post at (73,67) up-left through it, round the big left bowl and back down to a flat cut at the bottom.
 
   Which two of the three bands the pen runs through had to be measured over a **6-unit baseline** rather than the skeleton's last few pixels: read from three points the arms came out 51° and 59° apart and said almost nothing. Over 6 units the bowl and the sweep into the post turn only 27° into each other, against 65° for arc-to-sweep and 87° for arc-to-bowl, so the bowl and the sweep are one movement of 90 canvas units and `arc`, 48 units, is joined onto it — the same reading ধ's and প's junctions got. Where the arc leaves the matra is a turn, not a terminal: the skeleton's spur runs down-left to (13.5,24) into the ink's outer mitre and thins from 5.25 to 0.15 canvas units against the pen's 4.93, as ফ's (10,29) mitre does. `bowl` ends 2 units short of the midpoint of the flat cut that closes it, whose corners carry a prong each, (37.5,85) and (40,75.6). `arc` is written first, hanging from the headline, then `bowl`, then `post`, then `matra`. Every guide sample is on ink; traced on the RMX3624 it completed at 99.8% (PERFECT). This closes প-বর্গ.
+
+- **1.21 য** — অন্তঃস্থ য. জ already holds `consonant-jo`, so this one is `consonant-yo`, which also leaves য় (1.30) a name. A shade wider than it is tall (aspect 1.038); as with প and ম, height-fitting leaves its ink at x 7..93, inside the canvas and the same size as every other consonant, where a width fit would stretch it past y 4..96 — so fitted by height. It is ফ's zigzag sail under a full headline, with a post hanging from the bar rather than ফ's free one, and no bowl: down a short stem from the matra, down-right to the first corner, back down-left to the second, then a long diagonal down-right into the post's foot. All of that is 139 canvas units in one movement — at the ceiling, where ভ's outer arc was — so it breaks at the second corner (22.5,52.3), both a landmark a child can see and the point where the zigzag stops and the sweep to the post begins, leaving `sail` 69 units and `tail` 64; ফ keeps the same shape in one stroke only because its own sail is 107. Each of the three corners grows a skeleton spur into the ink's outer mitre — (15.3,22.7), (52.1,38.5) and (15.1,49.6), thinning to 0.33-1.63 canvas units against the pen's 4.85 — so the pen's centre turns at the junction, as ফ's, ধ's and প's corners do. `post` stops 3 units short of its end cap and `matra` is last. Every guide sample is on ink; traced on the RMX3624 it completed at 99.8% (PERFECT).
 
 ---
 

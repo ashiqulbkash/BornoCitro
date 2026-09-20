@@ -2704,4 +2704,109 @@ internal val consonantExercises: List<Exercise> = listOf(
             ),
         ),
     ),
+    /**
+     * য — অন্তঃস্থ য — is read off the glyph the phone renders, like ন, প, ফ, ব, ভ and ম. জ already
+     * holds `consonant-jo`, so this one is `consonant-yo`. It is a shade wider than it is tall
+     * (aspect 1.038), and as with প and ম height-fitting leaves its ink at x 7..93, inside the
+     * canvas and the same size as every other consonant, where a width fit would stretch it past
+     * y 4..96 — so it is fitted by height, like ন, ব, ম, ঢ, দ and ধ.
+     *
+     * It is ফ's zigzag sail under a full headline, with a post hanging from the bar rather than ফ's
+     * free one, and no bowl: down a short stem from the matra, down-right to the first corner, back
+     * down-left to the second, then a long diagonal down-right into the post's foot.
+     *
+     * All of that is 139 canvas units in one movement — at the ceiling, where ভ's outer arc was —
+     * so it is broken at the second corner, (22.5,52.3). That is both a landmark the child can see
+     * and the point where the zigzag stops and the long sweep to the post begins; it leaves `sail`
+     * 69 units and `tail` 64. ফ keeps the same shape in one stroke because its own sail is only
+     * 107 units long.
+     *
+     * Each of the three corners grows a skeleton spur into the ink's outer mitre — to (15.3,22.7),
+     * (52.1,38.5) and (15.1,49.6), thinning to 0.33-1.63 canvas units against the pen's 4.85 — so
+     * the pen's centre turns at the junction and never travels out along the spur, as ফ's, ধ's and
+     * প's corners do.
+     *
+     * The post follows, from the headline to 3 units short of its end cap, and the matra is last.
+     */
+    Exercise(
+        id = "consonant-yo",
+        title = "য",
+        type = ExerciseType.CONSONANT,
+        difficulty = Difficulty.ADVANCED,
+        order = 26,
+        strokes = listOf(
+            Stroke(
+                id = "consonant-yo-sail",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(23f, 12f),
+                        Point(23f, 15f),
+                        Point(23f, 18f),
+                        Point(24f, 20f),
+                        Point(27f, 21f),
+                        Point(29f, 22f),
+                        Point(32f, 23f),
+                        Point(34f, 25f),
+                        Point(37f, 26f),
+                        Point(39f, 27f),
+                        Point(41f, 29f),
+                        Point(44f, 30f),
+                        Point(46f, 32f),
+                        Point(46f, 35f),
+                        Point(46f, 37f),
+                        Point(44f, 39f),
+                        Point(41f, 40f),
+                        Point(39f, 41f),
+                        Point(36f, 43f),
+                        Point(34f, 44f),
+                        Point(31f, 45f),
+                        Point(29f, 47f),
+                        Point(27f, 48f),
+                        Point(24f, 49f),
+                        Point(23f, 52f),
+                        Point(22f, 52f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "consonant-yo-tail",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(22f, 52f),
+                        Point(23f, 55f),
+                        Point(24f, 58f),
+                        Point(27f, 58f),
+                        Point(29f, 59f),
+                        Point(32f, 59f),
+                        Point(35f, 60f),
+                        Point(37f, 61f),
+                        Point(40f, 62f),
+                        Point(43f, 63f),
+                        Point(45f, 64f),
+                        Point(48f, 65f),
+                        Point(50f, 67f),
+                        Point(52f, 68f),
+                        Point(55f, 70f),
+                        Point(57f, 71f),
+                        Point(59f, 73f),
+                        Point(61f, 75f),
+                        Point(63f, 77f),
+                        Point(65f, 79f),
+                        Point(68f, 80f),
+                        Point(70f, 81f),
+                        Point(73f, 82f),
+                        Point(74f, 83f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "consonant-yo-post",
+                points = StrokePoints.line(Point(74f, 12f), Point(74f, 87f)),
+            ),
+            Stroke(
+                id = "consonant-yo-matra",
+                points = StrokePoints.line(Point(10f, 12f), Point(90f, 12f)),
+            ),
+        ),
+    ),
 )
