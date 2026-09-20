@@ -2379,4 +2379,91 @@ internal val consonantExercises: List<Exercise> = listOf(
             ),
         ),
     ),
+    /**
+     * ব is read off the glyph the phone renders, like ন, প and ফ. It comes out all but square
+     * (aspect 0.989), so its ink is fitted by height with x centred, the way ন, ঢ, দ and ধ are.
+     *
+     * It is ধ's body without the loop: a full headline, a post from the headline down to the foot,
+     * and one wide "<" hanging off the post's left whose two ends both run back into the post. The
+     * arm leaves the post at (72,26), where it tapers in, and runs down-left to the corner at
+     * (23,48); the sweep carries on from there down-right into the post's foot at (72,81). That is
+     * 119 canvas units in one movement, inside what a child can hold in one pass, as ধ's 116-unit
+     * body is, and the corner is the one landmark in it a child can see.
+     *
+     * The corner is the junction where the two centrelines cross. The ink runs on up-left to a tip
+     * and the skeleton grows a spur into it, but that is the corner's outer mitre — it thins from
+     * 4.94 to 0.74 canvas units against the pen's 4.93 — so the pen's centre turns at the junction
+     * and never travels out along the spur, exactly as ধ's and প's corners do.
+     *
+     * The post follows, from the headline to 3 units short of its end cap, and the matra — the full
+     * headline, inset 2 units from each cap so the bar is a whole 13 dot spacings — is last.
+     */
+    Exercise(
+        id = "consonant-bo",
+        title = "ব",
+        type = ExerciseType.CONSONANT,
+        difficulty = Difficulty.INTERMEDIATE,
+        order = 23,
+        strokes = listOf(
+            Stroke(
+                id = "consonant-bo-body",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(72f, 26f),
+                        Point(69f, 27f),
+                        Point(66f, 27f),
+                        Point(63f, 27f),
+                        Point(61f, 28f),
+                        Point(58f, 29f),
+                        Point(56f, 30f),
+                        Point(53f, 31f),
+                        Point(51f, 32f),
+                        Point(48f, 33f),
+                        Point(46f, 34f),
+                        Point(43f, 35f),
+                        Point(41f, 37f),
+                        Point(38f, 38f),
+                        Point(36f, 39f),
+                        Point(33f, 40f),
+                        Point(31f, 42f),
+                        Point(29f, 43f),
+                        Point(26f, 44f),
+                        Point(24f, 46f),
+                        Point(23f, 48f),
+                        Point(24f, 51f),
+                        Point(24f, 54f),
+                        Point(27f, 54f),
+                        Point(30f, 55f),
+                        Point(32f, 56f),
+                        Point(35f, 57f),
+                        Point(38f, 58f),
+                        Point(40f, 59f),
+                        Point(42f, 60f),
+                        Point(45f, 61f),
+                        Point(47f, 63f),
+                        Point(50f, 64f),
+                        Point(52f, 66f),
+                        Point(54f, 68f),
+                        Point(56f, 69f),
+                        Point(58f, 71f),
+                        Point(60f, 73f),
+                        Point(62f, 76f),
+                        Point(64f, 78f),
+                        Point(66f, 79f),
+                        Point(69f, 80f),
+                        Point(71f, 81f),
+                        Point(72f, 81f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "consonant-bo-post",
+                points = StrokePoints.line(Point(72f, 12f), Point(72f, 87f)),
+            ),
+            Stroke(
+                id = "consonant-bo-matra",
+                points = StrokePoints.line(Point(11f, 12f), Point(89f, 12f)),
+            ),
+        ),
+    ),
 )

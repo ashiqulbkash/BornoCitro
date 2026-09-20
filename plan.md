@@ -180,7 +180,7 @@ else in that file passes on its own. Baseline after 1.1: **336 unit tests, 0 fai
 - [x] 1.15 ন
 - [x] 1.16 প
 - [x] 1.17 ফ
-- [ ] 1.18 ব
+- [x] 1.18 ব
 - [ ] 1.19 ভ
 - [ ] 1.20 ম
 - [ ] 1.21 য
@@ -248,6 +248,10 @@ Step 1 as a whole is done when all 34 sub-steps are checked, the catalog test as
 - **1.17 ফ** — wider than it is tall (aspect 1.379), so fitted by width with y centred like জ, ঝ, ড and ত. It is a full headline, a post hanging free below it, a bowl off the post's top, and a zigzag sail on the left; like ত the right half does not touch the bar — the post's top is a flat cut five canvas units clear of it. `sail` is one movement of 107 canvas units, inside one pass: down the short stem from the matra, down-right to the first corner, back down-left to the second, then the long diagonal down-right into the post's foot. Each of its three sharp corners grows a skeleton spur into the ink's outer mitre — (10,29), (40,42) and (10,51), thinning to 0.2-1.4 canvas units against the pen's 3.93 — so the pen's centre turns at the junction and never travels out along the spur, as ধ's and প's corners do. `bowl` is joined onto the post rather than continuous with it, which is what the angles at the post's top say: the two halves of the post leave at 34° and the bowl at 57°, so the post runs straight through and the bowl starts on it, the way ণ's loop starts on its own post. It ends 2 units short of the midpoint of the vertical flat cut that closes it, from (69,58) to (69,66.5), with a skeleton prong into each corner. `post` runs from its top cut to its foot — 54 units, exactly 9 dot spacings — and `matra`, inset 2 units from each end cap for a whole 15 spacings, is last. Every guide sample is on ink; on the RMX3624 the x and y scales agreed to 0.02% and the trace completed at 99.7% (PERFECT).
 
   The calibration's worst-dot check reads 0.0 px for `bowl`'s first dot: it sits on the post, and where two dots overlap the blended purple falls outside the colour mask. Marking the predicted centres on the screenshot shows every one of them, that dot included, in the middle of a drawn dot.
+
+- **1.18 ব** — all but square (aspect 0.989), so fitted by height like ন, ঢ, দ and ধ. It is ধ's body without the loop: a full headline, a post from the headline to the foot, and one wide "<" hanging off the post's left whose two ends both run back into the post. `body` is one movement of 119 canvas units, inside one pass as ধ's 116-unit body is: the arm leaves the post at (72,26) where it tapers in, runs down-left to the corner at (23,48), and the sweep carries on down-right into the post's foot at (72,81). The corner is the junction where the two centrelines cross; the ink runs on up-left to a tip and the skeleton grows a spur into it, but that is the corner's outer mitre — it thins from 4.94 to 0.74 canvas units against the pen's 4.93 — so the pen's centre turns at the junction, as ধ's and প's do. `post` stops 3 units short of its end cap and `matra`, inset 2 units from each cap for a whole 13 dot spacings, is last. Every guide sample is on ink; traced on the RMX3624 it completed at 99.8% (PERFECT).
+
+  The first trace run saved nothing: `monkey` did not bring the app to the front, so every tap and swipe landed on the launcher and ended up scrolling its app drawer. The trace script now proves the app is foreground (`dumpsys window | grep mCurrentFocus` names com.bornochitra) before it navigates, and retries the launch if it is not.
 
 ---
 
