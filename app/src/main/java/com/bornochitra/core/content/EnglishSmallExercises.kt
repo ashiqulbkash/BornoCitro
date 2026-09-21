@@ -1633,4 +1633,38 @@ internal val englishSmallExercises: List<Exercise> = listOf(
             ),
         ),
     ),
+    /**
+     * x is a shade wider than it is tall (aspect 1.083), so it is fitted by width.
+     *
+     * Two straight diagonals between flat tops and flat feet, crossing near the centre. Written as
+     * taught: `down` from the top left to the bottom right, then `cross` from the top right to the
+     * bottom left. The skeleton forks into every corner of the flat ends and knots into a short bar
+     * where the diagonals cross, so each diagonal is a line fitted through the ink's row centres of
+     * both its halves; the second diagonal's halves are offset about 5.6 units at the centre, and
+     * one straight line through both, as a child draws it, stays on the ink.
+     *
+     * Where they cross, both strokes put a dot exactly on the crossing point, so it reads as one
+     * dot (see p): each diagonal's ends sit a whole number of 6-unit spacings from that point along
+     * its line, 8 either side, the furthest that keeps each end dot inside its flat end, making
+     * both strokes a whole 16 spacings (96 units), over by 0.02 so float rounding cannot drop the
+     * last dot. The diagonals cross at about 72 degrees, so the dots either side of the crossing
+     * sit well apart.
+     */
+    Exercise(
+        id = "english-small-x",
+        title = "x",
+        type = ExerciseType.ENGLISH_SMALL,
+        difficulty = Difficulty.BEGINNER,
+        order = 24,
+        strokes = listOf(
+            Stroke(
+                id = "english-small-x-down",
+                points = StrokePoints.line(Point(21.27f, 10.7f), Point(78.44f, 87.84f)),
+            ),
+            Stroke(
+                id = "english-small-x-cross",
+                points = StrokePoints.line(Point(79.81f, 11.76f), Point(19.88f, 86.78f)),
+            ),
+        ),
+    ),
 )
