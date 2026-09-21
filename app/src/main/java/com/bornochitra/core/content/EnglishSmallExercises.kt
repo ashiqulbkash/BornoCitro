@@ -679,4 +679,40 @@ internal val englishSmallExercises: List<Exercise> = listOf(
             ),
         ),
     ),
+    /**
+     * i is far taller than it is wide (aspect 0.223), so it is fitted by height.
+     *
+     * Two separate pieces of ink: a straight stem (row centre x 50, flat ends at y 35.8 and 90) and
+     * a round dot above it. Written as a writer adds them — `stem` top to bottom, then `dot`. The
+     * stem stops 3 units inside each end (y 39 and 87): 2 hangs the end dot past the cut (min ink
+     * 2.4 top / 2.0 foot against the 2.5 dot radius), and 39..87 is a whole 8 dot spacings.
+     *
+     * The dot follows the ring rule র set: its largest inscribed circle is 9.25 canvas units at
+     * (50, 16), and the ring inside it has radius 5.73 — about 60% of that, and the radius whose
+     * circumference is a whole 6 dot spacings, so its last dot closes onto its first. It starts at
+     * the top and runs counter-clockwise, the way round letters are written.
+     */
+    Exercise(
+        id = "english-small-i",
+        title = "i",
+        type = ExerciseType.ENGLISH_SMALL,
+        difficulty = Difficulty.BEGINNER,
+        order = 9,
+        strokes = listOf(
+            Stroke(
+                id = "english-small-i-stem",
+                points = StrokePoints.line(Point(50f, 39f), Point(50f, 87f)),
+            ),
+            Stroke(
+                id = "english-small-i-dot",
+                points = StrokePoints.arc(
+                    center = Point(50f, 16f),
+                    radius = 5.73f,
+                    startDeg = -90f,
+                    sweepDeg = -360f,
+                    samples = 32,
+                ),
+            ),
+        ),
+    ),
 )
