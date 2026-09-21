@@ -1413,4 +1413,62 @@ internal val englishSmallExercises: List<Exercise> = listOf(
             ),
         ),
     ),
+    /**
+     * t is much taller than it is wide (aspect 0.586), so it is fitted by height.
+     *
+     * A straight stem from a flat top, curling at the foot into a hook that ends in a vertical flat
+     * cut, and a crossbar that is separate ink. Written as taught: `stem` top to bottom and round
+     * the hook in one pass, then `bar` left to right. The skeleton runs the hook into the cut's top
+     * corner and spurs down into the foot's bulge, neither a path, so past the curl the hook follows
+     * the ink's column centres, turning up into the cut as the glyph does.
+     *
+     * Every stroke is a whole number of 6-unit dot spacings, and where the bar crosses the stem one
+     * bar dot sits exactly on a stem dot, so the crossing reads as one dot (see p). The stem is at
+     * x 46.5, half a unit right of its ink centre, so the bar, x 28.5 to 70.5 (a whole 7 spacings,
+     * the most that fits with both end dots on the ink), has a dot on it. The stem starts at y 9.5
+     * (before the shift), the end dot's radius under the flat top, which puts its fifth dot at y
+     * 33.5, inside the bar's ink, so the bar runs there. The stem is a whole 16 spacings (96
+     * units): it stops 2.5 units short of the cut, where the last dot just fits, with its end eased
+     * 4 units up the cut. The guide is then moved 4 units down (the coordinates here include it) so
+     * its bbox centre is on the canvas's, the vertical counterpart of c's shift; the canvas draws
+     * only the guide, so this moves placement, not shape.
+     */
+    Exercise(
+        id = "english-small-t",
+        title = "t",
+        type = ExerciseType.ENGLISH_SMALL,
+        difficulty = Difficulty.BEGINNER,
+        order = 20,
+        strokes = listOf(
+            Stroke(
+                id = "english-small-t-stem",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(46.5f, 13.5f),
+                        Point(46.5f, 66.5f),
+                        Point(46.4f, 69.6f),
+                        Point(46.5f, 72.6f),
+                        Point(46.8f, 75.5f),
+                        Point(47.3f, 78.4f),
+                        Point(48.2f, 81.1f),
+                        Point(49.8f, 83.5f),
+                        Point(52.1f, 85.2f),
+                        Point(54.9f, 86.1f),
+                        Point(57.8f, 86.4f),
+                        Point(60f, 86.7f),
+                        Point(64f, 86.4f),
+                        Point(66f, 84.9f),
+                        Point(68f, 83.2f),
+                        Point(70f, 81.3f),
+                        Point(71f, 80.3f),
+                        Point(71.7f, 79.5f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "english-small-t-bar",
+                points = StrokePoints.line(Point(28.5f, 37.5f), Point(70.5f, 37.5f)),
+            ),
+        ),
+    ),
 )
