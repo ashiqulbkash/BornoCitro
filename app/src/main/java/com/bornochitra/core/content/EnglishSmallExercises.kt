@@ -770,4 +770,50 @@ internal val englishSmallExercises: List<Exercise> = listOf(
             ),
         ),
     ),
+    /**
+     * k is much taller than it is wide (aspect 0.629), so it is fitted by height.
+     *
+     * A straight stem and an angle: an arm running down-left from a flat top and a leg running
+     * down-right to a flat foot, fused onto the stem's right edge. Written as taught: `stem` top to
+     * bottom, then `angle` in to the stem and out again in one movement. Both diagonals are
+     * straight and run along lines fitted through the ink's row centres (the skeleton runs off into
+     * the outer corner of each flat end).
+     *
+     * Reworked after review on the device, where the first pass looked wrong in two ways:
+     * - The diagonals' own centrelines meet at (43, 60), and a point there left a wide gap between
+     *   the angle's dots and the stem's, so the angle looked detached. The point is now against the
+     *   stem, its dot overlapping the stem's; the two dots either side of it spill a little into the
+     *   white notches above and below the join, which is the price of a closed join.
+     * - The stem ran 77 units, so its last dot fell 5 units short of the end and a bare line trailed
+     *   below it. Every stroke is now a whole number of 6-unit dot spacings, so a dot lands on each
+     *   end and on the point: the stem is y 9.5 to 87.5 (78 units, 2.5 inside each flat end, where
+     *   the end dot's radius just fits), the arm exactly 30 (a 3-4-5 triangle, so no float rounding
+     *   can drop the dot on the point) and the leg 36.07.
+     *
+     * The whole guide is 1 unit right of the ink's centreline (stem at x 33) so its bbox centre is
+     * 48, not the catalog test's exact 3-unit limit; this moves placement, not shape.
+     */
+    Exercise(
+        id = "english-small-k",
+        title = "k",
+        type = ExerciseType.ENGLISH_SMALL,
+        difficulty = Difficulty.BEGINNER,
+        order = 11,
+        strokes = listOf(
+            Stroke(
+                id = "english-small-k-stem",
+                points = StrokePoints.line(Point(33f, 9.5f), Point(33f, 87.5f)),
+            ),
+            Stroke(
+                id = "english-small-k-angle",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(61f, 42f),
+                        Point(37f, 60f),
+                        Point(63f, 85f),
+                    ),
+                ),
+            ),
+        ),
+    ),
 )
