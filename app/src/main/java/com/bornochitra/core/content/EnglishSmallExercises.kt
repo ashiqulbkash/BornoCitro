@@ -919,4 +919,70 @@ internal val englishSmallExercises: List<Exercise> = listOf(
             ),
         ),
     ),
+    /**
+     * n is a shade taller than it is wide (aspect 0.988), so it is fitted by height.
+     *
+     * m with one arch: two straight legs (ink row centres x 24.2 and 79.8, the stem's flat top at
+     * y 8.6, both flat feet at y 90) joined by a shoulder. Written as m is: `stem` top to bottom, then
+     * `arch` out of the stem, over the shoulder and down the right leg, following the skeleton until
+     * the leg turns straight at y 50 and one segment from there.
+     *
+     * Every stroke is a whole number of 6-unit dot spacings: the stem is y 13.5 to 85.5 (72 units;
+     * 78 would not fit between the flat ends with the end dots' 2.5 radius inside the ink), and the
+     * arch's foot stops at the stem's foot height. The arch starts at y 41 on the stem, below the
+     * skeleton junction at y 34, which makes it a whole 21 spacings (126 units); its first dot
+     * overlaps the stem's dots, so the join is closed.
+     */
+    Exercise(
+        id = "english-small-n",
+        title = "n",
+        type = ExerciseType.ENGLISH_SMALL,
+        difficulty = Difficulty.BEGINNER,
+        order = 14,
+        strokes = listOf(
+            Stroke(
+                id = "english-small-n-stem",
+                points = StrokePoints.line(Point(24.2f, 13.5f), Point(24.2f, 85.5f)),
+            ),
+            Stroke(
+                id = "english-small-n-arch",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(24.2f, 41f),
+                        Point(27f, 33f),
+                        Point(29f, 31f),
+                        Point(32f, 30f),
+                        Point(34f, 29f),
+                        Point(37f, 28f),
+                        Point(39f, 27f),
+                        Point(41f, 25f),
+                        Point(43f, 24f),
+                        Point(46f, 22f),
+                        Point(48f, 21f),
+                        Point(51f, 20f),
+                        Point(54f, 19f),
+                        Point(56f, 19f),
+                        Point(59f, 18f),
+                        Point(62f, 18f),
+                        Point(65f, 17f),
+                        Point(67f, 18f),
+                        Point(70f, 19f),
+                        Point(72f, 20f),
+                        Point(74f, 23f),
+                        Point(76f, 25f),
+                        Point(77f, 27f),
+                        Point(78f, 30f),
+                        Point(78f, 33f),
+                        Point(79f, 35f),
+                        Point(79f, 38f),
+                        Point(79f, 41f),
+                        Point(80f, 44f),
+                        Point(80f, 47f),
+                        Point(79.7f, 50f),
+                        Point(79.7f, 85.5f),
+                    ),
+                ),
+            ),
+        ),
+    ),
 )
