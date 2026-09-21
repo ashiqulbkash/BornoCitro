@@ -816,4 +816,25 @@ internal val englishSmallExercises: List<Exercise> = listOf(
             ),
         ),
     ),
+    /**
+     * l is far taller than it is wide (aspect 0.198), so it is fitted by height.
+     *
+     * Andika's l is a plain straight stem with no foot or tail: ink row centre x 50 from a flat top
+     * at y 7 to a flat foot at y 90. One stroke, top to bottom, sized as k's stem is to a whole 13
+     * dot spacings (y 9.5 to 87.5) so a dot lands on each end and no bare line trails the last dot;
+     * 2.5 units inside each end is exactly where the end dot's radius fits.
+     */
+    Exercise(
+        id = "english-small-l",
+        title = "l",
+        type = ExerciseType.ENGLISH_SMALL,
+        difficulty = Difficulty.BEGINNER,
+        order = 12,
+        strokes = listOf(
+            Stroke(
+                id = "english-small-l-stem",
+                points = StrokePoints.line(Point(50f, 9.5f), Point(50f, 87.5f)),
+            ),
+        ),
+    ),
 )

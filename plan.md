@@ -408,7 +408,7 @@ Small letters:
 - [x] 3.9 i
 - [x] 3.10 j
 - [x] 3.11 k
-- [ ] 3.12 l
+- [x] 3.12 l
 - [ ] 3.13 m
 - [ ] 3.14 n
 - [ ] 3.15 o
@@ -507,7 +507,9 @@ _(Add one note per sub-step as it is completed, as in Step 1.)_
 
   Final geometry (`k_final.py`): every stroke is a whole number of spacings, so a dot lands on each end and on the point. Stem y 9.5..87.5 (78 units; 2.5 inside each flat end, where the end dot's radius just fits, min ink 2.50). Angle (60,42) → (36,60) → (62,85) before the shift: the arm is exactly 30 (a 3-4-5 triangle, so float rounding cannot drop the dot on the point — `DottedPathSampler` only places a dot once a full spacing is walked) and the leg 36.07. The point's dot overlaps the stem's; the two dots either side of it spill into the white notches above and below the join (min ink 1.95 against the 2.5 dot radius), the price of a closed join the user asked for. The whole guide is shifted 1 unit right (stem x 33) so its bbox centre is (48, 48.5) rather than exactly on the catalog test's 3-unit limit. Lesson for K, R and any branch fused to a stem's edge: judge the join and the stroke ends on the device screenshot — close the join, and size strokes to whole spacings so no bare line trails the last dot.
 
-  355 unit tests, 0 failures. **Device check of the final geometry pending**: the phone was in use (YouTube in the foreground) when it was due. The previous (39, 60) version traced at 98.2% (PERFECT) with the mapping `sx = 32.2 + 6.556x`, `sy = 536.4 + 6.556y`.
+  355 unit tests, 0 failures. The device check was deferred once (the phone was in use) and done with 3.12: on the RMX3624 the Practice screen shows the angle closed onto the stem and a dot on the stem's foot; the mapping matched 3.1's (`sx = 31.5 + 6.565x`, `sy = 535.8 + 6.565y`, x/y scales agreeing to 0.13%, every predicted dot centre ≥14.9 px inside a 16.1 px dot) and the trace completed at 98.1% (PERFECT), a new `practice_session` row.
+
+- **3.12 l** — `english-small-l`, far taller than wide (aspect 0.198), fitted by height. Andika's l is a plain straight stem, no foot or tail: row centre x 50 from a flat top at y 7 to a flat foot at y 90, so it is one stroke, top to bottom. Sized by the rule 3.11's review set — a whole number of dot spacings, so a dot lands on each end and no bare line trails — as y 9.5 to 87.5 (78 units, 13 spacings), 2.5 inside each end, exactly where the end dot's radius fits (min ink under any dot 2.50). Guide bbox centre (50, 48.5). `calib.py` cannot fit a zero-width guide (no x scale), so the mapping just measured on k in the same layout was checked against the l screenshot instead with `verify_map.py`: every predicted dot centre ≥15.0 px inside a 15.7 px dot. The trace completed at 100% (PERFECT), a new `practice_session` row. 355 unit tests, 0 failures.
 
 ---
 
