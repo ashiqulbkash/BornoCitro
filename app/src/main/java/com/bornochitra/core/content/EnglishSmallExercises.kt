@@ -1580,4 +1580,57 @@ internal val englishSmallExercises: List<Exercise> = listOf(
             ),
         ),
     ),
+    /**
+     * w is much wider than it is tall (aspect 1.470), so it is fitted by width.
+     *
+     * Two v's side by side: four straight diagonals between flat tops (the middle peak's top is
+     * flat too) and two flat feet. The skeleton forks into every corner of the flat ends, so each
+     * diagonal is a line fitted through the ink's row centres, and the right half mirrors the left
+     * (the glyph is symmetric about x 50). As in v, arms meeting in a sharp corner would crowd the
+     * dots either side of it, so every corner is a flat of exactly one dot spacing, as the glyph's
+     * flat feet and peak are: the feet run x 27 to 33 and 67 to 73 at the height where the outer
+     * and inner centrelines are 6 apart, and the peak runs x 47 to 53, a few units under its flat
+     * top, where the inner arms are far enough apart.
+     *
+     * The whole path is about 246 canvas units, so it is split at the middle peak, the landmark
+     * between the two v's: `left` down the outer arm, along the left foot and up to the peak's left
+     * corner (120 units); `right` along the peak, down to the right foot, along it and up the outer
+     * arm (126 units), the two sharing the dot at the peak. Every diagonal is a whole number of
+     * 6-unit spacings (60 outer, 54 inner), over by under 0.06 so float rounding cannot drop a
+     * corner dot and the surplus does not build up along a stroke; that needs the corners to two
+     * decimals. The outer arm's start slides along its centreline under the flat top to make its
+     * length, and the peak's height slides along the flat-topped peak to make the inner arm's.
+     */
+    Exercise(
+        id = "english-small-w",
+        title = "w",
+        type = ExerciseType.ENGLISH_SMALL,
+        difficulty = Difficulty.BEGINNER,
+        order = 23,
+        strokes = listOf(
+            Stroke(
+                id = "english-small-w-left",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(12.88f, 21.13f),
+                        Point(27f, 79.5f),
+                        Point(33f, 79.5f),
+                        Point(47f, 27.29f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "english-small-w-right",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(47f, 27.29f),
+                        Point(53f, 27.29f),
+                        Point(67f, 79.5f),
+                        Point(73f, 79.5f),
+                        Point(87.12f, 21.13f),
+                    ),
+                ),
+            ),
+        ),
+    ),
 )
