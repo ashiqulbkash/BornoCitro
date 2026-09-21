@@ -63,7 +63,7 @@ class ExerciseCatalogTest {
     fun `english small letters carry the right characters in alphabet order, with no matra`() {
         val letters = ExerciseCatalog.all.filter { it.type == ExerciseType.ENGLISH_SMALL }.sortedBy { it.order }
 
-        assertEquals("abcdefghijklmnopqr", letters.joinToString("") { it.title })
+        assertEquals("abcdefghijklmnopqrs", letters.joinToString("") { it.title })
         letters.forEach { letter ->
             assertEquals("english-small-${letter.title}", letter.id)
             assertTrue("${letter.id} has a matra", letter.strokes.none { it.id.endsWith("-matra") })
@@ -124,6 +124,7 @@ class ExerciseCatalogTest {
             "english-small-p" to 2,
             "english-small-q" to 2,
             "english-small-r" to 2,
+            "english-small-s" to 2,
             "drawing-line" to 1, "drawing-circle" to 1, "drawing-square" to 1, "drawing-triangle" to 1,
             "drawing-house" to 2,
         )

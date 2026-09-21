@@ -1311,4 +1311,106 @@ internal val englishSmallExercises: List<Exercise> = listOf(
             ),
         ),
     ),
+    /**
+     * s is taller than it is wide (aspect 0.808), so it is fitted by height.
+     *
+     * One movement between two slanted flat cuts: from the top-right cut, left over the top, down
+     * the left side, along the diagonal spine, round the bottom bowl and out to the lower-left cut.
+     * Each cut forks the skeleton into a prong per corner, and the skeleton's spurs at the top, left,
+     * right and bottom run into the bulges where Andika's stroke thickens; none of those is a path.
+     * As one stroke it is about 174 canvas units, past what a child holds in one pass, so it is
+     * split where the spine crosses the letter's centre, the landmark between its two bowls: `top`
+     * from the top cut to the centre (84 units) and `bottom` from the centre to the lower cut
+     * (90 units), sharing the dot there.
+     *
+     * Both ends stop 4.4 units short of their cut's midpoint, the inset that makes the whole path a
+     * whole number of 6-unit dot spacings without reshaping the skeleton (the pair of insets whose
+     * larger one is smallest, so both ends sit alike), and the split is on the whole spacing
+     * nearest the spine's midpoint, so both halves are whole spacings too.
+     */
+    Exercise(
+        id = "english-small-s",
+        title = "s",
+        type = ExerciseType.ENGLISH_SMALL,
+        difficulty = Difficulty.BEGINNER,
+        order = 19,
+        strokes = listOf(
+            Stroke(
+                id = "english-small-s-top",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(73.3f, 20.5f),
+                        Point(67f, 18f),
+                        Point(65f, 17f),
+                        Point(62f, 17f),
+                        Point(59f, 16f),
+                        Point(56f, 16f),
+                        Point(54f, 16f),
+                        Point(51f, 16f),
+                        Point(48f, 16f),
+                        Point(45f, 16f),
+                        Point(42f, 17f),
+                        Point(39f, 17f),
+                        Point(37f, 18f),
+                        Point(34f, 20f),
+                        Point(32f, 22f),
+                        Point(31f, 24f),
+                        Point(30f, 27f),
+                        Point(30f, 29f),
+                        Point(29f, 32f),
+                        Point(30f, 35f),
+                        Point(30f, 37f),
+                        Point(32f, 40f),
+                        Point(34f, 42f),
+                        Point(36f, 43f),
+                        Point(39f, 44f),
+                        Point(41f, 45f),
+                        Point(44f, 46f),
+                        Point(47f, 46f),
+                        Point(49f, 47f),
+                        Point(50.9f, 47f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "english-small-s-bottom",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(50.9f, 47f),
+                        Point(52f, 47f),
+                        Point(55f, 48f),
+                        Point(58f, 49f),
+                        Point(60f, 50f),
+                        Point(63f, 51f),
+                        Point(65f, 52f),
+                        Point(67f, 54f),
+                        Point(69f, 56f),
+                        Point(71f, 58f),
+                        Point(71f, 61f),
+                        Point(72f, 63f),
+                        Point(71f, 66f),
+                        Point(71f, 69f),
+                        Point(70f, 71f),
+                        Point(69f, 74f),
+                        Point(67f, 76f),
+                        Point(64f, 78f),
+                        Point(62f, 79f),
+                        Point(59f, 79f),
+                        Point(57f, 80f),
+                        Point(54f, 80f),
+                        Point(51f, 81f),
+                        Point(48f, 81f),
+                        Point(45f, 81f),
+                        Point(42f, 80f),
+                        Point(40f, 80f),
+                        Point(37f, 79f),
+                        Point(34f, 79f),
+                        Point(31f, 78f),
+                        Point(29f, 77f),
+                        Point(22.7f, 73.8f),
+                    ),
+                ),
+            ),
+        ),
+    ),
 )
