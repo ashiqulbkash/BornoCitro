@@ -1,5 +1,7 @@
 package com.bornochitra.app.navigation
 
+import com.bornochitra.core.model.SessionScores
+
 /** Navigation routes for every planned screen. See plan.md section 13. */
 sealed interface BcDestination {
 
@@ -27,16 +29,18 @@ sealed interface BcDestination {
 
     data object Practice : BcDestination {
         const val ARG_EXERCISE_ID = "exerciseId"
-        override val route = "practice/{$ARG_EXERCISE_ID}"
+        override val route = "practice/{$ARG_EXERCISE_ID}?${SessionScores.ARG}={${SessionScores.ARG}}"
 
-        fun createRoute(exerciseId: String) = "practice/$exerciseId"
+        fun createRoute(exerciseId: String, sessionScores: List<Float> = emptyList()) =
+            "practice/$exerciseId?${SessionScores.ARG}=${SessionScores.encode(sessionScores)}"
     }
 
     data object Result : BcDestination {
         const val ARG_SESSION_ID = "sessionId"
-        override val route = "result/{$ARG_SESSION_ID}"
+        override val route = "result/{$ARG_SESSION_ID}?${SessionScores.ARG}={${SessionScores.ARG}}"
 
-        fun createRoute(sessionId: String) = "result/$sessionId"
+        fun createRoute(sessionId: String, sessionScores: List<Float>) =
+            "result/$sessionId?${SessionScores.ARG}=${SessionScores.encode(sessionScores)}"
     }
 
     data object Progress : BcDestination {

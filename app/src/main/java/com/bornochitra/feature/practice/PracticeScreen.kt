@@ -62,7 +62,7 @@ import com.bornochitra.core.ui.theme.BornoChitraTheme
 fun PracticeScreen(
     exerciseId: String,
     onBackClick: () -> Unit,
-    onCompleteClick: (sessionId: String) -> Unit,
+    onCompleteClick: (sessionId: String, sessionScores: List<Float>) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: PracticeViewModel = hiltViewModel(),
 ) {
@@ -78,7 +78,7 @@ fun PracticeScreen(
 
     val sessionId = state.sessionId
     LaunchedEffect(sessionId) {
-        if (sessionId != null) onCompleteClick(sessionId.toString())
+        if (sessionId != null) onCompleteClick(sessionId.toString(), state.sessionScores)
     }
 }
 

@@ -117,8 +117,9 @@ class ResultViewModelTest {
         sessionId: String = "1",
         results: Map<Long, PracticeResult> = mapOf(1L to practiceResult()),
         exercises: List<Exercise> = this.exercises,
+        sessionScores: String = "",
     ) = ResultViewModel(
-        savedStateHandle = SavedStateHandle(mapOf("sessionId" to sessionId)),
+        savedStateHandle = SavedStateHandle(mapOf("sessionId" to sessionId, "scores" to sessionScores)),
         exerciseRepository = exerciseRepositoryOf(exercises),
         progressRepository = progressRepositoryOf(results),
         tipSelector = TipSelector(TipRules()),
@@ -146,6 +147,36 @@ class ResultViewModelTest {
             ),
             state.attempt,
         )
+    }
+
+    @Test
+    fun `a single try reports one try and its own score as the overall progress`() = runTest(dispatcher) {
+        val viewModel = viewModel()
+
+        backgroundScope.launch(dispatcher) { viewModel.uiState.collect {} }
+        dispatcher.scheduler.advanceUntilIdle()
+
+        val attempt = viewModel.uiState.value.attempt
+        assertEquals(1, attempt?.sessionAttempts)
+        assertEquals(94, attempt?.sessionAveragePercent)
+    }
+
+    @Test
+    fun `several tries report how many and their average as the overall progress`() = runTest(dispatcher) {
+        val viewModel = viewModel(sessionScores = "60.0,80.0,94.0")
+
+        backgroundScope.launch(dispatcher) { viewModel.uiState.collect {} }
+        dispatcher.scheduler.advanceUntilIdle()
+
+        val attempt = viewModel.uiState.value.attempt
+        assertEquals(3, attempt?.sessionAttempts)
+        assertEquals(78, attempt?.sessionAveragePercent)
+    }
+
+    @Test
+    fun `session summary says how many times the child tried and the overall progress`() {
+        assertEquals("You tried 1 time. Your overall progress is 94%.", sessionSummary(1, 94))
+        assertEquals("You tried 3 times. Your overall progress is 78%.", sessionSummary(3, 78))
     }
 
     @Test

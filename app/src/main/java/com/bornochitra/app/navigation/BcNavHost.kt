@@ -7,6 +7,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.bornochitra.core.model.SessionScores
 import com.bornochitra.feature.consonants.ConsonantsScreen
 import com.bornochitra.feature.drawing.DrawingScreen
 import com.bornochitra.feature.home.HomeScreen
@@ -77,27 +78,39 @@ fun BcNavHost(
 
         composable(
             route = BcDestination.Practice.route,
-            arguments = listOf(navArgument(BcDestination.Practice.ARG_EXERCISE_ID) { type = NavType.StringType }),
+            arguments = listOf(
+                navArgument(BcDestination.Practice.ARG_EXERCISE_ID) { type = NavType.StringType },
+                navArgument(SessionScores.ARG) {
+                    type = NavType.StringType
+                    defaultValue = ""
+                },
+            ),
         ) { backStackEntry ->
             val exerciseId = backStackEntry.arguments?.getString(BcDestination.Practice.ARG_EXERCISE_ID).orEmpty()
             PracticeScreen(
                 exerciseId = exerciseId,
                 onBackClick = { navController.popBackStack() },
-                onCompleteClick = { sessionId ->
-                    navController.navigate(BcDestination.Result.createRoute(sessionId))
+                onCompleteClick = { sessionId, sessionScores ->
+                    navController.navigate(BcDestination.Result.createRoute(sessionId, sessionScores))
                 },
             )
         }
 
         composable(
             route = BcDestination.Result.route,
-            arguments = listOf(navArgument(BcDestination.Result.ARG_SESSION_ID) { type = NavType.StringType }),
+            arguments = listOf(
+                navArgument(BcDestination.Result.ARG_SESSION_ID) { type = NavType.StringType },
+                navArgument(SessionScores.ARG) {
+                    type = NavType.StringType
+                    defaultValue = ""
+                },
+            ),
         ) {
             ResultScreen(
                 // Practising again or moving on replaces the finished attempt, so Back from the new
                 // attempt returns to the exercise list instead of an already-scored result.
-                onPracticeClick = { exerciseId ->
-                    navController.navigate(BcDestination.Practice.createRoute(exerciseId)) {
+                onPracticeClick = { exerciseId, sessionScores ->
+                    navController.navigate(BcDestination.Practice.createRoute(exerciseId, sessionScores)) {
                         popUpTo(BcDestination.Practice.route) { inclusive = true }
                     }
                 },

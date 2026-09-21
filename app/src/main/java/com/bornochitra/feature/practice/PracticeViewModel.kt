@@ -11,6 +11,7 @@ import com.bornochitra.core.model.Exercise
 import com.bornochitra.core.model.ExerciseType
 import com.bornochitra.core.model.PracticeResult
 import com.bornochitra.core.model.ScoreLevel
+import com.bornochitra.core.model.SessionScores
 import com.bornochitra.core.tips.ContextualTip
 import com.bornochitra.core.tips.TipSelector
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -40,6 +41,8 @@ data class PracticeState(
      * that is over and must be cleared.
      */
     val attemptId: Int = 0,
+    /** The score of every try completed in this session, oldest first. */
+    val sessionScores: List<Float> = emptyList(),
 )
 
 /**
@@ -66,6 +69,7 @@ class PracticeViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val exerciseId: String = checkNotNull(savedStateHandle[ARG_EXERCISE_ID])
+    private val earlierSessionScores = SessionScores.decode(savedStateHandle[SessionScores.ARG])
     private var startedAtMs: Long? = null
     private var previousAttempts = 0
     private var wasMastered = false
@@ -87,6 +91,7 @@ class PracticeViewModel @Inject constructor(
                     exercise = exercise,
                     isLoading = false,
                     tip = tipSelector.beforeFirstAttempt(previousAttempts),
+                    sessionScores = earlierSessionScores,
                 )
             } else {
                 PracticeState(isLoading = false, error = "We couldn't find that exercise.")
@@ -133,6 +138,7 @@ class PracticeViewModel @Inject constructor(
                 score = score,
                 scoreLevel = scoreLevel,
                 sessionId = sessionId,
+                sessionScores = mutableState.value.sessionScores + score,
             )
         }
     }

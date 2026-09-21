@@ -337,33 +337,31 @@ Step 1 as a whole is done when all 34 sub-steps are checked, the catalog test as
 
 ---
 
-# 3. Step 2 — Practice Sets and Averaged Progress
+# 3. Step 2 — Practice Sessions and Averaged Result
 
 ## Requirement
 
-One screen practises **one character repeated 5 or 10 times**. The child traces every repetition; the screen shows the set's progress; the character's overall progress is the **average** of all its repetitions.
+The child enters the Practice screen and traces the character. When they finish, the Result screen offers **Try Again** or **View Progress**. The child may try as many times as they like; every try in that visit (the *session*) is tracked, and the Result screen reports the session average: **"You tried n time(s). Your overall progress is n%."**
 
 ## Implement
 
-- **Set model.** A `PracticeSet` is one `Exercise` plus a set size. Set size is 5 or 10, chosen from a small selector on the Practice entry (default 5). Vowels, consonants, English and math all use it; drawings keep single-attempt practice.
-- **Screen.** Repetitions are shown as a scrollable grid/list of tracing cells (one `TracingInputCanvas` per cell, each with its own dotted guide). Each cell is traced independently, is marked done when complete, and shows its own score. Reset clears one cell; a set-level control restarts the set.
-- **State (MVI).** Extend `PracticeState`/`PracticeEvent` with per-cell state (`cells: List<CellState>` — attempt id, score, completed) and events such as `CellCompleted(index, score)`, `CellReset(index)`, `SetSizeChanged(size)`. The ViewModel owns the state; Composables stay stateless.
-- **Set progress.** Shown on the Practice screen as completed cells / total and the running average score of completed cells. This is derived state in the ViewModel, not stored.
-- **Character progress = average.** Every completed cell is persisted through the existing `ProgressRepository.savePracticeResult` (one `PracticeResult` per cell). The character's progress is the average score across all its recorded cells, computed in the repository (a DAO `AVG` over `practice_sessions`, exposed on `ExerciseProgress` as `averageScore`). Prefer this over adding stored columns so no Room migration is needed; if a migration turns out to be required, add it with an exported schema and a migration test.
-- **Consumers.** Progress per-exercise rows and the category bars use the averaged value; mastery (`MasteryRule`) keeps its meaning and is re-evaluated against the average once the set is complete. Existing scoring tests stay unmodified.
-- **Result.** The Result screen after a set shows the set average and per-cell scores.
-- The tracing engine and scoring are unchanged; only how many canvases the screen hosts changes.
+- **Session.** A session is the run of tries on one character, starting when the child opens it from a category screen and ending when they leave it (Next, View Progress or Back). It is not stored; it lives only in navigation state, so no Room change or migration is needed.
+- **State (MVI).** `PracticeState` gains `sessionScores: List<Float>` (the score of every completed try so far). `PracticeViewModel` seeds it from the `scores` navigation argument (empty on a fresh visit) and appends the score on `ExerciseCompleted`. Composables stay stateless.
+- **Navigation.** The Practice and Result routes take an optional `scores` argument (comma-separated, default empty). Practice passes the updated scores to Result; **Try Again** opens Practice again with those scores; **Next** starts a fresh session (no scores).
+- **Result.** `ResultViewModel` reads the same argument and exposes the try count and the rounded average as `sessionAttempts` and `sessionAveragePercent`. The screen shows the message above under the score of the latest try (singular "1 time" for one try).
+- **Per-try persistence is unchanged.** Every completed try is still saved through `ProgressRepository.savePracticeResult`, so Progress and mastery behave as before.
+- The tracing engine and scoring are unchanged; drawings use the same flow.
 
 ## Definition of Done
 
-- [ ] Practice shows 5 cells by default and 10 when selected
-- [ ] Each cell traces, scores and resets independently
-- [ ] Set progress (done/total, running average) is shown and correct
-- [ ] Every completed cell is saved through `ProgressRepository`
-- [ ] Character progress is the average of its cell scores and appears on Progress
+- [ ] Finishing a try opens Result with **Try Again** and **View Progress**
+- [ ] Try Again starts a new try and keeps the session's earlier scores
+- [ ] Result shows "You tried n time(s). Your overall progress is n%." with n% the average of the session's tries
+- [ ] Next starts a fresh session; leaving the screen discards the session
+- [ ] Every completed try is still saved through `ProgressRepository`
 - [ ] Existing tracing and scoring tests pass unmodified
-- [ ] Unit tests cover cell state transitions, set average, and the repository average (including a character with no cells)
-- [ ] Verified by running the app: finish a 5-cell set, then a 10-cell set, and check Progress
+- [ ] Unit tests cover session score accumulation, encode/decode, and the Result average and try count
+- [ ] Verified by running the app: try a letter three times and check the Result message
 
 ---
 
@@ -380,7 +378,7 @@ Add English letters: lowercase **a–z** and capital **A–Z**, practised like t
 - Category plumbing: an English category screen following `ConsonantsScreen`/`ConsonantsViewModel`, a route in `BcDestination`/`BcNavHost` only if the existing pattern needs one, Home buttons for **Small letters** and **Capital letters**, and matching Progress buttons/sections (reuse the existing hub: `ProgressState.openCategory`).
 - `LearningProgress`, `ProgressRepositoryImpl`, `HomeViewModel` and `ProgressViewModel` gain the new categories; overall progress includes them.
 - Strings live in string resources, with the Bengali UI copy consistent with existing category names.
-- Step 2 practice sets apply to these letters without extra code.
+- Step 2 practice sessions apply to these letters without extra code.
 
 ## Definition of Done
 
@@ -432,7 +430,7 @@ Show a sequence with gaps, for example **a, _, c, d, _, e**. The child fills eac
 - **Generation** is a pure, seedable function (`BlankSequenceGenerator`) producing a window of 5–8 consecutive items with 1–3 blanks (never the first item, blanks may be adjacent only at the higher difficulty). Deterministic given a seed, so it is unit-testable.
 - **Interaction.** Shown items are static glyphs. Each blank is a tracing cell (reusing the existing tracing canvas and scoring) with no dotted guide shown: the child recalls the item and traces it freehand, and a hint control reveals the dotted guide (using a hint lowers that blank's score cap; rule documented in code and tested).
 - **State (MVI).** `FillBlanksState` (sequence, per-blank status), events (`BlankCompleted`, `HintUsed`, `NextSequence`), owned by `FillBlanksViewModel`.
-- **Progress.** Each completed blank is saved through `ProgressRepository.savePracticeResult` against the missing item's exercise id, so it counts in that character's average (Step 2) and in category progress.
+- **Progress.** Each completed blank is saved through `ProgressRepository.savePracticeResult` against the missing item's exercise id, so it counts in category progress.
 - A finished sequence shows a short result and a "Next sequence" action.
 
 ## Definition of Done

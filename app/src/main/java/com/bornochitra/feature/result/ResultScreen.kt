@@ -27,6 +27,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -53,7 +54,7 @@ private const val POP_START_SCALE = 0.7f
  */
 @Composable
 fun ResultScreen(
-    onPracticeClick: (exerciseId: String) -> Unit,
+    onPracticeClick: (exerciseId: String, sessionScores: List<Float>) -> Unit,
     onProgressClick: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: ResultViewModel = hiltViewModel(),
@@ -70,7 +71,7 @@ fun ResultScreen(
 @Composable
 private fun ResultContent(
     state: ResultState,
-    onPracticeClick: (exerciseId: String) -> Unit,
+    onPracticeClick: (exerciseId: String, sessionScores: List<Float>) -> Unit,
     onProgressClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -113,7 +114,7 @@ private fun ResultContent(
 @Composable
 private fun AttemptSummary(
     attempt: ResultAttempt,
-    onPracticeClick: (exerciseId: String) -> Unit,
+    onPracticeClick: (exerciseId: String, sessionScores: List<Float>) -> Unit,
     onProgressClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -137,11 +138,17 @@ private fun AttemptSummary(
                 celebrate = attempt.scoreLevel == ScoreLevel.PERFECT,
             )
 
+            Text(
+                text = sessionSummary(attempt.sessionAttempts, attempt.sessionAveragePercent),
+                style = MaterialTheme.typography.titleMedium,
+                textAlign = TextAlign.Center,
+            )
+
             attempt.tip?.let { BcTip(tip = it) }
 
             BcPrimaryButton(
                 text = wording.retryText,
-                onClick = { onPracticeClick(attempt.exerciseId) },
+                onClick = { onPracticeClick(attempt.exerciseId, attempt.sessionScores) },
                 modifier = Modifier.fillMaxWidth(),
             )
 
@@ -151,7 +158,7 @@ private fun AttemptSummary(
             if (nextExerciseId != null && attempt.scoreLevel != ScoreLevel.LOW) {
                 BcSecondaryButton(
                     text = "Next",
-                    onClick = { onPracticeClick(nextExerciseId) },
+                    onClick = { onPracticeClick(nextExerciseId, emptyList()) },
                     modifier = Modifier.fillMaxWidth(),
                 )
             }
@@ -207,6 +214,11 @@ private fun ResultHeadline(
     }
 }
 
+internal fun sessionSummary(attempts: Int, averagePercent: Int): String {
+    val times = if (attempts == 1) "1 time" else "$attempts times"
+    return "You tried $times. Your overall progress is $averagePercent%."
+}
+
 /** The score to show part-way through the count-up, from 0 up to [target] as [progress] goes 0..1. */
 internal fun countedScore(target: Int, progress: Float): Int =
     (target * progress.coerceIn(0f, 1f)).roundToInt()
@@ -257,7 +269,7 @@ private fun ResultScreenPerfectPreview() {
                     tip = null,
                 ),
             ),
-            onPracticeClick = {},
+            onPracticeClick = { _, _ -> },
             onProgressClick = {},
         )
     }
@@ -279,7 +291,7 @@ private fun ResultScreenMediumPreview() {
                     tip = null,
                 ),
             ),
-            onPracticeClick = {},
+            onPracticeClick = { _, _ -> },
             onProgressClick = {},
         )
     }
@@ -301,7 +313,7 @@ private fun ResultScreenLowPreview() {
                     tip = null,
                 ),
             ),
-            onPracticeClick = {},
+            onPracticeClick = { _, _ -> },
             onProgressClick = {},
         )
     }
@@ -313,7 +325,7 @@ private fun ResultScreenErrorPreview() {
     BornoChitraTheme {
         ResultContent(
             state = ResultState(isLoading = false, error = "We couldn't find that practice result."),
-            onPracticeClick = {},
+            onPracticeClick = { _, _ -> },
             onProgressClick = {},
         )
     }

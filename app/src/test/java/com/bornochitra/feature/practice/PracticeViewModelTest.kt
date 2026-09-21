@@ -109,8 +109,9 @@ class PracticeViewModelTest {
         exerciseId: String = "vowel-o",
         exerciseRepository: ExerciseRepository = exerciseRepositoryOf(listOf(exercise)),
         progressRepository: ProgressRepository = FakeProgressRepository(),
+        sessionScores: String = "",
     ) = PracticeViewModel(
-        savedStateHandle = SavedStateHandle(mapOf("exerciseId" to exerciseId)),
+        savedStateHandle = SavedStateHandle(mapOf("exerciseId" to exerciseId, "scores" to sessionScores)),
         exerciseRepository = exerciseRepository,
         progressRepository = progressRepository,
         tipSelector = TipSelector(TipRules()),
@@ -283,6 +284,39 @@ class PracticeViewModelTest {
         assertEquals(92f, state.score)
         assertEquals(ScoreLevel.PERFECT, state.scoreLevel)
         assertEquals(42L, state.sessionId)
+    }
+
+    @Test
+    fun `a fresh visit starts a session with no tries`() = runTest(dispatcher) {
+        val viewModel = startedViewModel()
+
+        assertEquals(emptyList<Float>(), viewModel.uiState.value.sessionScores)
+    }
+
+    @Test
+    fun `each completed try is added to the session in order`() = runTest(dispatcher) {
+        val viewModel = viewModel(sessionScores = "70.0,80.0")
+        backgroundScope.launch(dispatcher) { viewModel.uiState.collect {} }
+        dispatcher.scheduler.advanceUntilIdle()
+        assertEquals(listOf(70f, 80f), viewModel.uiState.value.sessionScores)
+
+        viewModel.onEvent(PracticeEvent.ExerciseCompleted(score = 90f, scoreLevel = ScoreLevel.PERFECT))
+        dispatcher.scheduler.advanceUntilIdle()
+
+        assertEquals(listOf(70f, 80f, 90f), viewModel.uiState.value.sessionScores)
+    }
+
+    @Test
+    fun `every try in a session is saved individually`() = runTest(dispatcher) {
+        val progressRepository = FakeProgressRepository()
+        val viewModel = viewModel(progressRepository = progressRepository, sessionScores = "60.0")
+        backgroundScope.launch(dispatcher) { viewModel.uiState.collect {} }
+        dispatcher.scheduler.advanceUntilIdle()
+
+        viewModel.onEvent(PracticeEvent.ExerciseCompleted(score = 85f, scoreLevel = ScoreLevel.MEDIUM))
+        dispatcher.scheduler.advanceUntilIdle()
+
+        assertEquals(listOf(85f), progressRepository.savedResults.map { it.score })
     }
 
     @Test

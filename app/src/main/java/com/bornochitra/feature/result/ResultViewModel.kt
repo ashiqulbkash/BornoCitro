@@ -7,6 +7,7 @@ import com.bornochitra.core.content.ExerciseRepository
 import com.bornochitra.core.database.repository.ProgressRepository
 import com.bornochitra.core.model.Exercise
 import com.bornochitra.core.model.ScoreLevel
+import com.bornochitra.core.model.SessionScores
 import com.bornochitra.core.tips.ContextualTip
 import com.bornochitra.core.tips.TipSelector
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -29,7 +30,12 @@ data class ResultAttempt(
     val scoreLevel: ScoreLevel,
     val nextExerciseId: String?,
     val tip: ContextualTip?,
-)
+    /** The scores of every try in this session, including the one being reported. */
+    val sessionScores: List<Float> = listOf(scorePercent.toFloat()),
+) {
+    val sessionAttempts: Int get() = sessionScores.size
+    val sessionAveragePercent: Int get() = SessionScores.averagePercent(sessionScores)
+}
 
 data class ResultState(
     val isLoading: Boolean = true,
@@ -46,6 +52,7 @@ class ResultViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val sessionId: Long? = savedStateHandle.get<String>(ARG_SESSION_ID)?.toLongOrNull()
+    private val sessionScores = SessionScores.decode(savedStateHandle[SessionScores.ARG])
 
     private val mutableState = MutableStateFlow(ResultState())
     val uiState: StateFlow<ResultState> = mutableState.asStateFlow()
@@ -69,6 +76,7 @@ class ResultViewModel @Inject constructor(
                 title = exercise.title,
                 scorePercent = result.score.roundToInt(),
                 scoreLevel = result.scoreLevel,
+                sessionScores = sessionScores.ifEmpty { listOf(result.score) },
                 nextExerciseId = nextExerciseIdAfter(exercise),
                 tip = tipSelector.afterAttempt(
                     difficulty = exercise.difficulty,
