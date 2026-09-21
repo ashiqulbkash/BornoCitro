@@ -401,7 +401,7 @@ Small letters:
 - [x] 3.2 b
 - [x] 3.3 c
 - [x] 3.4 d
-- [ ] 3.5 e
+- [x] 3.5 e
 - [ ] 3.6 f
 - [ ] 3.7 g
 - [ ] 3.8 h
@@ -488,6 +488,8 @@ _(Add one note per sub-step as it is completed, as in Step 1.)_
   **New case: centring the guide rather than the ink.** Andika's c is much heavier on the left than at its terminals, so with the ink bbox centred the centreline's bbox centre is x=54, outside the catalog test's 3-unit tolerance. The whole guide is translated 4 units left (bbox x 25..75, centre (50, 48.5)); the canvas draws only the guide, so this changes placement, not shape, and every dot keeps its position on the ink. Expect the same on other one-sided letters (e, r, s, and some capitals). On the RMX3624 the mapping matched 3.1's (x/y scales agreeing to 0.26%, every predicted dot centre 14.8 px inside a 16 px dot) and the trace completed at 98.6% (PERFECT).
 
 - **3.4 d** — `english-small-d`, much taller than wide (aspect 0.671), fitted by height. b mirrored with a's foot: a flat-topped stem on the right (x 66.8 straight down to y 70, then leaning out to a slanted foot cut, row centre 70.6 at y 88) and a closed bowl on its left, which the skeleton joins to the stem at y 45 and y 73. Written round first like a: `bowl` from the stem, counter-clockwise over the top, down the left and back into the stem, 107 canvas units in one pass; then `stem` top to bottom, taken from the ink's row centres as a's is (the skeleton runs off into the foot's outer corner), 3 units inside the flat top and ~3.5 above the foot. Every guide sample is on ink, min ink under any dot 3.1; guide bbox centre (50, 47.5), so no re-centring was needed. On the RMX3624 the mapping matched 3.1's (`sx = 32.5 + 6.553x`, `sy = 536.6 + 6.553y`, x/y scales agreeing to 0.15%; the worst predicted dot centre, 10.2 px inside, is at the bowl/stem junction where the overlapping dots blend out of the colour mask) and the trace completed at 97.4% (PERFECT). 355 unit tests, 0 failures.
+
+- **3.5 e** — `english-small-e`, taller than wide (aspect 0.868), fitted by height. Written as one movement — across the crossbar left to right, sharply up the right side, counter-clockwise over the top and down the left, round the bottom and up into the tail's flat cut — which is ~218 canvas units, so it is split at the two landmarks the child can see: the corner where the bar turns up into the bowl, and the leftmost point where the bar's own left end meets the side (c's split). `bar` (48, a straight `line`), `top` (91) and `bottom` (79), `top` and `bottom` sharing the dot at the split. The spur down-right from the bar's corner runs into the corner of the flat cut under the bar, not a path. The tail stops 3 units short of its cut's midpoint: 1 lands the last dot in the same place but leaves 2.7 units of bare path, 3 leaves 0.7. Every guide sample is on ink, min ink under any dot 4.0. Heavier on the left like c, so the guide is moved 4 units left (bbox centre 53.5 → 49.5). On the RMX3624 the mapping matched 3.1's (`sx = 32.3 + 6.559x`, `sy = 536.1 + 6.559y`, x/y scales agreeing to 0.14%; every predicted dot centre ≥14.8 px inside the purple except the bar's first, 5.4 px, where it overlaps the `top`/`bottom` dots at the shared left point) and the trace completed at 98.1% (PERFECT). 355 unit tests, 0 failures.
 
 ---
 
