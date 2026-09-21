@@ -529,4 +529,100 @@ internal val englishSmallExercises: List<Exercise> = listOf(
             ),
         ),
     ),
+    /**
+     * g is much taller than it is wide (aspect 0.636), so it is fitted by height.
+     *
+     * Andika's single-storey g is a's bowl closed onto a stem that drops below the line into a hook
+     * ending in a flat slanted cut. The bowl's arch runs straight into the stem's top-right corner,
+     * so there is no stem top standing above it. It is written like a and d, round first: `bowl`
+     * from the stem just under its top, counter-clockwise over the top, down the left side, round
+     * the bottom and back into the stem at y 48 (107 canvas units, one pass); then `stem` top to
+     * bottom, straight at x 69 (the ink's row centre), curling left along the bottom into the hook
+     * (101 units, one pass). The stem starts 4 units under its top edge. The hook's cut forks the
+     * skeleton into a prong per corner, and the tail stops 3 units short of the cut's midpoint:
+     * 1 and 2 leave the last dot hanging past the cut, and 3 leaves less bare path after the last
+     * dot than 2.5.
+     */
+    Exercise(
+        id = "english-small-g",
+        title = "g",
+        type = ExerciseType.ENGLISH_SMALL,
+        difficulty = Difficulty.BEGINNER,
+        order = 7,
+        strokes = listOf(
+            Stroke(
+                id = "english-small-g-bowl",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(69f, 18f),
+                        Point(67f, 16f),
+                        Point(64f, 15f),
+                        Point(61f, 15f),
+                        Point(58f, 14f),
+                        Point(56f, 14f),
+                        Point(53f, 14f),
+                        Point(50f, 14f),
+                        Point(47f, 15f),
+                        Point(44f, 15f),
+                        Point(42f, 17f),
+                        Point(39f, 18f),
+                        Point(37f, 20f),
+                        Point(36f, 23f),
+                        Point(35f, 25f),
+                        Point(34f, 28f),
+                        Point(33f, 31f),
+                        Point(32f, 34f),
+                        Point(32f, 36f),
+                        Point(32f, 39f),
+                        Point(32f, 42f),
+                        Point(32f, 45f),
+                        Point(33f, 48f),
+                        Point(34f, 51f),
+                        Point(35f, 53f),
+                        Point(37f, 55f),
+                        Point(40f, 57f),
+                        Point(42f, 57f),
+                        Point(45f, 57f),
+                        Point(48f, 56f),
+                        Point(51f, 56f),
+                        Point(53f, 55f),
+                        Point(56f, 53f),
+                        Point(58f, 52f),
+                        Point(61f, 51f),
+                        Point(63f, 50f),
+                        Point(66f, 49f),
+                        Point(69f, 48f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "english-small-g-stem",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(69f, 13f),
+                        Point(69f, 58f),
+                        Point(68f, 61f),
+                        Point(68f, 64f),
+                        Point(68f, 67f),
+                        Point(67f, 70f),
+                        Point(67f, 73f),
+                        Point(65f, 75f),
+                        Point(64f, 78f),
+                        Point(62f, 80f),
+                        Point(59f, 81f),
+                        Point(57f, 82f),
+                        Point(54f, 83f),
+                        Point(51f, 83f),
+                        Point(48f, 83f),
+                        Point(45f, 83f),
+                        Point(42f, 83f),
+                        Point(39f, 82f),
+                        Point(37f, 82f),
+                        Point(34f, 80f),
+                        Point(32f, 79f),
+                    ),
+                ),
+            ),
+        ),
+    ),
 )
