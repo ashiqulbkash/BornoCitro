@@ -715,4 +715,59 @@ internal val englishSmallExercises: List<Exercise> = listOf(
             ),
         ),
     ),
+    /**
+     * j is far taller than it is wide (aspect 0.357), so it is fitted by height.
+     *
+     * i's two pieces with a hook: a stem (row centre x 58) that runs straight down from its slanted
+     * top and curls left along the bottom into a flat cut, and a dot above it. Written as i is —
+     * `stem` top to bottom and round the hook in one pass (67 canvas units), then `dot`. The stem
+     * starts 3 units inside its top edge (y 29.1 at x 58); 2 hangs the first dot past it. It is one
+     * straight segment down to y 68, where the curl begins, and the skeleton from there. The cut
+     * forks the skeleton into a prong per corner and the hook stops 2.5 units short of their
+     * midpoint: 1 and 2 leave the tip over 1.6 and 2.5 units of ink, and 2.5 leaves 0.8 units of
+     * bare path past the last dot to 3's 1.0.
+     *
+     * The dot is smaller than i's — its inscribed circle is 7.12 units at (58, 14) — so the ring is
+     * 4 dot spacings round (radius 3.82): 5 spacings would put the guide's dots within 2.1 units of
+     * the dot's edge, hanging them past it. Started at the top and swept counter-clockwise, as i's is.
+     */
+    Exercise(
+        id = "english-small-j",
+        title = "j",
+        type = ExerciseType.ENGLISH_SMALL,
+        difficulty = Difficulty.BEGINNER,
+        order = 10,
+        strokes = listOf(
+            Stroke(
+                id = "english-small-j-stem",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(58f, 32f),
+                        Point(58f, 68f),
+                        Point(57f, 71f),
+                        Point(57f, 73f),
+                        Point(57f, 76f),
+                        Point(56f, 79f),
+                        Point(54f, 81f),
+                        Point(52f, 83f),
+                        Point(50f, 84f),
+                        Point(47f, 85f),
+                        Point(44f, 85f),
+                        Point(41f, 84f),
+                        Point(39f, 83f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "english-small-j-dot",
+                points = StrokePoints.arc(
+                    center = Point(58f, 14f),
+                    radius = 3.82f,
+                    startDeg = -90f,
+                    sweepDeg = -360f,
+                    samples = 32,
+                ),
+            ),
+        ),
+    ),
 )
