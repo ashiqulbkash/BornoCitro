@@ -1471,4 +1471,72 @@ internal val englishSmallExercises: List<Exercise> = listOf(
             ),
         ),
     ),
+    /**
+     * u is a shade taller than it is wide (aspect 0.990), so it is fitted by height.
+     *
+     * n upside down: a left arm (ink row centre x 21.6, flat top at y 7) down and round the bottom,
+     * rising into a right stem (x 74.8, flat top at y 7) that runs on to a flared foot. Written as
+     * taught: `arc` down the left arm, round the bottom and up into the stem, then `stem` top to
+     * bottom. The arm is straight to y 50 and follows the skeleton from there; the skeleton's spurs
+     * into both tops' slanted corners, the foot's outer corner and the bottom bulge are not paths.
+     *
+     * Every stroke is a whole number of 6-unit dot spacings, and the arc ends exactly on one of the
+     * stem's dots, so the join is closed but reads as one dot (see p). The stem is 72 units (78
+     * would not fit between the flat top and foot with both end dots' 2.5 radius inside the ink);
+     * the arc starts 3.5 units under its flat top, level with the stem's start, ends on the stem's
+     * dot beside the junction, and its curve is scaled about its centre by 1.003 so it is a whole
+     * 20 spacings (120 units), with every other arc dot clear of the stem's. The guide is then
+     * moved 3.5 units down (the coordinates here include it) so its bbox centre is on the canvas's,
+     * as t's is; the canvas draws only the guide, so this moves placement, not shape.
+     */
+    Exercise(
+        id = "english-small-u",
+        title = "u",
+        type = ExerciseType.ENGLISH_SMALL,
+        difficulty = Difficulty.BEGINNER,
+        order = 21,
+        strokes = listOf(
+            Stroke(
+                id = "english-small-u-arc",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(21.6f, 14f),
+                        Point(21.5f, 53.4f),
+                        Point(21.9f, 56.4f),
+                        Point(21.9f, 59.5f),
+                        Point(21.9f, 62.5f),
+                        Point(22.9f, 65.5f),
+                        Point(22.9f, 68.5f),
+                        Point(23.9f, 70.5f),
+                        Point(23.9f, 73.5f),
+                        Point(25f, 76.5f),
+                        Point(27f, 78.5f),
+                        Point(29f, 80.5f),
+                        Point(31f, 82.5f),
+                        Point(34f, 83.5f),
+                        Point(37f, 83.5f),
+                        Point(39f, 83.5f),
+                        Point(42f, 82.5f),
+                        Point(45f, 82.5f),
+                        Point(48f, 81.5f),
+                        Point(51f, 80.5f),
+                        Point(53f, 79.5f),
+                        Point(55f, 77.5f),
+                        Point(58.1f, 75.5f),
+                        Point(60.1f, 73.5f),
+                        Point(62.1f, 72.5f),
+                        Point(65.1f, 71.5f),
+                        Point(67.1f, 70.5f),
+                        Point(70.1f, 69.5f),
+                        Point(73.1f, 67.5f),
+                        Point(74.8f, 68f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "english-small-u-stem",
+                points = StrokePoints.line(Point(74.8f, 14f), Point(74.8f, 86f)),
+            ),
+        ),
+    ),
 )
