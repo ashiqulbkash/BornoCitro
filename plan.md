@@ -371,24 +371,107 @@ The child enters the Practice screen and traces the character. When they finish,
 
 Add English letters: lowercase **a–z** and capital **A–Z**, practised like the Bengali letters.
 
-## Implement
+## Implement (sub-steps 3.1–3.52, **one character per step**)
 
-- Add `ExerciseType.ENGLISH_SMALL` and `ExerciseType.ENGLISH_CAPITAL`; add `EnglishSmallExercises.kt` and `EnglishCapitalExercises.kt`, registered in `ExerciseCatalog`. Ids `english-small-a`, `english-capital-a`, and so on; titles are the glyphs.
-- Stroke geometry is derived from a rendered glyph using the same workflow. Use a print/school-style single-stroke-friendly font so `a`, `g`, `y` follow the shape children are taught; record the chosen font in the source header comment. Author natural stroke order and direction (top-to-bottom, left-to-right, counter-clockwise for round letters).
-- Category plumbing: an English category screen following `ConsonantsScreen`/`ConsonantsViewModel`, a route in `BcDestination`/`BcNavHost` only if the existing pattern needs one, Home buttons for **Small letters** and **Capital letters**, and matching Progress buttons/sections (reuse the existing hub: `ProgressState.openCategory`).
-- `LearningProgress`, `ProgressRepositoryImpl`, `HomeViewModel` and `ProgressViewModel` gain the new categories; overall progress includes them.
-- Strings live in string resources, with the Bengali UI copy consistent with existing category names.
+- Each sub-step adds exactly **one** character, then stops. Do not add a second character in the same step.
+- Sub-steps 3.1–3.26 add the small letters a–z, in alphabetical order; 3.27–3.52 add the capitals A–Z. Ids are `english-small-<letter>` and `english-capital-<letter>`, each with the next `order` value within its type; titles are the glyphs.
+- Derive each character's strokes from a rendered glyph with the **Step 1 per-letter recipe** (toolchain, ink-bbox fit — by width for characters wider than tall — `check.py`, overlay review, `apply_<letter>.py`, catalog test update, device trace). Do not redraw by eye.
+- Font: the first sub-step (3.1) picks a print/school-style font so that `a`, `g`, `y` follow the single-storey shape children are taught, and records it in the source header comment of both new files. Every later English character uses the same font. The device-font lesson from 1.15 applies: check the derivation against the glyph the phone itself would draw, not only the scratchpad font.
+- Author natural stroke order and direction (top-to-bottom, left-to-right, counter-clockwise for round letters). There is no headline, so no stroke is a `-matra`. A dot or crossbar that is separate ink (`i`, `j`, `t`, `f`, capital `E` `F` `H` `A` and the like) is a stroke of its own, written where a writer adds it; dots use the ring rule from 1.22 (`StrokePoints.arc` inside the inscribed disc).
+- Keep one stroke under roughly 140 canvas units and split only at a landmark the child can see (Step 1 authoring conventions).
+- **Plumbing rides with the first character of each type**, so no category is ever shown empty and no placeholder is used:
+  - **3.1 (`a`)** also adds `ExerciseType.ENGLISH_SMALL`, `EnglishSmallExercises.kt` registered in `ExerciseCatalog`, an English small-letters screen following `ConsonantsScreen`/`ConsonantsViewModel`, a route in `BcDestination`/`BcNavHost` only if the existing pattern needs one, the Home button **Small letters**, the matching Progress button/section (reuse the hub: `ProgressState.openCategory`), the `LearningProgress`, `ProgressRepositoryImpl`, `HomeViewModel` and `ProgressViewModel` changes, and string resources with Bengali UI copy consistent with the existing category names.
+  - **3.27 (`A`)** does the same for `ExerciseType.ENGLISH_CAPITAL`, `EnglishCapitalExercises.kt` and the **Capital letters** button/section, reusing what 3.1 built rather than duplicating it.
 - Step 2 practice sessions apply to these letters without extra code.
+- The last small-letter sub-step (3.26) also confirms the small-letters screen scrolls and lays out 26 items at 720x1280 and 720x1600, and that Home/Progress measure the small bar against 26. 3.52 does the same for 26 capitals and confirms overall progress includes both English categories.
 
-## Definition of Done
+## Per-character recipe
 
-- [ ] 3.1 Category plumbing (type, screen, Home and Progress buttons, progress aggregation) proven with a–e and A–E
-- [ ] 3.2 Small letters f–z added
-- [ ] 3.3 Capital letters F–Z added
-- [ ] Every guide sample lies on the glyph's ink; each letter completes at 95%+ on a device trace
-- [ ] Catalog test asserts 26 small + 26 capital, unique ids, contiguous `order`
-- [ ] ViewModel and progress-aggregation tests cover the new categories
-- [ ] Verified by running the app: Home → English → practise → Progress
+Follow the Step 1 recipe and its authoring conventions; differences for English:
+
+- **Normalization.** Same rule as consonants: fit the ink bbox to y 7..90 with x centred, or by width (x 3..97, y centred) when the glyph is wider than tall. Each character is fitted on its own, so `a` and `l` are drawn at the same canvas size; the catalog test's 0..100 bounds and (50, 50) centring checks apply unchanged. Wide capitals (`M`, `W`) and wide small letters (`m`, `w`) usually need the width fit — check the aspect the render prints.
+- **Tests to update for every character.** `ExerciseCatalogTest`'s per-exercise stroke-count map, plus the type's alphabet string (`abcde…` / `ABCDE…`) once that assertion exists. Record the unit-test baseline after 3.1.
+- **Device check.** Navigate Home → the new category button → the character's cell; re-measure the canvas mapping from a screenshot (the guide has no headline, so use `nio_calib.py`, or `band_calib.py` where it is ill-conditioned for a near-square guide). A faithful trace scores 95–99.
+
+## Sub-steps
+
+Small letters:
+
+- [ ] 3.1 a
+- [ ] 3.2 b
+- [ ] 3.3 c
+- [ ] 3.4 d
+- [ ] 3.5 e
+- [ ] 3.6 f
+- [ ] 3.7 g
+- [ ] 3.8 h
+- [ ] 3.9 i
+- [ ] 3.10 j
+- [ ] 3.11 k
+- [ ] 3.12 l
+- [ ] 3.13 m
+- [ ] 3.14 n
+- [ ] 3.15 o
+- [ ] 3.16 p
+- [ ] 3.17 q
+- [ ] 3.18 r
+- [ ] 3.19 s
+- [ ] 3.20 t
+- [ ] 3.21 u
+- [ ] 3.22 v
+- [ ] 3.23 w
+- [ ] 3.24 x
+- [ ] 3.25 y
+- [ ] 3.26 z
+
+Capital letters:
+
+- [ ] 3.27 A
+- [ ] 3.28 B
+- [ ] 3.29 C
+- [ ] 3.30 D
+- [ ] 3.31 E
+- [ ] 3.32 F
+- [ ] 3.33 G
+- [ ] 3.34 H
+- [ ] 3.35 I
+- [ ] 3.36 J
+- [ ] 3.37 K
+- [ ] 3.38 L
+- [ ] 3.39 M
+- [ ] 3.40 N
+- [ ] 3.41 O
+- [ ] 3.42 P
+- [ ] 3.43 Q
+- [ ] 3.44 R
+- [ ] 3.45 S
+- [ ] 3.46 T
+- [ ] 3.47 U
+- [ ] 3.48 V
+- [ ] 3.49 W
+- [ ] 3.50 X
+- [ ] 3.51 Y
+- [ ] 3.52 Z
+
+## Definition of Done (applies to every sub-step)
+
+- [ ] The one character is added with strokes derived from its rendered glyph
+- [ ] Every guide sample lies on the glyph's ink
+- [ ] It completes at 95%+ on a faithful synthetic trace on the device
+- [ ] `ExerciseCatalogTest`'s stroke-count map (and alphabet string) include the new character, and its id, `order`, canvas-bounds and centring assertions pass
+- [ ] Existing ViewModel tests still pass
+- [ ] Verified by running the app
+
+Additionally, for the plumbing sub-steps (3.1 and 3.27):
+
+- [ ] Type, catalog registration, category screen, Home button, Progress button/section and progress aggregation are in place for the category
+- [ ] ViewModel and progress-aggregation tests cover the new category
+
+Step 3 as a whole is done when all 52 sub-steps are checked, the catalog test asserts 26 small + 26 capital with unique ids and contiguous `order` per type, both category bars are computed against 26, and the flow Home → English → practise → Progress has been run on the device.
+
+## Notes
+
+_(Add one note per sub-step as it is completed, as in Step 1.)_
 
 ---
 
@@ -398,23 +481,79 @@ Add English letters: lowercase **a–z** and capital **A–Z**, practised like t
 
 Add math characters: numbers **1 to 20**, plus the basic operators, practised like letters.
 
-## Implement
+## Implement (sub-steps 4.1–4.25, **one item per step**)
 
-- Add `ExerciseType.MATH`; `MathExercises.kt` registered in `ExerciseCatalog`. Ids `math-1` … `math-20`, `math-plus`, and so on.
-- Digits 0–9 have their own derived strokes. **10–20 are composed from digit strokes** by a small content helper that lays two digits side by side inside the 0..100 canvas (scaled and offset), rather than 11 hand-derived glyphs. Composition keeps stroke order: left digit, then right digit.
-- Operators `+ − × ÷ =` are added last as a separate sub-step.
-- Category plumbing as in Step 3 (screen, Home button, Progress button/section, aggregation).
-- Sequence for later steps: math items are ordered by numeric value so Step 5 can build "next number" blanks.
+- Each sub-step adds exactly **one** item, then stops. Do not add a second item in the same step.
+- Add `ExerciseType.MATH`; `MathExercises.kt` registered in `ExerciseCatalog`. Ids `math-1` … `math-20`, then `math-plus`, `math-minus`, `math-times`, `math-divide`, `math-equals`; titles are the glyphs (`+ − × ÷ =`).
+- **Digits 1–9 (4.1–4.9)** are derived from a rendered glyph with the Step 1 per-letter recipe, one digit per sub-step, using the font chosen in 3.1 (record it in the source header comment). Author natural stroke order and direction (`1` top to bottom, `2` the hook then the base, and so on). No headline, so no stroke is a `-matra`; `StrokePoints.line` for straight runs, the dense skeleton polyline for curves.
+- **10–20 (4.10–4.20) are composed from digit strokes** by a small content helper that lays two digits side by side inside the 0..100 canvas (scaled and offset), rather than 11 hand-derived glyphs. Composition keeps stroke order: left digit, then right digit. The digit **0** is needed only by 10 and 20 and has no catalog entry of its own; it is derived in 4.10, together with the helper, and reused by 20. Composed strokes get ids that start with the exercise id and stay unique; the composed guide's bbox centre stays within 3 units of (50, 50) and every point stays in 0..100.
+- **Operators `+ − × ÷ =` (4.21–4.25)** are derived from the rendered glyph like the digits. `+` is two strokes (horizontal, then vertical), `−` one, `×` two diagonals, `÷` a bar then its two dots (ring rule from 1.22), `=` two bars top then bottom. `−` and `=` are far wider than tall, so they use the width fit; check the render's aspect for each.
+- **Category plumbing rides with 4.1 (`1`)** so the category is never shown empty: the type, catalog registration, math category screen following `ConsonantsScreen`/`ConsonantsViewModel`, Home button, Progress button/section, and the `LearningProgress`, `ProgressRepositoryImpl`, `HomeViewModel` and `ProgressViewModel` changes, with string resources and Bengali UI copy consistent with the existing category names.
+- Ordering: math items are ordered by numeric value (`order` 1–20 for the numbers, then 21–25 for the operators, contiguous from 1 within the type) so Step 5 can build "next number" blanks from the numbers alone.
+- The last sub-step (4.25) also confirms the math screen scrolls and lays out 25 items at 720x1280 and 720x1600, and that Home/Progress measure the math bar against 25.
 
-## Definition of Done
+## Per-character recipe
 
-- [ ] 4.1 Digits 1–9 and category plumbing
-- [ ] 4.2 10–20 composed from digit strokes, each fits within the canvas
-- [ ] 4.3 Operators + − × ÷ =
-- [ ] Guides sit on the rendered glyph; each item completes at 95%+ on a device trace
-- [ ] Catalog test asserts the expected items, unique ids and numeric `order`
-- [ ] Unit tests cover the composition helper (bounds, order) and the new category in aggregation
+Follow the Step 1 recipe and the Step 3 differences (no headline, per-item ink-bbox fit, `nio_calib.py` for the device mapping). In addition:
+
+- **Digits and operators** update `ExerciseCatalogTest`'s per-exercise stroke-count map for the new id.
+- **Composed numbers (10–20)** need no glyph derivation; instead each sub-step adds the id to the catalog, checks the composed guide on the device, and completes a trace at 95%+. A composed number is not checked against a rendered two-digit glyph's skeleton: it is checked that each half sits on its own digit's ink after scaling, which the helper's unit test covers for bounds and order.
+
+## Sub-steps
+
+Digits:
+
+- [ ] 4.1 1 (also the math category plumbing)
+- [ ] 4.2 2
+- [ ] 4.3 3
+- [ ] 4.4 4
+- [ ] 4.5 5
+- [ ] 4.6 6
+- [ ] 4.7 7
+- [ ] 4.8 8
+- [ ] 4.9 9
+
+Composed numbers:
+
+- [ ] 4.10 10 (also the digit 0 strokes and the composition helper)
+- [ ] 4.11 11
+- [ ] 4.12 12
+- [ ] 4.13 13
+- [ ] 4.14 14
+- [ ] 4.15 15
+- [ ] 4.16 16
+- [ ] 4.17 17
+- [ ] 4.18 18
+- [ ] 4.19 19
+- [ ] 4.20 20
+
+Operators:
+
+- [ ] 4.21 +
+- [ ] 4.22 −
+- [ ] 4.23 ×
+- [ ] 4.24 ÷
+- [ ] 4.25 =
+
+## Definition of Done (applies to every sub-step)
+
+- [ ] The one item is added (derived from its rendered glyph for digits and operators; composed from digit strokes for 10–20)
+- [ ] Every guide sample lies on the glyph's ink
+- [ ] It completes at 95%+ on a faithful synthetic trace on the device
+- [ ] `ExerciseCatalogTest`'s stroke-count map includes the new item, and its id, numeric `order`, canvas-bounds and centring assertions pass
+- [ ] Existing ViewModel tests still pass
 - [ ] Verified by running the app
+
+Additionally:
+
+- [ ] 4.1: category plumbing is in place and covered by ViewModel and progress-aggregation tests
+- [ ] 4.10: the composition helper is unit-tested for bounds (every composed point in 0..100) and stroke order (left digit, then right digit); 11–20 reuse it without change
+
+Step 4 as a whole is done when all 25 sub-steps are checked, the catalog test asserts the expected 25 items with unique ids and numeric `order`, and the math bar on Home and Progress is computed against 25.
+
+## Notes
+
+_(Add one note per sub-step as it is completed, as in Step 1.)_
 
 ---
 
