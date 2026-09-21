@@ -837,4 +837,86 @@ internal val englishSmallExercises: List<Exercise> = listOf(
             ),
         ),
     ),
+    /**
+     * m is much wider than it is tall (aspect 1.443), so it is fitted by width.
+     *
+     * h with a second arch: three straight legs (ink row centres x 14.9, 51.5 and 88.2, flat feet at
+     * y 82.6, the stem's flat top at y 18.8) joined by two shoulders. Written as taught: `stem` top to
+     * bottom, then `arch1` out of the stem, over the first shoulder and down the middle leg, then
+     * `arch2` out of the middle leg, over the second shoulder and down the right leg. The arches
+     * follow the skeleton until their leg turns straight and are one segment from there.
+     *
+     * Every stroke is a whole number of 6-unit dot spacings, so a dot lands on each end: the stem is
+     * y 24 to 78 (54 units; 60 would not fit between the flat ends with the end dots' 2.5 radius
+     * inside the ink), and every foot stops at the stem's foot height. Each arch starts a few units
+     * down its leg (y 40.5 and 40), below the skeleton junction at y 36.5, which is what makes the
+     * arch a whole 15 spacings (90 units); its first dot overlaps the leg's dots, so the join is
+     * closed.
+     */
+    Exercise(
+        id = "english-small-m",
+        title = "m",
+        type = ExerciseType.ENGLISH_SMALL,
+        difficulty = Difficulty.BEGINNER,
+        order = 13,
+        strokes = listOf(
+            Stroke(
+                id = "english-small-m-stem",
+                points = StrokePoints.line(Point(15f, 24f), Point(15f, 78f)),
+            ),
+            Stroke(
+                id = "english-small-m-arch1",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(15f, 40.5f),
+                        Point(17f, 34f),
+                        Point(20f, 33f),
+                        Point(22f, 32f),
+                        Point(25f, 31f),
+                        Point(27f, 30f),
+                        Point(30f, 29f),
+                        Point(32f, 28f),
+                        Point(35f, 27f),
+                        Point(38f, 26f),
+                        Point(41f, 26f),
+                        Point(44f, 26f),
+                        Point(46f, 27f),
+                        Point(48f, 29f),
+                        Point(49f, 31f),
+                        Point(50f, 34f),
+                        Point(51.5f, 38f),
+                        Point(51.5f, 78f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "english-small-m-arch2",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(51.5f, 40f),
+                        Point(54f, 34f),
+                        Point(56f, 33f),
+                        Point(59f, 32f),
+                        Point(62f, 32f),
+                        Point(64f, 30f),
+                        Point(67f, 29f),
+                        Point(69f, 28f),
+                        Point(72f, 27f),
+                        Point(75f, 26f),
+                        Point(78f, 26f),
+                        Point(80f, 26f),
+                        Point(83f, 27f),
+                        Point(85f, 29f),
+                        Point(86f, 31f),
+                        Point(87f, 34f),
+                        Point(87f, 37f),
+                        Point(88f, 40f),
+                        Point(88f, 43f),
+                        Point(88.2f, 46f),
+                        Point(88.2f, 78f),
+                    ),
+                ),
+            ),
+        ),
+    ),
 )

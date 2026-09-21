@@ -409,7 +409,7 @@ Small letters:
 - [x] 3.10 j
 - [x] 3.11 k
 - [x] 3.12 l
-- [ ] 3.13 m
+- [x] 3.13 m
 - [ ] 3.14 n
 - [ ] 3.15 o
 - [ ] 3.16 p
@@ -510,6 +510,8 @@ _(Add one note per sub-step as it is completed, as in Step 1.)_
   355 unit tests, 0 failures. The device check was deferred once (the phone was in use) and done with 3.12: on the RMX3624 the Practice screen shows the angle closed onto the stem and a dot on the stem's foot; the mapping matched 3.1's (`sx = 31.5 + 6.565x`, `sy = 535.8 + 6.565y`, x/y scales agreeing to 0.13%, every predicted dot centre ≥14.9 px inside a 16.1 px dot) and the trace completed at 98.1% (PERFECT), a new `practice_session` row.
 
 - **3.12 l** — `english-small-l`, far taller than wide (aspect 0.198), fitted by height. Andika's l is a plain straight stem, no foot or tail: row centre x 50 from a flat top at y 7 to a flat foot at y 90, so it is one stroke, top to bottom. Sized by the rule 3.11's review set — a whole number of dot spacings, so a dot lands on each end and no bare line trails — as y 9.5 to 87.5 (78 units, 13 spacings), 2.5 inside each end, exactly where the end dot's radius fits (min ink under any dot 2.50). Guide bbox centre (50, 48.5). `calib.py` cannot fit a zero-width guide (no x scale), so the mapping just measured on k in the same layout was checked against the l screenshot instead with `verify_map.py`: every predicted dot centre ≥15.0 px inside a 15.7 px dot. The trace completed at 100% (PERFECT), a new `practice_session` row. 355 unit tests, 0 failures.
+
+- **3.13 m** — `english-small-m`, the first English letter wider than tall (aspect 1.443), so fitted by width (ink x 3..97, y 17.4..82.6). h with a second arch: three straight legs (ink row centres x 14.9, 51.5, 88.2; the stem's flat top at y 18.8, all three flat feet at y 82.6) joined by two shoulders. Written as taught: `stem` top to bottom, then `arch1` out of the stem over the first shoulder and down the middle leg, then `arch2` out of the middle leg over the second shoulder and down the right leg — the pen lifts where each arch leaves its leg, as in h. Each arch follows the skeleton until its leg turns straight (y 38 / 46) and is one segment to the foot; the skeleton's spur up-left from the stem runs into the top-left corner of the slanted cut on the stem's top, not a path. Sized by 3.11's rule: every stroke is a whole number of spacings. The stem is y 24..78 (54 units; 60 would not fit between the flat ends with both end dots inside), every foot stops at the stem's foot height, and each arch starts a few units down its leg (y 40.5 / 40, below the skeleton junction at 36.5) — which makes both 90 units, exactly 15 spacings — with its first dot overlapping the leg's dots, so both joins are closed. Every guide sample is on ink, min ink under any dot 4.25; guide bbox centre (51.6, 51), so no re-centring. On the RMX3624 the mapping matched 3.1's (`sx = 31.5 + 6.572x`, `sy = 535.3 + 6.572y`, x/y scales agreeing to 0.04%; the worst predicted dot centre, 6.3 px inside, is where an arch's first dots overlap its leg's) and the trace completed at 97.5% (PERFECT), a new `practice_session` row (id 37). 355 unit tests, 0 failures.
 
 ---
 
