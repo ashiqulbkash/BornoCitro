@@ -846,12 +846,17 @@ internal val englishSmallExercises: List<Exercise> = listOf(
      * `arch2` out of the middle leg, over the second shoulder and down the right leg. The arches
      * follow the skeleton until their leg turns straight and are one segment from there.
      *
-     * Every stroke is a whole number of 6-unit dot spacings, so a dot lands on each end: the stem is
-     * y 24 to 78 (54 units; 60 would not fit between the flat ends with the end dots' 2.5 radius
-     * inside the ink), and every foot stops at the stem's foot height. Each arch starts a few units
-     * down its leg (y 40.5 and 40), below the skeleton junction at y 36.5, which is what makes the
-     * arch a whole 15 spacings (90 units); its first dot overlaps the leg's dots, so the join is
-     * closed.
+     * Every stroke is a whole number of 6-unit dot spacings, so a dot lands on each end, and each
+     * arch leaves its leg exactly on one of that leg's dots, so each join is closed but reads as one
+     * dot rather than a clump of overlapping ones (the first pass, with each arch starting between
+     * two leg dots, drew that clump; see p). The stem is y 23 to 77 (54 units; 60 would not fit
+     * between the flat ends with the end dots' 2.5 radius inside the ink). `arch1` leaves the stem's
+     * dot at y 35, just below the skeleton junction at y 36.3, and ends at y 76.8, a whole 14
+     * spacings; `arch2` leaves arch1's dot at y 40.5 on the middle leg, cutting straight across to
+     * the shoulder (the skeleton's first few points hug the leg and would put its second dot against
+     * arch1's dot above), and ends at y 78.6, a whole 15 spacings. Each foot height is free inside
+     * the ink (the flat feet are at y 82.6), which is what lets both arches be whole spacings without
+     * reshaping them, and every other arch dot clears the dots already drawn by at least 5 units.
      */
     Exercise(
         id = "english-small-m",
@@ -862,13 +867,13 @@ internal val englishSmallExercises: List<Exercise> = listOf(
         strokes = listOf(
             Stroke(
                 id = "english-small-m-stem",
-                points = StrokePoints.line(Point(15f, 24f), Point(15f, 78f)),
+                points = StrokePoints.line(Point(15f, 23f), Point(15f, 77f)),
             ),
             Stroke(
                 id = "english-small-m-arch1",
                 points = StrokePoints.polyline(
                     listOf(
-                        Point(15f, 40.5f),
+                        Point(15f, 35f),
                         Point(17f, 34f),
                         Point(20f, 33f),
                         Point(22f, 32f),
@@ -885,7 +890,7 @@ internal val englishSmallExercises: List<Exercise> = listOf(
                         Point(49f, 31f),
                         Point(50f, 34f),
                         Point(51.5f, 38f),
-                        Point(51.5f, 78f),
+                        Point(51.5f, 76.8f),
                     ),
                 ),
             ),
@@ -893,9 +898,7 @@ internal val englishSmallExercises: List<Exercise> = listOf(
                 id = "english-small-m-arch2",
                 points = StrokePoints.polyline(
                     listOf(
-                        Point(51.5f, 40f),
-                        Point(54f, 34f),
-                        Point(56f, 33f),
+                        Point(51.5f, 40.5f),
                         Point(59f, 32f),
                         Point(62f, 32f),
                         Point(64f, 30f),
@@ -913,7 +916,7 @@ internal val englishSmallExercises: List<Exercise> = listOf(
                         Point(88f, 40f),
                         Point(88f, 43f),
                         Point(88.2f, 46f),
-                        Point(88.2f, 78f),
+                        Point(88.2f, 78.6f),
                     ),
                 ),
             ),
@@ -927,11 +930,15 @@ internal val englishSmallExercises: List<Exercise> = listOf(
      * `arch` out of the stem, over the shoulder and down the right leg, following the skeleton until
      * the leg turns straight at y 50 and one segment from there.
      *
-     * Every stroke is a whole number of 6-unit dot spacings: the stem is y 13.5 to 85.5 (72 units;
-     * 78 would not fit between the flat ends with the end dots' 2.5 radius inside the ink), and the
-     * arch's foot stops at the stem's foot height. The arch starts at y 41 on the stem, below the
-     * skeleton junction at y 34, which makes it a whole 21 spacings (126 units); its first dot
-     * overlaps the stem's dots, so the join is closed.
+     * Every stroke is a whole number of 6-unit dot spacings, and the arch leaves the stem exactly on
+     * one of the stem's dots, so the join is closed but reads as one dot rather than a clump of
+     * overlapping ones (the first pass, with the arch starting between two stem dots, drew that
+     * clump; see p). The stem is y 12 to 84 (72 units; 78 would not fit between the flat ends with
+     * the end dots' 2.5 radius inside the ink), and the arch leaves its dot at y 36, just below the
+     * skeleton junction at y 34, cutting straight across to the shoulder (the skeleton's first points
+     * hug the stem and would put the arch's second dot against the stem dot above). Its body is
+     * scaled about its centre by 1.003 so the arch, ending at the stem's foot height, is a whole 20
+     * spacings (120 units), with every other dot clear of the stem's.
      */
     Exercise(
         id = "english-small-n",
@@ -942,20 +949,18 @@ internal val englishSmallExercises: List<Exercise> = listOf(
         strokes = listOf(
             Stroke(
                 id = "english-small-n-stem",
-                points = StrokePoints.line(Point(24.2f, 13.5f), Point(24.2f, 85.5f)),
+                points = StrokePoints.line(Point(24.2f, 12f), Point(24.2f, 84f)),
             ),
             Stroke(
                 id = "english-small-n-arch",
                 points = StrokePoints.polyline(
                     listOf(
-                        Point(24.2f, 41f),
-                        Point(27f, 33f),
-                        Point(29f, 31f),
-                        Point(32f, 30f),
-                        Point(34f, 29f),
-                        Point(37f, 28f),
-                        Point(39f, 27f),
-                        Point(41f, 25f),
+                        Point(24.2f, 36f),
+                        Point(31.9f, 30f),
+                        Point(33.9f, 29f),
+                        Point(36.9f, 28f),
+                        Point(38.9f, 27f),
+                        Point(40.9f, 25f),
                         Point(43f, 24f),
                         Point(46f, 22f),
                         Point(48f, 21f),
@@ -969,17 +974,17 @@ internal val englishSmallExercises: List<Exercise> = listOf(
                         Point(70f, 19f),
                         Point(72f, 20f),
                         Point(74f, 23f),
-                        Point(76f, 25f),
-                        Point(77f, 27f),
-                        Point(78f, 30f),
-                        Point(78f, 33f),
-                        Point(79f, 35f),
-                        Point(79f, 38f),
-                        Point(79f, 41f),
-                        Point(80f, 44f),
-                        Point(80f, 47f),
+                        Point(76.1f, 25f),
+                        Point(77.1f, 27f),
+                        Point(78.1f, 30f),
+                        Point(78.1f, 33f),
+                        Point(79.1f, 35f),
+                        Point(79.1f, 38f),
+                        Point(79.1f, 41f),
+                        Point(80.1f, 44.1f),
+                        Point(80.1f, 47.1f),
                         Point(79.7f, 50f),
-                        Point(79.7f, 85.5f),
+                        Point(79.7f, 84f),
                     ),
                 ),
             ),
@@ -1087,6 +1092,85 @@ internal val englishSmallExercises: List<Exercise> = listOf(
                         Point(56.8f, 16.4f),
                         Point(53.8f, 16.1f),
                         Point(50.7f, 15.8f),
+                    ),
+                ),
+            ),
+        ),
+    ),
+    /**
+     * p is much taller than it is wide (aspect 0.687), so it is fitted by height.
+     *
+     * b turned upside down: a straight stem (ink row centre x 31.8, flat top at y 8.1, flat foot at
+     * y 90) with a closed bowl off its upper half, which the skeleton joins to the stem at y 25 and
+     * y 54. Written as taught: `stem` top to bottom, then `bowl` out of the stem, up-right over the
+     * top, clockwise down the right side and round the bottom back into the stem, in one pass. The
+     * skeleton's spur up-left from the upper junction runs into the corner of the stem's top, not a
+     * path.
+     *
+     * Every stroke is a whole number of 6-unit dot spacings, and the bowl's two ends land exactly on
+     * stem dots, so each join is closed but reads as one dot rather than a clump of overlapping ones
+     * (the first pass, with the bowl starting between two stem dots, drew that clump). The stem is
+     * y 13.5 to 85.5 (72 units, nearly centred between the flat ends; 78 would not fit with both end
+     * dots' 2.5 radius inside the ink), which puts stem dots at y 25.5 and 55.5, beside the two
+     * junctions. The bowl runs between those two dots, leaving the stem straight for the arch (the
+     * skeleton's kink at the notch would put its second dot against the stem dot above), and its
+     * skeleton body is scaled about its centre by 1.021 so it is a whole 19 spacings (114 units),
+     * with every other dot clear of the stem's.
+     */
+    Exercise(
+        id = "english-small-p",
+        title = "p",
+        type = ExerciseType.ENGLISH_SMALL,
+        difficulty = Difficulty.BEGINNER,
+        order = 16,
+        strokes = listOf(
+            Stroke(
+                id = "english-small-p-stem",
+                points = StrokePoints.line(Point(31.8f, 13.5f), Point(31.8f, 85.5f)),
+            ),
+            Stroke(
+                id = "english-small-p-bowl",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(31.8f, 25.5f),
+                        Point(36.6f, 21.7f),
+                        Point(38.6f, 20.7f),
+                        Point(41.7f, 19.7f),
+                        Point(43.7f, 17.6f),
+                        Point(45.8f, 16.6f),
+                        Point(48.8f, 15.6f),
+                        Point(51.9f, 14.6f),
+                        Point(54f, 13.5f),
+                        Point(57f, 13.5f),
+                        Point(60.1f, 13.5f),
+                        Point(63.1f, 14.6f),
+                        Point(65.2f, 16.6f),
+                        Point(67.2f, 18.6f),
+                        Point(68.2f, 21.7f),
+                        Point(69.3f, 23.8f),
+                        Point(70.3f, 26.8f),
+                        Point(70.3f, 29.9f),
+                        Point(70.3f, 32.9f),
+                        Point(71.3f, 36f),
+                        Point(70.3f, 38f),
+                        Point(70.3f, 41.1f),
+                        Point(69.3f, 44.2f),
+                        Point(69.3f, 47.2f),
+                        Point(67.2f, 49.3f),
+                        Point(66.2f, 52.3f),
+                        Point(64.2f, 54.4f),
+                        Point(62.1f, 56.4f),
+                        Point(59.1f, 57.4f),
+                        Point(57f, 58.5f),
+                        Point(54f, 58.5f),
+                        Point(50.9f, 58.5f),
+                        Point(47.8f, 57.4f),
+                        Point(45.8f, 57.4f),
+                        Point(42.7f, 56.4f),
+                        Point(39.7f, 55.4f),
+                        Point(36.6f, 55.4f),
+                        Point(34.6f, 54.4f),
+                        Point(31.8f, 55.5f),
                     ),
                 ),
             ),
