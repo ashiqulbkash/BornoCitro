@@ -1667,4 +1667,62 @@ internal val englishSmallExercises: List<Exercise> = listOf(
             ),
         ),
     ),
+    /**
+     * y is much taller than it is wide (aspect 0.737), so it is fitted by height.
+     *
+     * Andika's single-storey school y: a short left arm and a long right arm from flat tops, the
+     * right arm running on into a tail that curls left into a hook ending in a slanted flat cut.
+     * Written as taught: `arm` down the left arm, then `tail` from the top right down through the
+     * junction and round the hook. Both arms are lines fitted through their ink's row centres; the
+     * right arm's line stays inside the tail's ink down to y 67 and then eases into the skeleton
+     * round the hook, which stops short of the cut. The skeleton's spurs into the tops' corners and
+     * the hook's bulge are not paths.
+     *
+     * The arms are only about 38 degrees apart, so a dot shared where the left arm meets the long
+     * stroke would crowd the dots either side of it. As in v, the arm ends in a flat of exactly one
+     * dot spacing, laid where the two lines are about 6 apart, and the flat's right corner is
+     * exactly one of the tail's dots, so the join is closed and reads as one dot (see p). Both
+     * strokes are whole spacings (54 and 90 units): each starts where its distance along its line
+     * to the flat's corner is whole spacings, about 6 units under its flat top, and the tail's cut
+     * inset makes its total whole.
+     */
+    Exercise(
+        id = "english-small-y",
+        title = "y",
+        type = ExerciseType.ENGLISH_SMALL,
+        difficulty = Difficulty.BEGINNER,
+        order = 25,
+        strokes = listOf(
+            Stroke(
+                id = "english-small-y-arm",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(32.52f, 13f),
+                        Point(48.94f, 58.16f),
+                        Point(54.92f, 58.64f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "english-small-y-tail",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(69.66f, 12.9f),
+                        Point(54.92f, 58.64f),
+                        Point(52.2f, 67f),
+                        Point(48.9f, 71.1f),
+                        Point(47.7f, 73.7f),
+                        Point(46.2f, 76.2f),
+                        Point(44.3f, 78.6f),
+                        Point(42.1f, 80.6f),
+                        Point(39.5f, 82.1f),
+                        Point(36.6f, 82.7f),
+                        Point(33.7f, 83.2f),
+                        Point(30.2f, 82.7f),
+                        Point(26.58f, 81.83f),
+                    ),
+                ),
+            ),
+        ),
+    ),
 )
