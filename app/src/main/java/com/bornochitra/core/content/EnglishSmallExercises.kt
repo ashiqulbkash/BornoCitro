@@ -1251,4 +1251,64 @@ internal val englishSmallExercises: List<Exercise> = listOf(
             ),
         ),
     ),
+    /**
+     * r is taller than it is wide (aspect 0.857), so it is fitted by height.
+     *
+     * A straight stem (ink row centre x 29.6, flat top at y 8.6, flat foot at y 90) and an arm that
+     * leaves it just under the skeleton junction, rises over the shoulder and comes down to a
+     * slanted flat cut. Written as taught: `stem` top to bottom, then `arm` out of the stem, over
+     * the shoulder and down towards the cut, as n's arch is. The cut forks the skeleton into a prong
+     * per corner and the arm stops short of the prongs' midpoint; the skeleton's spur up into the
+     * shoulder's bulge and the one from the stem's top into the corner of its slanted cut are not
+     * paths.
+     *
+     * Every stroke is a whole number of 6-unit dot spacings, and the arm leaves the stem exactly on
+     * one of the stem's dots, so the join is closed but reads as one dot (see p). The stem is
+     * y 13.5 to 85.5 (72 units, centred between the flat ends; 78 would not fit with both end dots'
+     * 2.5 radius inside the ink), and the arm leaves its dot at y 37.5, cutting straight across to
+     * the shoulder (the skeleton's first points hug the stem). How far short of the cut the arm stops
+     * is what makes it whole spacings without reshaping the skeleton: 5.1 units, a whole 10
+     * spacings (60 units), with every other arm dot clear of the stem's. The whole guide is moved
+     * 2 units left, as c and e are, so its bbox centre is not at the catalog test's 3-unit limit;
+     * the canvas draws only the guide, so this moves placement, not shape.
+     */
+    Exercise(
+        id = "english-small-r",
+        title = "r",
+        type = ExerciseType.ENGLISH_SMALL,
+        difficulty = Difficulty.BEGINNER,
+        order = 18,
+        strokes = listOf(
+            Stroke(
+                id = "english-small-r-stem",
+                points = StrokePoints.line(Point(27.6f, 13.5f), Point(27.6f, 85.5f)),
+            ),
+            Stroke(
+                id = "english-small-r-arm",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(27.6f, 37.5f),
+                        Point(38f, 30f),
+                        Point(40f, 29f),
+                        Point(43f, 28f),
+                        Point(45f, 26f),
+                        Point(47f, 24f),
+                        Point(49f, 22f),
+                        Point(51f, 21f),
+                        Point(54f, 21f),
+                        Point(57f, 20f),
+                        Point(59f, 19f),
+                        Point(62f, 19f),
+                        Point(65f, 19f),
+                        Point(67f, 20f),
+                        Point(70f, 22f),
+                        Point(71f, 24f),
+                        Point(72f, 27f),
+                        Point(73f, 29f),
+                        Point(73.6f, 32.4f),
+                    ),
+                ),
+            ),
+        ),
+    ),
 )
