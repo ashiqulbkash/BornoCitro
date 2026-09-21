@@ -483,4 +483,50 @@ internal val englishSmallExercises: List<Exercise> = listOf(
             ),
         ),
     ),
+    /**
+     * f is much taller than it is wide (aspect 0.515), so it is fitted by height.
+     *
+     * It is a stem that curls over into a hook at the top, ending in a flat slanted cut, with a
+     * crossbar that is separate ink. It is written as it is taught: `stem` from the hook's tip, left
+     * over the top and straight down to the foot (89 canvas units, one pass), then `bar` across it
+     * left to right. The hook's cut forks the skeleton into a prong per corner, and the stroke starts
+     * 3 units short of the cut's midpoint: 1 and 2 leave the first dot hanging past the cut. Below
+     * the hook the stem is straight at x 46 (the ink's row centre, leaning only to 46.6 at the foot),
+     * so it is one segment, stopping 3 units above the flat foot, where the skeleton runs off into
+     * the foot's outer corner. The bar sits on its ink's centreline (y 44) and stops about 3 units
+     * inside each end, a whole 5 dot spacings long.
+     */
+    Exercise(
+        id = "english-small-f",
+        title = "f",
+        type = ExerciseType.ENGLISH_SMALL,
+        difficulty = Difficulty.BEGINNER,
+        order = 6,
+        strokes = listOf(
+            Stroke(
+                id = "english-small-f-stem",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(67f, 15f),
+                        Point(64f, 14f),
+                        Point(61f, 14f),
+                        Point(58f, 13f),
+                        Point(56f, 14f),
+                        Point(53f, 15f),
+                        Point(51f, 16f),
+                        Point(49f, 19f),
+                        Point(48f, 21f),
+                        Point(47f, 24f),
+                        Point(47f, 27f),
+                        Point(46f, 30f),
+                        Point(46f, 87f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "english-small-f-bar",
+                points = StrokePoints.line(Point(32f, 44f), Point(62f, 44f)),
+            ),
+        ),
+    ),
 )
