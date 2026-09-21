@@ -1176,4 +1176,79 @@ internal val englishSmallExercises: List<Exercise> = listOf(
             ),
         ),
     ),
+    /**
+     * q is much taller than it is wide (aspect 0.652), so it is fitted by height.
+     *
+     * g with a straight descender: a closed bowl whose arch runs into the stem's slanted top-right
+     * corner, and a straight stem (ink row centre x 68.1) down to a flat foot at y 90. Written round
+     * first, as a, d and g are: `bowl` from the stem's top, left over the top, counter-clockwise down
+     * the left and round the bottom, back into the stem at the lower junction; then `stem` top to
+     * bottom. The skeleton's spur from the foot out to its right corner is the corner, not a path.
+     *
+     * Every stroke is a whole number of 6-unit dot spacings, and the bowl's two ends land exactly on
+     * stem dots, so each join is closed but reads as one dot (see p). The stem is y 13 to 85 (72
+     * units; 78 would not fit between the slanted top, at y 9.3 above the stem's centre, and the
+     * flat foot with both end dots' 2.5 radius inside the ink). The bowl starts on the stem's first
+     * dot and ends on its dot at y 49, beside the junction at y 50; its skeleton body is scaled
+     * about its centre by 1.026 so the bowl is a whole 18 spacings (108 units), with every other dot
+     * clear of the stem's.
+     */
+    Exercise(
+        id = "english-small-q",
+        title = "q",
+        type = ExerciseType.ENGLISH_SMALL,
+        difficulty = Difficulty.BEGINNER,
+        order = 17,
+        strokes = listOf(
+            Stroke(
+                id = "english-small-q-bowl",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(68.1f, 13f),
+                        Point(64.5f, 14.5f),
+                        Point(61.4f, 14.5f),
+                        Point(59.4f, 13.4f),
+                        Point(56.3f, 13.4f),
+                        Point(53.2f, 13.4f),
+                        Point(50.1f, 13.4f),
+                        Point(47.1f, 13.4f),
+                        Point(45f, 14.5f),
+                        Point(41.9f, 15.5f),
+                        Point(39.9f, 16.5f),
+                        Point(37.8f, 18.6f),
+                        Point(35.8f, 20.6f),
+                        Point(33.7f, 23.7f),
+                        Point(32.7f, 25.7f),
+                        Point(31.7f, 28.8f),
+                        Point(31.7f, 30.9f),
+                        Point(30.6f, 34f),
+                        Point(30.6f, 37f),
+                        Point(30.6f, 40.1f),
+                        Point(30.6f, 43.2f),
+                        Point(31.7f, 45.2f),
+                        Point(31.7f, 48.3f),
+                        Point(33.7f, 51.4f),
+                        Point(34.7f, 53.4f),
+                        Point(36.8f, 55.5f),
+                        Point(38.8f, 57.5f),
+                        Point(41.9f, 58.6f),
+                        Point(45f, 58.6f),
+                        Point(47.1f, 58.6f),
+                        Point(50.1f, 57.5f),
+                        Point(53.2f, 56.5f),
+                        Point(55.3f, 55.5f),
+                        Point(58.3f, 54.5f),
+                        Point(60.4f, 53.4f),
+                        Point(63.5f, 52.4f),
+                        Point(65.5f, 51.4f),
+                        Point(68.1f, 49f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "english-small-q-stem",
+                points = StrokePoints.line(Point(68.1f, 13f), Point(68.1f, 85f)),
+            ),
+        ),
+    ),
 )
