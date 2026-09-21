@@ -1725,4 +1725,44 @@ internal val englishSmallExercises: List<Exercise> = listOf(
             ),
         ),
     ),
+    /**
+     * z is taller than it is wide (aspect 0.864), so it is fitted by height.
+     *
+     * A flat top bar, a straight diagonal from its right end down to the left end of a flat bottom
+     * bar. The skeleton forks into the corners of the bars' flat ends and wanders round both joins,
+     * so each part is taken from the ink directly: the bars run along their midlines and the
+     * diagonal is a line fitted through its row centres.
+     *
+     * Written as taught, left to right along the top, down the diagonal, then left to right along
+     * the bottom. The whole path is about 198 canvas units, so it is split at the bottom-left
+     * corner, the sharp turn a child can see: `zig` along the top and down the diagonal (138
+     * units), `base` along the bottom bar (60 units), the two sharing the dot at the corner. The
+     * corners turn through 51 degrees, just wide enough that the dots either side of each stay
+     * clear of each other, so no flat is needed as in v and w. Every segment is a whole number of
+     * 6-unit spacings, over by 0.02 so a dot falls on each corner and float rounding cannot drop
+     * one; the bottom corner slides 0.05 up the diagonal to make its length whole.
+     */
+    Exercise(
+        id = "english-small-z",
+        title = "z",
+        type = ExerciseType.ENGLISH_SMALL,
+        difficulty = Difficulty.BEGINNER,
+        order = 26,
+        strokes = listOf(
+            Stroke(
+                id = "english-small-z-zig",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(21.19f, 15.75f),
+                        Point(75.21f, 15.75f),
+                        Point(22.53f, 81.21f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "english-small-z-base",
+                points = StrokePoints.line(Point(22.53f, 81.21f), Point(82.55f, 81.21f)),
+            ),
+        ),
+    ),
 )
