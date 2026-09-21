@@ -297,4 +297,82 @@ internal val englishSmallExercises: List<Exercise> = listOf(
             ),
         ),
     ),
+    /**
+     * d is much taller than it is wide (aspect 0.671), so it is fitted by height.
+     *
+     * It is b mirrored, with a's foot: a tall stem on the right, flat-topped, with a closed bowl on
+     * its left. The skeleton meets the stem twice, at y 45 where the bowl leaves it and at y 73
+     * where it closes back in. That is written as it is taught, round first like a: `bowl` from the
+     * stem, counter-clockwise over the top, down the left side, round the bottom and back into the
+     * stem, 107 canvas units in one pass — then `stem` top to bottom.
+     *
+     * The stem is straight at x 66.8 down to y 70, then leans out with the foot's slanted cut
+     * (row centre 70.6 at y 88), so it is taken from the ink's row centres rather than the skeleton,
+     * which runs off into the foot's outer corner. It starts 3 units inside its flat top and stops
+     * about 3.5 above its foot, keeping both end dots wholly on the ink.
+     */
+    Exercise(
+        id = "english-small-d",
+        title = "d",
+        type = ExerciseType.ENGLISH_SMALL,
+        difficulty = Difficulty.BEGINNER,
+        order = 4,
+        strokes = listOf(
+            Stroke(
+                id = "english-small-d-bowl",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(67f, 45f),
+                        Point(64f, 45f),
+                        Point(61f, 45f),
+                        Point(58f, 44f),
+                        Point(55f, 44f),
+                        Point(53f, 43f),
+                        Point(50f, 43f),
+                        Point(47f, 42f),
+                        Point(44f, 42f),
+                        Point(41f, 43f),
+                        Point(39f, 44f),
+                        Point(37f, 46f),
+                        Point(35f, 48f),
+                        Point(33f, 50f),
+                        Point(32f, 53f),
+                        Point(31f, 55f),
+                        Point(30f, 58f),
+                        Point(30f, 61f),
+                        Point(30f, 64f),
+                        Point(30f, 67f),
+                        Point(30f, 70f),
+                        Point(31f, 72f),
+                        Point(31f, 75f),
+                        Point(33f, 77f),
+                        Point(34f, 80f),
+                        Point(36f, 82f),
+                        Point(39f, 83f),
+                        Point(42f, 84f),
+                        Point(44f, 84f),
+                        Point(47f, 83f),
+                        Point(50f, 83f),
+                        Point(53f, 82f),
+                        Point(55f, 80f),
+                        Point(57f, 78f),
+                        Point(59f, 77f),
+                        Point(62f, 76f),
+                        Point(64f, 75f),
+                        Point(67f, 73f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "english-small-d-stem",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(67f, 10f),
+                        Point(67f, 71f),
+                        Point(70f, 85f),
+                    ),
+                ),
+            ),
+        ),
+    ),
 )

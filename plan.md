@@ -400,7 +400,7 @@ Small letters:
 - [x] 3.1 a
 - [x] 3.2 b
 - [x] 3.3 c
-- [ ] 3.4 d
+- [x] 3.4 d
 - [ ] 3.5 e
 - [ ] 3.6 f
 - [ ] 3.7 g
@@ -486,6 +486,8 @@ _(Add one note per sub-step as it is completed, as in Step 1.)_
 - **3.3 c** — `english-small-c`, taller than wide (aspect 0.791), fitted by height. One counter-clockwise curve between two flat cuts, each forking the skeleton into a prong per corner. As a single stroke it is 142 canvas units — past the ceiling য and ভ were already split at (139) — and it turns smoothly throughout, so it is split at its leftmost point, where the pen travels straight down and the skeleton grows a spur into the thick left of the bowl (ৎ's split): `top` 70 units, `bottom` 72. The split sits one unit above the exact extremum so `bottom` is a whole 12 dot spacings and its last dot lands on its tip (bare path 0.1 instead of 5.1). Both ends stop 3 units short of their cut's midpoint: 1, 2 and 2.5 (once rounded to whole units) leave the top end's dot hanging past the cut. Every guide sample is on ink, min ink under any dot 3.0.
 
   **New case: centring the guide rather than the ink.** Andika's c is much heavier on the left than at its terminals, so with the ink bbox centred the centreline's bbox centre is x=54, outside the catalog test's 3-unit tolerance. The whole guide is translated 4 units left (bbox x 25..75, centre (50, 48.5)); the canvas draws only the guide, so this changes placement, not shape, and every dot keeps its position on the ink. Expect the same on other one-sided letters (e, r, s, and some capitals). On the RMX3624 the mapping matched 3.1's (x/y scales agreeing to 0.26%, every predicted dot centre 14.8 px inside a 16 px dot) and the trace completed at 98.6% (PERFECT).
+
+- **3.4 d** — `english-small-d`, much taller than wide (aspect 0.671), fitted by height. b mirrored with a's foot: a flat-topped stem on the right (x 66.8 straight down to y 70, then leaning out to a slanted foot cut, row centre 70.6 at y 88) and a closed bowl on its left, which the skeleton joins to the stem at y 45 and y 73. Written round first like a: `bowl` from the stem, counter-clockwise over the top, down the left and back into the stem, 107 canvas units in one pass; then `stem` top to bottom, taken from the ink's row centres as a's is (the skeleton runs off into the foot's outer corner), 3 units inside the flat top and ~3.5 above the foot. Every guide sample is on ink, min ink under any dot 3.1; guide bbox centre (50, 47.5), so no re-centring was needed. On the RMX3624 the mapping matched 3.1's (`sx = 32.5 + 6.553x`, `sy = 536.6 + 6.553y`, x/y scales agreeing to 0.15%; the worst predicted dot centre, 10.2 px inside, is at the bowl/stem junction where the overlapping dots blend out of the colour mask) and the trace completed at 97.4% (PERFECT). 355 unit tests, 0 failures.
 
 ---
 
