@@ -77,11 +77,13 @@ class ProgressViewModel @Inject constructor(
     private val exercisesByType = combine(
         exerciseRepository.observeExercises(ExerciseType.VOWEL),
         exerciseRepository.observeExercises(ExerciseType.CONSONANT),
+        exerciseRepository.observeExercises(ExerciseType.ENGLISH_SMALL),
         exerciseRepository.observeExercises(ExerciseType.DRAWING),
-    ) { vowels, consonants, drawings ->
+    ) { vowels, consonants, englishSmall, drawings ->
         listOf(
             ExerciseType.VOWEL to vowels,
             ExerciseType.CONSONANT to consonants,
+            ExerciseType.ENGLISH_SMALL to englishSmall,
             ExerciseType.DRAWING to drawings,
         )
     }
@@ -147,5 +149,6 @@ class ProgressViewModel @Inject constructor(
 private fun LearningProgress.progressOf(type: ExerciseType): Float = when (type) {
     ExerciseType.VOWEL -> vowelProgress
     ExerciseType.CONSONANT -> consonantProgress
+    ExerciseType.ENGLISH_SMALL -> englishSmallProgress
     ExerciseType.DRAWING -> drawingProgress
 }

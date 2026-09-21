@@ -40,6 +40,7 @@ class HomeViewModelTest {
                 overallProgress = 0.5f,
                 vowelProgress = 1f,
                 consonantProgress = 0.25f,
+                englishSmallProgress = 0.75f,
                 drawingProgress = 0f,
                 continueExerciseId = "vowel-a",
             ),
@@ -65,6 +66,7 @@ class HomeViewModelTest {
         assertEquals(0.5f, state.overallProgress)
         assertEquals(1f, state.vowelProgress)
         assertEquals(0.25f, state.consonantProgress)
+        assertEquals(0.75f, state.englishSmallProgress)
         assertEquals(0f, state.drawingProgress)
         assertEquals("vowel-a", state.continueExerciseId)
     }

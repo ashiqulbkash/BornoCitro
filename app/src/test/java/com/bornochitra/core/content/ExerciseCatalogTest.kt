@@ -60,6 +60,17 @@ class ExerciseCatalogTest {
     }
 
     @Test
+    fun `english small letters carry the right characters in alphabet order, with no matra`() {
+        val letters = ExerciseCatalog.all.filter { it.type == ExerciseType.ENGLISH_SMALL }.sortedBy { it.order }
+
+        assertEquals("a", letters.joinToString("") { it.title })
+        letters.forEach { letter ->
+            assertEquals("english-small-${letter.title}", letter.id)
+            assertTrue("${letter.id} has a matra", letter.strokes.none { it.id.endsWith("-matra") })
+        }
+    }
+
+    @Test
     fun `every exercise has the stroke count of its real letter or shape`() {
         val expected = mapOf(
             "vowel-o" to 3, "vowel-aa" to 4, "vowel-i" to 3, "vowel-ii" to 4, "vowel-u" to 4,
@@ -97,6 +108,7 @@ class ExerciseCatalogTest {
             "consonant-anusvar" to 2,
             "consonant-bisargo" to 2,
             "consonant-chandrabindu" to 2,
+            "english-small-a" to 3,
             "drawing-line" to 1, "drawing-circle" to 1, "drawing-square" to 1, "drawing-triangle" to 1,
             "drawing-house" to 2,
         )

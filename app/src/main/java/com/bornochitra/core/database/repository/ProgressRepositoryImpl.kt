@@ -33,14 +33,16 @@ class ProgressRepositoryImpl @Inject constructor(
     override fun observeProgress(): Flow<LearningProgress> = combine(
         exerciseRepository.observeExercises(ExerciseType.VOWEL),
         exerciseRepository.observeExercises(ExerciseType.CONSONANT),
+        exerciseRepository.observeExercises(ExerciseType.ENGLISH_SMALL),
         exerciseRepository.observeExercises(ExerciseType.DRAWING),
         exerciseProgressDao.observeAll(),
-    ) { vowels, consonants, drawings, rows ->
+    ) { vowels, consonants, englishSmall, drawings, rows ->
         val completedIds = rows.filter { it.completedCount > 0 }.map { it.exerciseId }.toSet()
         LearningProgress(
-            overallProgress = completedRatio(vowels + consonants + drawings, completedIds),
+            overallProgress = completedRatio(vowels + consonants + englishSmall + drawings, completedIds),
             vowelProgress = completedRatio(vowels, completedIds),
             consonantProgress = completedRatio(consonants, completedIds),
+            englishSmallProgress = completedRatio(englishSmall, completedIds),
             drawingProgress = completedRatio(drawings, completedIds),
             continueExerciseId = rows.filter { !it.isMastered }.maxByOrNull { it.lastPracticedAt }?.exerciseId,
         )

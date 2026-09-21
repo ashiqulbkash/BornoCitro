@@ -4,5 +4,6 @@ package com.bornochitra.core.model
 enum class ExerciseType {
     VOWEL,
     CONSONANT,
+    ENGLISH_SMALL,
     DRAWING,
 }

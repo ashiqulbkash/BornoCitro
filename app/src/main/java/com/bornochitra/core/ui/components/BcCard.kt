@@ -72,6 +72,7 @@ fun BcExerciseTile(
                 Text(
                     text = label,
                     style = labelStyle,
+                    fontFamily = label.letterFontFamily(),
                     textAlign = TextAlign.Center,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,

@@ -195,7 +195,7 @@ class ProgressViewModelTest {
         val state = viewModel.uiState.value
         assertEquals(0.5f, state.overallProgress)
         assertEquals(
-            listOf(ExerciseType.VOWEL, ExerciseType.CONSONANT, ExerciseType.DRAWING),
+            listOf(ExerciseType.VOWEL, ExerciseType.CONSONANT, ExerciseType.ENGLISH_SMALL, ExerciseType.DRAWING),
             state.categories.map { it.type },
         )
         assertEquals(0.5f, state.categories.first { it.type == ExerciseType.VOWEL }.progress)
@@ -204,6 +204,30 @@ class ProgressViewModelTest {
             listOf("অ", "আ"),
             state.categories.first { it.type == ExerciseType.VOWEL }.exercises.map { it.title },
         )
+    }
+
+    @Test
+    fun `the english small letters section carries its own ratio and letters`() = runTest(dispatcher) {
+        val viewModel = viewModel(
+            learningProgress = LearningProgress(englishSmallProgress = 0.5f),
+            progressByExerciseId = mapOf("english-small-a" to exerciseProgress("english-small-a", bestScore = 94f)),
+            catalogue = catalogue + listOf(
+                exercise("english-small-a", "a", ExerciseType.ENGLISH_SMALL, order = 1),
+                exercise("english-small-b", "b", ExerciseType.ENGLISH_SMALL, order = 2),
+            ),
+        )
+        backgroundScope.launch(dispatcher) { viewModel.uiState.collect {} }
+        dispatcher.scheduler.advanceUntilIdle()
+
+        viewModel.onEvent(ProgressEvent.CategoryOpened(ExerciseType.ENGLISH_SMALL))
+        dispatcher.scheduler.advanceUntilIdle()
+
+        val state = viewModel.uiState.value
+        val section = state.categories.first { it.type == ExerciseType.ENGLISH_SMALL }
+        assertEquals(ExerciseType.ENGLISH_SMALL, state.openCategory)
+        assertEquals(0.5f, section.progress)
+        assertEquals(listOf("a", "b"), section.exercises.map { it.title })
+        assertEquals(listOf(3, 0), section.exercises.map { it.stars })
     }
 
     @Test
@@ -269,7 +293,7 @@ class ProgressViewModelTest {
         dispatcher.scheduler.advanceUntilIdle()
 
         val state = viewModel.uiState.value
-        assertEquals(3, state.categories.size)
+        assertEquals(4, state.categories.size)
         assertEquals(emptyList<ProgressExerciseItem>(), state.categories.flatMap { it.exercises })
     }
 }

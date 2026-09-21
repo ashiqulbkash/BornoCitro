@@ -10,6 +10,7 @@ import androidx.navigation.navArgument
 import com.bornochitra.core.model.SessionScores
 import com.bornochitra.feature.consonants.ConsonantsScreen
 import com.bornochitra.feature.drawing.DrawingScreen
+import com.bornochitra.feature.english.EnglishLettersScreen
 import com.bornochitra.feature.home.HomeScreen
 import com.bornochitra.feature.practice.PracticeScreen
 import com.bornochitra.feature.progress.ProgressScreen
@@ -41,6 +42,7 @@ fun BcNavHost(
             HomeScreen(
                 onVowelsClick = { navController.navigate(BcDestination.Vowels.route) },
                 onConsonantsClick = { navController.navigate(BcDestination.Consonants.route) },
+                onEnglishSmallClick = { navController.navigate(BcDestination.EnglishSmall.route) },
                 onDrawingClick = { navController.navigate(BcDestination.Drawing.route) },
                 onProgressClick = { navController.navigate(BcDestination.Progress.route) },
                 onContinueClick = { exerciseId ->
@@ -60,6 +62,15 @@ fun BcNavHost(
 
         composable(BcDestination.Consonants.route) {
             ConsonantsScreen(
+                onBackClick = { navController.popBackStack() },
+                onExerciseClick = { exerciseId ->
+                    navController.navigate(BcDestination.Practice.createRoute(exerciseId))
+                },
+            )
+        }
+
+        composable(BcDestination.EnglishSmall.route) {
+            EnglishLettersScreen(
                 onBackClick = { navController.popBackStack() },
                 onExerciseClick = { exerciseId ->
                     navController.navigate(BcDestination.Practice.createRoute(exerciseId))

@@ -23,6 +23,10 @@ sealed interface BcDestination {
         override val route = "consonants"
     }
 
+    data object EnglishSmall : BcDestination {
+        override val route = "english-small"
+    }
+
     data object Drawing : BcDestination {
         override val route = "drawing"
     }

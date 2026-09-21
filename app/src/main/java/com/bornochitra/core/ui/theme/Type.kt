@@ -2,8 +2,18 @@ package com.bornochitra.core.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import com.bornochitra.R
+
+/**
+ * Andika, a school print font, for English letters: its single-storey a, g and y are the shapes
+ * children are taught, and the English guides are derived from this exact face (see
+ * `EnglishSmallExercises.kt`). Only the bold weight the letter styles use is bundled.
+ */
+val BcLatinLetterFontFamily = FontFamily(Font(R.font.andika_bold, FontWeight.Bold))
 
 // Sized up from the M3 defaults for readability by young children and to give
 // Bengali characters (displayLarge) enough room to render clearly.

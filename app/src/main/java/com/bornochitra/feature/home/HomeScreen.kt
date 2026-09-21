@@ -27,6 +27,7 @@ import com.bornochitra.core.ui.theme.BornoChitraTheme
 fun HomeScreen(
     onVowelsClick: () -> Unit,
     onConsonantsClick: () -> Unit,
+    onEnglishSmallClick: () -> Unit,
     onDrawingClick: () -> Unit,
     onProgressClick: () -> Unit,
     onContinueClick: (exerciseId: String) -> Unit,
@@ -38,6 +39,7 @@ fun HomeScreen(
         state = state,
         onVowelsClick = onVowelsClick,
         onConsonantsClick = onConsonantsClick,
+        onEnglishSmallClick = onEnglishSmallClick,
         onDrawingClick = onDrawingClick,
         onProgressClick = onProgressClick,
         onContinueClick = onContinueClick,
@@ -50,6 +52,7 @@ private fun HomeContent(
     state: HomeState,
     onVowelsClick: () -> Unit,
     onConsonantsClick: () -> Unit,
+    onEnglishSmallClick: () -> Unit,
     onDrawingClick: () -> Unit,
     onProgressClick: () -> Unit,
     onContinueClick: (exerciseId: String) -> Unit,
@@ -80,12 +83,14 @@ private fun HomeContent(
 
             BcPrimaryButton(text = "স্বরবর্ণ", onClick = onVowelsClick, modifier = Modifier.fillMaxWidth())
             BcPrimaryButton(text = "ব্যঞ্জনবর্ণ", onClick = onConsonantsClick, modifier = Modifier.fillMaxWidth())
+            BcPrimaryButton(text = "ছোট হাতের অক্ষর", onClick = onEnglishSmallClick, modifier = Modifier.fillMaxWidth())
             BcPrimaryButton(text = "আঁকা", onClick = onDrawingClick, modifier = Modifier.fillMaxWidth())
 
             Text(text = "Your Progress", style = MaterialTheme.typography.titleLarge)
             BcLabeledProgress(label = "Overall", progress = state.overallProgress)
             BcLabeledProgress(label = "স্বরবর্ণ", progress = state.vowelProgress)
             BcLabeledProgress(label = "ব্যঞ্জনবর্ণ", progress = state.consonantProgress)
+            BcLabeledProgress(label = "ছোট হাতের অক্ষর", progress = state.englishSmallProgress)
             BcLabeledProgress(label = "আঁকা", progress = state.drawingProgress)
 
             BcSecondaryButton(text = "View Full Progress", onClick = onProgressClick, modifier = Modifier.fillMaxWidth())
@@ -102,11 +107,13 @@ private fun HomeScreenPreview() {
                 overallProgress = 0.8f,
                 vowelProgress = 1f,
                 consonantProgress = 0.6f,
+                englishSmallProgress = 0.2f,
                 drawingProgress = 0.4f,
                 continueExerciseId = "vowel-e",
             ),
             onVowelsClick = {},
             onConsonantsClick = {},
+            onEnglishSmallClick = {},
             onDrawingClick = {},
             onProgressClick = {},
             onContinueClick = {},
@@ -122,6 +129,7 @@ private fun HomeScreenEmptyPreview() {
             state = HomeState(),
             onVowelsClick = {},
             onConsonantsClick = {},
+            onEnglishSmallClick = {},
             onDrawingClick = {},
             onProgressClick = {},
             onContinueClick = {},

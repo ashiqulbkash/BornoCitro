@@ -31,6 +31,7 @@ import com.bornochitra.core.ui.components.BcEmptyState
 import com.bornochitra.core.ui.components.BcLabeledProgress
 import com.bornochitra.core.ui.components.BcPrimaryButton
 import com.bornochitra.core.ui.components.BcTopAppBar
+import com.bornochitra.core.ui.components.letterFontFamily
 import com.bornochitra.core.ui.theme.BcFeedbackGood
 import com.bornochitra.core.ui.theme.BcSpacing
 import com.bornochitra.core.ui.theme.BornoChitraTheme
@@ -199,7 +200,7 @@ private fun ExerciseStarsRow(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Column {
-            Text(text = title, style = MaterialTheme.typography.titleMedium)
+            Text(text = title, style = MaterialTheme.typography.titleMedium, fontFamily = title.letterFontFamily())
             // Stars rate how well the tracing went; this says how far the exercise has got,
             // which is what mastery is about (plan.md section 41).
             if (stateText != null) {
@@ -242,6 +243,7 @@ private fun LearningState.label(): String? = when (this) {
 private fun ExerciseType.label(): String = when (this) {
     ExerciseType.VOWEL -> "স্বরবর্ণ"
     ExerciseType.CONSONANT -> "ব্যঞ্জনবর্ণ"
+    ExerciseType.ENGLISH_SMALL -> "ছোট হাতের অক্ষর"
     ExerciseType.DRAWING -> "আঁকা"
 }
 
