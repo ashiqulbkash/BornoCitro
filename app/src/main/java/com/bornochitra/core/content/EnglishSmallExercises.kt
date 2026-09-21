@@ -1539,4 +1539,45 @@ internal val englishSmallExercises: List<Exercise> = listOf(
             ),
         ),
     ),
+    /**
+     * v is a shade wider than it is tall (aspect 1.063), so it is fitted by width.
+     *
+     * Two straight diagonals from flat tops meeting in a flat bottom 20 units wide. The skeleton
+     * forks into every corner of the flat ends, so each diagonal is a line fitted through the ink's
+     * row centres (x = 0.364 y + 14.87 on the left, mirrored on the right). Meeting the two lines
+     * in a sharp point would put the dots either side of it only 4.5 units apart, since the arms
+     * are about 44 degrees apart, so they would overlap. Instead each arm runs straight down its
+     * own centreline to the foot (x 47 and 53) and a flat bottom of exactly one dot spacing joins
+     * them, as the glyph's flat bottom does.
+     *
+     * As one movement it is about 174 canvas units, past what a child holds in one pass, so it is
+     * split at the foot: `down` the left arm (84 units, a whole 14 spacings; 90 would not fit
+     * between the flat top and the foot with both end dots inside the ink), then `up` along the
+     * flat bottom and up the right arm (6 + 84 units), the two sharing the dot at the foot's left
+     * corner. The arms are a hair over 84 units so float rounding cannot drop the dot at the
+     * corner, and the slack along them is split evenly between the top and the foot.
+     */
+    Exercise(
+        id = "english-small-v",
+        title = "v",
+        type = ExerciseType.ENGLISH_SMALL,
+        difficulty = Difficulty.BEGINNER,
+        order = 22,
+        strokes = listOf(
+            Stroke(
+                id = "english-small-v-down",
+                points = StrokePoints.line(Point(18.7f, 10.5f), Point(47f, 89.7f)),
+            ),
+            Stroke(
+                id = "english-small-v-up",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(47f, 89.7f),
+                        Point(53f, 89.7f),
+                        Point(81.3f, 10.5f),
+                    ),
+                ),
+            ),
+        ),
+    ),
 )
