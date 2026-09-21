@@ -985,4 +985,111 @@ internal val englishSmallExercises: List<Exercise> = listOf(
             ),
         ),
     ),
+    /**
+     * o is taller than it is wide (aspect 0.921), so it is fitted by height.
+     *
+     * One closed ring, written as round letters are taught: counter-clockwise from the top. Its
+     * centreline is about 190 canvas units, too long for one pass, and it turns smoothly all the
+     * way, so it is split at the top and at the bottom, where the letter sits on the writing line
+     * (a's split): `left` from the top down the left side to the bottom, then `right` from the
+     * bottom up the right side and back to the top, closing the ring. The skeleton's short spurs at
+     * the top, left, bottom and right run into the bulges where Andika's stroke thickens, not paths.
+     *
+     * For a dot to land on both split points each half must be a whole number of 6-unit dot
+     * spacings, so the ring is scaled about its centre by 1.0095 to 192 units (16 + 16 spacings),
+     * moving it under half a unit outward, far inside the 9-unit pen half-width.
+     */
+    Exercise(
+        id = "english-small-o",
+        title = "o",
+        type = ExerciseType.ENGLISH_SMALL,
+        difficulty = Difficulty.BEGINNER,
+        order = 15,
+        strokes = listOf(
+            Stroke(
+                id = "english-small-o-left",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(50.7f, 15.8f),
+                        Point(47.8f, 16.1f),
+                        Point(44.9f, 16.5f),
+                        Point(42f, 16.9f),
+                        Point(39.4f, 17.8f),
+                        Point(36.8f, 18.9f),
+                        Point(34.4f, 20.4f),
+                        Point(32.2f, 22.3f),
+                        Point(30.2f, 24.5f),
+                        Point(28.5f, 26.8f),
+                        Point(27.2f, 29.3f),
+                        Point(26.1f, 31.9f),
+                        Point(25.2f, 34.6f),
+                        Point(24.5f, 37.3f),
+                        Point(23.9f, 40.1f),
+                        Point(23.6f, 43f),
+                        Point(23.2f, 45.9f),
+                        Point(22.9f, 48.8f),
+                        Point(23.2f, 51.8f),
+                        Point(23.6f, 54.7f),
+                        Point(23.9f, 57.6f),
+                        Point(24.4f, 60.4f),
+                        Point(25.1f, 63.2f),
+                        Point(26.1f, 65.8f),
+                        Point(27.2f, 68.4f),
+                        Point(28.6f, 70.9f),
+                        Point(30.2f, 73.1f),
+                        Point(32.2f, 75.2f),
+                        Point(34.3f, 77.1f),
+                        Point(36.8f, 78.5f),
+                        Point(39.4f, 79.5f),
+                        Point(42.1f, 80.3f),
+                        Point(45f, 80.6f),
+                        Point(47.9f, 81f),
+                        Point(49.3f, 81f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "english-small-o-right",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(49.3f, 81f),
+                        Point(50.8f, 80.9f),
+                        Point(53.7f, 80.6f),
+                        Point(56.6f, 80.1f),
+                        Point(59.4f, 79.5f),
+                        Point(62f, 78.6f),
+                        Point(64.5f, 77.3f),
+                        Point(66.8f, 75.5f),
+                        Point(68.8f, 73.5f),
+                        Point(70.6f, 71.2f),
+                        Point(72.1f, 68.9f),
+                        Point(73.3f, 66.3f),
+                        Point(74.3f, 63.7f),
+                        Point(75.2f, 61f),
+                        Point(75.9f, 58.3f),
+                        Point(76.3f, 55.4f),
+                        Point(76.7f, 52.5f),
+                        Point(76.9f, 49.6f),
+                        Point(77f, 46.7f),
+                        Point(76.8f, 43.8f),
+                        Point(76.4f, 40.9f),
+                        Point(75.9f, 38f),
+                        Point(75.3f, 35.2f),
+                        Point(74.4f, 32.6f),
+                        Point(73.4f, 29.9f),
+                        Point(72.2f, 27.4f),
+                        Point(70.8f, 25.1f),
+                        Point(69f, 22.8f),
+                        Point(67f, 20.8f),
+                        Point(64.7f, 19.2f),
+                        Point(62.2f, 17.9f),
+                        Point(59.6f, 16.9f),
+                        Point(56.8f, 16.4f),
+                        Point(53.8f, 16.1f),
+                        Point(50.7f, 15.8f),
+                    ),
+                ),
+            ),
+        ),
+    ),
 )
