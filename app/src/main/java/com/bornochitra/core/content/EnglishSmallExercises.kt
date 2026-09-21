@@ -130,4 +130,74 @@ internal val englishSmallExercises: List<Exercise> = listOf(
             ),
         ),
     ),
+    /**
+     * b is much taller than it is wide (aspect 0.617), so it is fitted by height.
+     *
+     * It is a straight stem with a bowl hanging off its lower half: the bowl leaves the stem at
+     * mid-height, climbs up-right over its top, runs clockwise down the right side and round the
+     * bottom, and closes back into the stem's foot. The skeleton draws that as one closed loop
+     * through the stem, so the letter is written as it is taught — the stem top to bottom, then the
+     * bowl out of the stem and round, 105 canvas units, one pass. The skeleton's only other branch
+     * runs up-left from the stem into the top-left corner of the slanted cut that caps it; that is
+     * the cut's corner, not a path, so the stem is a straight line down its centre (x 32 all the
+     * way), starting and ending 3 units inside its flat top and foot.
+     */
+    Exercise(
+        id = "english-small-b",
+        title = "b",
+        type = ExerciseType.ENGLISH_SMALL,
+        difficulty = Difficulty.BEGINNER,
+        order = 2,
+        strokes = listOf(
+            Stroke(
+                id = "english-small-b-stem",
+                points = StrokePoints.line(Point(32f, 10f), Point(32f, 84f)),
+            ),
+            Stroke(
+                id = "english-small-b-bowl",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(32f, 52f),
+                        Point(35f, 51f),
+                        Point(37f, 50f),
+                        Point(40f, 49f),
+                        Point(43f, 48f),
+                        Point(45f, 46f),
+                        Point(47f, 45f),
+                        Point(50f, 44f),
+                        Point(53f, 43f),
+                        Point(55f, 43f),
+                        Point(58f, 42f),
+                        Point(61f, 43f),
+                        Point(63f, 45f),
+                        Point(65f, 47f),
+                        Point(66f, 49f),
+                        Point(67f, 52f),
+                        Point(68f, 55f),
+                        Point(68f, 57f),
+                        Point(68f, 60f),
+                        Point(68f, 63f),
+                        Point(68f, 66f),
+                        Point(68f, 69f),
+                        Point(67f, 72f),
+                        Point(66f, 74f),
+                        Point(65f, 77f),
+                        Point(63f, 79f),
+                        Point(61f, 81f),
+                        Point(59f, 82f),
+                        Point(56f, 83f),
+                        Point(53f, 84f),
+                        Point(51f, 84f),
+                        Point(48f, 84f),
+                        Point(45f, 84f),
+                        Point(42f, 84f),
+                        Point(39f, 83f),
+                        Point(37f, 82f),
+                        Point(34f, 81f),
+                        Point(32f, 79f),
+                    ),
+                ),
+            ),
+        ),
+    ),
 )

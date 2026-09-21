@@ -398,7 +398,7 @@ Follow the Step 1 recipe and its authoring conventions; differences for English:
 Small letters:
 
 - [x] 3.1 a
-- [ ] 3.2 b
+- [x] 3.2 b
 - [ ] 3.3 c
 - [ ] 3.4 d
 - [ ] 3.5 e
@@ -480,6 +480,8 @@ _(Add one note per sub-step as it is completed, as in Step 1.)_
   **Toolchain rebuilt.** `/tmp` had been cleared, so no scratchpad held the Step 1 scripts; `glyph.py` (render + canvas fit, `BC_FONT` override, Andika Bold by default), `skel_branches.py`, `check.py` (off-ink samples, centreline distance, ink under every guide dot against the 2.5-unit dot radius, bare path past the last dot), `overlay.py`, `calib.py` (dot radius from the largest inscribed disc, scale from the guide bbox in x and y independently) and `trace.py` were rewritten from the recipe, plus `dev.py` for the device (wake, portrait lock, foreground check, tap by on-screen text from a `uiautomator` dump).
 
   a is a shade wider than it is tall (aspect 1.005); height-fitting leaves its ink at x 8..92, so it is fitted by height like প and ম. Andika's a is a bowl closed onto a straight stem, written round first and counter-clockwise, then the stem top to bottom. The bowl is 167 canvas units in one movement and turns smoothly all the way, so it is split at its lowest point, (32,80), where the letter sits on the line — the split ত and ঢ take — into `arc` (112, from the stem's top corner over the top and down the left) and `bowl` (56, along the bottom and up the diagonal into the stem at mid-height), sharing the dot at the foot. The skeleton spurs at (11,56) and (32,88) are the bulges where Andika's stroke thickens, not paths. The stem is taken from the ink's row centres (x 75.6 over the upper half, leaning to 80 at the foot) rather than the skeleton, which turns into the bowl at the top and runs off into the foot's outer corner at the bottom; it starts 3.5 units inside its flat top and stops 3 above its flat foot, keeping both end dots wholly on the ink. Every guide sample is on ink; min ink under any dot 3.5 units. On the RMX3624 the letter Practice mapping is now `sx = 31.8 + 6.563x`, `sy = 536.3 + 6.563y` — 35 px lower than for Bengali letters, because Andika's line box under the heading differs — with x and y scales agreeing to 0.11%; the trace completed at 97.3% (PERFECT), and Home, the small-letters grid and the Progress section all showed it. Unit-test baseline after 3.1: **355 tests, 0 failures**.
+
+- **3.2 b** — `english-small-b`, much taller than wide (aspect 0.617), so fitted by height. A straight stem with a bowl off its lower half; the skeleton draws the bowl and the lower stem as one closed loop, leaving the bowl at (32,52) and closing into the stem's foot at (32,79). Written as taught: `stem` top to bottom — a straight `StrokePoints.line` down its centre at x=32, 3 units inside the flat top (y 7) and foot (y 87) — then `bowl` out of the stem, up-right over the top, clockwise down the right and round the bottom back into the foot, 105 canvas units in one pass. The skeleton's other branch runs up-left into the top-left corner of the slanted cut that caps the stem; that is the cut's corner, not a path. Every guide sample is on ink, min ink under any dot 3.1 units; guide bbox centre (50,47). On the RMX3624 the mapping matched 3.1's (`sx = 32.3 + 6.554x`, `sy = 536.5 + 6.554y`, x/y scales agreeing to 0.01%) and the trace completed at 98.6% (PERFECT).
 
 ---
 
