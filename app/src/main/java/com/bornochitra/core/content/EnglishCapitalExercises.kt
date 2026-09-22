@@ -448,4 +448,162 @@ internal val englishCapitalExercises: List<Exercise> = listOf(
             ),
         ),
     ),
+    /**
+     * G is taller than it is wide (aspect 0.879), so it is fitted by height.
+     *
+     * Inter's G is C's bowl -- the same counter-clockwise curve, symmetric about y 48.5, with a
+     * horizontal flat cut at the top terminal -- carried on up a short vertical spur into a bar that
+     * runs left from the right edge. It is written as taught, "big curve, up and in", and split as C
+     * is, near the leftmost point where the pen travels straight down: `top` from the terminal over
+     * the top to the split, then `bottom` round the bottom, up the spur and left along the bar. The
+     * curve is the midpoint of the ink along rays from the bowl's centre; past the bottom the rays
+     * come from a lower centre so they cross the lower right of the bowl rather than the bar.
+     *
+     * The corner where the spur turns into the bar is sharp, as the glyph's is, and carries a dot of
+     * its own. The spur runs at x 79.5, 1.1 units right of its ink centre, so that the bar is a whole
+     * 4 spacings and its last dot still sits a full dot radius inside the bar's cut. Both strokes
+     * are whole spacings -- `top` 14 and `bottom` 20 -- by sliding the split 3.5 degrees below the
+     * leftmost point and solving the corner's height, which lands on the bar's midline.
+     */
+    Exercise(
+        id = "english-capital-g",
+        title = "G",
+        type = ExerciseType.ENGLISH_CAPITAL,
+        difficulty = Difficulty.BEGINNER,
+        order = 7,
+        strokes = listOf(
+            Stroke(
+                id = "english-capital-g-top",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(76.23f, 30.68f),
+                        Point(74.97f, 27.96f),
+                        Point(73.43f, 25.38f),
+                        Point(71.63f, 22.99f),
+                        Point(69.51f, 20.87f),
+                        Point(67.17f, 18.99f),
+                        Point(64.61f, 17.44f),
+                        Point(61.86f, 16.22f),
+                        Point(59.01f, 15.3f),
+                        Point(56.07f, 14.74f),
+                        Point(53.08f, 14.45f),
+                        Point(50.08f, 14.45f),
+                        Point(47.09f, 14.68f),
+                        Point(44.14f, 15.21f),
+                        Point(41.27f, 16.09f),
+                        Point(38.51f, 17.25f),
+                        Point(35.9f, 18.73f),
+                        Point(33.46f, 20.48f),
+                        Point(31.25f, 22.5f),
+                        Point(29.27f, 24.75f),
+                        Point(27.5f, 27.17f),
+                        Point(26.02f, 29.78f),
+                        Point(24.78f, 32.51f),
+                        Point(23.8f, 35.34f),
+                        Point(23.04f, 38.25f),
+                        Point(22.5f, 41.2f),
+                        Point(22.14f, 44.18f),
+                        Point(21.99f, 47.17f),
+                        Point(21.98f, 50.21f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "english-capital-g-bottom",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(21.98f, 50.21f),
+                        Point(22.2f, 53.21f),
+                        Point(22.55f, 56.18f),
+                        Point(23.1f, 59.13f),
+                        Point(23.91f, 62.02f),
+                        Point(24.92f, 64.84f),
+                        Point(26.2f, 67.56f),
+                        Point(27.74f, 70.13f),
+                        Point(29.49f, 72.56f),
+                        Point(31.51f, 74.78f),
+                        Point(33.76f, 76.76f),
+                        Point(36.21f, 78.49f),
+                        Point(38.86f, 79.89f),
+                        Point(41.65f, 80.98f),
+                        Point(44.54f, 81.79f),
+                        Point(47.5f, 82.29f),
+                        Point(50.49f, 82.52f),
+                        Point(53.49f, 82.49f),
+                        Point(56.48f, 82.23f),
+                        Point(59.42f, 81.67f),
+                        Point(62.3f, 80.82f),
+                        Point(65.06f, 79.66f),
+                        Point(67.68f, 78.19f),
+                        Point(70.08f, 76.4f),
+                        Point(72.21f, 74.3f),
+                        Point(74.06f, 71.94f),
+                        Point(75.6f, 69.36f),
+                        Point(76.77f, 66.6f),
+                        Point(77.81f, 63.79f),
+                        Point(79.5f, 60f),
+                        Point(79.5f, 52.1f),
+                        Point(55.48f, 52.1f),
+                    ),
+                ),
+            ),
+        ),
+    ),
+    /**
+     * H is taller than it is wide (aspect 0.845), so it is fitted by height.
+     *
+     * Inter's H is two straight stems and a straight crossbar, every part flat, so each stroke is a
+     * line along its ink's centre. Written as taught: `left` down, `right` down, then `bar` left to
+     * right between them.
+     *
+     * The bar must leave and reach the stems exactly on a stem dot, so the stems are a whole 9
+     * spacings apart, at x 23 and 77 -- each 0.445 units off its own ink centre, symmetric about the
+     * middle. Each stem is a whole 12 spacings, y 12 to 84, placed so that its seventh dot sits on
+     * the bar, 0.4 units under the bar's midline. 13 spacings would reach a dot radius from both cuts
+     * but put the bar's dots 2.1 units above its midline, visibly off Inter's centred bar; 12 keeps
+     * the bar where the glyph has it and stops each stem 5 and 6 units inside its cuts, as E's arms
+     * stop 5.5 inside theirs.
+     */
+    Exercise(
+        id = "english-capital-h",
+        title = "H",
+        type = ExerciseType.ENGLISH_CAPITAL,
+        difficulty = Difficulty.BEGINNER,
+        order = 8,
+        strokes = listOf(
+            Stroke(
+                id = "english-capital-h-left",
+                points = StrokePoints.line(Point(23f, 12f), Point(23f, 84.02f)),
+            ),
+            Stroke(
+                id = "english-capital-h-right",
+                points = StrokePoints.line(Point(77f, 12f), Point(77f, 84.02f)),
+            ),
+            Stroke(
+                id = "english-capital-h-bar",
+                points = StrokePoints.line(Point(23f, 48f), Point(77.02f, 48f)),
+            ),
+        ),
+    ),
+    /**
+     * I is a single upright slab (aspect 0.205), so it is fitted by height.
+     *
+     * Inter's I has no serifs: it is one straight stem with flat cuts at the top and the foot, so it
+     * is one stroke, `stem`, a line down its ink's centre. Nothing joins it, so it takes the longest
+     * whole run that keeps both end dots inside the ink, 13 spacings from y 9.5 to 87.5 -- each end
+     * exactly a dot radius inside its cut.
+     */
+    Exercise(
+        id = "english-capital-i",
+        title = "I",
+        type = ExerciseType.ENGLISH_CAPITAL,
+        difficulty = Difficulty.BEGINNER,
+        order = 9,
+        strokes = listOf(
+            Stroke(
+                id = "english-capital-i-stem",
+                points = StrokePoints.line(Point(50f, 9.5f), Point(50f, 87.52f)),
+            ),
+        ),
+    ),
 )
