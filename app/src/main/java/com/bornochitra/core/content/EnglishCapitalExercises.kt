@@ -606,4 +606,128 @@ internal val englishCapitalExercises: List<Exercise> = listOf(
             ),
         ),
     ),
+    /**
+     * J is taller than it is wide (aspect 0.657), so it is fitted by height.
+     *
+     * Inter's J is a straight stem that hooks round the bottom and up into a short left arm ending
+     * in a horizontal flat cut. It is written as taught, in one stroke of about 114 units: down the
+     * stem, round the bottom and up to the terminal. The stem and the arm are lines along their ink
+     * centres; the bowl between them is the midpoint of the ink along rays from (50, 67), the centre
+     * that keeps every point furthest inside the band.
+     *
+     * The stroke ends a dot radius inside the arm's cut, and its start slides down inside the top
+     * cut so that it is a whole 19 spacings; 20 would put the first dot past the cut.
+     */
+    Exercise(
+        id = "english-capital-j",
+        title = "J",
+        type = ExerciseType.ENGLISH_CAPITAL,
+        difficulty = Difficulty.BEGINNER,
+        order = 10,
+        strokes = listOf(
+            Stroke(
+                id = "english-capital-j-stem",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(69f, 13.43f),
+                        Point(69f, 67f),
+                        Point(68.41f, 69.94f),
+                        Point(67.57f, 72.82f),
+                        Point(66.25f, 75.51f),
+                        Point(64.39f, 77.86f),
+                        Point(62.15f, 79.85f),
+                        Point(59.56f, 81.35f),
+                        Point(56.74f, 82.36f),
+                        Point(53.81f, 83.01f),
+                        Point(50.82f, 83.23f),
+                        Point(47.82f, 83.16f),
+                        Point(44.86f, 82.73f),
+                        Point(41.96f, 81.95f),
+                        Point(39.26f, 80.65f),
+                        Point(36.82f, 78.92f),
+                        Point(34.72f, 76.78f),
+                        Point(33.1f, 74.26f),
+                        Point(31.98f, 71.48f),
+                        Point(31.32f, 68.56f),
+                        Point(31.1f, 67f),
+                        Point(31.1f, 62.07f),
+                    ),
+                ),
+            ),
+        ),
+    ),
+    /**
+     * K is taller than it is wide (aspect 0.864), so it is fitted by height.
+     *
+     * Inter's K is a stem, an arm running down-left from the top right into the stem's right edge,
+     * and a leg that leaves the arm -- not the stem -- and runs down-right to a flat foot. Written as
+     * taught: `stem` down, `arm` from the top right in to the stem, then `leg` out from the arm to
+     * the foot. The arm and the leg run along lines fitted through their ink's row centres.
+     *
+     * Each join lands exactly on a dot of the stroke it meets: the leg starts on the arm's eighth
+     * dot, 1.45 units up the arm from where the two centrelines cross, and the arm ends on the
+     * stem's ninth dot. The arm meets the stem at about 40 degrees, and a straight arm would leave
+     * its second-last dot overlapping a stem dot, so it leaves its centreline at the stem's edge and
+     * turns in at 68 degrees for its last spacing; every other dot then clears the stem's by a full
+     * dot width. As H's are, the stem is a whole 12 spacings, y 12 to 84, placed to put a dot on the
+     * join; the leg is a whole 9 and reaches a dot radius inside the foot.
+     */
+    Exercise(
+        id = "english-capital-k",
+        title = "K",
+        type = ExerciseType.ENGLISH_CAPITAL,
+        difficulty = Difficulty.BEGINNER,
+        order = 11,
+        strokes = listOf(
+            Stroke(
+                id = "english-capital-k-stem",
+                points = StrokePoints.line(Point(22.5f, 12f), Point(22.5f, 84.02f)),
+            ),
+            Stroke(
+                id = "english-capital-k-arm",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(72.32f, 9.5f),
+                        Point(32.91f, 55.79f),
+                        Point(22.5f, 60f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "english-capital-k-leg",
+                points = StrokePoints.line(Point(45.09f, 41.48f), Point(73.93f, 87.16f)),
+            ),
+        ),
+    ),
+    /**
+     * L is taller than it is wide (aspect 0.636), so it is fitted by height.
+     *
+     * Inter's L is a straight stem and a straight foot bar meeting at a square corner. It is written
+     * as taught, "down, then across", in one stroke of 114 units: down the stem's centre and right
+     * along the bar's midline. The corner is a right angle, so the dots either side of it sit well
+     * apart and it carries a dot of its own; the stem is a whole 12 spacings down to it.
+     *
+     * The bar is a whole 7 spacings. That needs the stem 0.37 units left of its ink centre, at x
+     * 31.75, for the bar's last dot to sit a full dot radius inside the cut; at 6 spacings the bar
+     * would stop 8.4 units short of it.
+     */
+    Exercise(
+        id = "english-capital-l",
+        title = "L",
+        type = ExerciseType.ENGLISH_CAPITAL,
+        difficulty = Difficulty.BEGINNER,
+        order = 12,
+        strokes = listOf(
+            Stroke(
+                id = "english-capital-l-body",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(31.75f, 11f),
+                        Point(31.75f, 83f),
+                        Point(73.77f, 83f),
+                    ),
+                ),
+            ),
+        ),
+    ),
 )
