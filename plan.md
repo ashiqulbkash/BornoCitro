@@ -13,7 +13,7 @@ General development conventions — architecture, code quality, testing, build/v
 ## PLAN EXECUTION RULES
 
 1. Read the entire `plan.md` before making changes.
-2. Implement exactly **one numbered step at a time** (a lettered sub-step such as 1.3 counts as one step). Do not implement multiple steps unless explicitly instructed.
+2. Implement exactly **one numbered step at a time** (a lettered sub-step such as 1.3 counts as one step). Do not implement multiple steps unless explicitly instructed. A sub-step's own scope may be more than one character where it says so — Step 3's capitals from 3.30 on are three per sub-step — and that whole group is the step.
 3. Do not move to the next step automatically unless explicitly instructed.
 4. Do not use placeholder implementations for a real feature.
 5. Keep the tracing engine independent from ViewModel, Room, Hilt, and Compose UI implementation details.
@@ -371,20 +371,21 @@ The child enters the Practice screen and traces the character. When they finish,
 
 Add English letters: lowercase **a–z** and capital **A–Z**, practised like the Bengali letters.
 
-## Implement (sub-steps 3.1–3.52, **one character per step**)
+## Implement (sub-steps 3.1–3.37)
 
-- Each sub-step adds exactly **one** character, then stops. Do not add a second character in the same step.
-- Sub-steps 3.1–3.26 add the small letters a–z, in alphabetical order; 3.27–3.52 add the capitals A–Z. Ids are `english-small-<letter>` and `english-capital-<letter>`, each with the next `order` value within its type; titles are the glyphs.
+- **Cadence.** 3.1–3.29 add exactly **one** character each (all done). From **3.30 onwards a sub-step adds three capitals**, in alphabetical order, and then stops — do not start the next group in the same step. The final group (3.37) has two letters because 23 remaining capitals do not divide by three.
+- Within a three-letter step the letters are still derived, checked and applied **one at a time, in order**: finish a letter's derivation, `check.py`, overlay review, `apply_<letter>.py`, catalog-test update and device trace before starting the next. Only the build/verification of Section 10 and the post-task brief are shared by the group; a letter that fails its device trace blocks the step, it does not get deferred to a later one.
+- Sub-steps 3.1–3.26 add the small letters a–z, in alphabetical order; 3.27–3.37 add the capitals A–Z. Ids are `english-small-<letter>` and `english-capital-<letter>`, each with the next `order` value within its type; titles are the glyphs.
 - Derive each character's strokes from a rendered glyph with the **Step 1 per-letter recipe** (toolchain, ink-bbox fit — by width for characters wider than tall — `check.py`, overlay review, `apply_<letter>.py`, catalog test update, device trace). Do not redraw by eye.
 - Font: the first sub-step (3.1) picks a print/school-style font so that `a`, `g`, `y` follow the single-storey shape children are taught, and records it in the source header comment of both new files. Every later small letter uses the same font. The device-font lesson from 1.15 applies: check the derivation against the glyph the phone itself would draw, not only the scratchpad font.
-- **Capital-letter font (3.27–3.52): Inter Bold**, not Andika. The app bundles the variable font `res/font/inter.ttf` (Inter 4.001, axes `opsz` 14..32 and `wght` 100..900, OFL 1.1; licence in `assets/licenses/inter-OFL.txt`) as `BcLatinCapitalFontFamily`, with both axes pinned — `wght` 700, `opsz` 14 — and `String.letterFontFamily()` draws every single capital title (Practice/Result heading, grid tile, Progress row) in it. Derive every capital from that same instance, never from the variable default (Regular) or another weight: make a static copy with `fontTools.varLib.instancer.instantiateVariableFont(font, {"wght": 700, "opsz": 14})` and render from it. If the pinned axes in `Type.kt` ever change, every capital's guide must be re-derived. Confirm on the device that the Practice heading is Inter, not Roboto (crop the heading and compare it with the derivation render; at 3.27 the IoU was 0.96 against Inter and 0.69 against the phone's Roboto).
+- **Capital-letter font (3.27–3.37, every capital): Inter Bold**, not Andika. The app bundles the variable font `res/font/inter.ttf` (Inter 4.001, axes `opsz` 14..32 and `wght` 100..900, OFL 1.1; licence in `assets/licenses/inter-OFL.txt`) as `BcLatinCapitalFontFamily`, with both axes pinned — `wght` 700, `opsz` 14 — and `String.letterFontFamily()` draws every single capital title (Practice/Result heading, grid tile, Progress row) in it. Derive every capital from that same instance, never from the variable default (Regular) or another weight: make a static copy with `fontTools.varLib.instancer.instantiateVariableFont(font, {"wght": 700, "opsz": 14})` and render from it. If the pinned axes in `Type.kt` ever change, every capital's guide must be re-derived. Confirm on the device that the Practice heading is Inter, not Roboto (crop the heading and compare it with the derivation render; at 3.27 the IoU was 0.96 against Inter and 0.69 against the phone's Roboto).
 - Author natural stroke order and direction (top-to-bottom, left-to-right, counter-clockwise for round letters). There is no headline, so no stroke is a `-matra`. A dot or crossbar that is separate ink (`i`, `j`, `t`, `f`, capital `E` `F` `H` `A` and the like) is a stroke of its own, written where a writer adds it; dots use the ring rule from 1.22 (`StrokePoints.arc` inside the inscribed disc).
 - Keep one stroke under roughly 140 canvas units and split only at a landmark the child can see (Step 1 authoring conventions).
 - **Plumbing rides with the first character of each type**, so no category is ever shown empty and no placeholder is used:
   - **3.1 (`a`)** also adds `ExerciseType.ENGLISH_SMALL`, `EnglishSmallExercises.kt` registered in `ExerciseCatalog`, an English small-letters screen following `ConsonantsScreen`/`ConsonantsViewModel`, a route in `BcDestination`/`BcNavHost` only if the existing pattern needs one, the Home button **Small letters**, the matching Progress button/section (reuse the hub: `ProgressState.openCategory`), the `LearningProgress`, `ProgressRepositoryImpl`, `HomeViewModel` and `ProgressViewModel` changes, and string resources with Bengali UI copy consistent with the existing category names.
   - **3.27 (`A`)** does the same for `ExerciseType.ENGLISH_CAPITAL`, `EnglishCapitalExercises.kt` and the **Capital letters** button/section, reusing what 3.1 built rather than duplicating it.
 - Step 2 practice sessions apply to these letters without extra code.
-- The last small-letter sub-step (3.26) also confirms the small-letters screen scrolls and lays out 26 items at 720x1280 and 720x1600, and that Home/Progress measure the small bar against 26. 3.52 does the same for 26 capitals and confirms overall progress includes both English categories.
+- The last small-letter sub-step (3.26) also confirms the small-letters screen scrolls and lays out 26 items at 720x1280 and 720x1600, and that Home/Progress measure the small bar against 26. The last capital sub-step (3.37, after Z) does the same for 26 capitals and confirms overall progress includes both English categories.
 
 ## Per-character recipe
 
@@ -430,37 +431,24 @@ Capital letters:
 
 - [x] 3.27 A
 - [x] 3.28 B
-- [ ] 3.29 C
-- [ ] 3.30 D
-- [ ] 3.31 E
-- [ ] 3.32 F
-- [ ] 3.33 G
-- [ ] 3.34 H
-- [ ] 3.35 I
-- [ ] 3.36 J
-- [ ] 3.37 K
-- [ ] 3.38 L
-- [ ] 3.39 M
-- [ ] 3.40 N
-- [ ] 3.41 O
-- [ ] 3.42 P
-- [ ] 3.43 Q
-- [ ] 3.44 R
-- [ ] 3.45 S
-- [ ] 3.46 T
-- [ ] 3.47 U
-- [ ] 3.48 V
-- [ ] 3.49 W
-- [ ] 3.50 X
-- [ ] 3.51 Y
-- [ ] 3.52 Z
+- [x] 3.29 C
+Three capitals per step from here on:
 
-## Definition of Done (applies to every sub-step)
+- [ ] 3.30 D E F
+- [ ] 3.31 G H I
+- [ ] 3.32 J K L
+- [ ] 3.33 M N O
+- [ ] 3.34 P Q R
+- [ ] 3.35 S T U
+- [ ] 3.36 V W X
+- [ ] 3.37 Y Z (two letters; also the whole-category checks below)
 
-- [ ] The one character is added with strokes derived from its rendered glyph
-- [ ] Every guide sample lies on the glyph's ink
-- [ ] It completes at 95%+ on a faithful synthetic trace on the device
-- [ ] `ExerciseCatalogTest`'s stroke-count map (and alphabet string) include the new character, and its id, `order`, canvas-bounds and centring assertions pass
+## Definition of Done (applies to every sub-step; for a three-letter step, to **each** of its letters)
+
+- [ ] Every character of the step is added with strokes derived from its rendered glyph
+- [ ] Every guide sample lies on its glyph's ink
+- [ ] Each one completes at 95%+ on a faithful synthetic trace on the device
+- [ ] `ExerciseCatalogTest`'s stroke-count map (and alphabet string) include every new character, and their ids, `order`, canvas-bounds and centring assertions pass
 - [ ] Existing ViewModel tests still pass
 - [ ] Verified by running the app
 
@@ -469,11 +457,11 @@ Additionally, for the plumbing sub-steps (3.1 and 3.27):
 - [ ] Type, catalog registration, category screen, Home button, Progress button/section and progress aggregation are in place for the category
 - [ ] ViewModel and progress-aggregation tests cover the new category
 
-Step 3 as a whole is done when all 52 sub-steps are checked, the catalog test asserts 26 small + 26 capital with unique ids and contiguous `order` per type, both category bars are computed against 26, and the flow Home → English → practise → Progress has been run on the device.
+Step 3 as a whole is done when all 37 sub-steps are checked (52 characters), the catalog test asserts 26 small + 26 capital with unique ids and contiguous `order` per type, both category bars are computed against 26, and the flow Home → English → practise → Progress has been run on the device.
 
 ## Notes
 
-_(Add one note per sub-step as it is completed, as in Step 1.)_
+_(Add one note per **character** as it is completed, as in Step 1; a three-letter sub-step therefore adds three notes, each headed with the sub-step number and the letter.)_
 
 - **3.1 a** — `english-small-a`, and the English small-letters plumbing.
 
@@ -566,6 +554,10 @@ _(Add one note per sub-step as it is completed, as in Step 1.)_
   **Joins.** The stem's dots at y 12 / 48 / 84 are whole spacings apart and lie within 2 units of the three bars' midlines, so each bowl starts and ends exactly on a stem dot. Both bowls share the middle bar exactly, from the stem to its fifth dot at (50.75, 48), so every dot on that stretch is one dot of both strokes. The first attempt let each bowl run into the bar on its own and left two dot pairs 0.56 and 2.4 apart. From the branch the upper arm arrives about 30° above horizontal and the lower one leaves about 20° below it, 51° apart, so the next dots sit about 5 apart and nothing crowds. Each bowl's length was brought to a whole number of spacings by offsetting its ray midpoints along the rays (upper -0.66, lower -0.88 units, both well inside the band), so its last dot lands on the stem (bare path 0.05 / 0.04; the stem is 72.02, a whole 12 spacings). Scripts: `B_build.py` (rays, smoothing, branch, length tuning, check, overlay), `apply_B.py`, and `B_mod.py`, which parses the strokes back out of the Kotlin so the device trace uses exactly what was applied. No samples are off ink, min ink under any dot is 3.82, no dots crowd, and the guide's bbox centre is (49.43, 48.01).
 
   On the RMX3624 the capital grid shows A (Completed) and B. The Practice heading matches Inter Bold (IoU 0.966, Roboto 0.780) and the mapping agrees with 3.27's (`sx = 31.6 + 6.563x`, `sy = 484.4 + 6.565y`, x/y scales agreeing to 0.03%). Every predicted dot centre is ≥15.2 px inside a 16.2 px dot, and the trace completed at 99.8% (PERFECT), a new `practice_session` row (id 63). Result shows "You tried 1 time. Your overall progress is 100%." 360 unit tests, 0 failures: B only extends existing assertions (alphabet `AB`, stroke-count map).
+
+- **3.29 C** — `english-capital-c`, taller than wide (aspect 0.872), fitted by height. Inter's C is one counter-clockwise curve (band ~15–17 units thick) between two **horizontal** flat cuts at y 35.7 and 61.3, and is symmetric about y 48.5 (ink y 7..90). Its centreline is 168 units, past the ceiling, and turns smoothly all the way, so it is split at its leftmost point (22.17, 48.5), where the pen travels straight down (small c's split): `top` from the upper terminal over the top to the split, `bottom` on round the bottom to the lower terminal. The curve is the midpoint of the ink along rays from (50, 48.5) every 5°, from 35° above horizontal to 180°, where the band stands alone (runs 14.7–17); below 35° the rays cross the cut, so the terminal is taken from the ink's row centres instead, which agree with the rays where they overlap (x 76.19 at y 30 both ways). 3 Chaikin passes round the join. Only `top` is derived; `bottom` is its mirror image reversed, so the strokes share the dot at the split. `top` is a whole 14 spacings (84.02), found by letting its start sit 2.5–4 units inside the cut and the ray midpoints shift by ±1: it starts 3.6 inside the cut (y 32.1) with the midpoints unshifted (-0.02), and its last dot lands on the split (bare path 0.02). Scripts: `C_build.py`, `apply_C.py`, `C_mod.py`. No samples are off ink, min ink under any dot is 3.65, no dots crowd, and the guide's bbox centre is (49.56, 48.5), so no placement shift was needed.
+
+  **Checked on the emulator, not the RMX3624** — no phone was attached (`adb devices` empty after a server restart). Pixel_5_2 (API 31) set to `wm size 720x1600` / `wm density 320` to match the phone: the heading matches Inter Bold (IoU 0.958, Roboto 0.667), the mapping is `sx = 33.1 + 6.536x`, `sy = 533.9 + 6.519y` (x/y scales agreeing to 0.27%), every predicted dot centre is ≥14.9 px inside a 16 px dot, and two traces completed at 95.66% and 95.36% (PERFECT), new `practice_session` rows. Result shows "You tried 1 time. Your overall progress is 96%.", and the capital grid lists A B C. The emulator scores lower across the board: B, 99.8% on the phone, scored 95.95% on the same emulator with the same script, so C's score is in line with the letters before it. Re-run C on the RMX3624 once it is attached. 360 unit tests, 0 failures: C only extends existing assertions (alphabet `ABC`, stroke-count map).
 
 ---
 

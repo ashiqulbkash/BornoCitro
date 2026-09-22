@@ -175,4 +175,100 @@ internal val englishCapitalExercises: List<Exercise> = listOf(
             ),
         ),
     ),
+    /**
+     * C is taller than it is wide (aspect 0.872), so it is fitted by height.
+     *
+     * Inter's C is one counter-clockwise curve between two horizontal flat cuts, symmetric about
+     * y 48.5. Its centreline is 168 canvas units, past what a child holds in one pass, and it turns
+     * smoothly all the way, so it is split at its leftmost point, where the pen travels straight
+     * down (small c's split): `top` from the upper terminal, over the top and down to the split,
+     * then `bottom` on round the bottom to the lower terminal. The curve is the midpoint of the ink
+     * along rays from the bowl's centre; near each terminal, where the band runs almost vertically
+     * into its cut, it is the ink's row centre instead. `bottom` is `top` mirrored, so the two
+     * strokes share the dot at the split.
+     *
+     * Each end stops 3.6 units inside its cut, where the stroke is a whole 14 spacings, so the last
+     * dot lands on the split and on the lower terminal.
+     */
+    Exercise(
+        id = "english-capital-c",
+        title = "C",
+        type = ExerciseType.ENGLISH_CAPITAL,
+        difficulty = Difficulty.BEGINNER,
+        order = 3,
+        strokes = listOf(
+            Stroke(
+                id = "english-capital-c-top",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(76.94f, 32.1f),
+                        Point(75.82f, 29.32f),
+                        Point(74.53f, 26.62f),
+                        Point(72.86f, 24.12f),
+                        Point(70.93f, 21.83f),
+                        Point(68.73f, 19.8f),
+                        Point(66.25f, 18.11f),
+                        Point(63.6f, 16.71f),
+                        Point(60.78f, 15.67f),
+                        Point(57.88f, 14.93f),
+                        Point(54.91f, 14.48f),
+                        Point(51.92f, 14.34f),
+                        Point(48.92f, 14.44f),
+                        Point(45.95f, 14.82f),
+                        Point(43.03f, 15.51f),
+                        Point(40.2f, 16.5f),
+                        Point(37.5f, 17.8f),
+                        Point(34.94f, 19.38f),
+                        Point(32.61f, 21.26f),
+                        Point(30.5f, 23.39f),
+                        Point(28.62f, 25.72f),
+                        Point(27.01f, 28.25f),
+                        Point(25.63f, 30.91f),
+                        Point(24.5f, 33.69f),
+                        Point(23.62f, 36.56f),
+                        Point(22.96f, 39.49f),
+                        Point(22.51f, 42.45f),
+                        Point(22.27f, 45.44f),
+                        Point(22.17f, 48.5f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "english-capital-c-bottom",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(22.17f, 48.5f),
+                        Point(22.27f, 51.56f),
+                        Point(22.51f, 54.55f),
+                        Point(22.96f, 57.51f),
+                        Point(23.62f, 60.44f),
+                        Point(24.5f, 63.31f),
+                        Point(25.63f, 66.09f),
+                        Point(27.01f, 68.75f),
+                        Point(28.62f, 71.28f),
+                        Point(30.5f, 73.61f),
+                        Point(32.61f, 75.74f),
+                        Point(34.94f, 77.62f),
+                        Point(37.5f, 79.2f),
+                        Point(40.2f, 80.5f),
+                        Point(43.03f, 81.49f),
+                        Point(45.95f, 82.18f),
+                        Point(48.92f, 82.56f),
+                        Point(51.92f, 82.66f),
+                        Point(54.91f, 82.52f),
+                        Point(57.88f, 82.07f),
+                        Point(60.78f, 81.33f),
+                        Point(63.6f, 80.29f),
+                        Point(66.25f, 78.89f),
+                        Point(68.73f, 77.2f),
+                        Point(70.93f, 75.17f),
+                        Point(72.86f, 72.88f),
+                        Point(74.53f, 70.38f),
+                        Point(75.82f, 67.68f),
+                        Point(76.94f, 64.9f),
+                    ),
+                ),
+            ),
+        ),
+    ),
 )
