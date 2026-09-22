@@ -271,4 +271,181 @@ internal val englishCapitalExercises: List<Exercise> = listOf(
             ),
         ),
     ),
+    /**
+     * D is taller than it is wide (aspect 0.839), so it is fitted by height.
+     *
+     * Inter's D is a straight stem and one bowl that leaves the stem's top, runs flat along the top
+     * bar, round the right side and back flat along the bottom bar into the stem's foot. The bowl's
+     * curve is the centreline of its band, read as the midpoint of the ink along rays cast from the
+     * counter's centroid; every ray from -90 to +90 degrees crosses a run of 14.8 to 17.0 units, so
+     * the band stands alone over the whole sweep and no ray has to be dropped.
+     *
+     * The whole bowl is 148 canvas units, more than a child holds in one pass, and it turns smoothly
+     * from end to end, so it is split at its rightmost point, where the pen travels straight down --
+     * C's split at its own leftmost point, and the only landmark on the curve a child can see.
+     * `bottom` is `top` mirrored about y 48.5, which the glyph is symmetric about to within 0.16
+     * units, so the two strokes share the dot at the split.
+     *
+     * The stem runs between the two join points, y 15.5 to 81.5: a whole 11 spacings apart and
+     * 1.17 units off each bar's midline, which a 14.66-unit bar swallows. Each half of the bowl is a
+     * whole 12 spacings, so `top` starts on the stem's first dot and `bottom` ends on its last.
+     */
+    Exercise(
+        id = "english-capital-d",
+        title = "D",
+        type = ExerciseType.ENGLISH_CAPITAL,
+        difficulty = Difficulty.BEGINNER,
+        order = 4,
+        strokes = listOf(
+            Stroke(
+                id = "english-capital-d-stem",
+                points = StrokePoints.line(Point(23.69f, 15.5f), Point(23.69f, 81.52f)),
+            ),
+            Stroke(
+                id = "english-capital-d-top",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(23.69f, 15.5f),
+                        Point(26.69f, 15.5f),
+                        Point(29.69f, 15.5f),
+                        Point(32.69f, 15.5f),
+                        Point(35.69f, 15.5f),
+                        Point(38.69f, 15.5f),
+                        Point(41.69f, 15.52f),
+                        Point(44.69f, 15.55f),
+                        Point(47.69f, 15.62f),
+                        Point(50.67f, 15.92f),
+                        Point(53.61f, 16.51f),
+                        Point(56.49f, 17.33f),
+                        Point(59.27f, 18.46f),
+                        Point(61.93f, 19.84f),
+                        Point(64.38f, 21.57f),
+                        Point(66.61f, 23.58f),
+                        Point(68.58f, 25.84f),
+                        Point(70.27f, 28.31f),
+                        Point(71.68f, 30.96f),
+                        Point(72.85f, 33.72f),
+                        Point(73.74f, 36.59f),
+                        Point(74.39f, 39.51f),
+                        Point(74.82f, 42.48f),
+                        Point(75.06f, 45.47f),
+                        Point(75.16f, 48.5f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "english-capital-d-bottom",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(75.16f, 48.5f),
+                        Point(75.06f, 51.53f),
+                        Point(74.82f, 54.52f),
+                        Point(74.39f, 57.49f),
+                        Point(73.74f, 60.41f),
+                        Point(72.85f, 63.28f),
+                        Point(71.68f, 66.04f),
+                        Point(70.27f, 68.69f),
+                        Point(68.58f, 71.16f),
+                        Point(66.61f, 73.42f),
+                        Point(64.38f, 75.43f),
+                        Point(61.93f, 77.16f),
+                        Point(59.27f, 78.54f),
+                        Point(56.49f, 79.67f),
+                        Point(53.61f, 80.49f),
+                        Point(50.67f, 81.08f),
+                        Point(47.69f, 81.38f),
+                        Point(44.69f, 81.45f),
+                        Point(41.69f, 81.48f),
+                        Point(38.69f, 81.5f),
+                        Point(35.69f, 81.5f),
+                        Point(32.69f, 81.5f),
+                        Point(29.69f, 81.5f),
+                        Point(26.69f, 81.5f),
+                        Point(23.69f, 81.5f),
+                    ),
+                ),
+            ),
+        ),
+    ),
+    /**
+     * E is much taller than it is wide (aspect 0.670), so it is fitted by height.
+     *
+     * Inter's E is a straight stem with three straight arms, every part flat, so each stroke is a
+     * line along its ink's centre. It is written as it is taught: `stem` down, then `top`, `middle`
+     * and `bottom` left to right out of it.
+     *
+     * The three arms' midlines are 34.01 and 34.90 apart, neither a multiple of the 6-unit dot
+     * spacing, so the stem's dots sit at y 12.5, 48.5 and 84.5 -- 36 apart, a whole 6 spacings each
+     * -- and every arm leaves the stem exactly on one of them. That puts an arm at most 1.55 units
+     * off its own midline, inside the 2 units B's bowls already take, and a 14-unit arm swallows it.
+     *
+     * Each arm is a whole 7 spacings; 8 would carry the last dot past the ink. The middle arm's ink
+     * is the shortest of the three and so fixes the stem at x 30.25, the rightmost quarter-unit that
+     * still leaves that arm's last dot a full 2.5-unit dot radius inside its flat cut. The top and
+     * bottom arms then stop 5.5 units inside their own cuts, the price of arms that are all the same
+     * length -- which Inter's are to within 3 units.
+     */
+    Exercise(
+        id = "english-capital-e",
+        title = "E",
+        type = ExerciseType.ENGLISH_CAPITAL,
+        difficulty = Difficulty.BEGINNER,
+        order = 5,
+        strokes = listOf(
+            Stroke(
+                id = "english-capital-e-stem",
+                points = StrokePoints.line(Point(30.25f, 12.5f), Point(30.25f, 84.52f)),
+            ),
+            Stroke(
+                id = "english-capital-e-top",
+                points = StrokePoints.line(Point(30.25f, 12.5f), Point(72.27f, 12.5f)),
+            ),
+            Stroke(
+                id = "english-capital-e-middle",
+                points = StrokePoints.line(Point(30.25f, 48.5f), Point(72.27f, 48.5f)),
+            ),
+            Stroke(
+                id = "english-capital-e-bottom",
+                points = StrokePoints.line(Point(30.25f, 84.5f), Point(72.27f, 84.5f)),
+            ),
+        ),
+    ),
+    /**
+     * F is much taller than it is wide (aspect 0.658), so it is fitted by height.
+     *
+     * Inter's F is E without the bottom arm: a straight stem carrying two straight arms, so each
+     * stroke is a line along its ink's centre. Written as taught: `stem` down, then `top` and
+     * `middle` left to right out of it.
+     *
+     * The two arms' midlines are 37.19 apart, so as in E the stem's dots are put a whole 6 spacings
+     * apart, at y 14.5 and 50.5, and each arm leaves the stem exactly on one of them, at most 0.73
+     * units off its own midline. The stem runs on past the middle arm to stop 3.5 units above the
+     * foot, a whole 12 spacings in all.
+     *
+     * Unlike E's, F's two arms are not the same length -- the middle arm's ink stops 3.67 units
+     * short of the top one's -- and they cannot both be 7 spacings without the middle arm's last dot
+     * leaving the ink. So the top arm is 7 spacings and the middle 6, which keeps the glyph's own
+     * order and both last dots a full dot radius inside their cuts.
+     */
+    Exercise(
+        id = "english-capital-f",
+        title = "F",
+        type = ExerciseType.ENGLISH_CAPITAL,
+        difficulty = Difficulty.BEGINNER,
+        order = 6,
+        strokes = listOf(
+            Stroke(
+                id = "english-capital-f-stem",
+                points = StrokePoints.line(Point(31.25f, 14.5f), Point(31.25f, 86.52f)),
+            ),
+            Stroke(
+                id = "english-capital-f-top",
+                points = StrokePoints.line(Point(31.25f, 14.5f), Point(73.27f, 14.5f)),
+            ),
+            Stroke(
+                id = "english-capital-f-middle",
+                points = StrokePoints.line(Point(31.25f, 50.5f), Point(67.27f, 50.5f)),
+            ),
+        ),
+    ),
 )
