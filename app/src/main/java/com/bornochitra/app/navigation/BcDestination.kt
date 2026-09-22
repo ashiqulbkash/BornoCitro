@@ -1,5 +1,6 @@
 package com.bornochitra.app.navigation
 
+import com.bornochitra.core.model.ExerciseType
 import com.bornochitra.core.model.SessionScores
 
 /** Navigation routes for every planned screen. See plan.md section 13. */
@@ -23,8 +24,12 @@ sealed interface BcDestination {
         override val route = "consonants"
     }
 
-    data object EnglishSmall : BcDestination {
-        override val route = "english-small"
+    /** The English small or capital letters, one screen for both. */
+    data object EnglishLetters : BcDestination {
+        const val ARG_TYPE = "type"
+        override val route = "english/{$ARG_TYPE}"
+
+        fun createRoute(type: ExerciseType) = "english/${type.name}"
     }
 
     data object Drawing : BcDestination {

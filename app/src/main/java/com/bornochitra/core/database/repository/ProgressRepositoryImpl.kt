@@ -31,22 +31,26 @@ class ProgressRepositoryImpl @Inject constructor(
      * ([MasteryRule]), not what these bars measure.
      */
     override fun observeProgress(): Flow<LearningProgress> = combine(
-        exerciseRepository.observeExercises(ExerciseType.VOWEL),
-        exerciseRepository.observeExercises(ExerciseType.CONSONANT),
-        exerciseRepository.observeExercises(ExerciseType.ENGLISH_SMALL),
-        exerciseRepository.observeExercises(ExerciseType.DRAWING),
+        observeExercisesByType(),
         exerciseProgressDao.observeAll(),
-    ) { vowels, consonants, englishSmall, drawings, rows ->
+    ) { exercisesByType, rows ->
         val completedIds = rows.filter { it.completedCount > 0 }.map { it.exerciseId }.toSet()
+        fun ratioOf(type: ExerciseType) = completedRatio(exercisesByType.getValue(type), completedIds)
         LearningProgress(
-            overallProgress = completedRatio(vowels + consonants + englishSmall + drawings, completedIds),
-            vowelProgress = completedRatio(vowels, completedIds),
-            consonantProgress = completedRatio(consonants, completedIds),
-            englishSmallProgress = completedRatio(englishSmall, completedIds),
-            drawingProgress = completedRatio(drawings, completedIds),
+            overallProgress = completedRatio(exercisesByType.values.flatten(), completedIds),
+            vowelProgress = ratioOf(ExerciseType.VOWEL),
+            consonantProgress = ratioOf(ExerciseType.CONSONANT),
+            englishSmallProgress = ratioOf(ExerciseType.ENGLISH_SMALL),
+            englishCapitalProgress = ratioOf(ExerciseType.ENGLISH_CAPITAL),
+            drawingProgress = ratioOf(ExerciseType.DRAWING),
             continueExerciseId = rows.filter { !it.isMastered }.maxByOrNull { it.lastPracticedAt }?.exerciseId,
         )
     }
+
+    private fun observeExercisesByType(): Flow<Map<ExerciseType, List<Exercise>>> =
+        combine(ExerciseType.entries.map { exerciseRepository.observeExercises(it) }) { exercisesPerType ->
+            ExerciseType.entries.zip(exercisesPerType).toMap()
+        }
 
     override fun observeExerciseProgress(exerciseIds: List<String>): Flow<Map<String, ExerciseProgress>> =
         exerciseProgressDao.observeAll().map { rows ->

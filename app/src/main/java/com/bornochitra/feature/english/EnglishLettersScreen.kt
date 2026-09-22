@@ -15,9 +15,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.bornochitra.core.model.ExerciseType
 import com.bornochitra.core.ui.components.BcEmptyState
 import com.bornochitra.core.ui.components.BcExerciseTile
 import com.bornochitra.core.ui.components.BcTopAppBar
+import com.bornochitra.core.ui.components.label
 import com.bornochitra.core.ui.theme.BcSpacing
 import com.bornochitra.core.ui.theme.BornoChitraTheme
 
@@ -48,7 +50,7 @@ private fun EnglishLettersContent(
 ) {
     Scaffold(
         modifier = modifier,
-        topBar = { BcTopAppBar(title = "ছোট হাতের অক্ষর", onBackClick = onBackClick) },
+        topBar = { BcTopAppBar(title = state.type.label(), onBackClick = onBackClick) },
     ) { innerPadding ->
         if (state.exercises.isEmpty()) {
             BcEmptyState(
@@ -89,6 +91,7 @@ private fun EnglishLettersScreenPreview() {
     BornoChitraTheme {
         EnglishLettersContent(
             state = EnglishLettersState(
+                type = ExerciseType.ENGLISH_SMALL,
                 exercises = listOf(
                     EnglishLetterListItem(id = "english-small-a", title = "a", statusText = "Completed"),
                     EnglishLetterListItem(id = "english-small-b", title = "b", statusText = "2 attempts"),
@@ -105,6 +108,10 @@ private fun EnglishLettersScreenPreview() {
 @Composable
 private fun EnglishLettersScreenEmptyPreview() {
     BornoChitraTheme {
-        EnglishLettersContent(state = EnglishLettersState(), onBackClick = {}, onExerciseClick = {})
+        EnglishLettersContent(
+            state = EnglishLettersState(type = ExerciseType.ENGLISH_CAPITAL),
+            onBackClick = {},
+            onExerciseClick = {},
+        )
     }
 }

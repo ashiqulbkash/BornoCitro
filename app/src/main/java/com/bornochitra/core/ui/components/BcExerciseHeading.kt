@@ -10,6 +10,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import com.bornochitra.core.ui.theme.BcLatinCapitalFontFamily
 import com.bornochitra.core.ui.theme.BcLatinLetterFontFamily
 import com.bornochitra.core.ui.theme.BcSpacing
 import com.bornochitra.core.ui.theme.BornoChitraTheme
@@ -20,11 +21,16 @@ private const val SINGLE_GLYPH_MAX_LENGTH = 2
 internal fun String.isSingleGlyph(): Boolean = length <= SINGLE_GLYPH_MAX_LENGTH
 
 /**
- * The font an exercise title is drawn in: English letters use [BcLatinLetterFontFamily], the face
- * their guides are derived from; everything else keeps the theme's font.
+ * The font an exercise title is drawn in: English letters use the face their guides are derived
+ * from — [BcLatinLetterFontFamily] for small letters, [BcLatinCapitalFontFamily] for capitals;
+ * everything else keeps the theme's font.
  */
-internal fun String.letterFontFamily(): FontFamily? =
-    if (length == 1 && (single() in 'a'..'z' || single() in 'A'..'Z')) BcLatinLetterFontFamily else null
+internal fun String.letterFontFamily(): FontFamily? = when {
+    length != 1 -> null
+    single() in 'a'..'z' -> BcLatinLetterFontFamily
+    single() in 'A'..'Z' -> BcLatinCapitalFontFamily
+    else -> null
+}
 
 /**
  * The exercise's name above a tracing canvas or a result. A letter is drawn large because it is the

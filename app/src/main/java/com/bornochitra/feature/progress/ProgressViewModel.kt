@@ -78,12 +78,14 @@ class ProgressViewModel @Inject constructor(
         exerciseRepository.observeExercises(ExerciseType.VOWEL),
         exerciseRepository.observeExercises(ExerciseType.CONSONANT),
         exerciseRepository.observeExercises(ExerciseType.ENGLISH_SMALL),
+        exerciseRepository.observeExercises(ExerciseType.ENGLISH_CAPITAL),
         exerciseRepository.observeExercises(ExerciseType.DRAWING),
-    ) { vowels, consonants, englishSmall, drawings ->
+    ) { vowels, consonants, englishSmall, englishCapital, drawings ->
         listOf(
             ExerciseType.VOWEL to vowels,
             ExerciseType.CONSONANT to consonants,
             ExerciseType.ENGLISH_SMALL to englishSmall,
+            ExerciseType.ENGLISH_CAPITAL to englishCapital,
             ExerciseType.DRAWING to drawings,
         )
     }
@@ -150,5 +152,6 @@ private fun LearningProgress.progressOf(type: ExerciseType): Float = when (type)
     ExerciseType.VOWEL -> vowelProgress
     ExerciseType.CONSONANT -> consonantProgress
     ExerciseType.ENGLISH_SMALL -> englishSmallProgress
+    ExerciseType.ENGLISH_CAPITAL -> englishCapitalProgress
     ExerciseType.DRAWING -> drawingProgress
 }

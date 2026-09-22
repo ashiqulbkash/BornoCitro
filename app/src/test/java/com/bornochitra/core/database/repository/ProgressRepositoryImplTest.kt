@@ -180,6 +180,24 @@ class ProgressRepositoryImplTest {
     }
 
     @Test
+    fun `english capital letters have their own ratio and count towards overall progress`() = runTest {
+        val catalogue = this@ProgressRepositoryImplTest.catalogue + listOf(
+            exercise("english-small-a", ExerciseType.ENGLISH_SMALL),
+            exercise("english-capital-a", ExerciseType.ENGLISH_CAPITAL),
+            exercise("english-capital-b", ExerciseType.ENGLISH_CAPITAL),
+            exercise("english-capital-c", ExerciseType.ENGLISH_CAPITAL),
+            exercise("english-capital-d", ExerciseType.ENGLISH_CAPITAL),
+        )
+        val rows = listOf(progress("english-capital-a"), progress("english-small-a"))
+
+        val result = repositoryWith(rows, catalogue = catalogue).observeProgress().first()
+
+        assertEquals(0.25f, result.englishCapitalProgress)
+        assertEquals(1f, result.englishSmallProgress)
+        assertEquals(2f / 9f, result.overallProgress)
+    }
+
+    @Test
     fun `an empty category is zero rather than undefined`() = runTest {
         val result = repositoryWith(rows = emptyList(), catalogue = emptyList()).observeProgress().first()
 

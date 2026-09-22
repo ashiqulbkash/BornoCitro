@@ -1,5 +1,6 @@
 package com.bornochitra.feature.english
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bornochitra.core.content.ExerciseRepository
@@ -24,23 +25,34 @@ data class EnglishLetterListItem(
 )
 
 data class EnglishLettersState(
+    val type: ExerciseType,
     val exercises: List<EnglishLetterListItem> = emptyList(),
 )
 
 private const val STATE_SHARING_TIMEOUT_MS = 5_000L
 
-/** The English small letters a-z, each with how far the child has got with it (plan.md Step 3). */
+/** Must match [com.bornochitra.app.navigation.BcDestination.EnglishLetters.ARG_TYPE]. */
+private const val ARG_TYPE = "type"
+
+/**
+ * The English small letters a-z or capitals A-Z, as the route asks, each with how far the child has
+ * got with it (plan.md Step 3).
+ */
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class EnglishLettersViewModel @Inject constructor(
+    savedStateHandle: SavedStateHandle,
     exerciseRepository: ExerciseRepository,
     progressRepository: ProgressRepository,
 ) : ViewModel() {
 
-    val uiState: StateFlow<EnglishLettersState> = exerciseRepository.observeExercises(ExerciseType.ENGLISH_SMALL)
+    private val type: ExerciseType = ExerciseType.valueOf(checkNotNull(savedStateHandle[ARG_TYPE]))
+
+    val uiState: StateFlow<EnglishLettersState> = exerciseRepository.observeExercises(type)
         .flatMapLatest { exercises ->
             progressRepository.observeExerciseProgress(exercises.map { it.id }).map { progressByExerciseId ->
                 EnglishLettersState(
+                    type = type,
                     exercises = exercises.map { exercise ->
                         EnglishLetterListItem(
                             id = exercise.id,
@@ -54,7 +66,7 @@ class EnglishLettersViewModel @Inject constructor(
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(STATE_SHARING_TIMEOUT_MS),
-            initialValue = EnglishLettersState(),
+            initialValue = EnglishLettersState(type = type),
         )
 }
 

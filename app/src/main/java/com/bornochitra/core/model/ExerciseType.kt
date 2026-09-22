@@ -5,5 +5,6 @@ enum class ExerciseType {
     VOWEL,
     CONSONANT,
     ENGLISH_SMALL,
+    ENGLISH_CAPITAL,
     DRAWING,
 }

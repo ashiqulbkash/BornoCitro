@@ -1,5 +1,6 @@
 package com.bornochitra.feature.english
 
+import androidx.lifecycle.SavedStateHandle
 import com.bornochitra.core.content.ExerciseRepository
 import com.bornochitra.core.database.repository.ProgressRepository
 import com.bornochitra.core.model.Difficulty
@@ -37,10 +38,10 @@ class EnglishLettersViewModelTest {
         Dispatchers.resetMain()
     }
 
-    private fun exercise(id: String, title: String, order: Int) = Exercise(
+    private fun exercise(id: String, title: String, order: Int, type: ExerciseType = ExerciseType.ENGLISH_SMALL) = Exercise(
         id = id,
         title = title,
-        type = ExerciseType.ENGLISH_SMALL,
+        type = type,
         difficulty = Difficulty.BEGINNER,
         strokes = listOf(Stroke(id = "$id-stroke", points = emptyList())),
         order = order,
@@ -90,6 +91,7 @@ class EnglishLettersViewModelTest {
         )
 
         val viewModel = EnglishLettersViewModel(
+            savedStateHandle = savedStateHandleFor(ExerciseType.ENGLISH_SMALL),
             exerciseRepository = exerciseRepositoryOf(exercises),
             progressRepository = progressRepositoryOf(progressByExerciseId),
         )
@@ -107,10 +109,44 @@ class EnglishLettersViewModelTest {
     @Test
     fun `default ui state has no exercises`() = runTest(dispatcher) {
         val viewModel = EnglishLettersViewModel(
+            savedStateHandle = savedStateHandleFor(ExerciseType.ENGLISH_SMALL),
             exerciseRepository = exerciseRepositoryOf(emptyList()),
             progressRepository = progressRepositoryOf(emptyMap()),
         )
 
-        assertEquals(EnglishLettersState(), viewModel.uiState.value)
+        assertEquals(EnglishLettersState(type = ExerciseType.ENGLISH_SMALL), viewModel.uiState.value)
     }
+
+    @Test
+    fun `the route's letter type picks which letters are listed`() = runTest(dispatcher) {
+        val exercises = listOf(
+            exercise("english-small-a", "a", order = 1),
+            exercise("english-capital-a", "A", order = 1, type = ExerciseType.ENGLISH_CAPITAL),
+            exercise("english-capital-b", "B", order = 2, type = ExerciseType.ENGLISH_CAPITAL),
+        )
+        val progressByExerciseId = mapOf(
+            "english-small-a" to progress("english-small-a", attemptCount = 1, completedCount = 1, isMastered = false),
+            "english-capital-b" to progress("english-capital-b", attemptCount = 1, completedCount = 1, isMastered = false),
+        )
+
+        val viewModel = EnglishLettersViewModel(
+            savedStateHandle = savedStateHandleFor(ExerciseType.ENGLISH_CAPITAL),
+            exerciseRepository = exerciseRepositoryOf(exercises),
+            progressRepository = progressRepositoryOf(progressByExerciseId),
+        )
+        backgroundScope.launch(dispatcher) { viewModel.uiState.collect {} }
+        dispatcher.scheduler.advanceUntilIdle()
+
+        val state = viewModel.uiState.value
+        assertEquals(ExerciseType.ENGLISH_CAPITAL, state.type)
+        assertEquals(
+            listOf(
+                EnglishLetterListItem(id = "english-capital-a", title = "A", statusText = null),
+                EnglishLetterListItem(id = "english-capital-b", title = "B", statusText = "Completed"),
+            ),
+            state.exercises,
+        )
+    }
+
+    private fun savedStateHandleFor(type: ExerciseType) = SavedStateHandle(mapOf("type" to type.name))
 }
