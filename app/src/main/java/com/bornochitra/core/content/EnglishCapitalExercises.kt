@@ -1203,4 +1203,236 @@ internal val englishCapitalExercises: List<Exercise> = listOf(
             ),
         ),
     ),
+    /**
+     * S is taller than it is wide (aspect 0.763), so it is fitted by height.
+     *
+     * Inter's S is one band between two horizontal flat cuts, the upper at y 31.2 under the top
+     * right, the lower at y 63.8 over the bottom left. Its centreline is the glyph's skeleton, which
+     * has no junctions; only near each cut does the skeleton run off into the cut's outer corner, so
+     * there the terminal follows the band's row centres, straight up and down into the cut.
+     *
+     * Written as one movement, as small s is: from the upper cut left over the top, down the left,
+     * along the spine and round the bottom to the lower cut. That is ~188 units, past the ceiling,
+     * so it is split where the spine crosses the letter's centre, the landmark between the two
+     * bowls: `top` then `bottom`, sharing the dot there. The cut insets make the whole a whole
+     * number of spacings without reshaping the curve: 31 spacings would leave only 1.2 units under
+     * each end dot, so it is 30, with both ends 4 units inside their cuts. The split is slid 2.4
+     * units up the spine so the two insets come out alike, leaving `top` 14 and `bottom` 16 whole
+     * spacings.
+     */
+    Exercise(
+        id = "english-capital-s",
+        title = "S",
+        type = ExerciseType.ENGLISH_CAPITAL,
+        difficulty = Difficulty.BEGINNER,
+        order = 19,
+        strokes = listOf(
+            Stroke(
+                id = "english-capital-s-top",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(71.92f, 27.26f),
+                        Point(70.7f, 24.53f),
+                        Point(69.28f, 21.88f),
+                        Point(67.37f, 19.57f),
+                        Point(65.02f, 17.71f),
+                        Point(62.36f, 16.32f),
+                        Point(59.51f, 15.36f),
+                        Point(56.57f, 14.79f),
+                        Point(53.58f, 14.43f),
+                        Point(50.58f, 14.25f),
+                        Point(47.59f, 14.48f),
+                        Point(44.6f, 14.85f),
+                        Point(41.66f, 15.43f),
+                        Point(38.81f, 16.39f),
+                        Point(36.16f, 17.79f),
+                        Point(33.84f, 19.69f),
+                        Point(32f, 22.06f),
+                        Point(30.9f, 24.85f),
+                        Point(30.19f, 27.77f),
+                        Point(29.69f, 30.73f),
+                        Point(30.02f, 33.7f),
+                        Point(30.76f, 36.62f),
+                        Point(32.07f, 39.31f),
+                        Point(34.12f, 41.5f),
+                        Point(36.58f, 43.21f),
+                        Point(39.28f, 44.54f),
+                        Point(42.09f, 45.6f),
+                        Point(44.96f, 46.48f),
+                        Point(47.87f, 47.23f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "english-capital-s-bottom",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(47.87f, 47.23f),
+                        Point(50.78f, 47.96f),
+                        Point(53.7f, 48.69f),
+                        Point(56.6f, 49.48f),
+                        Point(59.47f, 50.36f),
+                        Point(62.28f, 51.41f),
+                        Point(65f, 52.7f),
+                        Point(67.51f, 54.33f),
+                        Point(69.68f, 56.41f),
+                        Point(71.14f, 59.01f),
+                        Point(71.94f, 61.91f),
+                        Point(72.52f, 64.86f),
+                        Point(72.42f, 67.84f),
+                        Point(71.82f, 70.79f),
+                        Point(70.94f, 73.65f),
+                        Point(69.36f, 76.2f),
+                        Point(67.21f, 78.29f),
+                        Point(64.69f, 79.92f),
+                        Point(61.93f, 81.09f),
+                        Point(59.04f, 81.89f),
+                        Point(56.07f, 82.34f),
+                        Point(53.08f, 82.63f),
+                        Point(50.08f, 82.76f),
+                        Point(47.08f, 82.55f),
+                        Point(44.09f, 82.23f),
+                        Point(41.14f, 81.7f),
+                        Point(38.26f, 80.84f),
+                        Point(35.53f, 79.6f),
+                        Point(33.04f, 77.92f),
+                        Point(30.9f, 75.82f),
+                        Point(29.22f, 73.34f),
+                        Point(28.01f, 70.59f),
+                        Point(26.93f, 67.8f),
+                    ),
+                ),
+            ),
+        ),
+    ),
+    /**
+     * T is taller than it is wide (aspect 0.816), so it is fitted by height.
+     *
+     * Inter's T is a flat bar across the top (y 7 to 21.1) and a straight stem down its middle
+     * (x 41.5 to 58.6) to a flat foot, all one ink. Written top to bottom: `bar` left to right along
+     * its midline, then `stem` from the bar's middle dot down. The bar is symmetric about the stem,
+     * 5 spacings either side of x 50, the most that keeps both end dots a whole dot radius inside
+     * the cuts (3.9 units), so the stem starts exactly on its 6th dot; the stem is a whole 12 spacings
+     * to y 86, 4 units above the foot.
+     */
+    Exercise(
+        id = "english-capital-t",
+        title = "T",
+        type = ExerciseType.ENGLISH_CAPITAL,
+        difficulty = Difficulty.BEGINNER,
+        order = 20,
+        strokes = listOf(
+            Stroke(
+                id = "english-capital-t-bar",
+                points = StrokePoints.line(Point(20f, 14f), Point(80f, 14f)),
+            ),
+            Stroke(
+                id = "english-capital-t-stem",
+                points = StrokePoints.line(Point(50f, 14f), Point(50f, 86f)),
+            ),
+        ),
+    ),
+    /**
+     * U is taller than it is wide (aspect 0.814), so it is fitted by height.
+     *
+     * Inter's U is two straight legs from flat tops joined by a round bottom, symmetric about x 50.
+     * Each leg is its ink's centre line (x 24.6 and 75.4); below y 58, where the legs stop being
+     * straight, the curve is the midpoint of the ink along rays from (50, 58), as C's and D's, every
+     * ray crossing a lone run of 14.9 to 17.1 units.
+     *
+     * Written as one movement, down, round and up, it is ~180 units, past the ceiling, so it is split
+     * at the bottom point, where the pen runs straight across (C's split, turned a quarter): `left`
+     * down the left leg and round to the bottom, then `right` on from that dot round and up the
+     * right leg. Only `left` is derived; `right` is its mirror image, reversed. Each is a whole
+     * 15 spacings. The guide sits 2 units below the glyph's centre line, which only the bottom curve
+     * notices, since the legs are vertical: the band's centreline alone would leave the top dots a
+     * whole radius under the flat tops only at 14 spacings (7 units under), and a guide ending on
+     * the band's centreline stops well above the ink's bottom, which would pull its bbox centre up
+     * past the catalog's tolerance.
+     */
+    Exercise(
+        id = "english-capital-u",
+        title = "U",
+        type = ExerciseType.ENGLISH_CAPITAL,
+        difficulty = Difficulty.BEGINNER,
+        order = 21,
+        strokes = listOf(
+            Stroke(
+                id = "english-capital-u-left",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(24.61f, 10.02f),
+                        Point(24.61f, 13.02f),
+                        Point(24.61f, 16.02f),
+                        Point(24.61f, 19.02f),
+                        Point(24.61f, 22.02f),
+                        Point(24.61f, 25.02f),
+                        Point(24.61f, 28.02f),
+                        Point(24.61f, 31.02f),
+                        Point(24.61f, 34.02f),
+                        Point(24.61f, 37.02f),
+                        Point(24.61f, 40.02f),
+                        Point(24.61f, 43.02f),
+                        Point(24.61f, 46.02f),
+                        Point(24.61f, 49.02f),
+                        Point(24.6f, 52.02f),
+                        Point(24.6f, 55.02f),
+                        Point(24.6f, 58.02f),
+                        Point(24.58f, 61.02f),
+                        Point(24.67f, 64.02f),
+                        Point(25.11f, 66.99f),
+                        Point(25.97f, 69.86f),
+                        Point(27.22f, 72.58f),
+                        Point(28.85f, 75.1f),
+                        Point(30.81f, 77.37f),
+                        Point(33.04f, 79.37f),
+                        Point(35.54f, 81.02f),
+                        Point(38.23f, 82.35f),
+                        Point(41.05f, 83.35f),
+                        Point(43.97f, 84.03f),
+                        Point(46.95f, 84.4f),
+                        Point(50f, 84.55f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "english-capital-u-right",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(50f, 84.55f),
+                        Point(53.05f, 84.4f),
+                        Point(56.03f, 84.03f),
+                        Point(58.95f, 83.35f),
+                        Point(61.77f, 82.35f),
+                        Point(64.46f, 81.02f),
+                        Point(66.96f, 79.37f),
+                        Point(69.19f, 77.37f),
+                        Point(71.15f, 75.1f),
+                        Point(72.78f, 72.58f),
+                        Point(74.03f, 69.86f),
+                        Point(74.89f, 66.99f),
+                        Point(75.33f, 64.02f),
+                        Point(75.42f, 61.02f),
+                        Point(75.4f, 58.02f),
+                        Point(75.4f, 55.02f),
+                        Point(75.4f, 52.02f),
+                        Point(75.39f, 49.02f),
+                        Point(75.39f, 46.02f),
+                        Point(75.39f, 43.02f),
+                        Point(75.39f, 40.02f),
+                        Point(75.39f, 37.02f),
+                        Point(75.39f, 34.02f),
+                        Point(75.39f, 31.02f),
+                        Point(75.39f, 28.02f),
+                        Point(75.39f, 25.02f),
+                        Point(75.39f, 22.02f),
+                        Point(75.39f, 19.02f),
+                        Point(75.39f, 16.02f),
+                        Point(75.39f, 13.02f),
+                        Point(75.39f, 10.02f),
+                    ),
+                ),
+            ),
+        ),
+    ),
 )
