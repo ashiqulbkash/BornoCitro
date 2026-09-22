@@ -933,4 +933,274 @@ internal val englishCapitalExercises: List<Exercise> = listOf(
             ),
         ),
     ),
+    /**
+     * P is taller than it is wide (aspect 0.747), so it is fitted by height.
+     *
+     * Inter's P is a straight stem and one bowl off its upper half. The bowl leaves the stem at the
+     * top bar, runs flat along it, round the right side and back flat along the lower bar into the
+     * stem. Its curve is the midpoint of the ink along rays cast from the counter's centre, as D's;
+     * every ray from -90 to +90 degrees crosses a lone run of 13.8 to 17.6 units.
+     *
+     * Written as taught, "down, then round": `stem` from the top bar down to the foot, then `bowl`
+     * from the stem's first dot round to the stem. The bars' midlines are 42 units apart, a whole
+     * 7 spacings, so the stem starts on the top bar's midline (y 14, as D's stem starts on its top
+     * join) and its 8th dot sits on the lower bar's midline; the bowl starts and ends exactly on
+     * those two stem dots. The stem is 12 spacings to y 86, 4 inside the flat foot, and the bowl is
+     * a whole 19 spacings with no ray offset needed.
+     */
+    Exercise(
+        id = "english-capital-p",
+        title = "P",
+        type = ExerciseType.ENGLISH_CAPITAL,
+        difficulty = Difficulty.BEGINNER,
+        order = 16,
+        strokes = listOf(
+            Stroke(
+                id = "english-capital-p-stem",
+                points = StrokePoints.line(Point(27.5f, 14f), Point(27.5f, 86f)),
+            ),
+            Stroke(
+                id = "english-capital-p-bowl",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(27.5f, 14f),
+                        Point(30.5f, 14f),
+                        Point(33.5f, 14f),
+                        Point(36.5f, 14f),
+                        Point(39.5f, 14f),
+                        Point(42.5f, 14f),
+                        Point(45.5f, 14f),
+                        Point(48.5f, 14f),
+                        Point(51.5f, 14.04f),
+                        Point(54.49f, 14.31f),
+                        Point(57.43f, 14.89f),
+                        Point(60.28f, 15.82f),
+                        Point(62.96f, 17.16f),
+                        Point(65.41f, 18.88f),
+                        Point(67.53f, 20.99f),
+                        Point(69.26f, 23.44f),
+                        Point(70.6f, 26.12f),
+                        Point(71.51f, 28.98f),
+                        Point(72.03f, 31.93f),
+                        Point(72.21f, 34.93f),
+                        Point(72.05f, 37.92f),
+                        Point(71.55f, 40.88f),
+                        Point(70.61f, 43.72f),
+                        Point(69.29f, 46.41f),
+                        Point(67.56f, 48.86f),
+                        Point(65.44f, 50.97f),
+                        Point(63f, 52.72f),
+                        Point(60.34f, 54.09f),
+                        Point(57.49f, 55.02f),
+                        Point(54.55f, 55.62f),
+                        Point(51.56f, 55.91f),
+                        Point(48.56f, 55.99f),
+                        Point(45.56f, 55.99f),
+                        Point(42.56f, 56f),
+                        Point(39.56f, 56f),
+                        Point(36.56f, 56f),
+                        Point(33.56f, 56f),
+                        Point(30.56f, 56f),
+                        Point(27.5f, 56f),
+                    ),
+                ),
+            ),
+        ),
+    ),
+    /**
+     * Q is taller than it is wide (aspect 0.850), so it is fitted by height.
+     *
+     * Inter's Q is O's ring with a straight tail, 38 degrees off vertical, crossing its lower right.
+     * The ring is written as O's is, counter-clockwise from the top in two halves, `left` then
+     * `right`, and the tail is added last, from inside the counter out through the ring. The ring's
+     * curve is the midpoint of the ink along rays from its centre; the tail merges with the ring's
+     * lower right, so only the left half is read (taking the outermost run on each ray, past the
+     * tail's end inside the counter) and the rest is its point reflection, since the ring is
+     * symmetric about both axes. Each half is a whole 16 spacings with every midpoint moved 0.33
+     * units outward along its ray.
+     *
+     * The tail crosses the ring at nearly a right angle, so the two strokes share one dot there, as
+     * small x's diagonals do. Because the ring is point-symmetric, any two opposite points split it
+     * into equal halves, so the split is slid 2.5 units round from the top to put a `right` dot
+     * exactly on the tail's centre line. The tail is a whole 3 spacings either side of that dot.
+     * Its ink runs only ~41 units along the centre line, so at the glyph's own angle the last dot
+     * would sit 1.7 units from the flat foot. The tail is therefore turned 4 degrees about the shared
+     * dot, which lengthens its run to the flat cuts and keeps a whole dot radius of ink under both
+     * end dots; the ends move 1.3 units sideways in a tail about 10 units wide.
+     */
+    Exercise(
+        id = "english-capital-q",
+        title = "Q",
+        type = ExerciseType.ENGLISH_CAPITAL,
+        difficulty = Difficulty.BEGINNER,
+        order = 17,
+        strokes = listOf(
+            Stroke(
+                id = "english-capital-q-left",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(52.5f, 13.66f),
+                        Point(50f, 13.48f),
+                        Point(47.01f, 13.62f),
+                        Point(44.04f, 14.05f),
+                        Point(41.14f, 14.8f),
+                        Point(38.34f, 15.89f),
+                        Point(35.7f, 17.31f),
+                        Point(33.23f, 19.01f),
+                        Point(31f, 21.01f),
+                        Point(29.02f, 23.26f),
+                        Point(27.3f, 25.72f),
+                        Point(25.84f, 28.34f),
+                        Point(24.64f, 31.08f),
+                        Point(23.69f, 33.93f),
+                        Point(23f, 36.85f),
+                        Point(22.55f, 39.81f),
+                        Point(22.26f, 42.8f),
+                        Point(22.19f, 45.8f),
+                        Point(22.26f, 48.8f),
+                        Point(22.54f, 51.78f),
+                        Point(22.99f, 54.75f),
+                        Point(23.66f, 57.67f),
+                        Point(24.59f, 60.52f),
+                        Point(25.81f, 63.26f),
+                        Point(27.27f, 65.88f),
+                        Point(28.95f, 68.36f),
+                        Point(30.95f, 70.6f),
+                        Point(33.19f, 72.59f),
+                        Point(35.63f, 74.33f),
+                        Point(38.28f, 75.74f),
+                        Point(41.08f, 76.81f),
+                        Point(43.97f, 77.6f),
+                        Point(46.94f, 78.03f),
+                        Point(47.5f, 78.06f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "english-capital-q-right",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(47.5f, 78.06f),
+                        Point(50f, 78.17f),
+                        Point(52.99f, 78.1f),
+                        Point(55.96f, 77.67f),
+                        Point(58.86f, 76.92f),
+                        Point(61.66f, 75.83f),
+                        Point(64.3f, 74.41f),
+                        Point(66.77f, 72.71f),
+                        Point(69f, 70.71f),
+                        Point(70.98f, 68.46f),
+                        Point(72.7f, 66f),
+                        Point(74.16f, 63.38f),
+                        Point(75.36f, 60.64f),
+                        Point(76.31f, 57.79f),
+                        Point(77f, 54.87f),
+                        Point(77.45f, 51.91f),
+                        Point(77.74f, 48.92f),
+                        Point(77.81f, 45.92f),
+                        Point(77.74f, 42.92f),
+                        Point(77.46f, 39.94f),
+                        Point(77.01f, 36.97f),
+                        Point(76.34f, 34.05f),
+                        Point(75.41f, 31.2f),
+                        Point(74.19f, 28.46f),
+                        Point(72.73f, 25.84f),
+                        Point(71.05f, 23.36f),
+                        Point(69.05f, 21.12f),
+                        Point(66.81f, 19.13f),
+                        Point(64.37f, 17.39f),
+                        Point(61.72f, 15.98f),
+                        Point(58.92f, 14.91f),
+                        Point(56.03f, 14.12f),
+                        Point(53.06f, 13.69f),
+                        Point(52.5f, 13.66f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "english-capital-q-tail",
+                points = StrokePoints.line(Point(52.66f, 60.76f), Point(76.8f, 87.5f)),
+            ),
+        ),
+    ),
+    /**
+     * R is taller than it is wide (aspect 0.782), so it is fitted by height.
+     *
+     * Inter's R is P's stem and bowl with a straight leg, 28 degrees off vertical, leaving the bowl's
+     * lower bar for the flat foot. Written as taught, "down, round, then kick out": `stem`, then
+     * `bowl` from the stem's first dot round to the stem, then `leg` from a bowl dot to the foot.
+     *
+     * The bars' midlines are 39.5 units apart, not a whole number of spacings, so the stem's join
+     * dots sit a whole 6 spacings apart, at y 15.5 and 51.5, 1.5 and 2 inside the midlines of 13.8-unit
+     * bars (as E's arms sit off theirs). The stem is a whole 12 spacings to y 87.5, a dot radius above
+     * the flat foot. The bowl's curve is the midpoint of the ink along rays from the counter's centre,
+     * squeezed vertically about the bowl's middle so that it runs into the join lines without a step.
+     * The lower rays run on into the leg, so the lower half is the upper half mirrored. The bowl is a
+     * whole 18 spacings, so it starts and ends exactly on the two join dots.
+     *
+     * The leg starts exactly on the bowl dot nearest its centre line (2 units off it), where the bar
+     * turns into the leg, and runs a whole 7 spacings to a point on the centre line 2.8 above the flat
+     * foot, 2.4 degrees steeper than the glyph.
+     */
+    Exercise(
+        id = "english-capital-r",
+        title = "R",
+        type = ExerciseType.ENGLISH_CAPITAL,
+        difficulty = Difficulty.BEGINNER,
+        order = 18,
+        strokes = listOf(
+            Stroke(
+                id = "english-capital-r-stem",
+                points = StrokePoints.line(Point(26.05f, 15.5f), Point(26.05f, 87.5f)),
+            ),
+            Stroke(
+                id = "english-capital-r-bowl",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(26.05f, 15.5f),
+                        Point(29.05f, 15.5f),
+                        Point(32.05f, 15.5f),
+                        Point(35.05f, 15.5f),
+                        Point(38.05f, 15.5f),
+                        Point(41.05f, 15.51f),
+                        Point(44.05f, 15.53f),
+                        Point(47.05f, 15.59f),
+                        Point(50.02f, 15.92f),
+                        Point(53.01f, 16.21f),
+                        Point(55.97f, 16.68f),
+                        Point(58.85f, 17.5f),
+                        Point(61.6f, 18.69f),
+                        Point(64.13f, 20.3f),
+                        Point(66.31f, 22.35f),
+                        Point(68.04f, 24.8f),
+                        Point(69.25f, 27.54f),
+                        Point(69.97f, 30.45f),
+                        Point(70.23f, 33.5f),
+                        Point(69.97f, 36.55f),
+                        Point(69.25f, 39.46f),
+                        Point(68.04f, 42.2f),
+                        Point(66.31f, 44.65f),
+                        Point(64.13f, 46.7f),
+                        Point(61.6f, 48.31f),
+                        Point(58.85f, 49.5f),
+                        Point(55.97f, 50.32f),
+                        Point(53.01f, 50.79f),
+                        Point(50.02f, 51.08f),
+                        Point(47.05f, 51.41f),
+                        Point(44.05f, 51.47f),
+                        Point(41.05f, 51.49f),
+                        Point(38.05f, 51.5f),
+                        Point(35.05f, 51.5f),
+                        Point(32.05f, 51.5f),
+                        Point(29.05f, 51.5f),
+                        Point(26.05f, 51.5f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "english-capital-r-leg",
+                points = StrokePoints.line(Point(50.08f, 51.07f), Point(71.59f, 87.17f)),
+            ),
+        ),
+    ),
 )
