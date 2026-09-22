@@ -1435,4 +1435,118 @@ internal val englishCapitalExercises: List<Exercise> = listOf(
             ),
         ),
     ),
+    /**
+     * V is a shade taller than it is wide (aspect 0.960), so it is fitted by height.
+     *
+     * Inter's V is two straight legs from flat tops down to a wide flat bottom. Each leg is a line
+     * through its ink's row centres, ~18° off vertical. Written as taught, "down, then up": `down`
+     * the left leg, then `up` from its last dot along the bottom and up the right leg.
+     *
+     * The legs meet at ~37°, where dots either side of a shared point would crowd, so as in small v
+     * and A they are joined by a flat of exactly one spacing. Their centre lines are not 6 units
+     * apart until 1.2 units above the bottom cut, too close for a whole dot, so the flat sits at
+     * y 85.3 and each leg runs from its centre line at the top straight to the flat's corner, 1.6
+     * units in from its centre line there. Each leg is a whole 13 spacings, with the top and bottom
+     * insets balanced at ~4.7 units.
+     */
+    Exercise(
+        id = "english-capital-v",
+        title = "V",
+        type = ExerciseType.ENGLISH_CAPITAL,
+        difficulty = Difficulty.BEGINNER,
+        order = 22,
+        strokes = listOf(
+            Stroke(
+                id = "english-capital-v-down",
+                points = StrokePoints.line(Point(21.35f, 11.78f), Point(47.38f, 85.34f)),
+            ),
+            Stroke(
+                id = "english-capital-v-up",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(47.38f, 85.34f),
+                        Point(53.38f, 85.34f),
+                        Point(78.77f, 11.56f),
+                    ),
+                ),
+            ),
+        ),
+    ),
+    /**
+     * W is much wider than it is tall (aspect 1.359), so it is fitted by width.
+     *
+     * Inter's W is two v's side by side: four straight arms, each a line through its ink's row
+     * centres, ~13° off vertical, between flat tops (the middle peak reaches full height) and two
+     * flat feet. The glyph is symmetric, so the right half mirrors the left. Written as small w:
+     * `left` down the outer arm, along the left foot and up to the peak, then `right` from that dot
+     * along the peak, down, along the right foot and up the outer arm.
+     *
+     * Neighbouring arms meet at only ~27°, so every corner, both feet and the peak, is a flat of
+     * exactly one spacing, which keeps the dots either side apart. Every arm is a whole 10
+     * spacings. That keeps the three tops level, as Inter's are, ~5.4 units under the flat tops and
+     * as far above the feet; 11-spacing outer arms would reach the tops but drop the middle peak
+     * visibly below them.
+     */
+    Exercise(
+        id = "english-capital-w",
+        title = "W",
+        type = ExerciseType.ENGLISH_CAPITAL,
+        difficulty = Difficulty.BEGINNER,
+        order = 23,
+        strokes = listOf(
+            Stroke(
+                id = "english-capital-w-left",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(12.42f, 20.89f),
+                        Point(26.94f, 79.14f),
+                        Point(32.94f, 79.14f),
+                        Point(46.97f, 20.77f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "english-capital-w-right",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(46.97f, 20.77f),
+                        Point(52.97f, 20.77f),
+                        Point(67f, 79.14f),
+                        Point(73f, 79.14f),
+                        Point(87.52f, 20.89f),
+                    ),
+                ),
+            ),
+        ),
+    ),
+    /**
+     * X is a shade taller than it is wide (aspect 0.945), so it is fitted by height.
+     *
+     * Inter's X is two straight diagonals between flat cuts, crossing at ~68°. Each is one line
+     * through the row centres of both its halves. Written as small x: `down` from the top left to the
+     * bottom right, then `cross` from the top right to the bottom left.
+     *
+     * Each diagonal's ends sit a whole number of spacings from the crossing, so both strokes put a
+     * dot exactly on it, as in small x. Inter's crossing is 1.5 units above the letter's middle, so
+     * the halves are unequal: 7 spacings above it and 8 below keep a whole dot radius of ink under
+     * both end dots on the glyph's own centre lines, stopping ~5.3 units under the top cuts and ~3.3
+     * above the feet. Equal halves of 8 would need each line turned ~4.5° off the glyph.
+     */
+    Exercise(
+        id = "english-capital-x",
+        title = "X",
+        type = ExerciseType.ENGLISH_CAPITAL,
+        difficulty = Difficulty.BEGINNER,
+        order = 24,
+        strokes = listOf(
+            Stroke(
+                id = "english-capital-x-down",
+                points = StrokePoints.line(Point(26.53f, 12.21f), Point(77.06f, 86.71f)),
+            ),
+            Stroke(
+                id = "english-capital-x-cross",
+                points = StrokePoints.line(Point(73.82f, 12.31f), Point(22.99f, 86.6f)),
+            ),
+        ),
+    ),
 )
