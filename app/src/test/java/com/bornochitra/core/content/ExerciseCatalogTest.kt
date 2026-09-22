@@ -74,7 +74,7 @@ class ExerciseCatalogTest {
     fun `english capital letters carry the right characters in alphabet order, with no matra`() {
         val letters = ExerciseCatalog.all.filter { it.type == ExerciseType.ENGLISH_CAPITAL }.sortedBy { it.order }
 
-        assertEquals("ABCDEFGHIJKLMNOPQRSTUVWX", letters.joinToString("") { it.title })
+        assertEquals("ABCDEFGHIJKLMNOPQRSTUVWXYZ", letters.joinToString("") { it.title })
         letters.forEach { letter ->
             assertEquals("english-capital-${letter.title.lowercase()}", letter.id)
             assertTrue("${letter.id} has a matra", letter.strokes.none { it.id.endsWith("-matra") })
@@ -167,6 +167,8 @@ class ExerciseCatalogTest {
             "english-capital-v" to 2,
             "english-capital-w" to 2,
             "english-capital-x" to 2,
+            "english-capital-y" to 2,
+            "english-capital-z" to 2,
             "drawing-line" to 1, "drawing-circle" to 1, "drawing-square" to 1, "drawing-triangle" to 1,
             "drawing-house" to 2,
         )

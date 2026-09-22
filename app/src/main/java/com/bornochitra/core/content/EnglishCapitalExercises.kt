@@ -1549,4 +1549,78 @@ internal val englishCapitalExercises: List<Exercise> = listOf(
             ),
         ),
     ),
+    /**
+     * Y is a shade taller than it is wide (aspect 0.938), so it is fitted by height.
+     *
+     * Inter's Y is two straight arms from flat tops meeting on a straight stem that runs down to a
+     * flat foot. Each arm is a line through its ink's row centres, ~29° off vertical. Written as
+     * taught: `arm` down the left arm to the middle, then `stem` down the right arm to the same point
+     * and straight on down the stem, sharing the point's dot.
+     *
+     * The arms meet at ~58°, wide enough that the dots either side of a shared point sit 5.8 units
+     * apart, so they meet in a point rather than a flat. The point sits on the stem's centre line,
+     * raised 2 units from where the arms' centre lines cross so the stem is a whole 5 spacings and
+     * its last dot stops 3 units above the foot. Each arm is a whole 9 spacings, starting ~3.3 units
+     * under its flat top.
+     */
+    Exercise(
+        id = "english-capital-y",
+        title = "Y",
+        type = ExerciseType.ENGLISH_CAPITAL,
+        difficulty = Difficulty.BEGINNER,
+        order = 25,
+        strokes = listOf(
+            Stroke(
+                id = "english-capital-y-arm",
+                points = StrokePoints.line(Point(22.95f, 10.37f), Point(50.25f, 57f)),
+            ),
+            Stroke(
+                id = "english-capital-y-stem",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(77.22f, 10.18f),
+                        Point(50.25f, 57f),
+                        Point(50.25f, 87f),
+                    ),
+                ),
+            ),
+        ),
+    ),
+    /**
+     * Z is taller than it is wide (aspect 0.763), so it is fitted by height.
+     *
+     * Inter's Z is a flat top bar, a straight diagonal and a flat bottom bar, point-symmetric about
+     * (50, 48.5), and the guide keeps that symmetry. Written as taught: `zig` along the top from the
+     * left and down the diagonal, then `base` along the bottom from the left, sharing the bottom-left
+     * corner's dot.
+     *
+     * The corners turn through ~54°, so the dots either side of each sit 5.4 units apart and no flat
+     * is needed (as small z). Each bar is a whole 9 spacings, the most that keeps a whole dot radius
+     * of ink under its outer end dot. On the bars' midlines the diagonal would be 84.7 units, not
+     * whole spacings, so both corners sit 0.73 units in from the midlines, where the diagonal is a
+     * whole 14 spacings, turned ~1.2° off its ink's row-centre line.
+     */
+    Exercise(
+        id = "english-capital-z",
+        title = "Z",
+        type = ExerciseType.ENGLISH_CAPITAL,
+        difficulty = Difficulty.BEGINNER,
+        order = 26,
+        strokes = listOf(
+            Stroke(
+                id = "english-capital-z-zig",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(20.97f, 14.73f),
+                        Point(75f, 14.73f),
+                        Point(25f, 82.27f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "english-capital-z-base",
+                points = StrokePoints.line(Point(25f, 82.27f), Point(79.03f, 82.27f)),
+            ),
+        ),
+    ),
 )
