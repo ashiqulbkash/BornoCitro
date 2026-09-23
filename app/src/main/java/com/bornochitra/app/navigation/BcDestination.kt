@@ -32,6 +32,10 @@ sealed interface BcDestination {
         fun createRoute(type: ExerciseType) = "english/${type.name}"
     }
 
+    data object Math : BcDestination {
+        override val route = "math"
+    }
+
     data object Drawing : BcDestination {
         override val route = "drawing"
     }

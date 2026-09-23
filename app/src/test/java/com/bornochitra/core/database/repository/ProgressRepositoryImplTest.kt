@@ -198,6 +198,22 @@ class ProgressRepositoryImplTest {
     }
 
     @Test
+    fun `math has its own ratio and counts towards overall progress`() = runTest {
+        val catalogue = this@ProgressRepositoryImplTest.catalogue + listOf(
+            exercise("math-1", ExerciseType.MATH),
+            exercise("math-12", ExerciseType.MATH),
+            exercise("math-plus", ExerciseType.MATH),
+            exercise("math-equals", ExerciseType.MATH),
+        )
+        val rows = listOf(progress("math-12"), progress("math-plus"), progress("vowel-o"))
+
+        val result = repositoryWith(rows, catalogue = catalogue).observeProgress().first()
+
+        assertEquals(0.5f, result.mathProgress)
+        assertEquals(3f / 8f, result.overallProgress)
+    }
+
+    @Test
     fun `an empty category is zero rather than undefined`() = runTest {
         val result = repositoryWith(rows = emptyList(), catalogue = emptyList()).observeProgress().first()
 

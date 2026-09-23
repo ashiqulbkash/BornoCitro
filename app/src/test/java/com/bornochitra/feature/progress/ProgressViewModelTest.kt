@@ -200,6 +200,7 @@ class ProgressViewModelTest {
                 ExerciseType.CONSONANT,
                 ExerciseType.ENGLISH_SMALL,
                 ExerciseType.ENGLISH_CAPITAL,
+                ExerciseType.MATH,
                 ExerciseType.DRAWING,
             ),
             state.categories.map { it.type },
@@ -259,6 +260,30 @@ class ProgressViewModelTest {
         assertEquals(0.5f, section.progress)
         assertEquals(listOf("A", "B"), section.exercises.map { it.title })
         assertEquals(listOf(0, 2), section.exercises.map { it.stars })
+    }
+
+    @Test
+    fun `the math section carries its own ratio and items in order`() = runTest(dispatcher) {
+        val viewModel = viewModel(
+            learningProgress = LearningProgress(mathProgress = 0.5f),
+            progressByExerciseId = mapOf("math-1" to exerciseProgress("math-1", bestScore = 94f)),
+            catalogue = catalogue + listOf(
+                exercise("math-1", "1", ExerciseType.MATH, order = 1),
+                exercise("math-plus", "+", ExerciseType.MATH, order = 21),
+            ),
+        )
+        backgroundScope.launch(dispatcher) { viewModel.uiState.collect {} }
+        dispatcher.scheduler.advanceUntilIdle()
+
+        viewModel.onEvent(ProgressEvent.CategoryOpened(ExerciseType.MATH))
+        dispatcher.scheduler.advanceUntilIdle()
+
+        val state = viewModel.uiState.value
+        val section = state.categories.first { it.type == ExerciseType.MATH }
+        assertEquals(ExerciseType.MATH, state.openCategory)
+        assertEquals(0.5f, section.progress)
+        assertEquals(listOf("1", "+"), section.exercises.map { it.title })
+        assertEquals(listOf(3, 0), section.exercises.map { it.stars })
     }
 
     @Test

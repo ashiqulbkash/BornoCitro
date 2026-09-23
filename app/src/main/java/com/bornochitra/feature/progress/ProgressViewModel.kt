@@ -74,21 +74,11 @@ class ProgressViewModel @Inject constructor(
 
     private val openCategory = MutableStateFlow<ExerciseType?>(null)
 
-    private val exercisesByType = combine(
-        exerciseRepository.observeExercises(ExerciseType.VOWEL),
-        exerciseRepository.observeExercises(ExerciseType.CONSONANT),
-        exerciseRepository.observeExercises(ExerciseType.ENGLISH_SMALL),
-        exerciseRepository.observeExercises(ExerciseType.ENGLISH_CAPITAL),
-        exerciseRepository.observeExercises(ExerciseType.DRAWING),
-    ) { vowels, consonants, englishSmall, englishCapital, drawings ->
-        listOf(
-            ExerciseType.VOWEL to vowels,
-            ExerciseType.CONSONANT to consonants,
-            ExerciseType.ENGLISH_SMALL to englishSmall,
-            ExerciseType.ENGLISH_CAPITAL to englishCapital,
-            ExerciseType.DRAWING to drawings,
-        )
-    }
+    /** Every category, in the order its button shows — the order the types are declared in. */
+    private val exercisesByType =
+        combine(ExerciseType.entries.map { exerciseRepository.observeExercises(it) }) { exercisesPerType ->
+            ExerciseType.entries.zip(exercisesPerType)
+        }
 
     private val progressData: Flow<ProgressState> = exercisesByType
         .flatMapLatest { byType ->
@@ -153,5 +143,6 @@ private fun LearningProgress.progressOf(type: ExerciseType): Float = when (type)
     ExerciseType.CONSONANT -> consonantProgress
     ExerciseType.ENGLISH_SMALL -> englishSmallProgress
     ExerciseType.ENGLISH_CAPITAL -> englishCapitalProgress
+    ExerciseType.MATH -> mathProgress
     ExerciseType.DRAWING -> drawingProgress
 }

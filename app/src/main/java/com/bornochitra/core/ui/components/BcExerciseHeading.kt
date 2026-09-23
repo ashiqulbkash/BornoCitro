@@ -20,15 +20,20 @@ private const val SINGLE_GLYPH_MAX_LENGTH = 2
 
 internal fun String.isSingleGlyph(): Boolean = length <= SINGLE_GLYPH_MAX_LENGTH
 
+/** The math operators, whose guides are derived from Inter like the digits. */
+private const val MATH_OPERATORS = "+−×÷="
+
 /**
- * The font an exercise title is drawn in: English letters use the face their guides are derived
- * from — [BcLatinLetterFontFamily] for small letters, [BcLatinCapitalFontFamily] for capitals;
- * everything else keeps the theme's font.
+ * The font an exercise title is drawn in: English letters and math use the face their guides are
+ * derived from — [BcLatinLetterFontFamily] for small letters, [BcLatinCapitalFontFamily] for capitals,
+ * numbers and operators; everything else keeps the theme's font.
  */
 internal fun String.letterFontFamily(): FontFamily? = when {
+    isNotEmpty() && all { it in '0'..'9' } -> BcLatinCapitalFontFamily
     length != 1 -> null
     single() in 'a'..'z' -> BcLatinLetterFontFamily
     single() in 'A'..'Z' -> BcLatinCapitalFontFamily
+    single() in MATH_OPERATORS -> BcLatinCapitalFontFamily
     else -> null
 }
 

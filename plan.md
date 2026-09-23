@@ -13,7 +13,7 @@ General development conventions — architecture, code quality, testing, build/v
 ## PLAN EXECUTION RULES
 
 1. Read the entire `plan.md` before making changes.
-2. Implement exactly **one numbered step at a time** (a lettered sub-step such as 1.3 counts as one step). Do not implement multiple steps unless explicitly instructed. A sub-step's own scope may be more than one character where it says so — Step 3's capitals from 3.30 on are three per sub-step — and that whole group is the step.
+2. Implement exactly **one numbered step at a time** (a lettered sub-step such as 1.3 counts as one step). Do not implement multiple steps unless explicitly instructed. A sub-step's own scope may be more than one character where it says so — Step 3's capitals from 3.30 on are three per sub-step, and Step 4 is one step for all 25 math items — and that whole group is the step.
 3. Do not move to the next step automatically unless explicitly instructed.
 4. Do not use placeholder implementations for a real feature.
 5. Keep the tracing engine independent from ViewModel, Room, Hilt, and Compose UI implementation details.
@@ -41,7 +41,7 @@ This plan extends the app in five areas, in this order:
 | 1 | Remaining consonants | All 39 Bengali consonants are practicable |
 | 2 | Practice sets | 5 or 10 repetitions of one character on one screen; averaged progress |
 | 3 | English characters | a–z and A–Z |
-| 4 | Math characters | 1–20 and basic operators |
+| 4 | Math characters | 1–20 and basic operators (one step) |
 | 5 | Fill in the blanks | Sequences with missing items the child fills in |
 
 ## The 39 consonants
@@ -465,7 +465,7 @@ _(Add one note per **character** as it is completed, as in Step 1; a three-lette
 
 - **3.1 a** — `english-small-a`, and the English small-letters plumbing.
 
-  **Font: Andika Bold** (SIL International, OFL 1.1), a print font designed for children learning to read, whose `a`, `g` and `y` are the single-storey school shapes. The phone draws Latin text in Roboto, whose `a` and `g` are double-storey, so a guide derived from any school font would sit under a different glyph unless the app draws that font itself: `res/font/andika_bold.ttf` is bundled unmodified (licence in `assets/licenses/andika-OFL.txt`) as `BcLatinLetterFontFamily`, and a single-letter Latin title (`String.letterFontFamily()`) is drawn in it on the Practice/Result heading, the category grid tile and the Progress row. Bengali titles and drawing names keep the theme font, so nothing already shipped moves. Bold is the weight the letter styles ask for, so the guides are derived from Andika *Bold* — the exact glyph the device shows, which the Practice screenshot confirms. Every later English character, and the digits in Step 4, use the same face.
+  **Font: Andika Bold** (SIL International, OFL 1.1), a print font designed for children learning to read, whose `a`, `g` and `y` are the single-storey school shapes. The phone draws Latin text in Roboto, whose `a` and `g` are double-storey, so a guide derived from any school font would sit under a different glyph unless the app draws that font itself: `res/font/andika_bold.ttf` is bundled unmodified (licence in `assets/licenses/andika-OFL.txt`) as `BcLatinLetterFontFamily`, and a single-letter Latin title (`String.letterFontFamily()`) is drawn in it on the Practice/Result heading, the category grid tile and the Progress row. Bengali titles and drawing names keep the theme font, so nothing already shipped moves. Bold is the weight the letter styles ask for, so the guides are derived from Andika *Bold* — the exact glyph the device shows, which the Practice screenshot confirms. Every later English small letter uses the same face; the capitals (3.27) and the math characters (Step 4) use Inter Bold instead.
 
   **Toolchain rebuilt.** `/tmp` had been cleared, so no scratchpad held the Step 1 scripts; `glyph.py` (render + canvas fit, `BC_FONT` override, Andika Bold by default), `skel_branches.py`, `check.py` (off-ink samples, centreline distance, ink under every guide dot against the 2.5-unit dot radius, bare path past the last dot), `overlay.py`, `calib.py` (dot radius from the largest inscribed disc, scale from the guide bbox in x and y independently) and `trace.py` were rewritten from the recipe, plus `dev.py` for the device (wake, portrait lock, foreground check, tap by on-screen text from a `uiautomator` dump).
 
@@ -637,79 +637,52 @@ _(Add one note per **character** as it is completed, as in Step 1; a three-lette
 
 Add math characters: numbers **1 to 20**, plus the basic operators, practised like letters.
 
-## Implement (sub-steps 4.1–4.25, **one item per step**)
+## Implement (**one step, all 25 items together**)
 
-- Each sub-step adds exactly **one** item, then stops. Do not add a second item in the same step.
+- **Cadence.** Step 4 is a single step: the category plumbing, the digits, the composed numbers and the operators are all added together, then the step stops. Within it each glyph is still derived and checked on its own (derivation, `check`, overlay review) before it is applied; build, tests, device check and the post-task brief are shared by the whole step.
 - Add `ExerciseType.MATH`; `MathExercises.kt` registered in `ExerciseCatalog`. Ids `math-1` … `math-20`, then `math-plus`, `math-minus`, `math-times`, `math-divide`, `math-equals`; titles are the glyphs (`+ − × ÷ =`).
-- **Digits 1–9 (4.1–4.9)** are derived from a rendered glyph with the Step 1 per-letter recipe, one digit per sub-step, using the font chosen in 3.1 (record it in the source header comment). Author natural stroke order and direction (`1` top to bottom, `2` the hook then the base, and so on). No headline, so no stroke is a `-matra`; `StrokePoints.line` for straight runs, the dense skeleton polyline for curves.
-- **10–20 (4.10–4.20) are composed from digit strokes** by a small content helper that lays two digits side by side inside the 0..100 canvas (scaled and offset), rather than 11 hand-derived glyphs. Composition keeps stroke order: left digit, then right digit. The digit **0** is needed only by 10 and 20 and has no catalog entry of its own; it is derived in 4.10, together with the helper, and reused by 20. Composed strokes get ids that start with the exercise id and stay unique; the composed guide's bbox centre stays within 3 units of (50, 50) and every point stays in 0..100.
-- **Operators `+ − × ÷ =` (4.21–4.25)** are derived from the rendered glyph like the digits. `+` is two strokes (horizontal, then vertical), `−` one, `×` two diagonals, `÷` a bar then its two dots (ring rule from 1.22), `=` two bars top then bottom. `−` and `=` are far wider than tall, so they use the width fit; check the render's aspect for each.
-- **Category plumbing rides with 4.1 (`1`)** so the category is never shown empty: the type, catalog registration, math category screen following `ConsonantsScreen`/`ConsonantsViewModel`, Home button, Progress button/section, and the `LearningProgress`, `ProgressRepositoryImpl`, `HomeViewModel` and `ProgressViewModel` changes, with string resources and Bengali UI copy consistent with the existing category names.
+- **Font: Inter Bold** — the capitals' pinned instance (`wght` 700, `opsz` 14, `BcLatinCapitalFontFamily`), not Andika. Derive every digit and operator from a static copy at exactly those axes (as the capitals are), record it in the source header comment, and draw every math title (Practice/Result heading, grid tile, Progress row) in it through `String.letterFontFamily()`: an all-digit title and a single operator both map to Inter.
+- **Digits 0–9** are derived from their rendered glyphs with the Step 1 per-letter recipe. Author natural stroke order and direction (`1` up the flag then down the stem, `2` the hook then the base, and so on). No headline, so no stroke is a `-matra`; `StrokePoints.line` for straight runs, the centreline polyline for curves. The digit **0** is needed only by 10 and 20 and has no catalog entry of its own.
+- **10–20 are composed from digit guides** by a small content helper (`NumberComposer`), rather than 11 hand-derived glyphs. It sets the ones digit after the tens digit at Inter's advance width (Inter has no kerning between digits), scales the pair by one fixed factor for every two-digit number (the largest at which the widest pair, 20, fits x 3..97), and centres it on x 50. Scaling a guide breaks its whole-spacing lengths (bare tails, lost closing dots, crowded joins), so the composer uses a **second set of digit guides derived for that scale** — the same builders with the dot spacing and dot radius divided by the factor — so every composed stroke is whole spacings once scaled. Composition keeps stroke order: tens digit, then ones digit; stroke ids are `<exercise id>-tens-<name>` / `-ones-<name>`.
+- **Operators `+ − × ÷ =`** are derived from the rendered glyph like the digits. `+` is two strokes (horizontal, then vertical), `−` one, `×` two diagonals, `÷` a bar then its two dots (ring rule from 1.22), `=` two bars top then bottom. `−` and `=` are far wider than tall, so they use the width fit; check the render's aspect for each.
+- **Category plumbing**: the type, catalog registration, math category screen following `ConsonantsScreen`/`ConsonantsViewModel`, a route, the Home button and bar, the Progress button/section, and the `LearningProgress`, `ProgressRepositoryImpl`, `HomeViewModel` and `ProgressViewModel` changes, with Bengali UI copy consistent with the existing category names (**সংখ্যা ও চিহ্ন**).
 - Ordering: math items are ordered by numeric value (`order` 1–20 for the numbers, then 21–25 for the operators, contiguous from 1 within the type) so Step 5 can build "next number" blanks from the numbers alone.
-- The last sub-step (4.25) also confirms the math screen scrolls and lays out 25 items at 720x1280 and 720x1600, and that Home/Progress measure the math bar against 25.
+- The step also confirms the math screen scrolls and lays out 25 items at 720x1280 and 720x1600, and that Home/Progress measure the math bar against 25.
 
 ## Per-character recipe
 
-Follow the Step 1 recipe and the Step 3 differences (no headline, per-item ink-bbox fit, `nio_calib.py` for the device mapping). In addition:
+Follow the Step 1 recipe and the Step 3 differences (no headline, per-item ink-bbox fit, `band_calib.py`/`calib.py` for the device mapping). In addition:
 
 - **Digits and operators** update `ExerciseCatalogTest`'s per-exercise stroke-count map for the new id.
-- **Composed numbers (10–20)** need no glyph derivation; instead each sub-step adds the id to the catalog, checks the composed guide on the device, and completes a trace at 95%+. A composed number is not checked against a rendered two-digit glyph's skeleton: it is checked that each half sits on its own digit's ink after scaling, which the helper's unit test covers for bounds and order.
+- **Composed numbers (10–20)** need no glyph derivation of their own: each is checked against Inter's render of the whole number, mapped the way the composer places it (every sample on ink, whole spacings, no crowded dots), and the helper's unit test covers bounds and stroke order.
 
-## Sub-steps
+## Checklist
 
-Digits:
+- [x] Category plumbing (type, catalog, screen, route, Home button/bar, Progress section, aggregation)
+- [x] Digits 1–9 (and 0, for the composed numbers only)
+- [x] Composed numbers 10–20 and `NumberComposer`
+- [x] Operators + − × ÷ =
 
-- [ ] 4.1 1 (also the math category plumbing)
-- [ ] 4.2 2
-- [ ] 4.3 3
-- [ ] 4.4 4
-- [ ] 4.5 5
-- [ ] 4.6 6
-- [ ] 4.7 7
-- [ ] 4.8 8
-- [ ] 4.9 9
+## Definition of Done
 
-Composed numbers:
-
-- [ ] 4.10 10 (also the digit 0 strokes and the composition helper)
-- [ ] 4.11 11
-- [ ] 4.12 12
-- [ ] 4.13 13
-- [ ] 4.14 14
-- [ ] 4.15 15
-- [ ] 4.16 16
-- [ ] 4.17 17
-- [ ] 4.18 18
-- [ ] 4.19 19
-- [ ] 4.20 20
-
-Operators:
-
-- [ ] 4.21 +
-- [ ] 4.22 −
-- [ ] 4.23 ×
-- [ ] 4.24 ÷
-- [ ] 4.25 =
-
-## Definition of Done (applies to every sub-step)
-
-- [ ] The one item is added (derived from its rendered glyph for digits and operators; composed from digit strokes for 10–20)
-- [ ] Every guide sample lies on the glyph's ink
-- [ ] It completes at 95%+ on a faithful synthetic trace on the device
-- [ ] `ExerciseCatalogTest`'s stroke-count map includes the new item, and its id, numeric `order`, canvas-bounds and centring assertions pass
-- [ ] Existing ViewModel tests still pass
-- [ ] Verified by running the app
-
-Additionally:
-
-- [ ] 4.1: category plumbing is in place and covered by ViewModel and progress-aggregation tests
-- [ ] 4.10: the composition helper is unit-tested for bounds (every composed point in 0..100) and stroke order (left digit, then right digit); 11–20 reuse it without change
-
-Step 4 as a whole is done when all 25 sub-steps are checked, the catalog test asserts the expected 25 items with unique ids and numeric `order`, and the math bar on Home and Progress is computed against 25.
+- [x] All 25 items are added (digits and operators derived from their rendered glyphs; 10–20 composed from digit guides)
+- [x] Every guide sample lies on its glyph's ink, every stroke is whole spacings, and no two dots crowd
+- [x] Each item completes at 95%+ on a faithful synthetic trace on the device (or the emulator, judged against its ~4-point discount, when no phone is attached)
+- [x] `ExerciseCatalogTest` asserts the 25 items with their ids, numeric `order`, stroke counts, canvas bounds and centring
+- [x] Category plumbing is covered by ViewModel and progress-aggregation tests; the composer is unit-tested for bounds and stroke order
+- [x] Existing ViewModel tests still pass
+- [x] Verified by running the app, including the grid at 720x1280 and 720x1600 and the Home/Progress math bar against 25
 
 ## Notes
 
-_(Add one note per sub-step as it is completed, as in Step 1.)_
+_(One note for the step, with a line per item, as it is completed.)_
+
+- **Step 4 (all 25 items, one step).** Derived from **Inter Bold** (wght 700, opsz 14, the user's choice) with a new scratchpad toolchain (scratchpad `3aa8bcca-…`): `mt.py` (normal-ray centreline snapping, whole-spacing end trimming, float32 length tuning, `BC_SCALE` for the two-digit set), `m_build.py`/`m_straight.py`/`m_loops.py` (builders), `m_emit.py` (writes `MathExercises.kt`), `m_kt_check.py` (float32 replay of the Kotlin, composition included, against the Inter render of each item) and `m_device.py`/`m_screens.py` (phone trace and category checks). Every item: off-ink 0, every stroke whole spacings (bare path ≤ 0.05), no crowded dots except two pairs 4.93/4.96 apart at 18's waist, catalog centring within 3. Plumbing: `ExerciseType.MATH`, `MathScreen`/`MathViewModel`, route `math`, Home button and bar, Progress section (the hub now combines one flow per `ExerciseType`), `mathProgress`, and `letterFontFamily()` maps all-digit titles and the operators to Inter. 369 unit tests, 0 failures (new: `NumberComposerTest`, `MathViewModelTest`, math catalog/aggregation/font cases). Lint: the same 14 existing warnings, none in changed files.
+  - **Digits.** `1` flag up into a 12-spacing stem (no foot in Inter). `2` hook ending on the base's first dot, base 8 spacings. `3` top bowl into the middle bar and two spacings along it to its tip, bottom bowl back along the same bar. `4` slant down the diagonal and along the crossbar (the corner 7 spacings from the stem so a crossbar dot lands on the stem's), then the stem. `5` stem, bowl, then flag. `6` down from the terminal to the bottom, then the loop, whose last dot is snapped onto a `down` dot. `7` one 21-spacing movement. `8` two laps through the waist (50, 47.5), each scaled about it to whole spacings, so the waist is a dot of both `s` and `back`. `9` loop from the top of the right side, rejoining it on the tail's 3rd dot and running back up the tail's own vertices; then the tail. `0` (only for 10 and 20) an oval ring in two halves.
+  - **10–20.** `NumberComposer` sets the ones digit at Inter's advance (the render of every pair confirmed no kerning, within 1 px) at one fixed scale, 0.69 (20 is the widest pair). Scaling full-size guides left bare tails of up to 5.5 units, dropped closing dots and crowded joins, so the composer uses a second digit set derived with spacing and dot radius divided by 0.69. Two dots sit 1.8–2.0 units inside the ink at joins (16's loop end, 15's bowl start), within the "spill at a join" already accepted.
+  - **Operators.** `+` and `×` cross with a dot on the crossing (6 and 7 spacings either side), `−` 14 spacings, `÷` a 11-spacing bar then two 8-spacing rings sized so the last dot lands on the first, `=` two 14-spacing bars.
+  - **Device (RMX3624).** Each item opened from Home → সংখ্যা ও চিহ্ন, its mapping re-measured from its own screenshot (`sx ≈ 31.5 + 6.57x`, `sy ≈ 484.6 + 6.56y`, the capitals' layout; x/y agreeing to ≤ 0.31%, `calib.py` now handles a zero-height guide like −), every predicted dot centre ≥ 14.4 px inside a ~16 px dot, heading IoU 0.94–1.00 against Inter (≤ 0.75 against Roboto), and a faithful trace completed at **PERFECT** for all 25: 1 99.92, 2 99.78, 3 99.81, 4 99.66, 5 99.71, 6 99.83, 7 99.86, 8 99.84, 9 99.85, 10 99.72, 11 99.81, 12 99.82, 13 99.84, 14 99.80, 15 99.85, 16 99.81, 17 99.86, 18 99.85, 19 99.85, 20 99.76, + 99.95, − 100.0, × 99.88, ÷ 99.86, = 99.77 (`practice_session` rows 91–115). Result reads "You tried 1 time. Your overall progress is 100%."
+  - **Category checks.** The math grid lists 1–20 then + − × ÷ = and scrolls to = fully visible at 720x1600 and 720x1280 (`wm size`, reset afterwards). From the pulled db: math 25/25, small 26/26, capital 26/26, vowels 2/11, consonants 0/39, drawings 0/5, overall 79/132 = 59.8%; Home reads overall 60% and the math bar 100%, the Progress hub 60% with the সংখ্যা ও চিহ্ন section listing every item Completed with three stars. **Step 4 is complete.**
 
 ---
 

@@ -29,6 +29,7 @@ fun HomeScreen(
     onConsonantsClick: () -> Unit,
     onEnglishSmallClick: () -> Unit,
     onEnglishCapitalClick: () -> Unit,
+    onMathClick: () -> Unit,
     onDrawingClick: () -> Unit,
     onProgressClick: () -> Unit,
     onContinueClick: (exerciseId: String) -> Unit,
@@ -42,6 +43,7 @@ fun HomeScreen(
         onConsonantsClick = onConsonantsClick,
         onEnglishSmallClick = onEnglishSmallClick,
         onEnglishCapitalClick = onEnglishCapitalClick,
+        onMathClick = onMathClick,
         onDrawingClick = onDrawingClick,
         onProgressClick = onProgressClick,
         onContinueClick = onContinueClick,
@@ -56,6 +58,7 @@ private fun HomeContent(
     onConsonantsClick: () -> Unit,
     onEnglishSmallClick: () -> Unit,
     onEnglishCapitalClick: () -> Unit,
+    onMathClick: () -> Unit,
     onDrawingClick: () -> Unit,
     onProgressClick: () -> Unit,
     onContinueClick: (exerciseId: String) -> Unit,
@@ -88,6 +91,7 @@ private fun HomeContent(
             BcPrimaryButton(text = "ব্যঞ্জনবর্ণ", onClick = onConsonantsClick, modifier = Modifier.fillMaxWidth())
             BcPrimaryButton(text = "ছোট হাতের অক্ষর", onClick = onEnglishSmallClick, modifier = Modifier.fillMaxWidth())
             BcPrimaryButton(text = "বড় হাতের অক্ষর", onClick = onEnglishCapitalClick, modifier = Modifier.fillMaxWidth())
+            BcPrimaryButton(text = "সংখ্যা ও চিহ্ন", onClick = onMathClick, modifier = Modifier.fillMaxWidth())
             BcPrimaryButton(text = "আঁকা", onClick = onDrawingClick, modifier = Modifier.fillMaxWidth())
 
             Text(text = "Your Progress", style = MaterialTheme.typography.titleLarge)
@@ -96,6 +100,7 @@ private fun HomeContent(
             BcLabeledProgress(label = "ব্যঞ্জনবর্ণ", progress = state.consonantProgress)
             BcLabeledProgress(label = "ছোট হাতের অক্ষর", progress = state.englishSmallProgress)
             BcLabeledProgress(label = "বড় হাতের অক্ষর", progress = state.englishCapitalProgress)
+            BcLabeledProgress(label = "সংখ্যা ও চিহ্ন", progress = state.mathProgress)
             BcLabeledProgress(label = "আঁকা", progress = state.drawingProgress)
 
             BcSecondaryButton(text = "View Full Progress", onClick = onProgressClick, modifier = Modifier.fillMaxWidth())
@@ -114,6 +119,7 @@ private fun HomeScreenPreview() {
                 consonantProgress = 0.6f,
                 englishSmallProgress = 0.2f,
                 englishCapitalProgress = 0.1f,
+                mathProgress = 0.3f,
                 drawingProgress = 0.4f,
                 continueExerciseId = "vowel-e",
             ),
@@ -121,6 +127,7 @@ private fun HomeScreenPreview() {
             onConsonantsClick = {},
             onEnglishSmallClick = {},
             onEnglishCapitalClick = {},
+            onMathClick = {},
             onDrawingClick = {},
             onProgressClick = {},
             onContinueClick = {},
@@ -138,6 +145,7 @@ private fun HomeScreenEmptyPreview() {
             onConsonantsClick = {},
             onEnglishSmallClick = {},
             onEnglishCapitalClick = {},
+            onMathClick = {},
             onDrawingClick = {},
             onProgressClick = {},
             onContinueClick = {},

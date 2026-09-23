@@ -82,6 +82,21 @@ class ExerciseCatalogTest {
     }
 
     @Test
+    fun `math has the numbers 1 to 20 then the operators, ordered by value`() {
+        val items = ExerciseCatalog.all.filter { it.type == ExerciseType.MATH }.sortedBy { it.order }
+
+        assertEquals((1..20).map { "$it" } + listOf("+", "−", "×", "÷", "="), items.map { it.title })
+        assertEquals(
+            (1..20).map { "math-$it" } + listOf("math-plus", "math-minus", "math-times", "math-divide", "math-equals"),
+            items.map { it.id },
+        )
+        items.take(20).forEach { assertEquals("${it.id}'s order is not its value", it.title.toInt(), it.order) }
+        items.forEach { item ->
+            assertTrue("${item.id} has a matra", item.strokes.none { it.id.endsWith("-matra") })
+        }
+    }
+
+    @Test
     fun `every exercise has the stroke count of its real letter or shape`() {
         val expected = mapOf(
             "vowel-o" to 3, "vowel-aa" to 4, "vowel-i" to 3, "vowel-ii" to 4, "vowel-u" to 4,
@@ -169,6 +184,27 @@ class ExerciseCatalogTest {
             "english-capital-x" to 2,
             "english-capital-y" to 2,
             "english-capital-z" to 2,
+            "math-1" to 2,
+            "math-2" to 2,
+            "math-3" to 2,
+            "math-4" to 2,
+            "math-5" to 3,
+            "math-6" to 2,
+            "math-7" to 1,
+            "math-8" to 2,
+            "math-9" to 2,
+            "math-10" to 4,
+            "math-11" to 4,
+            "math-12" to 4,
+            "math-13" to 4,
+            "math-14" to 4,
+            "math-15" to 5,
+            "math-16" to 4,
+            "math-17" to 3,
+            "math-18" to 4,
+            "math-19" to 4,
+            "math-20" to 4,
+            "math-plus" to 2, "math-minus" to 1, "math-times" to 2, "math-divide" to 3, "math-equals" to 2,
             "drawing-line" to 1, "drawing-circle" to 1, "drawing-square" to 1, "drawing-triangle" to 1,
             "drawing-house" to 2,
         )

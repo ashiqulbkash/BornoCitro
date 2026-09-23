@@ -18,8 +18,8 @@ import com.bornochitra.R
 val BcLatinLetterFontFamily = FontFamily(Font(R.font.andika_bold, FontWeight.Bold))
 
 /**
- * Inter, for English capital letters, whose guides are derived from this exact face (see
- * `EnglishCapitalExercises.kt`). `inter.ttf` is variable, so both of its axes are pinned to the
+ * Inter, for English capital letters and math, whose guides are derived from this exact face (see
+ * `EnglishCapitalExercises.kt` and `MathExercises.kt`). `inter.ttf` is variable, so both of its axes are pinned to the
  * instance the guides were read off — Bold at the default optical size — rather than left to the
  * platform. Only that weight is declared, so every letter style draws the same glyph.
  */

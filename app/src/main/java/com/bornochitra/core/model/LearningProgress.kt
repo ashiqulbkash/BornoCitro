@@ -7,6 +7,7 @@ data class LearningProgress(
     val consonantProgress: Float = 0f,
     val englishSmallProgress: Float = 0f,
     val englishCapitalProgress: Float = 0f,
+    val mathProgress: Float = 0f,
     val drawingProgress: Float = 0f,
     val continueExerciseId: String? = null,
 )
