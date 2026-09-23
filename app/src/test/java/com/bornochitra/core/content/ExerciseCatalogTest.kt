@@ -97,6 +97,19 @@ class ExerciseCatalogTest {
     }
 
     @Test
+    fun `bengali numbers carry their numerals ordered by value, with no matra`() {
+        val numbers = ExerciseCatalog.all.filter { it.type == ExerciseType.BANGLA_NUMBER }.sortedBy { it.order }
+
+        assertEquals(listOf("১", "২", "৩", "৪", "৫"), numbers.map { it.title })
+        numbers.forEach { number ->
+            val value = number.title.map { it - '০' }.joinToString("").toInt()
+            assertEquals("${number.id}'s order is not its value", value, number.order)
+            assertEquals("bangla-number-$value", number.id)
+            assertTrue("${number.id} has a matra", number.strokes.none { it.id.endsWith("-matra") })
+        }
+    }
+
+    @Test
     fun `every exercise has the stroke count of its real letter or shape`() {
         val expected = mapOf(
             "vowel-o" to 3, "vowel-aa" to 4, "vowel-i" to 3, "vowel-ii" to 4, "vowel-u" to 4,
@@ -205,6 +218,11 @@ class ExerciseCatalogTest {
             "math-19" to 4,
             "math-20" to 4,
             "math-plus" to 2, "math-minus" to 1, "math-times" to 2, "math-divide" to 3, "math-equals" to 2,
+            "bangla-number-1" to 1,
+            "bangla-number-2" to 2,
+            "bangla-number-3" to 2,
+            "bangla-number-4" to 2,
+            "bangla-number-5" to 3,
             "drawing-line" to 1, "drawing-circle" to 1, "drawing-square" to 1, "drawing-triangle" to 1,
             "drawing-house" to 2,
         )

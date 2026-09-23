@@ -36,6 +36,10 @@ sealed interface BcDestination {
         override val route = "math"
     }
 
+    data object BanglaNumbers : BcDestination {
+        override val route = "bangla-numbers"
+    }
+
     data object Drawing : BcDestination {
         override val route = "drawing"
     }

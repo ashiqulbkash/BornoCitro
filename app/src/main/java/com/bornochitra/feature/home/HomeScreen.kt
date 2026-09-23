@@ -30,6 +30,7 @@ fun HomeScreen(
     onEnglishSmallClick: () -> Unit,
     onEnglishCapitalClick: () -> Unit,
     onMathClick: () -> Unit,
+    onBanglaNumbersClick: () -> Unit,
     onDrawingClick: () -> Unit,
     onProgressClick: () -> Unit,
     onContinueClick: (exerciseId: String) -> Unit,
@@ -44,6 +45,7 @@ fun HomeScreen(
         onEnglishSmallClick = onEnglishSmallClick,
         onEnglishCapitalClick = onEnglishCapitalClick,
         onMathClick = onMathClick,
+        onBanglaNumbersClick = onBanglaNumbersClick,
         onDrawingClick = onDrawingClick,
         onProgressClick = onProgressClick,
         onContinueClick = onContinueClick,
@@ -59,6 +61,7 @@ private fun HomeContent(
     onEnglishSmallClick: () -> Unit,
     onEnglishCapitalClick: () -> Unit,
     onMathClick: () -> Unit,
+    onBanglaNumbersClick: () -> Unit,
     onDrawingClick: () -> Unit,
     onProgressClick: () -> Unit,
     onContinueClick: (exerciseId: String) -> Unit,
@@ -92,6 +95,7 @@ private fun HomeContent(
             BcPrimaryButton(text = "ছোট হাতের অক্ষর", onClick = onEnglishSmallClick, modifier = Modifier.fillMaxWidth())
             BcPrimaryButton(text = "বড় হাতের অক্ষর", onClick = onEnglishCapitalClick, modifier = Modifier.fillMaxWidth())
             BcPrimaryButton(text = "সংখ্যা ও চিহ্ন", onClick = onMathClick, modifier = Modifier.fillMaxWidth())
+            BcPrimaryButton(text = "বাংলা সংখ্যা", onClick = onBanglaNumbersClick, modifier = Modifier.fillMaxWidth())
             BcPrimaryButton(text = "আঁকা", onClick = onDrawingClick, modifier = Modifier.fillMaxWidth())
 
             Text(text = "Your Progress", style = MaterialTheme.typography.titleLarge)
@@ -101,6 +105,7 @@ private fun HomeContent(
             BcLabeledProgress(label = "ছোট হাতের অক্ষর", progress = state.englishSmallProgress)
             BcLabeledProgress(label = "বড় হাতের অক্ষর", progress = state.englishCapitalProgress)
             BcLabeledProgress(label = "সংখ্যা ও চিহ্ন", progress = state.mathProgress)
+            BcLabeledProgress(label = "বাংলা সংখ্যা", progress = state.banglaNumberProgress)
             BcLabeledProgress(label = "আঁকা", progress = state.drawingProgress)
 
             BcSecondaryButton(text = "View Full Progress", onClick = onProgressClick, modifier = Modifier.fillMaxWidth())
@@ -120,6 +125,7 @@ private fun HomeScreenPreview() {
                 englishSmallProgress = 0.2f,
                 englishCapitalProgress = 0.1f,
                 mathProgress = 0.3f,
+                banglaNumberProgress = 0.5f,
                 drawingProgress = 0.4f,
                 continueExerciseId = "vowel-e",
             ),
@@ -128,6 +134,7 @@ private fun HomeScreenPreview() {
             onEnglishSmallClick = {},
             onEnglishCapitalClick = {},
             onMathClick = {},
+            onBanglaNumbersClick = {},
             onDrawingClick = {},
             onProgressClick = {},
             onContinueClick = {},
@@ -146,6 +153,7 @@ private fun HomeScreenEmptyPreview() {
             onEnglishSmallClick = {},
             onEnglishCapitalClick = {},
             onMathClick = {},
+            onBanglaNumbersClick = {},
             onDrawingClick = {},
             onProgressClick = {},
             onContinueClick = {},

@@ -13,7 +13,7 @@ General development conventions — architecture, code quality, testing, build/v
 ## PLAN EXECUTION RULES
 
 1. Read the entire `plan.md` before making changes.
-2. Implement exactly **one numbered step at a time** (a lettered sub-step such as 1.3 counts as one step). Do not implement multiple steps unless explicitly instructed. A sub-step's own scope may be more than one character where it says so — Step 3's capitals from 3.30 on are three per sub-step, and Step 4 is one step for all 25 math items — and that whole group is the step.
+2. Implement exactly **one numbered step at a time** (a lettered sub-step such as 1.3 counts as one step). Do not implement multiple steps unless explicitly instructed. A sub-step's own scope may be more than one character where it says so — Step 3's capitals from 3.30 on are three per sub-step, Step 4 is one step for all 25 math items, and Step 5's Bengali numbers are five per sub-step — and that whole group is the step.
 3. Do not move to the next step automatically unless explicitly instructed.
 4. Do not use placeholder implementations for a real feature.
 5. Keep the tracing engine independent from ViewModel, Room, Hilt, and Compose UI implementation details.
@@ -34,7 +34,7 @@ After completing a step, **STOP and wait for the next instruction.**
 
 The app teaches handwriting by tracing. Today it ships 11 vowels, **5 consonants (ক খ গ ঘ ঙ)** and a set of drawings. Each `Exercise` (`core/model/Exercise.kt`) has an `ExerciseType` (`VOWEL`, `CONSONANT`, `DRAWING`); static content lives in `core/content/*Exercises.kt` and is collected in `ExerciseCatalog`. Home and Progress have one button per category. Progress per exercise is stored through `ProgressRepository` (Room: `exercise_progress`, `practice_sessions`).
 
-This plan extends the app in five areas, in this order:
+This plan extends the app in seven areas, in this order:
 
 | # | Area | Outcome |
 |---|------|---------|
@@ -42,7 +42,9 @@ This plan extends the app in five areas, in this order:
 | 2 | Practice sets | 5 or 10 repetitions of one character on one screen; averaged progress |
 | 3 | English characters | a–z and A–Z |
 | 4 | Math characters | 1–20 and basic operators (one step) |
-| 5 | Fill in the blanks | Sequences with missing items the child fills in |
+| 5 | Bengali numbers | ১–২০ (five per sub-step) |
+| 6 | Fill in the blanks | Sequences with missing items the child fills in |
+| 7 | Integration and regression | Every category and mode works as one product |
 
 ## The 39 consonants
 
@@ -646,7 +648,7 @@ Add math characters: numbers **1 to 20**, plus the basic operators, practised li
 - **10–20 are composed from digit guides** by a small content helper (`NumberComposer`), rather than 11 hand-derived glyphs. It sets the ones digit after the tens digit at Inter's advance width (Inter has no kerning between digits), scales the pair by one fixed factor for every two-digit number (the largest at which the widest pair, 20, fits x 3..97), and centres it on x 50. Scaling a guide breaks its whole-spacing lengths (bare tails, lost closing dots, crowded joins), so the composer uses a **second set of digit guides derived for that scale** — the same builders with the dot spacing and dot radius divided by the factor — so every composed stroke is whole spacings once scaled. Composition keeps stroke order: tens digit, then ones digit; stroke ids are `<exercise id>-tens-<name>` / `-ones-<name>`.
 - **Operators `+ − × ÷ =`** are derived from the rendered glyph like the digits. `+` is two strokes (horizontal, then vertical), `−` one, `×` two diagonals, `÷` a bar then its two dots (ring rule from 1.22), `=` two bars top then bottom. `−` and `=` are far wider than tall, so they use the width fit; check the render's aspect for each.
 - **Category plumbing**: the type, catalog registration, math category screen following `ConsonantsScreen`/`ConsonantsViewModel`, a route, the Home button and bar, the Progress button/section, and the `LearningProgress`, `ProgressRepositoryImpl`, `HomeViewModel` and `ProgressViewModel` changes, with Bengali UI copy consistent with the existing category names (**সংখ্যা ও চিহ্ন**).
-- Ordering: math items are ordered by numeric value (`order` 1–20 for the numbers, then 21–25 for the operators, contiguous from 1 within the type) so Step 5 can build "next number" blanks from the numbers alone.
+- Ordering: math items are ordered by numeric value (`order` 1–20 for the numbers, then 21–25 for the operators, contiguous from 1 within the type) so Step 6 can build "next number" blanks from the numbers alone.
 - The step also confirms the math screen scrolls and lays out 25 items at 720x1280 and 720x1600, and that Home/Progress measure the math bar against 25.
 
 ## Per-character recipe
@@ -686,7 +688,68 @@ _(One note for the step, with a line per item, as it is completed.)_
 
 ---
 
-# 6. Step 5 — Fill in the Blanks
+# 6. Step 5 — Bengali Numbers
+
+## Requirement
+
+Add the Bengali numbers **১ to ২০**, practised like the letters, in a category of their own next to the English math items.
+
+## Implement (sub-steps 5.1–5.4, **five numbers per step**)
+
+- **Cadence.** Each sub-step adds exactly **five** numbers, in numeric order, and then stops — do not start the next group in the same step. Within a sub-step the numbers are derived, checked and applied **one at a time, in order** (derivation, `check`, overlay review, apply, catalog-test update); the build, device traces, Section 10 verification and the post-task brief are shared by the group. A number that fails its device trace blocks the step.
+- **Type and ids.** Add `ExerciseType.BANGLA_NUMBER`, declared right after `MATH`, and `BanglaNumberExercises.kt` registered in `ExerciseCatalog`. Ids are `bangla-number-1` … `bangla-number-20`, titles are the Bengali numerals (`১` … `২০`), and `order` is the numeric value (1–20, contiguous from 1), so Step 6 can build "next number" blanks from it. No stroke is a `-matra`: the Bengali digits have no headline.
+- **Font: the device's Noto Sans Bengali at weight 700** (`/system/fonts/NotoSansBengali-VF.ttf`, v2.001 on the RMX3624, a variable font) — the face Android draws a Bengali title in (Step 1, lesson of 1.15). The Practice heading is `displayMedium`, which is **Bold**, so the phone draws the variable font at wght 700: the heading matched the wght-700 render at IoU 0.96 and the wght-400 one at only 0.69 (measured at 5.1). Pull it with `adb pull`, make a static wght-700 instance, and derive from that — never from wght 400, `noto2.ttf` (v3) or Inter; record it in the source header comment. `String.letterFontFamily()` must keep returning `null` for Bengali numerals (its all-digit rule matches only `0`–`9`), and a unit test pins that.
+- **Digits ১–৯** are derived from their rendered glyphs with the Step 1 per-letter recipe and the Step 4 toolchain (normal-ray centring, whole-spacing ends, float32 replay of the Kotlin): every stroke a whole number of 6-unit spacings, no crowded dots, joins landing dot on dot. Author natural writing order and direction. Fit each digit's ink bbox on its own (by width when wider than tall). **০** is needed only by ১০ and ২০ and has no catalog entry.
+- **১০–২০ are composed** by `NumberComposer` from a second set of Bengali digit guides derived for the two-digit scale (spacing and dot radius divided by the factor), exactly as Step 4 composes 10–20. The composer's scale and ink centre are Inter-specific constants today; the sub-step that first composes (5.2) makes them per-font parameters rather than duplicating the composer, measures Noto's digit advances and any kerning between digit pairs from the render, and picks the largest one scale at which the widest pair fits x 3..97. Stroke ids are `<exercise id>-tens-<name>` / `-ones-<name>`.
+- **Category plumbing rides with 5.1**, so the category is never shown empty and no placeholder is used: the type, catalog registration, a Bengali-numbers screen following `MathScreen`/`MathViewModel`, a route, the Home button and bar, the Progress button/section (the hub already builds one section per `ExerciseType`), `LearningProgress.banglaNumberProgress`, and the `ProgressRepositoryImpl`, `HomeViewModel`, `ProgressViewModel` and `ExerciseTypeLabel` changes, with the Bengali UI name **বাংলা সংখ্যা**.
+- The last sub-step (5.4) also confirms the Bengali-numbers screen scrolls and lays out 20 items at 720x1280 and 720x1600, and that Home/Progress measure its bar against 20 and overall progress includes it.
+
+## Per-character recipe
+
+Follow the Step 1 recipe (Noto Sans Bengali, device font) and the Step 4 differences (no headline, per-item ink-bbox fit, `calib.py` for the device mapping, float32 replay before the device):
+
+- **Tests to update for every number**: `ExerciseCatalogTest`'s per-exercise stroke-count map and the Bengali-numbers title/id/order assertion.
+- **Device check.** Navigate Home → বাংলা সংখ্যা → the number's cell; re-measure the canvas mapping from that number's own screenshot (a Bengali title's heading is taller than Inter's, so the canvas will not sit where the math items' did); crop the heading and confirm it is the Noto v2 glyph the guide was derived from. A faithful synthetic trace scores 95%+.
+- **Composed numbers (১০–২০)** need no glyph derivation of their own: each is checked against the device font's render of the whole number, placed the way the composer places it (every sample on ink, whole spacings, no crowded dots).
+
+## Sub-steps
+
+- [x] 5.1 ১ ২ ৩ ৪ ৫ (with the category plumbing)
+- [ ] 5.2 ৬ ৭ ৮ ৯ ১০ (with ০ and the two-digit set for the composer)
+- [ ] 5.3 ১১ ১২ ১৩ ১৪ ১৫
+- [ ] 5.4 ১৬ ১৭ ১৮ ১৯ ২০ (also the whole-category checks)
+
+## Definition of Done (applies to every sub-step, for **each** of its numbers)
+
+- [ ] Every number of the step is added — ১–৯ derived from the device font's rendered glyphs, ১০–২০ composed from digit guides derived for the two-digit scale
+- [ ] Every guide sample lies on its glyph's ink, every stroke is whole spacings, and no two dots crowd
+- [ ] Each one completes at 95%+ on a faithful synthetic trace on the device
+- [ ] `ExerciseCatalogTest`'s stroke-count map and Bengali-numbers assertion include every new number, and their ids, `order`, canvas-bounds and centring assertions pass
+- [ ] Existing ViewModel tests still pass
+- [ ] Verified by running the app
+
+Additionally, for the plumbing sub-step (5.1):
+
+- [ ] Type, catalog registration, category screen, route, Home button/bar, Progress section and progress aggregation are in place for the category
+- [ ] ViewModel, progress-aggregation and font-mapping tests cover the new category
+
+Step 5 as a whole is done when all four sub-steps are checked (20 numbers), the catalog test asserts ১–২০ with ids and numeric `order`, the bar is computed against 20, and the flow Home → বাংলা সংখ্যা → practise → Progress has been run on the device.
+
+## Notes
+
+_(One note per **number** as it is completed, headed with the sub-step number and the number.)_
+
+- **5.1 plumbing.** `ExerciseType.BANGLA_NUMBER` (after `MATH`), `BanglaNumberExercises.kt` registered in `ExerciseCatalog`, `BanglaNumbersScreen`/`BanglaNumbersViewModel` (route `bangla-numbers`), the Home button and bar, `LearningProgress.banglaNumberProgress` through `ProgressRepositoryImpl`, `HomeViewModel` and `ProgressViewModel`, and the label **বাংলা সংখ্যা**; the Progress hub picks the section up from `ExerciseType.entries`. `letterFontFamily()` already returns `null` for Bengali numerals and a test now pins it. Toolchain (scratchpad `8af370be-…`): `bn_build.py` (builders), `bn_run.py` (check + overlay), `bn_emit.py` (writes the Kotlin with its KDocs), `bn_kt_check.py` (float32 replay), `bn_device.py`/`bn_calib.py` (phone trace, mapping, heading IoU), `bn_heading.py` (heading vs Noto at several weights), `bn_zoom.py`, `bn_screens.py`. The first derivation used wght 400; the phone's heading showed Bold, so all five were re-derived from wght 700. 375 unit tests, 0 failures (new: `BanglaNumbersViewModelTest`, and Bengali-number catalog, aggregation, Progress-section and font cases). Lint: the same 14 existing warnings, none in changed files.
+- **5.1 ১** — one stroke, `body`, from the top cut down the stem, along the diagonal, round the bottom and up into the hook: 23 spacings. Traced on the RMX3624: 99.81 (PERFECT).
+- **5.1 ২** — `hook` (13 spacings) from the top cut round the shoulder into the base, ending exactly on the base's fifth dot; `base` (9 spacings), the one band from the pointed left end through the junction to the tail's cut, centred with the merged junction left out so it does not kink. The first try ran a bar and a separate tail, but the render shows the base and tail are one band and the hook joins it from above. 99.78 (PERFECT).
+- **5.1 ৩** — one band of ~190 units from the top-left cut round to the inner end, trimmed to whole spacings and split at its lowest dot: `down` 13, `up` 19. 99.81 (PERFECT).
+- **5.1 ৪** — the rings cross at the waist like an 8, so it is Step 4's 8: two laps through (50, 46), each scaled about it to whole spacings. `s` and `back` are both 21 spacings, and the crossing is a dot of each. A first version with a horizontal waist bar (θ-shaped) was dropped because the ink crosses. At the glyph's own angle the dots beside the crossing crowded (3.87 apart), so the guide crosses a little steeper inside the solid waist. 99.84 (PERFECT).
+- **5.1 ৫** — `outer` (22 spacings) runs from the top cut round the big curve to the lower-right cut. `hook` (5) leaves it on its second dot and runs down the notch to the ear. `inner` (8) leaves the hook on its fifth dot, runs round the S, and ends **exactly on `outer`'s second-last dot**, so only `outer` runs on to the cut. The user rejected the first version, where the two ended side by side at the cut: in the glyph the S merges into the outer curve, so the guide must show them connected. The join (outer's trim 0.25, second-last dot) was searched so that every dot beside it stays ≥ 5.7 units from the other stroke's dots; joining onto `outer`'s very last dot crowds (3.4–3.9). 99.85 (PERFECT), `practice_session` row 129.
+- **5.1 device.** Mapping re-measured per number (`sx ≈ 32 + 6.56x`, `sy ≈ 501 + 6.56y`, the consonants' layout; x/y within 0.24%), every predicted dot centre ≥ 14.8 px inside a ~16 px dot, heading IoU 0.959–0.964 against Noto wght 700, `practice_session` rows 124–128. The zoomed heading-beside-guide crops match in shape. Home shows the বাংলা সংখ্যা button and bar (100%, 5/5). The grid lists ১–৫, and the Progress section lists all five Completed with three stars. From the pulled db: overall 84/137 = 61.3%, and Home reads 61%.
+
+---
+
+# 7. Step 6 — Fill in the Blanks
 
 ## Requirement
 
@@ -694,7 +757,7 @@ Show a sequence with gaps, for example **a, _, c, d, _, e**. The child fills eac
 
 ## Implement
 
-- **Sequences** come from the ordered catalog of a category: vowels, consonants, small letters, capital letters, numbers. Category is chosen from a new **Fill in the blanks** entry (Home button) then a category picker.
+- **Sequences** come from the ordered catalog of a category: vowels, consonants, small letters, capital letters, numbers, Bengali numbers. Category is chosen from a new **Fill in the blanks** entry (Home button) then a category picker.
 - **Generation** is a pure, seedable function (`BlankSequenceGenerator`) producing a window of 5–8 consecutive items with 1–3 blanks (never the first item, blanks may be adjacent only at the higher difficulty). Deterministic given a seed, so it is unit-testable.
 - **Interaction.** Shown items are static glyphs. Each blank is a tracing cell (reusing the existing tracing canvas and scoring) with no dotted guide shown: the child recalls the item and traces it freehand, and a hint control reveals the dotted guide (using a hint lowers that blank's score cap; rule documented in code and tested).
 - **State (MVI).** `FillBlanksState` (sequence, per-blank status), events (`BlankCompleted`, `HintUsed`, `NextSequence`), owned by `FillBlanksViewModel`.
@@ -712,7 +775,7 @@ Show a sequence with gaps, for example **a, _, c, d, _, e**. The child fills eac
 
 ---
 
-# 7. Step 6 — Integration and Regression
+# 8. Step 7 — Integration and Regression
 
 ## Requirement
 
@@ -720,7 +783,7 @@ Confirm all new categories and modes behave as one coherent product.
 
 ## Implement
 
-- Progress screen lists every category (Vowel, Consonant, Small, Capital, Math, Drawing) with correct bars; overall progress includes all.
+- Progress screen lists every category (Vowel, Consonant, Small, Capital, Math, Bengali numbers, Drawing) with correct bars; overall progress includes all.
 - Home layout fits the added buttons on 720x1280 and 720x1600.
 - Continue/resume points at the most recent unmastered exercise across all categories.
 - Update `CriticalFlowTest`/androidTest and `ProgressRoomTest` for the new types.
@@ -734,7 +797,7 @@ Confirm all new categories and modes behave as one coherent product.
 
 ---
 
-# 8. Feature Completion Definition
+# 9. Feature Completion Definition
 
 A step is complete only when it satisfies:
 

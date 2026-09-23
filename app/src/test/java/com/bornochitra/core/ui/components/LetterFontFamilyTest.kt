@@ -28,6 +28,13 @@ class LetterFontFamilyTest {
     }
 
     @Test
+    fun `bengali numbers keep the theme font their guides are derived from`() {
+        assertNull("১".letterFontFamily())
+        assertNull("৫".letterFontFamily())
+        assertNull("২০".letterFontFamily())
+    }
+
+    @Test
     fun `bengali letters and drawing names keep the theme font`() {
         assertNull("ক".letterFontFamily())
         assertNull("ড়".letterFontFamily())

@@ -201,6 +201,7 @@ class ProgressViewModelTest {
                 ExerciseType.ENGLISH_SMALL,
                 ExerciseType.ENGLISH_CAPITAL,
                 ExerciseType.MATH,
+                ExerciseType.BANGLA_NUMBER,
                 ExerciseType.DRAWING,
             ),
             state.categories.map { it.type },
@@ -284,6 +285,30 @@ class ProgressViewModelTest {
         assertEquals(0.5f, section.progress)
         assertEquals(listOf("1", "+"), section.exercises.map { it.title })
         assertEquals(listOf(3, 0), section.exercises.map { it.stars })
+    }
+
+    @Test
+    fun `the bengali numbers section carries its own ratio and items in order`() = runTest(dispatcher) {
+        val viewModel = viewModel(
+            learningProgress = LearningProgress(banglaNumberProgress = 0.5f),
+            progressByExerciseId = mapOf("bangla-number-2" to exerciseProgress("bangla-number-2", bestScore = 94f)),
+            catalogue = catalogue + listOf(
+                exercise("bangla-number-1", "১", ExerciseType.BANGLA_NUMBER, order = 1),
+                exercise("bangla-number-2", "২", ExerciseType.BANGLA_NUMBER, order = 2),
+            ),
+        )
+        backgroundScope.launch(dispatcher) { viewModel.uiState.collect {} }
+        dispatcher.scheduler.advanceUntilIdle()
+
+        viewModel.onEvent(ProgressEvent.CategoryOpened(ExerciseType.BANGLA_NUMBER))
+        dispatcher.scheduler.advanceUntilIdle()
+
+        val state = viewModel.uiState.value
+        val section = state.categories.first { it.type == ExerciseType.BANGLA_NUMBER }
+        assertEquals(ExerciseType.BANGLA_NUMBER, state.openCategory)
+        assertEquals(0.5f, section.progress)
+        assertEquals(listOf("১", "২"), section.exercises.map { it.title })
+        assertEquals(listOf(0, 3), section.exercises.map { it.stars })
     }
 
     @Test

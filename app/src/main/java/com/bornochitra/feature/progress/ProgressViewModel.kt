@@ -144,5 +144,6 @@ private fun LearningProgress.progressOf(type: ExerciseType): Float = when (type)
     ExerciseType.ENGLISH_SMALL -> englishSmallProgress
     ExerciseType.ENGLISH_CAPITAL -> englishCapitalProgress
     ExerciseType.MATH -> mathProgress
+    ExerciseType.BANGLA_NUMBER -> banglaNumberProgress
     ExerciseType.DRAWING -> drawingProgress
 }

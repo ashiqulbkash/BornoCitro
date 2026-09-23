@@ -43,6 +43,7 @@ class ProgressRepositoryImpl @Inject constructor(
             englishSmallProgress = ratioOf(ExerciseType.ENGLISH_SMALL),
             englishCapitalProgress = ratioOf(ExerciseType.ENGLISH_CAPITAL),
             mathProgress = ratioOf(ExerciseType.MATH),
+            banglaNumberProgress = ratioOf(ExerciseType.BANGLA_NUMBER),
             drawingProgress = ratioOf(ExerciseType.DRAWING),
             continueExerciseId = rows.filter { !it.isMastered }.maxByOrNull { it.lastPracticedAt }?.exerciseId,
         )

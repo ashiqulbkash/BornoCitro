@@ -17,6 +17,7 @@ data class HomeState(
     val englishSmallProgress: Float = 0f,
     val englishCapitalProgress: Float = 0f,
     val mathProgress: Float = 0f,
+    val banglaNumberProgress: Float = 0f,
     val drawingProgress: Float = 0f,
     val continueExerciseId: String? = null,
 )
@@ -37,6 +38,7 @@ class HomeViewModel @Inject constructor(
                 englishSmallProgress = progress.englishSmallProgress,
                 englishCapitalProgress = progress.englishCapitalProgress,
                 mathProgress = progress.mathProgress,
+                banglaNumberProgress = progress.banglaNumberProgress,
                 drawingProgress = progress.drawingProgress,
                 continueExerciseId = progress.continueExerciseId,
             )

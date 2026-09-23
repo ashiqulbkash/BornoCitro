@@ -9,5 +9,6 @@ internal fun ExerciseType.label(): String = when (this) {
     ExerciseType.ENGLISH_SMALL -> "ছোট হাতের অক্ষর"
     ExerciseType.ENGLISH_CAPITAL -> "বড় হাতের অক্ষর"
     ExerciseType.MATH -> "সংখ্যা ও চিহ্ন"
+    ExerciseType.BANGLA_NUMBER -> "বাংলা সংখ্যা"
     ExerciseType.DRAWING -> "আঁকা"
 }

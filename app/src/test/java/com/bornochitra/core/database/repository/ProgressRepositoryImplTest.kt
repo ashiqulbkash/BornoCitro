@@ -214,6 +214,23 @@ class ProgressRepositoryImplTest {
     }
 
     @Test
+    fun `bengali numbers have their own ratio and count towards overall progress`() = runTest {
+        val catalogue = this@ProgressRepositoryImplTest.catalogue + listOf(
+            exercise("bangla-number-1", ExerciseType.BANGLA_NUMBER),
+            exercise("bangla-number-2", ExerciseType.BANGLA_NUMBER),
+            exercise("bangla-number-3", ExerciseType.BANGLA_NUMBER),
+            exercise("bangla-number-4", ExerciseType.BANGLA_NUMBER),
+        )
+        val rows = listOf(progress("bangla-number-3"), progress("vowel-o"))
+
+        val result = repositoryWith(rows, catalogue = catalogue).observeProgress().first()
+
+        assertEquals(0.25f, result.banglaNumberProgress)
+        assertEquals(0f, result.mathProgress)
+        assertEquals(2f / 8f, result.overallProgress)
+    }
+
+    @Test
     fun `an empty category is zero rather than undefined`() = runTest {
         val result = repositoryWith(rows = emptyList(), catalogue = emptyList()).observeProgress().first()
 

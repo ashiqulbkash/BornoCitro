@@ -7,5 +7,6 @@ enum class ExerciseType {
     ENGLISH_SMALL,
     ENGLISH_CAPITAL,
     MATH,
+    BANGLA_NUMBER,
     DRAWING,
 }
