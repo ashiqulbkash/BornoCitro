@@ -101,7 +101,10 @@ class ExerciseCatalogTest {
         val numbers = ExerciseCatalog.all.filter { it.type == ExerciseType.BANGLA_NUMBER }.sortedBy { it.order }
 
         assertEquals(
-            listOf("১", "২", "৩", "৪", "৫", "৬", "৭", "৮", "৯", "১০", "১১", "১২", "১৩", "১৪", "১৫"),
+            listOf(
+                "১", "২", "৩", "৪", "৫", "৬", "৭", "৮", "৯", "১০", "১১", "১২", "১৩", "১৪", "১৫",
+                "১৬", "১৭", "১৮", "১৯", "২০",
+            ),
             numbers.map { it.title },
         )
         numbers.forEach { number ->
@@ -236,6 +239,11 @@ class ExerciseCatalogTest {
             "bangla-number-13" to 3,
             "bangla-number-14" to 3,
             "bangla-number-15" to 4,
+            "bangla-number-16" to 3,
+            "bangla-number-17" to 3,
+            "bangla-number-18" to 3,
+            "bangla-number-19" to 3,
+            "bangla-number-20" to 4,
             "drawing-line" to 1, "drawing-circle" to 1, "drawing-square" to 1, "drawing-triangle" to 1,
             "drawing-house" to 2,
         )
