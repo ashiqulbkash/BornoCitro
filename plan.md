@@ -836,10 +836,16 @@ Confirm all new categories and modes behave as one coherent product.
 
 ## Definition of Done
 
-- [ ] Home and Progress show every category; layouts fit on small and tall screens
-- [ ] Full unit test suite passes
-- [ ] Instrumented tests updated and run on the device
-- [ ] Verified by running the app through one complete flow per category
+- [x] Home and Progress show every category; layouts fit on small and tall screens
+- [x] Full unit test suite passes
+- [x] Instrumented tests updated and run on the device
+- [x] Verified by running the app through one complete flow per category
+
+## Notes
+
+- **Step 7.** No app code needed changing: Progress already builds one section per `ExerciseType`, Home has a button and bar for all seven categories plus শূন্যস্থান পূরণ, and `continueExerciseId` already picks the most recently practised unmastered row of any type.
+  - **Tests.** `ProgressRepositoryImplTest` +1 (Continue chosen across categories, a mastered newer row skipped). `ProgressRoomTest` +2 on real Room (each new category's bar against its catalogue size — 26, 26, 25, 20 — with overall over the whole catalogue; Continue across types, handed on when the latest is mastered). `CriticalFlowTest` +6: Home → category → first item → trace → Result for consonants, small, capital, math and Bengali numbers (vowels and drawing were already covered), and Progress listing all seven category buttons. 444 unit tests, 0 failures; lint the same 14 Gradle/dependency warnings. Instrumented 21/21 on the Pixel_5_2 emulator, twice (the phone is not used for `connectedDebugAndroidTest`, which uninstalls the app); one first-run launch flake in the capital flow ("No compose hierarchies") did not reproduce.
+  - **Device (RMX3624, installed with `install -r`, progress kept).** One full flow per category, first item each — অ 99.86, ক 99.83, a 97.28, A 99.91, 1 99.91, ১ 99.86, Circle 99.88, all PERFECT, each a new `practice_session` row, then View Progress opened My Progress. Home and Progress at 720x1600 and 720x1280 (`wm size`, reset afterwards): Home scrolls through all eight buttons and eight bars, Progress fits Overall and all seven buttons on one screen at both sizes; বাংলা সংখ্যা was tapped at 720x1280 and opened its grid. Continue Learning opened Circle, the latest unmastered row. Fill in the blanks was verified on the device in Step 6 and not re-run. The Result screen's retry button reads **Practice Again** (Step 2's "Try Again").
 
 ---
 

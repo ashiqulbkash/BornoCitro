@@ -23,7 +23,7 @@ import org.junit.Test
 import kotlin.math.hypot
 import kotlin.math.max
 
-/** The two end-to-end flows named in plan.md Step 21, driven through the real navigation graph. */
+/** End-to-end flows through the real navigation graph: one practice flow per category, and Progress. */
 @HiltAndroidTest
 class CriticalFlowTest {
 
@@ -64,6 +64,46 @@ class CriticalFlowTest {
         composeRule.onNodeWithText("Circle").performClick()
 
         traceWholeExercise(exerciseId = "drawing-circle", title = "Circle")
+
+        awaitText("View Progress")
+        composeRule.onNodeWithText("Result").assertExists()
+    }
+
+    @Test
+    fun home_consonants_ko_practice_result() = practiseFromHome("ব্যঞ্জনবর্ণ", "consonant-ko", "ক")
+
+    @Test
+    fun home_englishSmall_a_practice_result() = practiseFromHome("ছোট হাতের অক্ষর", "english-small-a", "a")
+
+    @Test
+    fun home_englishCapital_a_practice_result() = practiseFromHome("বড় হাতের অক্ষর", "english-capital-a", "A")
+
+    @Test
+    fun home_math_1_practice_result() = practiseFromHome("সংখ্যা ও চিহ্ন", "math-1", "1")
+
+    @Test
+    fun home_banglaNumbers_1_practice_result() = practiseFromHome("বাংলা সংখ্যা", "bangla-number-1", "১")
+
+    @Test
+    fun progress_listsEveryCategory() {
+        openHomeFromTips()
+
+        clickButton("View Full Progress")
+
+        awaitText("My Progress")
+        composeRule.onNodeWithText("Overall", useUnmergedTree = true).assertExists()
+        CATEGORY_LABELS.forEach { label ->
+            composeRule.onNode(hasText(label) and hasClickAction()).performScrollTo().assertExists()
+        }
+    }
+
+    private fun practiseFromHome(category: String, exerciseId: String, title: String) {
+        openHomeFromTips()
+
+        clickButton(category)
+        composeRule.onNodeWithText(title).performClick()
+
+        traceWholeExercise(exerciseId = exerciseId, title = title)
 
         awaitText("View Progress")
         composeRule.onNodeWithText("Result").assertExists()
@@ -124,5 +164,10 @@ class CriticalFlowTest {
     private companion object {
         const val GUIDE_CANVAS_UNIT = 100f
         const val STEP = 2f
+
+        /** Every category's name, in the order Home and Progress show them. */
+        val CATEGORY_LABELS = listOf(
+            "স্বরবর্ণ", "ব্যঞ্জনবর্ণ", "ছোট হাতের অক্ষর", "বড় হাতের অক্ষর", "সংখ্যা ও চিহ্ন", "বাংলা সংখ্যা", "আঁকা",
+        )
     }
 }

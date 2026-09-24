@@ -3,6 +3,7 @@ package com.bornochitra.core.database
 import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
+import com.bornochitra.core.content.ExerciseCatalog
 import com.bornochitra.core.content.ExerciseRepositoryImpl
 import com.bornochitra.core.database.repository.ProgressRepositoryImpl
 import com.bornochitra.core.model.MasteryRule
@@ -113,6 +114,41 @@ class ProgressRoomTest {
         assertTrue(progress.drawingProgress > 0f)
         assertEquals("an attempt that was not completed does not count", 0f, progress.consonantProgress)
         assertTrue(progress.overallProgress in 0f..1f)
+    }
+
+    @Test
+    fun everyCategoryHasItsOwnBar_andOverallCountsThemAll() = runBlocking {
+        val oneOfEach = listOf(
+            "english-small-a", "english-capital-a", "math-7", "math-plus", "bangla-number-5",
+        )
+        oneOfEach.forEachIndexed { i, id -> repository.savePracticeResult(result(exerciseId = id, at = i + 1L)) }
+
+        val progress = repository.observeProgress().first()
+
+        assertEquals(1f / 26f, progress.englishSmallProgress)
+        assertEquals(1f / 26f, progress.englishCapitalProgress)
+        assertEquals(2f / 25f, progress.mathProgress)
+        assertEquals(1f / 20f, progress.banglaNumberProgress)
+        assertEquals(0f, progress.vowelProgress)
+        assertEquals(0f, progress.consonantProgress)
+        assertEquals(5f / ExerciseCatalog.all.size, progress.overallProgress)
+    }
+
+    @Test
+    fun continueExercise_isTheLatestUnmasteredAcrossCategories() = runBlocking {
+        repository.savePracticeResult(result(exerciseId = "vowel-o", at = 1L))
+        repository.savePracticeResult(result(exerciseId = "bangla-number-5", at = 3L))
+        repository.savePracticeResult(result(exerciseId = "math-7", at = 2L))
+
+        assertEquals("bangla-number-5", repository.observeProgress().first().continueExerciseId)
+
+        repeat(3) { repository.savePracticeResult(result(exerciseId = "bangla-number-5", at = 4L + it)) }
+
+        assertEquals(
+            "a mastered exercise hands Continue to the next most recent one",
+            "math-7",
+            repository.observeProgress().first().continueExerciseId,
+        )
     }
 
     @Test

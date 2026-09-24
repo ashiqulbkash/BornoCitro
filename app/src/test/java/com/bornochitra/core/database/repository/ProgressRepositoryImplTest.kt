@@ -252,6 +252,27 @@ class ProgressRepositoryImplTest {
     }
 
     @Test
+    fun `continue exercise is chosen across every category, not only the letters`() = runTest {
+        val catalogue = this@ProgressRepositoryImplTest.catalogue + listOf(
+            exercise("english-small-a", ExerciseType.ENGLISH_SMALL),
+            exercise("english-capital-a", ExerciseType.ENGLISH_CAPITAL),
+            exercise("math-7", ExerciseType.MATH),
+            exercise("bangla-number-5", ExerciseType.BANGLA_NUMBER),
+        )
+        val rows = listOf(
+            progress("vowel-o", lastPracticedAt = 100L),
+            progress("english-small-a", lastPracticedAt = 200L),
+            progress("bangla-number-5", lastPracticedAt = 500L),
+            progress("english-capital-a", lastPracticedAt = 300L),
+            progress("math-7", isMastered = true, lastPracticedAt = 600L),
+        )
+
+        val result = repositoryWith(rows, catalogue = catalogue).observeProgress().first()
+
+        assertEquals("bangla-number-5", result.continueExerciseId)
+    }
+
+    @Test
     fun `fully mastered exercises never appear as the continue exercise`() = runTest {
         val rows = listOf(progress("vowel-o", isMastered = true, lastPracticedAt = 100L))
 
