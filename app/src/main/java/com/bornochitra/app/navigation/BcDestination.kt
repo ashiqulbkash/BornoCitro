@@ -1,5 +1,6 @@
 package com.bornochitra.app.navigation
 
+import com.bornochitra.core.model.Difficulty
 import com.bornochitra.core.model.ExerciseType
 import com.bornochitra.core.model.SessionScores
 
@@ -42,6 +43,20 @@ sealed interface BcDestination {
 
     data object Drawing : BcDestination {
         override val route = "drawing"
+    }
+
+    /** The fill-in-the-blanks category picker. */
+    data object FillBlanks : BcDestination {
+        override val route = "fill-blanks"
+    }
+
+    /** A fill-in-the-blanks sequence from one category at one difficulty. */
+    data object FillBlanksSequence : BcDestination {
+        const val ARG_TYPE = "type"
+        const val ARG_DIFFICULTY = "difficulty"
+        override val route = "fill-blanks/{$ARG_TYPE}/{$ARG_DIFFICULTY}"
+
+        fun createRoute(type: ExerciseType, difficulty: Difficulty) = "fill-blanks/${type.name}/${difficulty.name}"
     }
 
     data object Practice : BcDestination {

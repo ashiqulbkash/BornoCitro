@@ -13,6 +13,8 @@ import com.bornochitra.feature.banglanumbers.BanglaNumbersScreen
 import com.bornochitra.feature.consonants.ConsonantsScreen
 import com.bornochitra.feature.drawing.DrawingScreen
 import com.bornochitra.feature.english.EnglishLettersScreen
+import com.bornochitra.feature.fillblanks.FillBlanksCategoryScreen
+import com.bornochitra.feature.fillblanks.FillBlanksScreen
 import com.bornochitra.feature.home.HomeScreen
 import com.bornochitra.feature.math.MathScreen
 import com.bornochitra.feature.practice.PracticeScreen
@@ -54,6 +56,7 @@ fun BcNavHost(
                 onMathClick = { navController.navigate(BcDestination.Math.route) },
                 onBanglaNumbersClick = { navController.navigate(BcDestination.BanglaNumbers.route) },
                 onDrawingClick = { navController.navigate(BcDestination.Drawing.route) },
+                onFillBlanksClick = { navController.navigate(BcDestination.FillBlanks.route) },
                 onProgressClick = { navController.navigate(BcDestination.Progress.route) },
                 onContinueClick = { exerciseId ->
                     navController.navigate(BcDestination.Practice.createRoute(exerciseId))
@@ -116,6 +119,25 @@ fun BcNavHost(
                     navController.navigate(BcDestination.Practice.createRoute(exerciseId))
                 },
             )
+        }
+
+        composable(BcDestination.FillBlanks.route) {
+            FillBlanksCategoryScreen(
+                onBackClick = { navController.popBackStack() },
+                onCategoryClick = { type, difficulty ->
+                    navController.navigate(BcDestination.FillBlanksSequence.createRoute(type, difficulty))
+                },
+            )
+        }
+
+        composable(
+            route = BcDestination.FillBlanksSequence.route,
+            arguments = listOf(
+                navArgument(BcDestination.FillBlanksSequence.ARG_TYPE) { type = NavType.StringType },
+                navArgument(BcDestination.FillBlanksSequence.ARG_DIFFICULTY) { type = NavType.StringType },
+            ),
+        ) {
+            FillBlanksScreen(onBackClick = { navController.popBackStack() })
         }
 
         composable(

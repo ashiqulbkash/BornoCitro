@@ -28,6 +28,9 @@ class TracingEngine(
 
     val isExerciseCompleted: Boolean get() = tracker.isCompleted
 
+    /** Everything drawn so far, one list of points per lifted touch. */
+    val ink: List<List<TracePoint>> get() = tracker.tracedStrokes
+
     fun onStart(point: TracePoint) {
         tracker.onStart(point)
     }

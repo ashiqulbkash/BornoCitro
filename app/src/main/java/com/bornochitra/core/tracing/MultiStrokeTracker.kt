@@ -31,10 +31,14 @@ class MultiStrokeTracker(
 
     private val session = TracingSession(onEvent = ::onPointerEvent)
     private val attemptPoints = mutableListOf<TracePoint>()
+    private val attemptStrokes = mutableListOf<List<TracePoint>>()
     private var isTouchInProgress = false
 
     /** Everything traced so far in this attempt, from every touch that has been lifted. */
     val tracedPoints: List<TracePoint> get() = attemptPoints.toList()
+
+    /** The same points kept apart per touch, as the strokes the child drew. */
+    val tracedStrokes: List<List<TracePoint>> get() = attemptStrokes.toList()
 
     /** Per-stroke measurements from every point traced so far; empty until the first lift. */
     var strokeResults: List<StrokeTraceResult> = emptyList()
@@ -82,7 +86,9 @@ class MultiStrokeTracker(
 
     private fun onPointerEvent(event: TracingPointerEvent) {
         if (event !is TracingPointerEvent.End) return
-        attemptPoints += session.tracedPoints
+        val strokePoints = session.tracedPoints
+        attemptPoints += strokePoints
+        attemptStrokes += strokePoints
         strokeResults = measureStrokes()
     }
 

@@ -17,17 +17,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.key
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -40,10 +32,8 @@ import com.bornochitra.core.model.Point
 import com.bornochitra.core.model.ScoreLevel
 import com.bornochitra.core.model.Stroke
 import com.bornochitra.core.tips.ContextualTip
-import com.bornochitra.core.tracing.TracingAttemptOutcome
+import com.bornochitra.core.tracing.ExerciseTracingCanvas
 import com.bornochitra.core.tracing.TracingEngine
-import com.bornochitra.core.tracing.TracingInputCanvas
-import com.bornochitra.core.tracing.TracingPointerEvent
 import com.bornochitra.core.ui.components.BcEmptyState
 import com.bornochitra.core.ui.components.BcExerciseHeading
 import com.bornochitra.core.ui.components.BcPrimaryButton
@@ -139,50 +129,15 @@ private fun ExerciseTracingContent(
     onRestart: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val engine = remember(exercise, attemptId) { TracingEngine(exercise) }
-
-    var guideStrokes by remember(engine) { mutableStateOf(engine.guideStrokes) }
-
-    val haptics = LocalHapticFeedback.current
-
-    // Finishing the whole letter is felt; stopping part way through is not, since pausing is
-    // allowed and a child who stops should never be buzzed for it.
-    fun handleTraceEnd() {
-        when (val outcome = engine.onEnd()) {
-            is TracingAttemptOutcome.ExerciseCompleted -> {
-                haptics.performHapticFeedback(HapticFeedbackType.Confirm)
-                onExerciseCompleted(outcome.score, outcome.level)
-            }
-
-            is TracingAttemptOutcome.Unfinished -> onTraceUnfinished()
-
-            TracingAttemptOutcome.NoAttempt -> Unit
-        }
-        guideStrokes = engine.guideStrokes
-    }
-
     val canvas: @Composable (Modifier) -> Unit = { canvasModifier ->
-        if (guideStrokes.isNotEmpty()) {
-            // A restart hands the canvas the same stroke instances it already holds ink for, so it
-            // cannot tell the new attempt from the old one. Keying it on the attempt discards that
-            // ink along with the progress drawn on top of the guides.
-            key(attemptId) {
-                TracingInputCanvas(
-                    guideStrokes = guideStrokes,
-                    modifier = canvasModifier.semantics {
-                        contentDescription = "Tracing area for ${exercise.title}. Follow the dots with your finger."
-                    },
-                    onPointerEvent = { event ->
-                        when (event) {
-                            is TracingPointerEvent.Start -> engine.onStart(event.point)
-                            is TracingPointerEvent.Move -> engine.onMove(event.point)
-                            is TracingPointerEvent.End -> handleTraceEnd()
-                            TracingPointerEvent.Cancel -> engine.onCancel()
-                        }
-                    },
-                )
-            }
-        }
+        ExerciseTracingCanvas(
+            exercise = exercise,
+            attemptId = attemptId,
+            contentDescription = "Tracing area for ${exercise.title}. Follow the dots with your finger.",
+            onExerciseCompleted = onExerciseCompleted,
+            onTraceUnfinished = onTraceUnfinished,
+            modifier = canvasModifier,
+        )
     }
     val reset: @Composable () -> Unit = {
         BcPrimaryButton(text = "Reset", onClick = onRestart)

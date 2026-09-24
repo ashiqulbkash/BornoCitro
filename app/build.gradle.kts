@@ -72,6 +72,8 @@ dependencies {
 
     implementation(libs.kotlinx.coroutines.android)
 
+    implementation(libs.google.mlkit.digital.ink)
+
     testImplementation(libs.junit)
     testImplementation(libs.kotlinx.coroutines.test)
 
