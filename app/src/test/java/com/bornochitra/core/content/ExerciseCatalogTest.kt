@@ -100,7 +100,10 @@ class ExerciseCatalogTest {
     fun `bengali numbers carry their numerals ordered by value, with no matra`() {
         val numbers = ExerciseCatalog.all.filter { it.type == ExerciseType.BANGLA_NUMBER }.sortedBy { it.order }
 
-        assertEquals(listOf("১", "২", "৩", "৪", "৫", "৬", "৭", "৮", "৯", "১০"), numbers.map { it.title })
+        assertEquals(
+            listOf("১", "২", "৩", "৪", "৫", "৬", "৭", "৮", "৯", "১০", "১১", "১২", "১৩", "১৪", "১৫"),
+            numbers.map { it.title },
+        )
         numbers.forEach { number ->
             val value = number.title.map { it - '০' }.joinToString("").toInt()
             assertEquals("${number.id}'s order is not its value", value, number.order)
@@ -228,6 +231,11 @@ class ExerciseCatalogTest {
             "bangla-number-8" to 2,
             "bangla-number-9" to 2,
             "bangla-number-10" to 3,
+            "bangla-number-11" to 2,
+            "bangla-number-12" to 3,
+            "bangla-number-13" to 3,
+            "bangla-number-14" to 3,
+            "bangla-number-15" to 4,
             "drawing-line" to 1, "drawing-circle" to 1, "drawing-square" to 1, "drawing-triangle" to 1,
             "drawing-house" to 2,
         )

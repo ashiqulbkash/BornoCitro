@@ -193,6 +193,404 @@ private val twoDigitOne = DigitGuide(
 )
 
 /**
+ * ২ for the two-digit numbers, derived as the full-size digit is at this scale: `hook` (8 spacings once
+ * composed) runs from the top cut round the shoulder and ends exactly on the base's fourth dot, and
+ * `base` (6) is the one band from the pointed left end to the tail's cut. The join dot is taken from
+ * the base's dots at this spacing, not the full-size one, so the two strokes meet dot on dot.
+ */
+private val twoDigitTwo = DigitGuide(
+    inkLeft = 17.52f,
+    inkRight = 82.48f,
+    advanceLeft = 10.96f,
+    advanceRight = 89.29f,
+    strokes = listOf(
+        DigitStroke(
+            name = "hook",
+            points = StrokePoints.polyline(
+                listOf(
+                    Point(34.3f, 19.29f),
+                    Point(35.63f, 22.09f),
+                    Point(37.41f, 24.44f),
+                    Point(39.74f, 26.24f),
+                    Point(42.38f, 27.56f),
+                    Point(45.16f, 28.55f),
+                    Point(48.01f, 29.33f),
+                    Point(50.88f, 30.02f),
+                    Point(53.74f, 30.75f),
+                    Point(56.57f, 31.6f),
+                    Point(59.32f, 32.68f),
+                    Point(61.91f, 34.1f),
+                    Point(64.22f, 35.93f),
+                    Point(66.06f, 38.23f),
+                    Point(67.31f, 40.91f),
+                    Point(67.91f, 43.79f),
+                    Point(67.92f, 46.74f),
+                    Point(67.33f, 49.63f),
+                    Point(66.12f, 52.32f),
+                    Point(64.34f, 54.67f),
+                    Point(62.14f, 56.63f),
+                    Point(59.68f, 58.27f),
+                    Point(57.19f, 59.86f),
+                    Point(54.91f, 61.74f),
+                    Point(52.97f, 63.92f),
+                    Point(50.75f, 65.87f),
+                ),
+            ),
+        ),
+        DigitStroke(
+            name = "base",
+            points = StrokePoints.polyline(
+                listOf(
+                    Point(23.93f, 59.6f),
+                    Point(26.8f, 60.09f),
+                    Point(29.68f, 60.56f),
+                    Point(32.55f, 61.01f),
+                    Point(35.44f, 61.44f),
+                    Point(38.32f, 61.9f),
+                    Point(41.18f, 62.44f),
+                    Point(44.01f, 63.13f),
+                    Point(46.78f, 64.03f),
+                    Point(49.47f, 65.17f),
+                    Point(52.03f, 66.56f),
+                    Point(54.47f, 68.16f),
+                    Point(56.79f, 69.91f),
+                    Point(59.04f, 71.77f),
+                    Point(61.23f, 73.7f),
+                    Point(63.38f, 75.67f),
+                    Point(65.51f, 77.64f),
+                    Point(67.63f, 79.64f),
+                    Point(69.76f, 81.64f),
+                    Point(71.93f, 83.64f),
+                ),
+            ),
+        ),
+    ),
+)
+
+/**
+ * ৩ for the two-digit numbers, derived as the full-size digit is at this scale: the one band from the
+ * top-left cut round to the inner end, trimmed to whole spacings and split at its lowest dot, so `down`
+ * is 6 spacings and `up` 11 once composed.
+ */
+private val twoDigitThree = DigitGuide(
+    inkLeft = 15.31f,
+    inkRight = 84.69f,
+    advanceLeft = 11.4f,
+    advanceRight = 89.73f,
+    strokes = listOf(
+        DigitStroke(
+            name = "down",
+            points = StrokePoints.polyline(
+                listOf(
+                    Point(23.68f, 31.43f),
+                    Point(24.72f, 33.71f),
+                    Point(25.34f, 36.16f),
+                    Point(25.93f, 38.61f),
+                    Point(26.55f, 41.04f),
+                    Point(27.2f, 43.47f),
+                    Point(27.9f, 45.89f),
+                    Point(28.65f, 48.29f),
+                    Point(29.46f, 50.68f),
+                    Point(30.33f, 53.04f),
+                    Point(31.27f, 55.38f),
+                    Point(32.28f, 57.68f),
+                    Point(33.39f, 59.94f),
+                    Point(34.61f, 62.15f),
+                    Point(35.95f, 64.27f),
+                    Point(37.45f, 66.3f),
+                    Point(39.1f, 68.2f),
+                    Point(40.91f, 69.95f),
+                    Point(42.89f, 71.49f),
+                    Point(45.04f, 72.8f),
+                    Point(47.32f, 73.86f),
+                    Point(49.71f, 74.65f),
+                    Point(52.21f, 75.21f),
+                ),
+            ),
+        ),
+        DigitStroke(
+            name = "up",
+            points = StrokePoints.polyline(
+                listOf(
+                    Point(52.21f, 75.21f),
+                    Point(54.69f, 75.52f),
+                    Point(57.22f, 75.6f),
+                    Point(59.75f, 75.42f),
+                    Point(62.24f, 74.97f),
+                    Point(64.66f, 74.21f),
+                    Point(66.94f, 73.08f),
+                    Point(69f, 71.61f),
+                    Point(70.79f, 69.81f),
+                    Point(72.27f, 67.76f),
+                    Point(73.47f, 65.52f),
+                    Point(74.38f, 63.15f),
+                    Point(75.06f, 60.7f),
+                    Point(75.56f, 58.21f),
+                    Point(75.92f, 55.7f),
+                    Point(76.14f, 53.18f),
+                    Point(76.24f, 50.64f),
+                    Point(76.24f, 48.1f),
+                    Point(76.11f, 45.57f),
+                    Point(75.86f, 43.04f),
+                    Point(75.49f, 40.53f),
+                    Point(74.97f, 38.04f),
+                    Point(74.34f, 35.59f),
+                    Point(73.54f, 33.18f),
+                    Point(72.57f, 30.83f),
+                    Point(71.41f, 28.58f),
+                    Point(70.02f, 26.45f),
+                    Point(68.41f, 24.49f),
+                    Point(66.56f, 22.76f),
+                    Point(64.45f, 21.35f),
+                    Point(62.13f, 20.32f),
+                    Point(59.67f, 19.71f),
+                    Point(57.15f, 19.53f),
+                    Point(54.62f, 19.76f),
+                    Point(52.18f, 20.44f),
+                    Point(49.91f, 21.58f),
+                    Point(47.99f, 23.22f),
+                    Point(46.56f, 25.31f),
+                    Point(45.77f, 27.72f),
+                    Point(45.54f, 30.24f),
+                    Point(45.64f, 32.94f),
+                ),
+            ),
+        ),
+    ),
+)
+
+/**
+ * ৪ for the two-digit numbers: two laps through the crossing as the full-size digit, `s` 14 and `back`
+ * 13 spacings once composed, with the crossing a dot of each. At this spacing the dots either side of
+ * the crossing sit further out along arms that meet at only ~47°, and crowded (4.8 apart), so here the
+ * arms are turned a little more upright over the solid waist (the uncentred 9% of each lap); the
+ * closest dots are then 5.8 apart.
+ */
+private val twoDigitFour = DigitGuide(
+    inkLeft = 17.65f,
+    inkRight = 82.35f,
+    advanceLeft = 10.83f,
+    advanceRight = 89.17f,
+    strokes = listOf(
+        DigitStroke(
+            name = "s",
+            points = StrokePoints.polyline(
+                listOf(
+                    Point(54.36f, 14.2f),
+                    Point(51.55f, 14.03f),
+                    Point(48.73f, 14f),
+                    Point(45.91f, 14.14f),
+                    Point(43.11f, 14.46f),
+                    Point(40.34f, 14.98f),
+                    Point(37.63f, 15.74f),
+                    Point(35.03f, 16.81f),
+                    Point(32.58f, 18.21f),
+                    Point(30.4f, 19.99f),
+                    Point(28.65f, 22.17f),
+                    Point(27.45f, 24.71f),
+                    Point(27.03f, 27.48f),
+                    Point(27.4f, 30.26f),
+                    Point(28.48f, 32.84f),
+                    Point(30.14f, 35.11f),
+                    Point(32.28f, 36.92f),
+                    Point(34.8f, 38.17f),
+                    Point(37.5f, 38.99f),
+                    Point(40.22f, 39.72f),
+                    Point(42.87f, 40.51f),
+                    Point(45.37f, 41.79f),
+                    Point(47.69f, 43.41f),
+                    Point(50f, 45.01f),
+                    Point(52.3f, 46.62f),
+                    Point(54.62f, 48.24f),
+                    Point(57.05f, 49.66f),
+                    Point(59.62f, 50.74f),
+                    Point(62.36f, 51.2f),
+                    Point(65.07f, 52f),
+                    Point(67.59f, 53.24f),
+                    Point(69.8f, 54.97f),
+                    Point(71.63f, 57.11f),
+                    Point(72.96f, 59.58f),
+                    Point(73.71f, 62.28f),
+                    Point(73.85f, 65.08f),
+                    Point(73.46f, 67.86f),
+                    Point(72.51f, 70.5f),
+                    Point(71f, 72.86f),
+                    Point(69.01f, 74.85f),
+                    Point(66.68f, 76.44f),
+                    Point(64.16f, 77.67f),
+                    Point(61.49f, 78.59f),
+                    Point(58.73f, 79.22f),
+                    Point(55.95f, 79.63f),
+                    Point(53.13f, 79.85f),
+                    Point(50.32f, 79.92f),
+                ),
+            ),
+        ),
+        DigitStroke(
+            name = "back",
+            points = StrokePoints.polyline(
+                listOf(
+                    Point(50.32f, 79.92f),
+                    Point(47.5f, 79.86f),
+                    Point(44.69f, 79.64f),
+                    Point(41.91f, 79.24f),
+                    Point(39.17f, 78.62f),
+                    Point(36.5f, 77.71f),
+                    Point(33.96f, 76.48f),
+                    Point(31.62f, 74.92f),
+                    Point(29.56f, 73.01f),
+                    Point(27.89f, 70.75f),
+                    Point(26.76f, 68.19f),
+                    Point(26.24f, 65.44f),
+                    Point(26.37f, 62.64f),
+                    Point(27.12f, 59.94f),
+                    Point(28.46f, 57.47f),
+                    Point(30.23f, 55.29f),
+                    Point(32.39f, 53.49f),
+                    Point(34.85f, 52.12f),
+                    Point(37.48f, 51.14f),
+                    Point(40.18f, 50.34f),
+                    Point(42.83f, 49.43f),
+                    Point(45.38f, 48.24f),
+                    Point(47.69f, 46.62f),
+                    Point(50f, 45.01f),
+                    Point(52.27f, 43.43f),
+                    Point(54.55f, 41.84f),
+                    Point(57.02f, 40.57f),
+                    Point(59.64f, 39.79f),
+                    Point(62.31f, 39.02f),
+                    Point(64.93f, 38.07f),
+                    Point(67.36f, 36.72f),
+                    Point(69.44f, 34.91f),
+                    Point(71.11f, 32.7f),
+                    Point(72.26f, 30.19f),
+                    Point(72.74f, 27.47f),
+                    Point(72.44f, 24.72f),
+                    Point(71.36f, 22.18f),
+                    Point(69.65f, 20.02f),
+                    Point(67.5f, 18.26f),
+                    Point(65.1f, 16.87f),
+                    Point(62.53f, 15.81f),
+                    Point(59.86f, 15.03f),
+                    Point(57.12f, 14.52f),
+                    Point(54.36f, 14.2f),
+                ),
+            ),
+        ),
+    ),
+)
+
+/**
+ * ৫ for the two-digit numbers, derived as the full-size digit is at this scale: `outer` (13 spacings once
+ * composed) from the top cut round the big curve to the lower-right cut, `hook` (3) leaving it on its
+ * second dot and running down the notch towards the ear, and `inner` (5) leaving the hook's last dot
+ * round the S and ending exactly on `outer`'s second-last dot, so the S joins the outer curve at the
+ * terminal as in the glyph. At this spacing the hook's third dot is already where the inner curve
+ * leaves it; one more would stand past the ear's tip.
+ */
+private val twoDigitFive = DigitGuide(
+    inkLeft = 14.81f,
+    inkRight = 85.19f,
+    advanceLeft = 9.51f,
+    advanceRight = 87.84f,
+    strokes = listOf(
+        DigitStroke(
+            name = "outer",
+            points = StrokePoints.polyline(
+                listOf(
+                    Point(56.96f, 15.87f),
+                    Point(56.54f, 18.54f),
+                    Point(54.25f, 20.21f),
+                    Point(51.61f, 21.29f),
+                    Point(49f, 22.47f),
+                    Point(46.52f, 23.88f),
+                    Point(44.12f, 25.43f),
+                    Point(41.77f, 27.05f),
+                    Point(39.47f, 28.75f),
+                    Point(37.25f, 30.54f),
+                    Point(35.1f, 32.42f),
+                    Point(33.06f, 34.42f),
+                    Point(31.13f, 36.53f),
+                    Point(29.36f, 38.77f),
+                    Point(27.74f, 41.12f),
+                    Point(26.34f, 43.62f),
+                    Point(25.2f, 46.23f),
+                    Point(24.33f, 48.96f),
+                    Point(23.77f, 51.76f),
+                    Point(23.5f, 54.6f),
+                    Point(23.53f, 57.45f),
+                    Point(23.87f, 60.29f),
+                    Point(24.52f, 63.07f),
+                    Point(25.52f, 65.74f),
+                    Point(26.9f, 68.25f),
+                    Point(28.61f, 70.53f),
+                    Point(30.61f, 72.56f),
+                    Point(32.86f, 74.32f),
+                    Point(35.3f, 75.8f),
+                    Point(37.9f, 77.01f),
+                    Point(40.59f, 77.94f),
+                    Point(43.36f, 78.64f),
+                    Point(46.18f, 79.13f),
+                    Point(49.02f, 79.41f),
+                    Point(51.87f, 79.5f),
+                    Point(54.73f, 79.46f),
+                    Point(57.58f, 79.25f),
+                    Point(60.4f, 78.79f),
+                    Point(63.08f, 77.82f),
+                    Point(65.58f, 76.44f),
+                    Point(68.12f, 75.13f),
+                    Point(70.79f, 74.12f),
+                    Point(73.82f, 73.4f),
+                ),
+            ),
+        ),
+        DigitStroke(
+            name = "hook",
+            points = StrokePoints.polyline(
+                listOf(
+                    Point(50.85f, 21.63f),
+                    Point(53.55f, 21.19f),
+                    Point(56.31f, 21.38f),
+                    Point(58.77f, 22.55f),
+                    Point(60.46f, 24.74f),
+                    Point(61.7f, 27.21f),
+                    Point(63.12f, 29.59f),
+                    Point(64.9f, 31.7f),
+                    Point(66.93f, 33.59f),
+                    Point(69.18f, 35.19f),
+                    Point(71.84f, 36.34f),
+                ),
+            ),
+        ),
+        DigitStroke(
+            name = "inner",
+            points = StrokePoints.polyline(
+                listOf(
+                    Point(71.81f, 36.33f),
+                    Point(69.96f, 37.71f),
+                    Point(68.16f, 39.79f),
+                    Point(66.56f, 42.06f),
+                    Point(64.96f, 44.34f),
+                    Point(63.31f, 46.54f),
+                    Point(61.77f, 48.87f),
+                    Point(60.54f, 51.39f),
+                    Point(59.72f, 54.1f),
+                    Point(59.42f, 56.92f),
+                    Point(59.73f, 59.71f),
+                    Point(60.67f, 62.29f),
+                    Point(62.11f, 64.56f),
+                    Point(63.78f, 66.63f),
+                    Point(65.19f, 68.93f),
+                    Point(65.93f, 71.58f),
+                    Point(65.97f, 74.42f),
+                    Point(65.2f, 76.65f),
+                ),
+            ),
+        ),
+    ),
+)
+
+/**
  * Noto Sans Bengali's two-digit numbers. Its digits all advance 621 units and none of the pairs is
  * kerned, and the two-digit guides share one frame: one scale for all ten digits, on the baseline,
  * with the union of their ink on y 7..90, so 48.5 is its vertical middle. 0.65 is the largest one
@@ -206,7 +604,12 @@ private val notoNumberComposer = NumberComposer(twoDigitScale = 0.65f, inkCentre
  * the frame's size against the fit, then mapped into the frame, so each composed stroke is whole spacings.
  */
 private val twoDigitGuides: Map<Char, DigitGuide> = mapOf(
-    '০' to twoDigitZero, '১' to twoDigitOne,
+    '০' to twoDigitZero,
+    '১' to twoDigitOne,
+    '২' to twoDigitTwo,
+    '৩' to twoDigitThree,
+    '৪' to twoDigitFour,
+    '৫' to twoDigitFive,
 )
 
 /**
@@ -1088,4 +1491,4 @@ internal val banglaNumberExercises: List<Exercise> = listOf(
         ),
         order = 9,
     ),
-) + numberExercise(10)
+) + (10..15).map(::numberExercise)
