@@ -30,7 +30,7 @@ private fun numberExercise(value: Int): Exercise {
         title = "$value",
         type = ExerciseType.MATH,
         difficulty = Difficulty.INTERMEDIATE,
-        strokes = NumberComposer.compose(exerciseId = id, tens = tens, ones = ones),
+        strokes = interNumberComposer.compose(exerciseId = id, tens = tens, ones = ones),
         order = value,
     )
 }
@@ -1534,7 +1534,13 @@ private val digitGuides: Map<Char, DigitGuide> = mapOf(
     '6' to digitSix, '7' to digitSeven, '8' to digitEight, '9' to digitNine,
 )
 
-/** The digits as the two-digit numbers draw them, at [NumberComposer.TWO_DIGIT_SCALE]. */
+/**
+ * Inter's two-digit numbers: 0.69 is the largest one size at which the widest, 20, fits x 3..97, and
+ * every digit is fitted with its ink on y 7..90, so 48.5 is its vertical middle.
+ */
+private val interNumberComposer = NumberComposer(twoDigitScale = 0.69f, inkCentreY = 48.5f)
+
+/** The digits as the two-digit numbers draw them, at [interNumberComposer]'s scale. */
 private val twoDigitGuides: Map<Char, DigitGuide> = mapOf(
     '0' to twoDigitZero, '1' to twoDigitOne, '2' to twoDigitTwo, '3' to twoDigitThree, '4' to twoDigitFour,
     '5' to twoDigitFive, '6' to twoDigitSix, '7' to twoDigitSeven, '8' to twoDigitEight, '9' to twoDigitNine,

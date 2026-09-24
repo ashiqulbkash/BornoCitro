@@ -8,6 +8,8 @@ import org.junit.Test
 
 class NumberComposerTest {
 
+    private val composer = NumberComposer(twoDigitScale = 0.69f, inkCentreY = 48.5f)
+
     private fun digit(inkLeft: Float, inkRight: Float, vararg names: String) = DigitGuide(
         inkLeft = inkLeft,
         inkRight = inkRight,
@@ -20,7 +22,7 @@ class NumberComposerTest {
 
     @Test
     fun `strokes keep writing order, tens digit then ones digit, with unique ids`() {
-        val strokes = NumberComposer.compose(
+        val strokes = composer.compose(
             exerciseId = "math-11",
             tens = digit(30f, 70f, "flag", "stem"),
             ones = digit(30f, 70f, "flag", "stem"),
@@ -37,7 +39,7 @@ class NumberComposerTest {
 
     @Test
     fun `a pair is scaled by the two-digit factor about the ink's middle and centred on the canvas`() {
-        val strokes = NumberComposer.compose(
+        val strokes = composer.compose(
             exerciseId = "math-20",
             tens = digit(20f, 80f, "hook"),
             ones = digit(20f, 80f, "left"),
@@ -45,15 +47,30 @@ class NumberComposerTest {
         val points = strokes.flatMap { it.points }
 
         assertEquals(50f, (points.minOf { it.x } + points.maxOf { it.x }) / 2, 0.01f)
-        assertEquals(48.5f + (10f - 48.5f) * NumberComposer.TWO_DIGIT_SCALE, points.minOf { it.y }, 0.001f)
-        assertEquals(48.5f + (87f - 48.5f) * NumberComposer.TWO_DIGIT_SCALE, points.maxOf { it.y }, 0.001f)
+        assertEquals(48.5f + (10f - 48.5f) * composer.twoDigitScale, points.minOf { it.y }, 0.001f)
+        assertEquals(48.5f + (87f - 48.5f) * composer.twoDigitScale, points.maxOf { it.y }, 0.001f)
         val tensWidth = strokes.first().points.let { it.maxOf { p -> p.x } - it.minOf { p -> p.x } }
-        assertEquals((80f - 3f - (20f + 3f)) * NumberComposer.TWO_DIGIT_SCALE, tensWidth, 0.001f)
+        assertEquals((80f - 3f - (20f + 3f)) * composer.twoDigitScale, tensWidth, 0.001f)
+    }
+
+    @Test
+    fun `each font's composer scales about its own ink centre`() {
+        val strokes = NumberComposer(twoDigitScale = 0.5f, inkCentreY = 40f).compose(
+            exerciseId = "bangla-number-10",
+            tens = digit(20f, 80f, "body"),
+            ones = digit(20f, 80f, "left"),
+        )
+        val points = strokes.flatMap { it.points }
+
+        assertEquals(40f + (10f - 40f) * 0.5f, points.minOf { it.y }, 0.001f)
+        assertEquals(40f + (87f - 40f) * 0.5f, points.maxOf { it.y }, 0.001f)
+        assertEquals(50f, (points.minOf { it.x } + points.maxOf { it.x }) / 2, 0.01f)
     }
 
     @Test
     fun `every composed number in the catalog stays on the canvas and lists the tens strokes first`() {
-        ExerciseCatalog.all.filter { it.type == ExerciseType.MATH && it.title.length == 2 }.forEach { number ->
+        val composedTypes = setOf(ExerciseType.MATH, ExerciseType.BANGLA_NUMBER)
+        ExerciseCatalog.all.filter { it.type in composedTypes && it.title.length == 2 }.forEach { number ->
             val places = number.strokes.map { it.id.removePrefix("${number.id}-").substringBefore('-') }
 
             assertEquals(number.id, places.sortedBy { it != "tens" }, places)

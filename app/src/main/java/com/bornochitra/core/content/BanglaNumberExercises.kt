@@ -6,6 +6,209 @@ import com.bornochitra.core.model.ExerciseType
 import com.bornochitra.core.model.Point
 import com.bornochitra.core.model.Stroke
 
+private fun numberExercise(value: Int): Exercise {
+    val id = "bangla-number-$value"
+    val title = value.toString().map { '০' + it.digitToInt() }.joinToString("")
+    val (tens, ones) = title.map { twoDigitGuides.getValue(it) }
+    return Exercise(
+        id = id,
+        title = title,
+        type = ExerciseType.BANGLA_NUMBER,
+        difficulty = Difficulty.INTERMEDIATE,
+        strokes = notoNumberComposer.compose(exerciseId = id, tens = tens, ones = ones),
+        order = value,
+    )
+}
+
+/**
+ * ০ is only needed inside ১০ and ২০, so it has no exercise of its own. It is one ring, wider than tall
+ * (aspect 1.062), written like Inter's 0: `left` counter-clockwise from the top to the bottom, then
+ * `right` on up to the top. The centreline is the midpoint of the ink along each normal, scaled about
+ * its centre so the ring is 16 spacings once composed, 8 per half.
+ */
+private val twoDigitZero = DigitGuide(
+    inkLeft = 18.28f,
+    inkRight = 81.72f,
+    advanceLeft = 10.83f,
+    advanceRight = 89.17f,
+    strokes = listOf(
+        DigitStroke(
+            name = "left",
+            points = StrokePoints.polyline(
+                listOf(
+                    Point(50.55f, 22.89f),
+                    Point(48.64f, 22.95f),
+                    Point(46.64f, 23.11f),
+                    Point(44.66f, 23.41f),
+                    Point(42.7f, 23.83f),
+                    Point(40.79f, 24.43f),
+                    Point(38.97f, 25.25f),
+                    Point(37.25f, 26.28f),
+                    Point(35.6f, 27.42f),
+                    Point(34.04f, 28.66f),
+                    Point(32.58f, 30.03f),
+                    Point(31.26f, 31.54f),
+                    Point(30.12f, 33.17f),
+                    Point(29.13f, 34.91f),
+                    Point(28.33f, 36.74f),
+                    Point(27.72f, 38.64f),
+                    Point(27.3f, 40.59f),
+                    Point(27.03f, 42.56f),
+                    Point(26.92f, 44.56f),
+                    Point(26.94f, 46.55f),
+                    Point(27.1f, 48.54f),
+                    Point(27.4f, 50.51f),
+                    Point(27.87f, 52.46f),
+                    Point(28.5f, 54.34f),
+                    Point(29.3f, 56.18f),
+                    Point(30.25f, 57.93f),
+                    Point(31.34f, 59.61f),
+                    Point(32.55f, 61.21f),
+                    Point(33.81f, 62.75f),
+                    Point(35.14f, 64.24f),
+                    Point(36.51f, 65.71f),
+                    Point(37.93f, 67.11f),
+                    Point(39.53f, 68.31f),
+                    Point(41.34f, 69.16f),
+                    Point(43.27f, 69.67f),
+                    Point(45.26f, 69.98f),
+                    Point(47.26f, 70.15f),
+                    Point(49.25f, 70.2f),
+                ),
+            ),
+        ),
+        DigitStroke(
+            name = "right",
+            points = StrokePoints.polyline(
+                listOf(
+                    Point(49.25f, 70.2f),
+                    Point(51.25f, 70.16f),
+                    Point(53.25f, 70f),
+                    Point(55.22f, 69.69f),
+                    Point(57.13f, 69.11f),
+                    Point(58.88f, 68.16f),
+                    Point(60.5f, 66.98f),
+                    Point(62.08f, 65.76f),
+                    Point(63.64f, 64.52f),
+                    Point(65.17f, 63.23f),
+                    Point(66.62f, 61.86f),
+                    Point(67.95f, 60.37f),
+                    Point(69.15f, 58.77f),
+                    Point(70.18f, 57.06f),
+                    Point(71.06f, 55.27f),
+                    Point(71.77f, 53.41f),
+                    Point(72.32f, 51.49f),
+                    Point(72.7f, 49.53f),
+                    Point(72.94f, 47.55f),
+                    Point(73.03f, 45.56f),
+                    Point(72.99f, 43.56f),
+                    Point(72.79f, 41.58f),
+                    Point(72.45f, 39.61f),
+                    Point(71.93f, 37.68f),
+                    Point(71.23f, 35.82f),
+                    Point(70.34f, 34.03f),
+                    Point(69.28f, 32.34f),
+                    Point(68.05f, 30.76f),
+                    Point(66.7f, 29.3f),
+                    Point(65.23f, 27.95f),
+                    Point(63.69f, 26.67f),
+                    Point(62.09f, 25.48f),
+                    Point(60.34f, 24.51f),
+                    Point(58.46f, 23.83f),
+                    Point(56.51f, 23.39f),
+                    Point(54.54f, 23.1f),
+                    Point(52.55f, 22.94f),
+                    Point(50.55f, 22.89f),
+                ),
+            ),
+        ),
+    ),
+)
+
+/**
+ * ১ for the two-digit numbers: the same derivation as the full-size digit with its dot spacing and
+ * radius divided by the scale it is drawn at here, so `body` is a whole 14 spacings once the number is
+ * composed.
+ */
+private val twoDigitOne = DigitGuide(
+    inkLeft = 22.88f,
+    inkRight = 77.12f,
+    advanceLeft = 8.75f,
+    advanceRight = 87.09f,
+    strokes = listOf(
+        DigitStroke(
+            name = "body",
+            points = StrokePoints.polyline(
+                listOf(
+                    Point(30.3f, 13.53f),
+                    Point(31.71f, 16.02f),
+                    Point(32.23f, 18.83f),
+                    Point(32.29f, 21.7f),
+                    Point(32.74f, 24.53f),
+                    Point(33.86f, 27.17f),
+                    Point(35.53f, 29.5f),
+                    Point(37.55f, 31.54f),
+                    Point(39.78f, 33.35f),
+                    Point(42.11f, 35.02f),
+                    Point(44.5f, 36.61f),
+                    Point(46.93f, 38.15f),
+                    Point(49.37f, 39.67f),
+                    Point(51.79f, 41.2f),
+                    Point(54.2f, 42.76f),
+                    Point(56.58f, 44.38f),
+                    Point(58.89f, 46.09f),
+                    Point(61.08f, 47.93f),
+                    Point(63.13f, 49.95f),
+                    Point(64.92f, 52.19f),
+                    Point(66.4f, 54.65f),
+                    Point(67.46f, 57.31f),
+                    Point(68.08f, 60.11f),
+                    Point(68.29f, 62.97f),
+                    Point(68.05f, 65.83f),
+                    Point(67.29f, 68.6f),
+                    Point(66f, 71.16f),
+                    Point(64.21f, 73.4f),
+                    Point(62.03f, 75.27f),
+                    Point(59.58f, 76.75f),
+                    Point(56.94f, 77.87f),
+                    Point(54.16f, 78.63f),
+                    Point(51.32f, 79.06f),
+                    Point(48.46f, 79.21f),
+                    Point(45.6f, 79.12f),
+                    Point(42.75f, 78.7f),
+                    Point(39.99f, 77.92f),
+                    Point(37.42f, 76.65f),
+                    Point(35.17f, 74.87f),
+                    Point(33.44f, 72.6f),
+                    Point(32.41f, 69.93f),
+                    Point(32.2f, 67.08f),
+                    Point(32.81f, 64.28f),
+                    Point(34.17f, 61.76f),
+                    Point(36.04f, 59.59f),
+                    Point(38.24f, 57.47f),
+                ),
+            ),
+        ),
+    ),
+)
+
+/**
+ * Noto Sans Bengali's two-digit numbers. Its digits all advance 621 units and none of the pairs is
+ * kerned, and the two-digit guides share one frame: one scale for all ten digits, on the baseline,
+ * with the union of their ink on y 7..90, so 48.5 is its vertical middle. 0.65 is the largest one
+ * size at which the widest pair, ২০, fits x 3..97.
+ */
+private val notoNumberComposer = NumberComposer(twoDigitScale = 0.65f, inkCentreY = 48.5f)
+
+/**
+ * The digits as the two-digit numbers draw them, at [notoNumberComposer]'s scale, in the shared frame:
+ * each is derived in its own fitted canvas with its dot spacing and radius divided by that scale times
+ * the frame's size against the fit, then mapped into the frame, so each composed stroke is whole spacings.
+ */
+private val twoDigitGuides: Map<Char, DigitGuide> = mapOf(
+    '০' to twoDigitZero, '১' to twoDigitOne,
+)
+
 /**
  * Bengali number stroke geometry (plan.md Step 5): the numbers ১-২০, ordered by value so a run of
  * numbers can be read straight off the catalog.
@@ -13,9 +216,12 @@ import com.bornochitra.core.model.Stroke
  * Font: **Noto Sans Bengali v2.001 Bold** — the phone's own variable `NotoSansBengali-VF.ttf` at
  * weight 700, which is how the Practice heading (`displayMedium`, Bold) draws a Bengali title; the app
  * sets no font of its own for it, so the reference glyph above the canvas is the face every guide is
- * read from (v3 redraws some glyphs, and weight 400 is visibly thinner). Each number is read off its
+ * read from (v3 redraws some glyphs, and weight 400 is visibly thinner). Each digit is read off its
  * rendered glyph's centreline, never drawn by eye, fitted on its own (y 7..90, or by width for a
- * glyph wider than tall), and every stroke is a whole number of dot spacings.
+ * glyph wider than tall), and every stroke is a whole number of dot spacings. ১০ onwards are not
+ * derived: [NumberComposer] sets two digit guides side by side as the font sets the number, from a
+ * second set of guides derived for its scale, so ০ exists only as a [DigitGuide]. Declared last,
+ * because a file's top-level values are initialised in order.
  */
 internal val banglaNumberExercises: List<Exercise> = listOf(
     /**
@@ -500,4 +706,386 @@ internal val banglaNumberExercises: List<Exercise> = listOf(
         ),
         order = 5,
     ),
-)
+    /**
+     * ৬ is as wide as it is tall (aspect 0.996), so it is fitted by height. It is two movements: the hook
+     * at the top, and the big curve. `hook` runs from the top of the slanted head down the short stem,
+     * round the cup and up into the right side, ending exactly on the big curve's third dot, where the
+     * cup merges into it (11 spacings). `body` runs from the right arm's slanted cut down the right side,
+     * round the bottom and up the left to the left arm's cut (22 spacings). The hook is written first,
+     * as the numeral is: head, cup, then the long curve.
+     */
+    Exercise(
+        id = "bangla-number-6",
+        title = "৬",
+        type = ExerciseType.BANGLA_NUMBER,
+        difficulty = Difficulty.INTERMEDIATE,
+        strokes = listOf(
+            Stroke(
+                id = "bangla-number-6-hook",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(39.89f, 14.79f),
+                        Point(42.01f, 17.12f),
+                        Point(44.21f, 19.15f),
+                        Point(46f, 21.54f),
+                        Point(47.11f, 24.33f),
+                        Point(47.69f, 27.27f),
+                        Point(47.96f, 30.25f),
+                        Point(48.06f, 33.25f),
+                        Point(48.14f, 36.25f),
+                        Point(48.34f, 39.24f),
+                        Point(48.85f, 42.2f),
+                        Point(49.96f, 44.98f),
+                        Point(51.84f, 47.29f),
+                        Point(54.37f, 48.89f),
+                        Point(57.23f, 49.76f),
+                        Point(60.22f, 49.94f),
+                        Point(63.17f, 49.42f),
+                        Point(65.94f, 48.28f),
+                        Point(68.55f, 46.81f),
+                        Point(71.3f, 45.63f),
+                        Point(74.25f, 45.08f),
+                        Point(77.2f, 44.87f),
+                        Point(80.2f, 45.02f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "bangla-number-6-body",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(82.36f, 33.45f),
+                        Point(81.7f, 36.31f),
+                        Point(80.51f, 38.99f),
+                        Point(79.83f, 41.82f),
+                        Point(80.13f, 44.73f),
+                        Point(80.83f, 47.58f),
+                        Point(81.55f, 50.42f),
+                        Point(81.99f, 53.32f),
+                        Point(82.08f, 56.25f),
+                        Point(81.91f, 59.18f),
+                        Point(81.51f, 62.08f),
+                        Point(80.88f, 64.95f),
+                        Point(80f, 67.74f),
+                        Point(78.81f, 70.42f),
+                        Point(77.29f, 72.93f),
+                        Point(75.41f, 75.18f),
+                        Point(73.21f, 77.11f),
+                        Point(70.73f, 78.67f),
+                        Point(68.05f, 79.86f),
+                        Point(65.24f, 80.69f),
+                        Point(62.35f, 81.21f),
+                        Point(59.43f, 81.46f),
+                        Point(56.5f, 81.46f),
+                        Point(53.57f, 81.24f),
+                        Point(50.68f, 80.78f),
+                        Point(47.83f, 80.09f),
+                        Point(45.06f, 79.13f),
+                        Point(42.4f, 77.89f),
+                        Point(39.88f, 76.38f),
+                        Point(37.54f, 74.61f),
+                        Point(35.39f, 72.62f),
+                        Point(33.42f, 70.45f),
+                        Point(31.63f, 68.13f),
+                        Point(30f, 65.69f),
+                        Point(28.51f, 63.16f),
+                        Point(27.15f, 60.57f),
+                        Point(25.9f, 57.91f),
+                        Point(24.75f, 55.22f),
+                        Point(23.68f, 52.48f),
+                        Point(22.69f, 49.72f),
+                        Point(21.77f, 46.94f),
+                        Point(20.88f, 44.14f),
+                        Point(19.8f, 41.42f),
+                        Point(17.91f, 39.21f),
+                        Point(15.26f, 37.98f),
+                        Point(12.44f, 36.78f),
+                    ),
+                ),
+            ),
+        ),
+        order = 6,
+    ),
+    /**
+     * ৭ is taller than it is wide (aspect 0.812), so it is fitted by height. It is a closed loop over a
+     * stem, like a 9: `loop` starts where the loop's bottom meets the right side (66.5, 51), runs left
+     * along the bottom, up the left side, over the top and down the right side back to that point,
+     * scaled about it to a whole 22 spacings, so its first and last dots are one. `stem` carries on from
+     * the same dot down the right side into the foot, bending right towards its slanted cut (6 spacings).
+     */
+    Exercise(
+        id = "bangla-number-7",
+        title = "৭",
+        type = ExerciseType.BANGLA_NUMBER,
+        difficulty = Difficulty.INTERMEDIATE,
+        strokes = listOf(
+            Stroke(
+                id = "bangla-number-7-loop",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(66.5f, 51f),
+                        Point(63.5f, 51f),
+                        Point(60.49f, 51f),
+                        Point(57.49f, 50.98f),
+                        Point(54.51f, 51.24f),
+                        Point(51.53f, 51.62f),
+                        Point(48.53f, 51.88f),
+                        Point(45.53f, 51.96f),
+                        Point(42.54f, 51.83f),
+                        Point(39.55f, 51.45f),
+                        Point(36.63f, 50.77f),
+                        Point(33.83f, 49.71f),
+                        Point(31.25f, 48.18f),
+                        Point(29.05f, 46.14f),
+                        Point(27.39f, 43.64f),
+                        Point(26.32f, 40.85f),
+                        Point(25.82f, 37.89f),
+                        Point(25.82f, 34.89f),
+                        Point(26.3f, 31.93f),
+                        Point(27.23f, 29.08f),
+                        Point(28.58f, 26.4f),
+                        Point(30.29f, 23.93f),
+                        Point(32.32f, 21.72f),
+                        Point(34.61f, 19.78f),
+                        Point(37.12f, 18.14f),
+                        Point(39.81f, 16.81f),
+                        Point(42.64f, 15.78f),
+                        Point(45.56f, 15.1f),
+                        Point(48.53f, 14.75f),
+                        Point(51.54f, 14.75f),
+                        Point(54.52f, 15.13f),
+                        Point(57.4f, 15.93f),
+                        Point(60.11f, 17.23f),
+                        Point(62.5f, 19.04f),
+                        Point(64.39f, 21.36f),
+                        Point(65.64f, 24.08f),
+                        Point(66.32f, 27.01f),
+                        Point(66.6f, 29.99f),
+                        Point(66.7f, 32.99f),
+                        Point(66.72f, 36f),
+                        Point(66.71f, 39f),
+                        Point(66.65f, 42f),
+                        Point(66.5f, 44.99f),
+                        Point(66.5f, 48f),
+                        Point(66.5f, 51f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "bangla-number-7-stem",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(66.5f, 51f),
+                        Point(66.56f, 54f),
+                        Point(66.64f, 57f),
+                        Point(66.7f, 60f),
+                        Point(66.72f, 63f),
+                        Point(66.76f, 66f),
+                        Point(66.89f, 68.99f),
+                        Point(67.26f, 71.97f),
+                        Point(68.07f, 74.85f),
+                        Point(69.6f, 77.42f),
+                        Point(71.83f, 79.41f),
+                        Point(74.32f, 81.08f),
+                        Point(76.42f, 83.3f),
+                    ),
+                ),
+            ),
+        ),
+        order = 7,
+    ),
+    /**
+     * ৮ is a shade narrower than tall (aspect 0.938), so it is fitted by height. `stem` runs from the top
+     * of the slanted head down the stem, round the bottom and up the bowl's right side, ending exactly on
+     * a dot of the bar (22 spacings). `bar` leaves the stem on its dot at the bowl's top and runs right
+     * along the bowl's top and up into the flick's slanted cut (9 spacings). The stem's start sits 1.5
+     * units further into the head than the shortest trim, which lands its dots so the part up the bowl's
+     * right side is whole spacings with hardly any bend. The centreline guide's middle sits 3.5 units
+     * above the canvas centre (the head's tip is thin, so the guide starts well inside it), so the whole
+     * guide is placed 1 unit lower, well within the ink either side.
+     */
+    Exercise(
+        id = "bangla-number-8",
+        title = "৮",
+        type = ExerciseType.BANGLA_NUMBER,
+        difficulty = Difficulty.INTERMEDIATE,
+        strokes = listOf(
+            Stroke(
+                id = "bangla-number-8-stem",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(21.66f, 11.65f),
+                        Point(21.72f, 14.65f),
+                        Point(22.64f, 17.37f),
+                        Point(24.48f, 19.73f),
+                        Point(26.09f, 22.24f),
+                        Point(27.08f, 25.05f),
+                        Point(27.57f, 28f),
+                        Point(27.78f, 30.99f),
+                        Point(27.84f, 33.99f),
+                        Point(27.81f, 36.99f),
+                        Point(27.75f, 39.99f),
+                        Point(27.69f, 42.99f),
+                        Point(27.72f, 45.99f),
+                        Point(27.85f, 48.99f),
+                        Point(28f, 51.98f),
+                        Point(28.01f, 54.98f),
+                        Point(27.92f, 57.98f),
+                        Point(27.86f, 60.98f),
+                        Point(27.86f, 63.98f),
+                        Point(27.91f, 66.98f),
+                        Point(28.1f, 69.97f),
+                        Point(28.57f, 72.93f),
+                        Point(29.51f, 75.76f),
+                        Point(31.05f, 78.31f),
+                        Point(33.19f, 80.38f),
+                        Point(35.77f, 81.87f),
+                        Point(38.61f, 82.81f),
+                        Point(41.57f, 83.25f),
+                        Point(44.56f, 83.26f),
+                        Point(47.53f, 82.87f),
+                        Point(50.74f, 81.99f),
+                        Point(53.18f, 80.76f),
+                        Point(55.63f, 79.39f),
+                        Point(57.83f, 77.64f),
+                        Point(59.74f, 75.58f),
+                        Point(61.32f, 73.27f),
+                        Point(62.6f, 70.78f),
+                        Point(63.52f, 68.13f),
+                        Point(64.1f, 65.39f),
+                        Point(64.27f, 62.6f),
+                        Point(63.94f, 59.81f),
+                        Point(63.07f, 57.15f),
+                        Point(61.84f, 54.62f),
+                        Point(60.47f, 52.17f),
+                        Point(59.04f, 49.74f),
+                        Point(57.54f, 47.36f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "bangla-number-8-bar",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(27.72f, 45.99f),
+                        Point(30.72f, 46.08f),
+                        Point(33.71f, 46.2f),
+                        Point(36.71f, 46.24f),
+                        Point(39.71f, 46.06f),
+                        Point(42.69f, 45.77f),
+                        Point(45.69f, 45.64f),
+                        Point(48.68f, 45.83f),
+                        Point(51.63f, 46.39f),
+                        Point(54.55f, 47.06f),
+                        Point(57.53f, 47.36f),
+                        Point(60.53f, 47.32f),
+                        Point(63.53f, 47.26f),
+                        Point(66.53f, 47.13f),
+                        Point(69.5f, 46.74f),
+                        Point(72.38f, 45.9f),
+                        Point(75.05f, 44.54f),
+                        Point(77.4f, 42.69f),
+                        Point(79.46f, 40.45f),
+                    ),
+                ),
+            ),
+        ),
+        order = 8,
+    ),
+    /**
+     * ৯ is taller than it is wide (aspect 0.906), so it is fitted by height. It is two movements: `outer`
+     * from the top of the ear down the long diagonal to the right, down the right side, round the bottom
+     * and left to the tail's near-vertical cut (22 spacings), and `inner`, the small hook at the lower
+     * left, from its slanted cut up and over and down into the bottom band, ending exactly on one of
+     * `outer`'s dots where the two merge (10 spacings).
+     */
+    Exercise(
+        id = "bangla-number-9",
+        title = "৯",
+        type = ExerciseType.BANGLA_NUMBER,
+        difficulty = Difficulty.INTERMEDIATE,
+        strokes = listOf(
+            Stroke(
+                id = "bangla-number-9-outer",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(21.12f, 14.07f),
+                        Point(22.66f, 16.64f),
+                        Point(23.63f, 19.47f),
+                        Point(24.58f, 22.31f),
+                        Point(26.21f, 24.82f),
+                        Point(28.43f, 26.82f),
+                        Point(30.99f, 28.39f),
+                        Point(33.72f, 29.62f),
+                        Point(36.54f, 30.66f),
+                        Point(39.39f, 31.58f),
+                        Point(42.27f, 32.44f),
+                        Point(45.15f, 33.26f),
+                        Point(48.04f, 34.06f),
+                        Point(50.93f, 34.88f),
+                        Point(53.8f, 35.74f),
+                        Point(56.66f, 36.67f),
+                        Point(59.47f, 37.7f),
+                        Point(62.25f, 38.84f),
+                        Point(64.95f, 40.14f),
+                        Point(67.57f, 41.6f),
+                        Point(70.07f, 43.26f),
+                        Point(72.37f, 45.18f),
+                        Point(74.4f, 47.39f),
+                        Point(76.03f, 49.9f),
+                        Point(77.22f, 52.65f),
+                        Point(77.96f, 55.55f),
+                        Point(78.29f, 58.53f),
+                        Point(78.24f, 61.53f),
+                        Point(77.77f, 64.49f),
+                        Point(76.86f, 67.35f),
+                        Point(75.48f, 70.01f),
+                        Point(73.69f, 72.41f),
+                        Point(71.55f, 74.51f),
+                        Point(69.15f, 76.31f),
+                        Point(66.56f, 77.81f),
+                        Point(63.83f, 79.04f),
+                        Point(60.98f, 79.97f),
+                        Point(58.03f, 80.53f),
+                        Point(55.04f, 80.8f),
+                        Point(52.05f, 80.95f),
+                        Point(49.05f, 81.02f),
+                        Point(46.05f, 80.99f),
+                        Point(43.05f, 81.05f),
+                        Point(40.08f, 81.47f),
+                        Point(37.04f, 82.1f),
+                    ),
+                ),
+            ),
+            Stroke(
+                id = "bangla-number-9-inner",
+                points = StrokePoints.polyline(
+                    listOf(
+                        Point(20.81f, 67.99f),
+                        Point(21.12f, 64.89f),
+                        Point(21.6f, 61.93f),
+                        Point(22.84f, 59.22f),
+                        Point(24.87f, 57.02f),
+                        Point(27.42f, 55.45f),
+                        Point(30.23f, 54.42f),
+                        Point(33.18f, 53.89f),
+                        Point(36.18f, 53.79f),
+                        Point(39.16f, 54.12f),
+                        Point(42.05f, 54.91f),
+                        Point(44.74f, 56.21f),
+                        Point(47.11f, 58.05f),
+                        Point(48.96f, 60.4f),
+                        Point(50.11f, 63.16f),
+                        Point(50.5f, 66.13f),
+                        Point(50.29f, 69.12f),
+                        Point(49.78f, 72.07f),
+                        Point(49.35f, 75.04f),
+                        Point(49.06f, 78.03f),
+                        Point(48.96f, 81.02f),
+                    ),
+                ),
+            ),
+        ),
+        order = 9,
+    ),
+) + numberExercise(10)
