@@ -22,6 +22,11 @@ sealed interface BcDestination {
         override val route = "bangla"
     }
 
+    /** The English hub: small letters, capital letters and math. */
+    data object EnglishHub : BcDestination {
+        override val route = "english"
+    }
+
     data object Vowels : BcDestination {
         override val route = "vowels"
     }

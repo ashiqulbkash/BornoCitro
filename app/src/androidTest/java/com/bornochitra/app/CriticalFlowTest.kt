@@ -81,13 +81,15 @@ class CriticalFlowTest {
         practiseFromHub(R.string.title_bangla, R.string.category_consonant, "consonant-ko", "ক")
 
     @Test
-    fun home_englishSmall_a_practice_result() = practiseFromHome(R.string.category_english_small, "english-small-a", "a")
+    fun english_englishSmall_a_practice_result() =
+        practiseFromHub(R.string.title_english, R.string.category_english_small, "english-small-a", "a")
 
     @Test
-    fun home_englishCapital_a_practice_result() = practiseFromHome(R.string.category_english_capital, "english-capital-a", "A")
+    fun english_englishCapital_a_practice_result() =
+        practiseFromHub(R.string.title_english, R.string.category_english_capital, "english-capital-a", "A")
 
     @Test
-    fun home_math_1_practice_result() = practiseFromHome(R.string.category_math, "math-1", "1")
+    fun english_math_1_practice_result() = practiseFromHub(R.string.title_english, R.string.category_math, "math-1", "1")
 
     @Test
     fun bangla_banglaNumbers_1_practice_result() =
@@ -96,7 +98,7 @@ class CriticalFlowTest {
     @Test
     fun banglaHub_listsBanglaCategoriesAndMath() {
         openHomeFromWelcome()
-        BANGLA_HUB_LABELS.filter { it != R.string.category_math }.forEach { label ->
+        BANGLA_HUB_LABELS.forEach { label ->
             composeRule.onNode(hasText(string(label)) and hasClickAction()).assertDoesNotExist()
         }
 
@@ -110,6 +112,30 @@ class CriticalFlowTest {
         awaitText("1")
         composeRule.onNodeWithContentDescription(string(R.string.action_back)).performClick()
         awaitText(string(R.string.category_vowel))
+
+        // The hub is a step below Home: it has no menu, and Back returns to Home.
+        composeRule.onNodeWithContentDescription(string(R.string.action_menu)).assertDoesNotExist()
+        composeRule.onNodeWithContentDescription(string(R.string.action_back)).performClick()
+        awaitText(string(R.string.home_welcome))
+    }
+
+    @Test
+    fun englishHub_listsEnglishCategoriesAndMath() {
+        openHomeFromWelcome()
+        ENGLISH_HUB_LABELS.forEach { label ->
+            composeRule.onNode(hasText(string(label)) and hasClickAction()).assertDoesNotExist()
+        }
+
+        clickButton(string(R.string.title_english))
+        awaitText(string(R.string.category_english_small))
+        ENGLISH_HUB_LABELS.forEach { label ->
+            composeRule.onNode(hasText(string(label)) and hasClickAction()).performScrollTo().assertExists()
+        }
+
+        clickButton(string(R.string.category_math))
+        awaitText("1")
+        composeRule.onNodeWithContentDescription(string(R.string.action_back)).performClick()
+        awaitText(string(R.string.category_english_small))
 
         // The hub is a step below Home: it has no menu, and Back returns to Home.
         composeRule.onNodeWithContentDescription(string(R.string.action_menu)).assertDoesNotExist()
@@ -160,6 +186,12 @@ class CriticalFlowTest {
         openHomeFromWelcome()
         composeRule.onNodeWithContentDescription(string(R.string.action_menu)).assertIsDisplayed()
 
+        clickButton(string(R.string.title_english))
+        awaitText(string(R.string.category_english_small))
+        composeRule.onNodeWithContentDescription(string(R.string.action_menu)).assertDoesNotExist()
+        composeRule.onNodeWithContentDescription(string(R.string.action_back)).performClick()
+        awaitText(string(R.string.home_welcome))
+
         clickButton(string(R.string.title_bangla))
         awaitText(string(R.string.category_vowel))
         composeRule.onNodeWithContentDescription(string(R.string.action_menu)).assertDoesNotExist()
@@ -184,11 +216,6 @@ class CriticalFlowTest {
         composeRule.waitForIdle()
         composeRule.onNodeWithText(string(R.string.drawer_progress)).assertIsNotDisplayed()
         composeRule.onNodeWithText(string(R.string.home_welcome)).assertIsDisplayed()
-    }
-
-    private fun practiseFromHome(@StringRes category: Int, exerciseId: String, title: String) {
-        openHomeFromWelcome()
-        practise(category, exerciseId, title)
     }
 
     private fun practiseFromHub(@StringRes hub: Int, @StringRes category: Int, exerciseId: String, title: String) {
@@ -278,6 +305,13 @@ class CriticalFlowTest {
             R.string.category_vowel,
             R.string.category_consonant,
             R.string.category_bangla_number,
+            R.string.category_math,
+        )
+
+        /** The English hub's buttons, in order. */
+        val ENGLISH_HUB_LABELS = listOf(
+            R.string.category_english_small,
+            R.string.category_english_capital,
             R.string.category_math,
         )
 

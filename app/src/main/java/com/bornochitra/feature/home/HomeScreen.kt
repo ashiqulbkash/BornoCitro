@@ -34,9 +34,7 @@ import com.bornochitra.core.ui.theme.BornoChitraTheme
 @Composable
 fun HomeScreen(
     onBanglaClick: () -> Unit,
-    onEnglishSmallClick: () -> Unit,
-    onEnglishCapitalClick: () -> Unit,
-    onMathClick: () -> Unit,
+    onEnglishClick: () -> Unit,
     onDrawingClick: () -> Unit,
     onFillBlanksClick: () -> Unit,
     onContinueClick: (exerciseId: String) -> Unit,
@@ -49,9 +47,7 @@ fun HomeScreen(
         state = state,
         onEvent = viewModel::onEvent,
         onBanglaClick = onBanglaClick,
-        onEnglishSmallClick = onEnglishSmallClick,
-        onEnglishCapitalClick = onEnglishCapitalClick,
-        onMathClick = onMathClick,
+        onEnglishClick = onEnglishClick,
         onDrawingClick = onDrawingClick,
         onContinueClick = onContinueClick,
         onMenuClick = onMenuClick,
@@ -71,9 +67,7 @@ private fun HomeContent(
     state: HomeState,
     onEvent: (HomeEvent) -> Unit,
     onBanglaClick: () -> Unit,
-    onEnglishSmallClick: () -> Unit,
-    onEnglishCapitalClick: () -> Unit,
-    onMathClick: () -> Unit,
+    onEnglishClick: () -> Unit,
     onDrawingClick: () -> Unit,
     onContinueClick: (exerciseId: String) -> Unit,
     onMenuClick: () -> Unit,
@@ -104,9 +98,7 @@ private fun HomeContent(
             }
 
             BcPrimaryButton(text = stringResource(R.string.title_bangla), onClick = onBanglaClick, modifier = Modifier.fillMaxWidth())
-            BcPrimaryButton(text = ExerciseType.ENGLISH_SMALL.label(), onClick = onEnglishSmallClick, modifier = Modifier.fillMaxWidth())
-            BcPrimaryButton(text = ExerciseType.ENGLISH_CAPITAL.label(), onClick = onEnglishCapitalClick, modifier = Modifier.fillMaxWidth())
-            BcPrimaryButton(text = ExerciseType.MATH.label(), onClick = onMathClick, modifier = Modifier.fillMaxWidth())
+            BcPrimaryButton(text = stringResource(R.string.title_english), onClick = onEnglishClick, modifier = Modifier.fillMaxWidth())
             BcPrimaryButton(text = ExerciseType.DRAWING.label(), onClick = onDrawingClick, modifier = Modifier.fillMaxWidth())
             BcPrimaryButton(text = stringResource(R.string.title_fill_blanks), onClick = { onEvent(HomeEvent.FillBlanksClicked) }, modifier = Modifier.fillMaxWidth())
         }
@@ -199,9 +191,7 @@ private fun HomeScreenPreview() {
             state = HomeState(continueExerciseId = "vowel-e"),
             onEvent = {},
             onBanglaClick = {},
-            onEnglishSmallClick = {},
-            onEnglishCapitalClick = {},
-            onMathClick = {},
+            onEnglishClick = {},
             onDrawingClick = {},
             onContinueClick = {},
             onMenuClick = {},
@@ -217,9 +207,7 @@ private fun HomeScreenEmptyPreview() {
             state = HomeState(),
             onEvent = {},
             onBanglaClick = {},
-            onEnglishSmallClick = {},
-            onEnglishCapitalClick = {},
-            onMathClick = {},
+            onEnglishClick = {},
             onDrawingClick = {},
             onContinueClick = {},
             onMenuClick = {},

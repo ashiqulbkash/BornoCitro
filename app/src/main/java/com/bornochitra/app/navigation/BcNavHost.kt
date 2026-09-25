@@ -30,6 +30,7 @@ import com.bornochitra.feature.fillblanks.FillBlanksCategoryScreen
 import com.bornochitra.feature.fillblanks.FillBlanksScreen
 import com.bornochitra.feature.home.HomeScreen
 import com.bornochitra.feature.hub.BanglaHubScreen
+import com.bornochitra.feature.hub.EnglishHubScreen
 import com.bornochitra.feature.math.MathScreen
 import com.bornochitra.feature.practice.PracticeScreen
 import com.bornochitra.feature.progress.ProgressScreen
@@ -105,13 +106,7 @@ fun BcNavHost(
             composable(BcDestination.Home.route) {
                 HomeScreen(
                     onBanglaClick = { navController.navigate(BcDestination.BanglaHub.route) },
-                    onEnglishSmallClick = {
-                        navController.navigate(BcDestination.EnglishLetters.createRoute(ExerciseType.ENGLISH_SMALL))
-                    },
-                    onEnglishCapitalClick = {
-                        navController.navigate(BcDestination.EnglishLetters.createRoute(ExerciseType.ENGLISH_CAPITAL))
-                    },
-                    onMathClick = { navController.navigate(BcDestination.Math.route) },
+                    onEnglishClick = { navController.navigate(BcDestination.EnglishHub.route) },
                     onDrawingClick = { navController.navigate(BcDestination.Drawing.route) },
                     onFillBlanksClick = { navController.navigate(BcDestination.FillBlanks.route) },
                     onMenuClick = { scope.launch { drawerState.open() } },
@@ -127,6 +122,19 @@ fun BcNavHost(
                     onVowelsClick = { navController.navigate(BcDestination.Vowels.route) },
                     onConsonantsClick = { navController.navigate(BcDestination.Consonants.route) },
                     onBanglaNumbersClick = { navController.navigate(BcDestination.BanglaNumbers.route) },
+                    onMathClick = { navController.navigate(BcDestination.Math.route) },
+                )
+            }
+
+            composable(BcDestination.EnglishHub.route) {
+                EnglishHubScreen(
+                    onBackClick = { navController.popBackStack() },
+                    onEnglishSmallClick = {
+                        navController.navigate(BcDestination.EnglishLetters.createRoute(ExerciseType.ENGLISH_SMALL))
+                    },
+                    onEnglishCapitalClick = {
+                        navController.navigate(BcDestination.EnglishLetters.createRoute(ExerciseType.ENGLISH_CAPITAL))
+                    },
                     onMathClick = { navController.navigate(BcDestination.Math.route) },
                 )
             }
