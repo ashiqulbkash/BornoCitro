@@ -991,7 +991,7 @@ Home shows the two hub buttons plus Drawing. Math is reachable from both hubs (o
 
 ## Sub-steps
 
-- [ ] 11.1 Bangla screen
+- [x] 11.1 Bangla screen
 - [ ] 11.2 English screen
 - [ ] 11.3 Fill in the blanks per language
 
@@ -1002,6 +1002,12 @@ Home shows the two hub buttons plus Drawing. Math is reachable from both hubs (o
 - [ ] Fill in the blanks shows only the categories of the language it was opened from; sequence generation is unchanged
 - [ ] Existing tracing, progress and fill-blanks tests pass unmodified; Home tests updated for the new events
 - [ ] Verified by running the app through one flow per category from its hub
+
+## Notes
+
+- **11.1 Bangla hub.** `BanglaHubScreen` (`feature/hub`) is stateless and has no ViewModel, because it only navigates. It has a `title_bangla` top bar (বাংলা / Bangla) with a back arrow, and one button each for Vowels, Consonants, Bangla Numbers and Math (`BcDestination.BanglaHub`, route `bangla`). Home's Vowels, Consonants and Bangla Numbers buttons became one **Bangla** button with the same string. Math, the English buttons and Fill the Blanks stay on Home until 11.2/11.3. Math is shared, so it leaves Home in 11.2 once the English hub also opens it. The hub is below Home, so it has no menu icon and no edge-swipe. `HomeViewModel` is unchanged because the category buttons are navigation callbacks, not events.
+  - **Tests.** 459 unit tests, 0 failures. In `CriticalFlowTest`, the vowel, consonant and Bangla-number flows now go through the hub (`bangla_*`). New `banglaHub_listsBanglaCategoriesAndMath` checks that Home no longer has the three Bangla buttons, that the hub lists all four, that Math opens and Back returns to the hub, and that the hub has no menu and Back returns Home. `drawer_isOnHomeOnly` also checks the hub. `clickButton` skips selectable nodes, because the closed drawer's language switch also has a clickable "বাংলা". Instrumented 25/25 on the Pixel_5_2 emulator. Lint: nothing new.
+  - **Device (RMX3624, `install -r`).** In English at 720x1600, Home shows Bangla, and the hub lists the four categories. Each one opens its screen, and Back returns to the hub. An edge swipe on the hub does not open the drawer, and Back from the hub lands on Home. In Bangla at 720x1280, Home (বাংলা) and the hub (স্বরবর্ণ, ব্যঞ্জনবর্ণ, বাংলা সংখ্যা, সংখ্যা ও চিহ্ন) lay out on one screen. `wm size` was reset afterwards, and the phone is left on `en`, as it was found.
 
 ---
 

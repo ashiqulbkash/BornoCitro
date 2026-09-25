@@ -17,6 +17,11 @@ sealed interface BcDestination {
         override val route = "home"
     }
 
+    /** The Bangla hub: vowels, consonants, Bangla numbers and math. */
+    data object BanglaHub : BcDestination {
+        override val route = "bangla"
+    }
+
     data object Vowels : BcDestination {
         override val route = "vowels"
     }

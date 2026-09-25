@@ -7,6 +7,7 @@ import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.hasText
+import androidx.compose.ui.test.isSelectable
 import androidx.compose.ui.test.junit4.AndroidComposeTestRule
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
@@ -46,9 +47,10 @@ class CriticalFlowTest {
     }
 
     @Test
-    fun home_vowels_o_practice_result_progress() {
+    fun bangla_vowels_o_practice_result_progress() {
         openHomeFromWelcome()
 
+        clickButton(string(R.string.title_bangla))
         clickButton(string(R.string.category_vowel))
         composeRule.onNodeWithText("অ").performClick()
 
@@ -75,7 +77,8 @@ class CriticalFlowTest {
     }
 
     @Test
-    fun home_consonants_ko_practice_result() = practiseFromHome(R.string.category_consonant, "consonant-ko", "ক")
+    fun bangla_consonants_ko_practice_result() =
+        practiseFromHub(R.string.title_bangla, R.string.category_consonant, "consonant-ko", "ক")
 
     @Test
     fun home_englishSmall_a_practice_result() = practiseFromHome(R.string.category_english_small, "english-small-a", "a")
@@ -87,7 +90,32 @@ class CriticalFlowTest {
     fun home_math_1_practice_result() = practiseFromHome(R.string.category_math, "math-1", "1")
 
     @Test
-    fun home_banglaNumbers_1_practice_result() = practiseFromHome(R.string.category_bangla_number, "bangla-number-1", "১")
+    fun bangla_banglaNumbers_1_practice_result() =
+        practiseFromHub(R.string.title_bangla, R.string.category_bangla_number, "bangla-number-1", "১")
+
+    @Test
+    fun banglaHub_listsBanglaCategoriesAndMath() {
+        openHomeFromWelcome()
+        BANGLA_HUB_LABELS.filter { it != R.string.category_math }.forEach { label ->
+            composeRule.onNode(hasText(string(label)) and hasClickAction()).assertDoesNotExist()
+        }
+
+        clickButton(string(R.string.title_bangla))
+        awaitText(string(R.string.category_vowel))
+        BANGLA_HUB_LABELS.forEach { label ->
+            composeRule.onNode(hasText(string(label)) and hasClickAction()).performScrollTo().assertExists()
+        }
+
+        clickButton(string(R.string.category_math))
+        awaitText("1")
+        composeRule.onNodeWithContentDescription(string(R.string.action_back)).performClick()
+        awaitText(string(R.string.category_vowel))
+
+        // The hub is a step below Home: it has no menu, and Back returns to Home.
+        composeRule.onNodeWithContentDescription(string(R.string.action_menu)).assertDoesNotExist()
+        composeRule.onNodeWithContentDescription(string(R.string.action_back)).performClick()
+        awaitText(string(R.string.home_welcome))
+    }
 
     @Test
     fun drawer_progress_listsEveryCategory() {
@@ -132,6 +160,10 @@ class CriticalFlowTest {
         openHomeFromWelcome()
         composeRule.onNodeWithContentDescription(string(R.string.action_menu)).assertIsDisplayed()
 
+        clickButton(string(R.string.title_bangla))
+        awaitText(string(R.string.category_vowel))
+        composeRule.onNodeWithContentDescription(string(R.string.action_menu)).assertDoesNotExist()
+
         clickButton(string(R.string.category_vowel))
         awaitText("অ")
         composeRule.onNodeWithContentDescription(string(R.string.action_menu)).assertDoesNotExist()
@@ -156,7 +188,16 @@ class CriticalFlowTest {
 
     private fun practiseFromHome(@StringRes category: Int, exerciseId: String, title: String) {
         openHomeFromWelcome()
+        practise(category, exerciseId, title)
+    }
 
+    private fun practiseFromHub(@StringRes hub: Int, @StringRes category: Int, exerciseId: String, title: String) {
+        openHomeFromWelcome()
+        clickButton(string(hub))
+        practise(category, exerciseId, title)
+    }
+
+    private fun practise(@StringRes category: Int, exerciseId: String, title: String) {
         clickButton(string(category))
         composeRule.onNodeWithText(title).performClick()
 
@@ -180,8 +221,9 @@ class CriticalFlowTest {
 
     private fun string(@StringRes id: Int, vararg args: Any): String = composeRule.activity.getString(id, *args)
 
+    /** Skips selectable nodes: the closed drawer's language switch also has a clickable "বাংলা". */
     private fun clickButton(label: String) {
-        composeRule.onNode(hasText(label) and hasClickAction()).performScrollTo().performClick()
+        composeRule.onNode(hasText(label) and hasClickAction() and !isSelectable()).performScrollTo().performClick()
     }
 
     private fun awaitText(text: String) {
@@ -230,6 +272,14 @@ class CriticalFlowTest {
     private companion object {
         const val GUIDE_CANVAS_UNIT = 100f
         const val STEP = 2f
+
+        /** The Bangla hub's buttons, in order. */
+        val BANGLA_HUB_LABELS = listOf(
+            R.string.category_vowel,
+            R.string.category_consonant,
+            R.string.category_bangla_number,
+            R.string.category_math,
+        )
 
         /** Every category's name, in the order Progress shows them. */
         val CATEGORY_LABELS = listOf(

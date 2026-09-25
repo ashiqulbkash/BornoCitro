@@ -4,6 +4,7 @@
     <!-- Toolbar titles: short, one line at 360dp. -->
     <string name="title_home">বর্ণচিত্র</string>
     <string name="title_about">পরিচিতি</string>
+    <string name="title_bangla">বাংলা</string>
     <string name="title_practice">অনুশীলন</string>
     <string name="title_result">ফলাফল</string>
     <string name="title_progress">অগ্রগতি</string>
