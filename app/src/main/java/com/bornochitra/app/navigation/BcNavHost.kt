@@ -20,8 +20,8 @@ import com.bornochitra.feature.math.MathScreen
 import com.bornochitra.feature.practice.PracticeScreen
 import com.bornochitra.feature.progress.ProgressScreen
 import com.bornochitra.feature.result.ResultScreen
-import com.bornochitra.feature.tips.TipsScreen
 import com.bornochitra.feature.vowels.VowelsScreen
+import com.bornochitra.feature.welcome.WelcomeScreen
 
 @Composable
 fun BcNavHost(
@@ -30,14 +30,14 @@ fun BcNavHost(
 ) {
     NavHost(
         navController = navController,
-        startDestination = BcDestination.Tips.route,
+        startDestination = BcDestination.Welcome.route,
         modifier = modifier,
     ) {
-        composable(BcDestination.Tips.route) {
-            TipsScreen(
+        composable(BcDestination.Welcome.route) {
+            WelcomeScreen(
                 onContinueClick = {
                     navController.navigate(BcDestination.Home.route) {
-                        popUpTo(BcDestination.Tips.route) { inclusive = true }
+                        popUpTo(BcDestination.Welcome.route) { inclusive = true }
                     }
                 },
             )

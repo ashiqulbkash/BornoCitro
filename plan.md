@@ -202,13 +202,13 @@ else in that file passes on its own. Baseline after 1.1: **336 unit tests, 0 fai
 
 ## Definition of Done (applies to every sub-step)
 
-- [ ] The one letter is added with strokes derived from its rendered glyph
-- [ ] Every guide sample lies on the glyph's ink
-- [ ] It completes at 95%+ on a faithful synthetic trace on the device
-- [ ] `ExerciseCatalogTest`'s consonant title string and stroke-count map include the new
+- [x] The one letter is added with strokes derived from its rendered glyph
+- [x] Every guide sample lies on the glyph's ink
+- [x] It completes at 95%+ on a faithful synthetic trace on the device
+- [x] `ExerciseCatalogTest`'s consonant title string and stroke-count map include the new
       letter, and its id, `order`, canvas-bounds, centring and matra-last assertions pass
-- [ ] `ConsonantsViewModelTest` still passes
-- [ ] Verified by running the app
+- [x] `ConsonantsViewModelTest` still passes
+- [x] Verified by running the app
 
 Step 1 as a whole is done when all 34 sub-steps are checked, the catalog test asserts 39 consonants, and consonant progress on Home/Progress is computed against 39.
 
@@ -356,14 +356,14 @@ The child enters the Practice screen and traces the character. When they finish,
 
 ## Definition of Done
 
-- [ ] Finishing a try opens Result with **Try Again** and **View Progress**
-- [ ] Try Again starts a new try and keeps the session's earlier scores
-- [ ] Result shows "You tried n time(s). Your overall progress is n%." with n% the average of the session's tries
-- [ ] Next starts a fresh session; leaving the screen discards the session
-- [ ] Every completed try is still saved through `ProgressRepository`
-- [ ] Existing tracing and scoring tests pass unmodified
-- [ ] Unit tests cover session score accumulation, encode/decode, and the Result average and try count
-- [ ] Verified by running the app: try a letter three times and check the Result message
+- [x] Finishing a try opens Result with **Try Again** and **View Progress**
+- [x] Try Again starts a new try and keeps the session's earlier scores
+- [x] Result shows "You tried n time(s). Your overall progress is n%." with n% the average of the session's tries
+- [x] Next starts a fresh session; leaving the screen discards the session
+- [x] Every completed try is still saved through `ProgressRepository`
+- [x] Existing tracing and scoring tests pass unmodified
+- [x] Unit tests cover session score accumulation, encode/decode, and the Result average and try count
+- [x] Verified by running the app: try a letter three times and check the Result message
 
 ---
 
@@ -447,17 +447,17 @@ Three capitals per step from here on:
 
 ## Definition of Done (applies to every sub-step; for a three-letter step, to **each** of its letters)
 
-- [ ] Every character of the step is added with strokes derived from its rendered glyph
-- [ ] Every guide sample lies on its glyph's ink
-- [ ] Each one completes at 95%+ on a faithful synthetic trace on the device
-- [ ] `ExerciseCatalogTest`'s stroke-count map (and alphabet string) include every new character, and their ids, `order`, canvas-bounds and centring assertions pass
-- [ ] Existing ViewModel tests still pass
-- [ ] Verified by running the app
+- [x] Every character of the step is added with strokes derived from its rendered glyph
+- [x] Every guide sample lies on its glyph's ink
+- [x] Each one completes at 95%+ on a faithful synthetic trace on the device
+- [x] `ExerciseCatalogTest`'s stroke-count map (and alphabet string) include every new character, and their ids, `order`, canvas-bounds and centring assertions pass
+- [x] Existing ViewModel tests still pass
+- [x] Verified by running the app
 
 Additionally, for the plumbing sub-steps (3.1 and 3.27):
 
-- [ ] Type, catalog registration, category screen, Home button, Progress button/section and progress aggregation are in place for the category
-- [ ] ViewModel and progress-aggregation tests cover the new category
+- [x] Type, catalog registration, category screen, Home button, Progress button/section and progress aggregation are in place for the category
+- [x] ViewModel and progress-aggregation tests cover the new category
 
 Step 3 as a whole is done when all 37 sub-steps are checked (52 characters), the catalog test asserts 26 small + 26 capital with unique ids and contiguous `order` per type, both category bars are computed against 26, and the flow Home → English → practise → Progress has been run on the device.
 
@@ -721,17 +721,17 @@ Follow the Step 1 recipe (Noto Sans Bengali, device font) and the Step 4 differe
 
 ## Definition of Done (applies to every sub-step, for **each** of its numbers)
 
-- [ ] Every number of the step is added — ১–৯ derived from the device font's rendered glyphs, ১০–২০ composed from digit guides derived for the two-digit scale
-- [ ] Every guide sample lies on its glyph's ink, every stroke is whole spacings, and no two dots crowd
-- [ ] Each one completes at 95%+ on a faithful synthetic trace on the device
-- [ ] `ExerciseCatalogTest`'s stroke-count map and Bengali-numbers assertion include every new number, and their ids, `order`, canvas-bounds and centring assertions pass
-- [ ] Existing ViewModel tests still pass
-- [ ] Verified by running the app
+- [x] Every number of the step is added — ১–৯ derived from the device font's rendered glyphs, ১০–২০ composed from digit guides derived for the two-digit scale
+- [x] Every guide sample lies on its glyph's ink, every stroke is whole spacings, and no two dots crowd
+- [x] Each one completes at 95%+ on a faithful synthetic trace on the device
+- [x] `ExerciseCatalogTest`'s stroke-count map and Bengali-numbers assertion include every new number, and their ids, `order`, canvas-bounds and centring assertions pass
+- [x] Existing ViewModel tests still pass
+- [x] Verified by running the app
 
 Additionally, for the plumbing sub-step (5.1):
 
-- [ ] Type, catalog registration, category screen, route, Home button/bar, Progress section and progress aggregation are in place for the category
-- [ ] ViewModel, progress-aggregation and font-mapping tests cover the new category
+- [x] Type, catalog registration, category screen, route, Home button/bar, Progress section and progress aggregation are in place for the category
+- [x] ViewModel, progress-aggregation and font-mapping tests cover the new category
 
 Step 5 as a whole is done when all four sub-steps are checked (20 numbers), the catalog test asserts ১–২০ with ids and numeric `order`, the bar is computed against 20, and the flow Home → বাংলা সংখ্যা → practise → Progress has been run on the device.
 
@@ -902,7 +902,171 @@ Every piece of UI text comes from string resources, so the app can be shown in B
 
 ---
 
-# 10. Feature Completion Definition
+# 10. Step 9 — Welcome (About) Screen
+
+## Requirement
+
+Replace the Tips screen ("how to exercise") with a Welcome screen that says what Barnacitro is about and lets the child change the language with an animation. It is shown once, on first launch; after that the app opens on Home. The same content is reused later as the drawer's **About** page (Step 10).
+
+## Implement (sub-steps 9.1–9.3)
+
+- **9.1** Remove the tips content (`TipsScreen` copy, `tips_*` strings in both languages, related tests). Add the About content (what the app is: tracing Bangla and English letters, numbers and drawing, with progress and fill in the blanks) as a stateless `AboutContent` composable plus a `WelcomeScreen` that wraps it with a Continue button. Strings in both `values` and `values-en`.
+- **9.2** Add an animated Bangla / English switch to the Welcome screen (sliding thumb and cross-fading text). It reuses the existing language use case behind `HomeEvent.LanguageSelected`; the language logic is not duplicated.
+- **9.3** Show Welcome only on first launch: store a "welcome seen" flag with the existing preferences mechanism, set it on Continue, and choose the start destination from it. MVI: `WelcomeUiState`, `WelcomeEvent`, `WelcomeViewModel`.
+
+## Sub-steps
+
+- [x] 9.1 About content replaces the tips
+- [ ] 9.2 Animated language switch on Welcome
+- [ ] 9.3 First-launch-only flag and start destination
+
+## Definition of Done
+
+- [ ] No tips text or screen is left; the string-resource tests (key parity, non-empty, no Latin in Bangla) pass
+- [ ] The language switch animates and changes the whole UI at once
+- [ ] A fresh install opens on Welcome; after Continue, and after a restart, the app opens on Home
+- [ ] ViewModel tests cover the flag and the language event
+- [ ] Verified by running the app on a fresh install and on a second launch
+
+---
+
+# 11. Step 10 — Navigation Drawer
+
+## Requirement
+
+Add a drawer available from the main screens. It holds the language toggle, Home, Progress and About. Progress moves out of Home into the drawer.
+
+## Implement (sub-steps 10.1–10.4)
+
+- **10.1** Drawer shell (`ModalNavigationDrawer`) in the nav host, with a menu icon in the top bar of the drawer-enabled screens, and the language toggle inside it. Drawer open/close state is owned by one place (nav host scaffold), not by each screen.
+- **10.2** **Home** item: navigates to Home from anywhere and clears the back stack (`popUpTo(Home) { inclusive = true }`, single top).
+- **10.3** **Progress** item opens the Progress screen. Remove the progress bars and the "view full progress" button from Home; `HomeViewModel` no longer computes the per-category progress it no longer shows.
+- **10.4** **About** item opens the About content from Step 9.
+
+## Sub-steps
+
+- [ ] 10.1 Drawer shell with the language toggle
+- [ ] 10.2 Home item clears the back stack
+- [ ] 10.3 Progress moved from Home to the drawer
+- [ ] 10.4 About item
+
+## Definition of Done
+
+- [ ] The drawer opens from the menu icon and closes on selection and on back
+- [ ] Home from a deep screen (e.g. a Practice screen) lands on Home with an empty back stack behind it
+- [ ] Home no longer shows progress; Progress is reachable only through the drawer and still shows every category
+- [ ] The language toggle in the drawer matches the Welcome one and survives restarts
+- [ ] `HomeViewModelTest` updated; navigation/drawer behavior covered by a test
+- [ ] Verified by running the app at 720x1280 and 720x1600, in both languages
+
+---
+
+# 12. Step 11 — Bangla and English Category Screens
+
+## Requirement
+
+Home lists too many buttons. Split them into two hubs:
+
+- **Bangla** screen: vowels, consonants, Bangla numbers, math, and Bangla fill in the blanks.
+- **English** screen: small letters, capital letters, math, and English fill in the blanks.
+
+Home shows the two hub buttons plus Drawing. Math is reachable from both hubs (one screen, one progress).
+
+## Implement (sub-steps 11.1–11.3)
+
+- **11.1** Bangla hub screen (state, event, ViewModel-free if it is static navigation only) and its Home button; move the Bangla practice buttons from Home.
+- **11.2** English hub screen and its Home button; move the English practice buttons from Home.
+- **11.3** Split fill in the blanks the same way: the Bangla hub opens the picker with Bangla categories only, the English hub with English categories only; remove the single Home entry.
+
+## Sub-steps
+
+- [ ] 11.1 Bangla screen
+- [ ] 11.2 English screen
+- [ ] 11.3 Fill in the blanks per language
+
+## Definition of Done
+
+- [ ] Home shows Bangla, English and Drawing only
+- [ ] Every previous Home practice button is reachable from exactly the hub described above
+- [ ] Fill in the blanks shows only the categories of the language it was opened from; sequence generation is unchanged
+- [ ] Existing tracing, progress and fill-blanks tests pass unmodified; Home tests updated for the new events
+- [ ] Verified by running the app through one flow per category from its hub
+
+---
+
+# 13. Step 12 — Learn with Audio
+
+## Requirement
+
+A screen where the child learns vowels and consonants by listening. Each letter has two audio buttons: one plays the **letter**, the other plays the **explanation**.
+
+- English: letter "A" says "A"; explanation says "A for apple". B: "B for ball".
+- Bangla: অ says "অ"; explanation "অ তে অজগর". খ: "খ তে খরগোশ".
+
+The screen lives under the Bangla and English hubs from Step 11 (each opens its own language's list).
+
+## Implement (sub-steps 12.1–12.3)
+
+- **12.1** Audio plumbing: a small `SpeechPlayer` interface over Android `TextToSpeech` (Bangla `bn-BD`, English `en-US`), created once and released with the lifecycle, off the main thread for initialisation. If the device has no voice for the language, show a clear message instead of staying silent. Fake implementation for tests.
+- **12.2** English learn screen: A–Z with the example word per letter (data in one static table with strings resources), letter and explanation buttons, `LearnUiState`/`LearnEvent`/`LearnViewModel`.
+- **12.3** Bangla learn screen: vowels and consonants with the example word per letter (অ অজগর, আ আম, … ক কলা, খ খরগোশ …), same screen structure reused with a language parameter.
+
+## Sub-steps
+
+- [ ] 12.1 Speech player
+- [ ] 12.2 English letters with audio
+- [ ] 12.3 Bangla vowels and consonants with audio
+
+## Definition of Done
+
+- [ ] Every English letter and every Bangla vowel and consonant has an example word; a test asserts the tables are complete and words are non-empty
+- [ ] The letter button speaks the letter and the explanation button speaks the "X for word" phrase in the right language
+- [ ] Missing TTS voice is handled with a visible message
+- [ ] The player is released when leaving the screen; ViewModel tests use the fake player
+- [ ] Verified by running the app on a device and listening to both buttons in both languages
+
+---
+
+# 14. Step 13 — App Icon
+
+## Requirement
+
+Create a Barnacitro launcher icon and set it as the app's launcher icon.
+
+## Implement
+
+- Adaptive icon (vector foreground + background, plus a monochrome layer for themed icons) themed with the app's colours and a Bangla letter/pencil-stroke motif.
+- Wire `android:icon` and `android:roundIcon` in the manifest; remove the default icon resources.
+
+## Definition of Done
+
+- [ ] The icon shows correctly on the launcher, in round and squircle masks, and as a themed icon on Android 13+
+- [ ] Debug build succeeds and lint reports no icon warnings
+- [ ] Verified on the device launcher
+
+---
+
+# 15. Step 14 — Splash Screen
+
+## Requirement
+
+Show a splash with the app icon and a short message when the app starts.
+
+## Implement
+
+- Use the AndroidX SplashScreen API (`installSplashScreen`, `Theme.SplashScreen`) with the Step 13 icon and the app background colour; the message ("Barnacitro — write, learn, grow" in both languages) is shown on a brief branded frame in the app, not by delaying the app start artificially.
+- The message text lives in `strings.xml` for both languages.
+
+## Definition of Done
+
+- [ ] Cold start shows the icon and message on Android 12+ and on older versions
+- [ ] The splash hands over to Welcome on first launch and to Home afterwards, with no flicker or extra delay
+- [ ] Both language strings exist and the string-resource tests pass
+- [ ] Verified on the device and the emulator
+
+---
+
+# 16. Feature Completion Definition
 
 A step is complete only when it satisfies:
 

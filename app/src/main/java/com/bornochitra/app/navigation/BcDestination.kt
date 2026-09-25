@@ -9,8 +9,8 @@ sealed interface BcDestination {
 
     val route: String
 
-    data object Tips : BcDestination {
-        override val route = "tips"
+    data object Welcome : BcDestination {
+        override val route = "welcome"
     }
 
     data object Home : BcDestination {

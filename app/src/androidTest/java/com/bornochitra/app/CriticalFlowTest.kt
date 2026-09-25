@@ -43,7 +43,7 @@ class CriticalFlowTest {
 
     @Test
     fun home_vowels_o_practice_result_progress() {
-        openHomeFromTips()
+        openHomeFromWelcome()
 
         clickButton(string(R.string.category_vowel))
         composeRule.onNodeWithText("অ").performClick()
@@ -59,7 +59,7 @@ class CriticalFlowTest {
 
     @Test
     fun home_drawing_circle_practice_result() {
-        openHomeFromTips()
+        openHomeFromWelcome()
 
         clickButton(string(R.string.category_drawing))
         val circle = string(R.string.drawing_circle)
@@ -87,7 +87,7 @@ class CriticalFlowTest {
 
     @Test
     fun progress_listsEveryCategory() {
-        openHomeFromTips()
+        openHomeFromWelcome()
 
         clickButton(string(R.string.home_view_full_progress))
 
@@ -99,7 +99,7 @@ class CriticalFlowTest {
     }
 
     private fun practiseFromHome(@StringRes category: Int, exerciseId: String, title: String) {
-        openHomeFromTips()
+        openHomeFromWelcome()
 
         clickButton(string(category))
         composeRule.onNodeWithText(title).performClick()
@@ -109,8 +109,8 @@ class CriticalFlowTest {
         awaitResult()
     }
 
-    private fun openHomeFromTips() {
-        composeRule.onNodeWithText(string(R.string.tips_continue)).performClick()
+    private fun openHomeFromWelcome() {
+        composeRule.onNodeWithText(string(R.string.welcome_continue)).performClick()
         awaitText(string(R.string.home_welcome))
     }
 

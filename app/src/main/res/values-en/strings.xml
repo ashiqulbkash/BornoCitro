@@ -3,7 +3,7 @@
 
     <!-- Toolbar titles: short, one line at 360dp. -->
     <string name="title_home">BornoChitra</string>
-    <string name="title_tips">How to Write</string>
+    <string name="title_about">About</string>
     <string name="title_practice">Practice</string>
     <string name="title_result">Result</string>
     <string name="title_progress">Progress</string>
@@ -72,14 +72,14 @@
     <string name="model_hide">Hide</string>
     <string name="model_not_now">Not now</string>
 
-    <!-- Tips (onboarding) -->
-    <string name="tips_follow_dots">Follow the dots.</string>
-    <string name="tips_start_at_end">Start at one end of the line.</string>
-    <string name="tips_move_slowly">Move your finger slowly.</string>
-    <string name="tips_stay_close">Stay close to the dotted line.</string>
-    <string name="tips_complete_strokes">Complete all strokes.</string>
-    <string name="tips_step_number">%1$d</string>
-    <string name="tips_continue">Continue</string>
+    <!-- About / Welcome -->
+    <string name="about_heading">What is BornoChitra?</string>
+    <string name="about_description">BornoChitra is an app where you trace the dots with your finger to learn letters, numbers and drawing.</string>
+    <string name="about_feature_letters">Write Bangla vowels and consonants, and English small and capital letters.</string>
+    <string name="about_feature_numbers">Write Bangla and English numbers and math signs.</string>
+    <string name="about_feature_drawing">Draw simple pictures.</string>
+    <string name="about_feature_progress">Fill in the blanks and see your progress.</string>
+    <string name="welcome_continue">Continue</string>
 
     <!-- Contextual tips: positive, never blaming the child. -->
     <string name="tip_first_attempt">Try tracing slowly.</string>

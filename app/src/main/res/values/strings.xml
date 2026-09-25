@@ -3,7 +3,7 @@
 
     <!-- Toolbar titles: short, one line at 360dp. -->
     <string name="title_home">বর্ণচিত্র</string>
-    <string name="title_tips">লেখার নিয়ম</string>
+    <string name="title_about">পরিচিতি</string>
     <string name="title_practice">অনুশীলন</string>
     <string name="title_result">ফলাফল</string>
     <string name="title_progress">অগ্রগতি</string>
@@ -74,14 +74,14 @@
     <string name="model_hide">লুকাও</string>
     <string name="model_not_now">এখন না</string>
 
-    <!-- Tips (onboarding) -->
-    <string name="tips_follow_dots">ফোঁটাগুলো ধরে চলো।</string>
-    <string name="tips_start_at_end">রেখার এক মাথা থেকে শুরু করো।</string>
-    <string name="tips_move_slowly">আঙুল ধীরে সরাও।</string>
-    <string name="tips_stay_close">ফোঁটার রেখার কাছাকাছি থাকো।</string>
-    <string name="tips_complete_strokes">সবগুলো টান শেষ করো।</string>
-    <string name="tips_step_number">%1$d</string>
-    <string name="tips_continue">এগিয়ে চলো</string>
+    <!-- About / Welcome -->
+    <string name="about_heading">বর্ণচিত্র কী?</string>
+    <string name="about_description">বর্ণচিত্র এমন একটি অ্যাপ, যেখানে আঙুল দিয়ে ফোঁটা ধরে অক্ষর, সংখ্যা আর ছবি আঁকা শেখা যায়।</string>
+    <string name="about_feature_letters">বাংলা স্বরবর্ণ, ব্যঞ্জনবর্ণ এবং ইংরেজি ছোট ও বড় হাতের অক্ষর লেখো।</string>
+    <string name="about_feature_numbers">বাংলা ও ইংরেজি সংখ্যা এবং গণিতের চিহ্ন লেখো।</string>
+    <string name="about_feature_drawing">সহজ ছবি আঁকো।</string>
+    <string name="about_feature_progress">খালি ঘর পূরণ করো আর নিজের অগ্রগতি দেখো।</string>
+    <string name="welcome_continue">এগিয়ে চলো</string>
 
     <!-- Contextual tips: positive, never blaming the child. -->
     <string name="tip_first_attempt">ধীরে লেখো।</string>
