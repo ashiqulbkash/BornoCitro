@@ -24,7 +24,6 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bornochitra.R
 import com.bornochitra.core.model.ExerciseType
-import com.bornochitra.core.ui.components.BcLabeledProgress
 import com.bornochitra.core.ui.components.BcPrimaryButton
 import com.bornochitra.core.ui.components.BcSecondaryButton
 import com.bornochitra.core.ui.components.BcTopAppBar
@@ -42,7 +41,6 @@ fun HomeScreen(
     onBanglaNumbersClick: () -> Unit,
     onDrawingClick: () -> Unit,
     onFillBlanksClick: () -> Unit,
-    onProgressClick: () -> Unit,
     onContinueClick: (exerciseId: String) -> Unit,
     onMenuClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -59,7 +57,6 @@ fun HomeScreen(
         onMathClick = onMathClick,
         onBanglaNumbersClick = onBanglaNumbersClick,
         onDrawingClick = onDrawingClick,
-        onProgressClick = onProgressClick,
         onContinueClick = onContinueClick,
         onMenuClick = onMenuClick,
         modifier = modifier,
@@ -84,7 +81,6 @@ private fun HomeContent(
     onMathClick: () -> Unit,
     onBanglaNumbersClick: () -> Unit,
     onDrawingClick: () -> Unit,
-    onProgressClick: () -> Unit,
     onContinueClick: (exerciseId: String) -> Unit,
     onMenuClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -121,18 +117,6 @@ private fun HomeContent(
             BcPrimaryButton(text = ExerciseType.BANGLA_NUMBER.label(), onClick = onBanglaNumbersClick, modifier = Modifier.fillMaxWidth())
             BcPrimaryButton(text = ExerciseType.DRAWING.label(), onClick = onDrawingClick, modifier = Modifier.fillMaxWidth())
             BcPrimaryButton(text = stringResource(R.string.title_fill_blanks), onClick = { onEvent(HomeEvent.FillBlanksClicked) }, modifier = Modifier.fillMaxWidth())
-
-            Text(text = stringResource(R.string.home_your_progress), style = MaterialTheme.typography.titleLarge)
-            BcLabeledProgress(label = stringResource(R.string.overall), progress = state.overallProgress)
-            BcLabeledProgress(label = ExerciseType.VOWEL.label(), progress = state.vowelProgress)
-            BcLabeledProgress(label = ExerciseType.CONSONANT.label(), progress = state.consonantProgress)
-            BcLabeledProgress(label = ExerciseType.ENGLISH_SMALL.label(), progress = state.englishSmallProgress)
-            BcLabeledProgress(label = ExerciseType.ENGLISH_CAPITAL.label(), progress = state.englishCapitalProgress)
-            BcLabeledProgress(label = ExerciseType.MATH.label(), progress = state.mathProgress)
-            BcLabeledProgress(label = ExerciseType.BANGLA_NUMBER.label(), progress = state.banglaNumberProgress)
-            BcLabeledProgress(label = ExerciseType.DRAWING.label(), progress = state.drawingProgress)
-
-            BcSecondaryButton(text = stringResource(R.string.home_view_full_progress), onClick = onProgressClick, modifier = Modifier.fillMaxWidth())
         }
     }
 }
@@ -215,22 +199,12 @@ private fun HandwritingModelDialogOfflinePreview() {
     }
 }
 
-@Preview(showBackground = true, name = "With progress")
+@Preview(showBackground = true, name = "With an exercise to continue")
 @Composable
 private fun HomeScreenPreview() {
     BornoChitraTheme {
         HomeContent(
-            state = HomeState(
-                overallProgress = 0.8f,
-                vowelProgress = 1f,
-                consonantProgress = 0.6f,
-                englishSmallProgress = 0.2f,
-                englishCapitalProgress = 0.1f,
-                mathProgress = 0.3f,
-                banglaNumberProgress = 0.5f,
-                drawingProgress = 0.4f,
-                continueExerciseId = "vowel-e",
-            ),
+            state = HomeState(continueExerciseId = "vowel-e"),
             onEvent = {},
             onVowelsClick = {},
             onConsonantsClick = {},
@@ -239,14 +213,13 @@ private fun HomeScreenPreview() {
             onMathClick = {},
             onBanglaNumbersClick = {},
             onDrawingClick = {},
-            onProgressClick = {},
             onContinueClick = {},
             onMenuClick = {},
         )
     }
 }
 
-@Preview(showBackground = true, name = "No progress yet")
+@Preview(showBackground = true, name = "Nothing to continue")
 @Composable
 private fun HomeScreenEmptyPreview() {
     BornoChitraTheme {
@@ -260,7 +233,6 @@ private fun HomeScreenEmptyPreview() {
             onMathClick = {},
             onBanglaNumbersClick = {},
             onDrawingClick = {},
-            onProgressClick = {},
             onContinueClick = {},
             onMenuClick = {},
         )

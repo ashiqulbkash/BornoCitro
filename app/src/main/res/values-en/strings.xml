@@ -28,6 +28,7 @@
     <string name="action_back">Back</string>
     <string name="action_menu">Menu</string>
     <string name="drawer_home">Home</string>
+    <string name="drawer_progress">Progress</string>
     <string name="action_reset">Reset</string>
     <string name="percent">%1$d%%</string>
     <!-- "percent" and "of 3 stars" read the same for any count, so these are not plurals. -->
@@ -57,8 +58,6 @@
     <!-- Home -->
     <string name="home_welcome">Welcome!</string>
     <string name="home_continue">Continue Learning</string>
-    <string name="home_your_progress">Your Progress</string>
-    <string name="home_view_full_progress">View Full Progress</string>
     <string name="overall">Overall</string>
 
     <!-- Handwriting model dialog -->

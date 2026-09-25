@@ -28,6 +28,7 @@
     <string name="action_back">পিছনে</string>
     <string name="action_menu">মেনু</string>
     <string name="drawer_home">হোম</string>
+    <string name="drawer_progress">অগ্রগতি</string>
     <string name="action_reset">আবার শুরু</string>
     <string name="percent">%1$d%%</string>
     <string name="percent_description">%1$d শতাংশ</string>
@@ -59,8 +60,6 @@
     <string name="language_english" translatable="false">English</string>
     <string name="home_welcome">স্বাগতম!</string>
     <string name="home_continue">শেখা চালিয়ে যাও</string>
-    <string name="home_your_progress">তোমার অগ্রগতি</string>
-    <string name="home_view_full_progress">পুরো অগ্রগতি দেখো</string>
     <string name="overall">সব মিলিয়ে</string>
 
     <!-- Handwriting model dialog -->

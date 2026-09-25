@@ -947,17 +947,23 @@ Add a drawer available from the main screens. It holds the language toggle, Home
 
 - [x] 10.1 Drawer shell with the language toggle
 - [x] 10.2 Home item clears the back stack
-- [ ] 10.3 Progress moved from Home to the drawer
+- [x] 10.3 Progress moved from Home to the drawer
 - [ ] 10.4 About item
 
 ## Definition of Done
 
 - [x] The drawer opens from the menu icon and closes on selection and on back
 - [x] Home from a deep screen (e.g. a Practice screen) lands on Home with an empty back stack behind it
-- [ ] Home no longer shows progress; Progress is reachable only through the drawer and still shows every category
+- [x] Home no longer shows progress; Progress is reachable only through the drawer and still shows every category
 - [ ] The language toggle in the drawer matches the Welcome one and survives restarts
 - [ ] `HomeViewModelTest` updated; navigation/drawer behavior covered by a test
 - [ ] Verified by running the app at 720x1280 and 720x1600, in both languages
+
+## Notes
+
+- **10.3 Progress in the drawer.** `DrawerContent` has a Progress item (`drawer_progress`: অগ্রগতি / Progress, star icon) under Home. `BcNavHost.navigateToProgress()` opens it with only Home behind it (`popUpTo(Home)`, single top), so opening it again does not stack copies. Result's **View Progress** (Step 2) uses the same function. Home lost its progress bars and the "view full progress" button, and `home_your_progress`/`home_view_full_progress` are gone from both string sets. `HomeState` keeps only `continueExerciseId` from the repository. `overall` stays because Progress uses it.
+  - **Tests.** 459 unit tests, 0 failures. `HomeViewModelTest` now checks that the exercise to continue follows the repository. `CriticalFlowTest.drawer_progress_listsEveryCategory` (replaces `progress_listsEveryCategory`) checks that Home has no progress, then opens Progress from the drawer and finds every category. Instrumented 23/23 on the Pixel_5_2 emulator.
+  - **Device (RMX3624, `install -r`).** Home shows no progress. Drawer → অগ্রগতি lists all seven categories. Opening it again from the drawer and pressing Back lands on Home, and Back again leaves the app. Checked in English (Progress item, Progress screen), at 720x1600 and at 720x1280 (`wm size`, reset afterwards). The phone is left on `bn`.
 
 ---
 

@@ -11,6 +11,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -42,14 +44,6 @@ enum class ModelDialog {
 }
 
 data class HomeState(
-    val overallProgress: Float = 0f,
-    val vowelProgress: Float = 0f,
-    val consonantProgress: Float = 0f,
-    val englishSmallProgress: Float = 0f,
-    val englishCapitalProgress: Float = 0f,
-    val mathProgress: Float = 0f,
-    val banglaNumberProgress: Float = 0f,
-    val drawingProgress: Float = 0f,
     val continueExerciseId: String? = null,
     val modelStatus: HandwritingModelStatus = HandwritingModelStatus.CHECKING,
     /** The dialog to show, or null for none. */
@@ -68,7 +62,7 @@ sealed interface HomeEvent {
     data object ModelDialogDismissed : HomeEvent
 }
 
-/** What Home shows besides progress: the handwriting-model gate in front of fill-in-the-blanks. */
+/** What Home shows besides the continue button: the handwriting-model gate in front of fill-in-the-blanks. */
 private data class ModelGate(
     val status: HandwritingModelStatus = HandwritingModelStatus.CHECKING,
     val isDialogShown: Boolean = false,
@@ -100,7 +94,7 @@ private data class ModelGate(
 private const val STATE_SHARING_TIMEOUT_MS = 5_000L
 
 /**
- * Home's progress, plus the gate in front of fill-in-the-blanks: it reads handwriting with models
+ * Home's continue button, plus the gate in front of fill-in-the-blanks: it reads handwriting with models
  * that are downloaded once, and has no offline reader, so the models are mandatory. The
  * fill-in-the-blanks button opens it only once they are on the device; tapping it while they are
  * missing offers the download, asking for the internet first when the device is offline.
@@ -118,20 +112,12 @@ class HomeViewModel @Inject constructor(
         networkMonitor.isOnline.stateIn(viewModelScope, SharingStarted.Eagerly, initialValue = true)
 
     val uiState: StateFlow<HomeState> = combine(
-        progressRepository.observeProgress(),
+        progressRepository.observeProgress().map { it.continueExerciseId }.distinctUntilChanged(),
         modelGate,
         isOnline,
-    ) { progress, gate, isOnline ->
+    ) { continueExerciseId, gate, isOnline ->
         HomeState(
-            overallProgress = progress.overallProgress,
-            vowelProgress = progress.vowelProgress,
-            consonantProgress = progress.consonantProgress,
-            englishSmallProgress = progress.englishSmallProgress,
-            englishCapitalProgress = progress.englishCapitalProgress,
-            mathProgress = progress.mathProgress,
-            banglaNumberProgress = progress.banglaNumberProgress,
-            drawingProgress = progress.drawingProgress,
-            continueExerciseId = progress.continueExerciseId,
+            continueExerciseId = continueExerciseId,
             modelStatus = gate.status,
             modelDialog = gate.dialog(isOnline),
             openFillBlanks = gate.openFillBlanks,

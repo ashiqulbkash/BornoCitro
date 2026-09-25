@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
@@ -28,6 +29,7 @@ fun DrawerContent(
     state: DrawerUiState,
     onEvent: (DrawerEvent) -> Unit,
     onHomeClick: () -> Unit,
+    onProgressClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     ModalDrawerSheet(modifier = modifier.fillMaxWidth(DRAWER_WIDTH_FRACTION)) {
@@ -44,6 +46,12 @@ fun DrawerContent(
                 onClick = onHomeClick,
                 icon = { Icon(imageVector = Icons.Filled.Home, contentDescription = null) },
             )
+            NavigationDrawerItem(
+                label = { Text(text = stringResource(R.string.drawer_progress)) },
+                selected = false,
+                onClick = onProgressClick,
+                icon = { Icon(imageVector = Icons.Filled.Star, contentDescription = null) },
+            )
         }
     }
 }
@@ -52,6 +60,6 @@ fun DrawerContent(
 @Composable
 private fun DrawerContentPreview() {
     BornoChitraTheme {
-        DrawerContent(state = DrawerUiState(language = AppLanguage.ENGLISH), onEvent = {}, onHomeClick = {})
+        DrawerContent(state = DrawerUiState(language = AppLanguage.ENGLISH), onEvent = {}, onHomeClick = {}, onProgressClick = {})
     }
 }

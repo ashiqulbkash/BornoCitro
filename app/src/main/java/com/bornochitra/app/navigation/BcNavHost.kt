@@ -61,6 +61,14 @@ private val DRAWER_SWIPE_ROUTES = setOf(
     BcDestination.Progress.route,
 )
 
+/** Opens Progress with only Home behind it, so opening it again from the drawer does not stack copies. */
+private fun NavHostController.navigateToProgress() {
+    navigate(BcDestination.Progress.route) {
+        popUpTo(BcDestination.Home.route)
+        launchSingleTop = true
+    }
+}
+
 @Composable
 fun BcNavHost(
     navController: NavHostController,
@@ -91,6 +99,10 @@ fun BcNavHost(
                 onHomeClick = {
                     scope.launch { drawerState.close() }
                     navController.navigateToHome()
+                },
+                onProgressClick = {
+                    scope.launch { drawerState.close() }
+                    navController.navigateToProgress()
                 },
             )
         },
@@ -125,7 +137,6 @@ fun BcNavHost(
                     onBanglaNumbersClick = { navController.navigate(BcDestination.BanglaNumbers.route) },
                     onDrawingClick = { navController.navigate(BcDestination.Drawing.route) },
                     onFillBlanksClick = { navController.navigate(BcDestination.FillBlanks.route) },
-                    onProgressClick = { navController.navigate(BcDestination.Progress.route) },
                     onMenuClick = { scope.launch { drawerState.open() } },
                     onContinueClick = { exerciseId ->
                         navController.navigate(BcDestination.Practice.createRoute(exerciseId))
@@ -258,11 +269,7 @@ fun BcNavHost(
                             popUpTo(BcDestination.Practice.route) { inclusive = true }
                         }
                     },
-                    onProgressClick = {
-                        navController.navigate(BcDestination.Progress.route) {
-                            popUpTo(BcDestination.Home.route)
-                        }
-                    },
+                    onProgressClick = { navController.navigateToProgress() },
                     onMenuClick = { scope.launch { drawerState.open() } },
                 )
             }

@@ -43,20 +43,8 @@ class HomeViewModelTest {
     }
 
     @Test
-    fun `ui state mirrors the repository's learning progress`() = runTest(dispatcher) {
-        val progressFlow = MutableStateFlow(
-            LearningProgress(
-                overallProgress = 0.5f,
-                vowelProgress = 1f,
-                consonantProgress = 0.25f,
-                englishSmallProgress = 0.75f,
-                englishCapitalProgress = 0.5f,
-                mathProgress = 0.2f,
-                banglaNumberProgress = 0.4f,
-                drawingProgress = 0f,
-                continueExerciseId = "vowel-a",
-            ),
-        )
+    fun `ui state shows the repository's exercise to continue`() = runTest(dispatcher) {
+        val progressFlow = MutableStateFlow(LearningProgress(overallProgress = 0.5f, continueExerciseId = "vowel-a"))
         val repository = object : ProgressRepository {
             override fun observeProgress(): Flow<LearningProgress> = progressFlow
             override fun observeExerciseProgress(exerciseIds: List<String>): Flow<Map<String, ExerciseProgress>> =
@@ -73,21 +61,15 @@ class HomeViewModelTest {
         val viewModel = HomeViewModel(repository, FakeRecognizer(ready = WritingScript.entries.toSet()), FakeNetworkMonitor())
         backgroundScope.launch(dispatcher) { viewModel.uiState.collect {} }
         dispatcher.scheduler.advanceUntilIdle()
+        assertEquals("vowel-a", viewModel.uiState.value.continueExerciseId)
 
-        val state = viewModel.uiState.value
-        assertEquals(0.5f, state.overallProgress)
-        assertEquals(1f, state.vowelProgress)
-        assertEquals(0.25f, state.consonantProgress)
-        assertEquals(0.75f, state.englishSmallProgress)
-        assertEquals(0.5f, state.englishCapitalProgress)
-        assertEquals(0.2f, state.mathProgress)
-        assertEquals(0.4f, state.banglaNumberProgress)
-        assertEquals(0f, state.drawingProgress)
-        assertEquals("vowel-a", state.continueExerciseId)
+        progressFlow.value = LearningProgress(overallProgress = 0.6f, continueExerciseId = "vowel-aa")
+        dispatcher.scheduler.advanceUntilIdle()
+        assertEquals("vowel-aa", viewModel.uiState.value.continueExerciseId)
     }
 
     @Test
-    fun `default ui state has zero progress and no continue exercise`() = runTest(dispatcher) {
+    fun `default ui state has no continue exercise`() = runTest(dispatcher) {
         val repository = object : ProgressRepository {
             override fun observeProgress(): Flow<LearningProgress> = MutableStateFlow(LearningProgress())
             override fun observeExerciseProgress(exerciseIds: List<String>): Flow<Map<String, ExerciseProgress>> =

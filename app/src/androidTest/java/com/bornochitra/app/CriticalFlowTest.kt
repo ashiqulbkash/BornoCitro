@@ -30,7 +30,7 @@ import org.junit.Test
 import kotlin.math.hypot
 import kotlin.math.max
 
-/** End-to-end flows through the real navigation graph: one practice flow per category, and Progress. */
+/** End-to-end flows through the real navigation graph: one practice flow per category, Progress and the drawer. */
 @HiltAndroidTest
 class CriticalFlowTest {
 
@@ -91,10 +91,13 @@ class CriticalFlowTest {
     fun home_banglaNumbers_1_practice_result() = practiseFromHome(R.string.category_bangla_number, "bangla-number-1", "১")
 
     @Test
-    fun progress_listsEveryCategory() {
+    fun drawer_progress_listsEveryCategory() {
         openHomeFromWelcome()
+        // Home no longer shows progress; it is in the drawer only.
+        composeRule.onNodeWithText(string(R.string.overall), useUnmergedTree = true).assertDoesNotExist()
 
-        clickButton(string(R.string.home_view_full_progress))
+        composeRule.onNodeWithContentDescription(string(R.string.action_menu)).performClick()
+        composeRule.onNodeWithText(string(R.string.drawer_progress)).performClick()
 
         awaitText(string(R.string.title_progress))
         composeRule.onNodeWithText(string(R.string.overall), useUnmergedTree = true).assertExists()
@@ -213,7 +216,7 @@ class CriticalFlowTest {
         const val GUIDE_CANVAS_UNIT = 100f
         const val STEP = 2f
 
-        /** Every category's name, in the order Home and Progress show them. */
+        /** Every category's name, in the order Progress shows them. */
         val CATEGORY_LABELS = listOf(
             R.string.category_vowel,
             R.string.category_consonant,
