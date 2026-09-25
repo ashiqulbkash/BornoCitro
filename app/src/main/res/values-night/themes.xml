@@ -4,4 +4,11 @@
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowBackground">@color/bc_background_dark</item>
     </style>
+
+    <!-- Cold-start splash (AndroidX SplashScreen); switches to Theme.BornoChitra once the app is drawn. -->
+    <style name="Theme.BornoChitra.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/bc_background_dark</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/splash_icon</item>
+        <item name="postSplashScreenTheme">@style/Theme.BornoChitra</item>
+    </style>
 </resources>

@@ -80,6 +80,14 @@ class StringResourcesTest {
     }
 
     @Test
+    fun `the splash message names the app in both languages`() {
+        listOf(bangla, english).forEach { set ->
+            val message = checkNotNull(set.strings["splash_message"])
+            assertTrue("\"$message\" does not start with the app name", message.startsWith(set.strings.getValue("app_name")))
+        }
+    }
+
+    @Test
     fun `toolbar titles are short`() {
         listOf(bangla, english).forEach { set ->
             val titles = set.strings.filterKeys { it.startsWith("title_") }

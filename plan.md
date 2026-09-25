@@ -1105,10 +1105,17 @@ Show a splash with the app icon and a short message when the app starts.
 
 ## Definition of Done
 
-- [ ] Cold start shows the icon and message on Android 12+ and on older versions
-- [ ] The splash hands over to Welcome on first launch and to Home afterwards, with no flicker or extra delay
-- [ ] Both language strings exist and the string-resource tests pass
-- [ ] Verified on the device and the emulator
+- [x] Cold start shows the icon and message on Android 12+ and on older versions
+- [x] The splash hands over to Welcome on first launch and to Home afterwards, with no flicker or extra delay
+- [x] Both language strings exist and the string-resource tests pass
+- [x] Verified on the device and the emulator
+
+## Notes
+
+- **Splash.** `androidx.core:core-splashscreen` 1.2.0. `Theme.BornoChitra.Starting` (light and night) uses the app background (`bc_background_light`/`_dark`) and `drawable/splash_icon`, which is the launcher icon's background and foreground layers in one layer-list. The system splash shows its centre 192dp circle at 288dp, which is the adaptive icon's visible part, and the compat splash (below 12) masks it the same way, so the icon looks the same everywhere. Its `postSplashScreenTheme` is `Theme.BornoChitra`, and the manifest's activity uses the starting theme. `MainActivity` calls `installSplashScreen()`, and its exit listener removes the system splash at once: the default fade-out dimmed the icon for a frame over an identical icon.
+  - **Message.** `splash_message`: বর্ণচিত্র — লেখো, শেখো, বেড়ে ওঠো / BornoChitra — write, learn, grow. The plan's "Barnacitro" is written as the app's own name, as in `app_name`. `app/presentation/BrandSplash` draws the same icon at the screen centre and fades the message in under it (300 ms). It holds for 900 ms and fades out (300 ms). It sits over the start destination, which is already composed beneath it, so nothing waits for it, and touches are held back while it shows. `showBrandSplash` is `rememberSaveable`, so the Android 13+ language recreate on first start, the in-app language switch and configuration changes do not replay it. The animation is driven by Compose's frame clock, so compose tests wait for it.
+  - **Tests.** 488 unit tests, 0 failures. `StringResourcesTest` +1: the splash message starts with the app name in both languages, and the existing parity, non-empty and Latin rules cover it. Instrumented 34/34 on the Pixel_2 emulator (API 29). Lint: 16 warnings, unchanged (1.0.1 drew a newer-version warning, so 1.2.0 is used).
+  - **Device.** RMX3624 (Android 13, `install -r`, progress kept, phone on English, 720x1600): cold start from 250 ms screencaps shows the system splash, then the English message under the icon, then Home. The icon's box is (168,608)–(551,991) in both the system splash and the branded frame; under 1% of pixels differ (anti-aliasing). The first build's default exit fade showed one dimmed frame, and removing the splash on exit fixed it. Pixel_2 emulator (API 29, compat splash, fresh install): icon, then Bangla message, then Welcome. After Continue, cold start shows the message, then Home. Pixel_10 emulator (API 36, fresh install): splash, then the Bangla message once across the first-start recreate, then Welcome. English on Welcome switched the UI with no splash. After Continue, a cold start shows the splash, then Home. Not checked: a real API 24–25 device, and dark mode.
 
 ---
 

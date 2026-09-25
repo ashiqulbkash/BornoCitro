@@ -7,12 +7,18 @@ import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.rememberNavController
 import com.bornochitra.app.navigation.BcDestination
@@ -46,6 +52,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // BrandSplash draws the same icon in the same place, so the system splash's default fade-out
+        // would only dim the icon for a moment: remove it at once instead.
+        installSplashScreen().setOnExitAnimationListener { it.remove() }
         // No language chosen yet means Bangla. Below Android 13 AppCompat applies it in place when it is
         // set before the activity is created (on Android 12 a recreate asked for during onCreate never
         // came); from 13 the framework needs the created activity, and recreates it once.
@@ -87,8 +96,13 @@ private fun BornoChitraApp(startDestination: String) {
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background,
     ) {
-        val navController = rememberNavController()
-        BcNavHost(navController = navController, startDestination = startDestination, modifier = Modifier.fillMaxSize())
+        // Saved, so the language recreate on first start and configuration changes do not replay it.
+        var showBrandSplash by rememberSaveable { mutableStateOf(true) }
+        Box {
+            val navController = rememberNavController()
+            BcNavHost(navController = navController, startDestination = startDestination, modifier = Modifier.fillMaxSize())
+            if (showBrandSplash) BrandSplash(onFinished = { showBrandSplash = false })
+        }
     }
 }
 
