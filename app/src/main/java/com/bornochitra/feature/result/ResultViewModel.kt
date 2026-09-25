@@ -1,8 +1,10 @@
 package com.bornochitra.feature.result
 
+import androidx.annotation.StringRes
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bornochitra.R
 import com.bornochitra.core.content.ExerciseRepository
 import com.bornochitra.core.database.repository.ProgressRepository
 import com.bornochitra.core.model.Exercise
@@ -39,7 +41,7 @@ data class ResultAttempt(
 
 data class ResultState(
     val isLoading: Boolean = true,
-    val error: String? = null,
+    @StringRes val error: Int? = null,
     val attempt: ResultAttempt? = null,
 )
 
@@ -65,9 +67,9 @@ class ResultViewModel @Inject constructor(
 
     private suspend fun loadResult(): ResultState {
         val result = sessionId?.let { progressRepository.getPracticeResult(it) }
-            ?: return ResultState(isLoading = false, error = "We couldn't find that practice result.")
+            ?: return ResultState(isLoading = false, error = R.string.error_result_not_found)
         val exercise = exerciseRepository.getExercise(result.exerciseId)
-            ?: return ResultState(isLoading = false, error = "We couldn't find that exercise.")
+            ?: return ResultState(isLoading = false, error = R.string.error_exercise_not_found)
 
         return ResultState(
             isLoading = false,

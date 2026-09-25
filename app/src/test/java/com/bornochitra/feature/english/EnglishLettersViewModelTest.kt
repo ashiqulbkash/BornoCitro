@@ -7,6 +7,7 @@ import com.bornochitra.core.model.Difficulty
 import com.bornochitra.core.model.Exercise
 import com.bornochitra.core.model.ExerciseProgress
 import com.bornochitra.core.model.ExerciseType
+import com.bornochitra.core.model.LearningState
 import com.bornochitra.core.model.Stroke
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -100,10 +101,10 @@ class EnglishLettersViewModelTest {
 
         val items = viewModel.uiState.value.exercises
         assertEquals(4, items.size)
-        assertEquals(EnglishLetterListItem(id = "english-small-a", title = "a", statusText = "Completed"), items[0])
-        assertEquals(EnglishLetterListItem(id = "english-small-b", title = "b", statusText = "2 attempts"), items[1])
-        assertEquals(EnglishLetterListItem(id = "english-small-c", title = "c", statusText = "Mastered"), items[2])
-        assertEquals(EnglishLetterListItem(id = "english-small-d", title = "d", statusText = null), items[3])
+        assertEquals(EnglishLetterListItem(id = "english-small-a", title = "a", learningState = LearningState.COMPLETED, attemptCount = 1), items[0])
+        assertEquals(EnglishLetterListItem(id = "english-small-b", title = "b", learningState = LearningState.PRACTICING, attemptCount = 2), items[1])
+        assertEquals(EnglishLetterListItem(id = "english-small-c", title = "c", learningState = LearningState.MASTERED, attemptCount = 5), items[2])
+        assertEquals(EnglishLetterListItem(id = "english-small-d", title = "d"), items[3])
     }
 
     @Test
@@ -141,8 +142,8 @@ class EnglishLettersViewModelTest {
         assertEquals(ExerciseType.ENGLISH_CAPITAL, state.type)
         assertEquals(
             listOf(
-                EnglishLetterListItem(id = "english-capital-a", title = "A", statusText = null),
-                EnglishLetterListItem(id = "english-capital-b", title = "B", statusText = "Completed"),
+                EnglishLetterListItem(id = "english-capital-a", title = "A"),
+                EnglishLetterListItem(id = "english-capital-b", title = "B", learningState = LearningState.COMPLETED, attemptCount = 1),
             ),
             state.exercises,
         )

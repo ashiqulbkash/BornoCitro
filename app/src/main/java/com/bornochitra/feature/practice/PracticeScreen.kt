@@ -39,6 +39,7 @@ import com.bornochitra.core.ui.components.BcExerciseHeading
 import com.bornochitra.core.ui.components.BcPrimaryButton
 import com.bornochitra.core.ui.components.BcTip
 import com.bornochitra.core.ui.components.BcTopAppBar
+import com.bornochitra.core.ui.components.exerciseTitle
 import com.bornochitra.core.ui.theme.BcSpacing
 import com.bornochitra.core.ui.theme.BornoChitraTheme
 
@@ -83,12 +84,12 @@ private fun PracticeContent(
 ) {
     Scaffold(
         modifier = modifier,
-        topBar = { BcTopAppBar(title = "Practice", onBackClick = onBackClick) },
+        topBar = { BcTopAppBar(title = stringResource(R.string.title_practice), onBackClick = onBackClick) },
     ) { innerPadding ->
         when {
             state.error != null -> BcEmptyState(
-                title = "Exercise unavailable",
-                message = state.error,
+                title = stringResource(R.string.practice_unavailable),
+                message = stringResource(state.error),
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding),
@@ -129,18 +130,19 @@ private fun ExerciseTracingContent(
     onRestart: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val title = exerciseTitle(exercise.id, exercise.title)
     val canvas: @Composable (Modifier) -> Unit = { canvasModifier ->
         ExerciseTracingCanvas(
             exercise = exercise,
             attemptId = attemptId,
-            contentDescription = "Tracing area for ${exercise.title}. Follow the dots with your finger.",
+            contentDescription = stringResource(R.string.practice_canvas_description, title),
             onExerciseCompleted = onExerciseCompleted,
             onTraceUnfinished = onTraceUnfinished,
             modifier = canvasModifier,
         )
     }
     val reset: @Composable () -> Unit = {
-        BcPrimaryButton(text = "Reset", onClick = onRestart)
+        BcPrimaryButton(text = stringResource(R.string.action_reset), onClick = onRestart)
     }
 
     BoxWithConstraints(modifier = modifier.padding(BcSpacing.md)) {
@@ -160,7 +162,7 @@ private fun ExerciseTracingContent(
                     verticalArrangement = Arrangement.spacedBy(BcSpacing.sm, Alignment.CenterVertically),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-                    BcExerciseHeading(title = exercise.title)
+                    BcExerciseHeading(title = title)
                     TracingInstruction()
                     tip?.let { BcTip(tip = it) }
                     reset()
@@ -172,7 +174,7 @@ private fun ExerciseTracingContent(
                 verticalArrangement = Arrangement.spacedBy(BcSpacing.sm),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                BcExerciseHeading(title = exercise.title)
+                BcExerciseHeading(title = title)
                 TracingInstruction()
                 // Square, but never taller than what the heading, tip and button leave, so a short
                 // screen shrinks the canvas rather than pushing Reset off screen.
@@ -243,7 +245,7 @@ private fun PracticeScreenLoadingPreview() {
 private fun PracticeScreenErrorPreview() {
     BornoChitraTheme {
         PracticeContent(
-            state = PracticeState(isLoading = false, error = "We couldn't find that exercise."),
+            state = PracticeState(isLoading = false, error = R.string.error_exercise_not_found),
             onBackClick = {},
             onExerciseCompleted = { _, _ -> },
             onTraceUnfinished = {},

@@ -10,6 +10,8 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.test.platform.app.InstrumentationRegistry
+import com.bornochitra.R
 import com.bornochitra.core.ui.theme.BcDimens
 import com.bornochitra.core.ui.theme.BornoChitraTheme
 import org.junit.Assert.assertTrue
@@ -20,6 +22,8 @@ class AccessibilityTest {
 
     @get:Rule
     val composeRule = createComposeRule()
+
+    private val context = InstrumentationRegistry.getInstrumentation().targetContext
 
     @Test
     fun exerciseTile_isAButton_andMeetsMinimumSize() {
@@ -51,7 +55,8 @@ class AccessibilityTest {
             BornoChitraTheme { BcLabeledProgress(label = "Overall", progress = 0.8f) }
         }
 
-        composeRule.onNodeWithContentDescription("Overall, 80 percent").assertExists()
+        composeRule.onNodeWithContentDescription(context.getString(R.string.labeled_progress_description, "Overall", 80))
+            .assertExists()
     }
 
     @Test
@@ -60,7 +65,7 @@ class AccessibilityTest {
             BornoChitraTheme { BcTopAppBar(title = "Practice", onBackClick = {}) }
         }
 
-        composeRule.onNodeWithContentDescription("Back")
+        composeRule.onNodeWithContentDescription(context.getString(R.string.action_back))
             .assertWidthIsAtLeast(BcDimens.minTouchTarget)
             .assertHeightIsAtLeast(BcDimens.minTouchTarget)
     }

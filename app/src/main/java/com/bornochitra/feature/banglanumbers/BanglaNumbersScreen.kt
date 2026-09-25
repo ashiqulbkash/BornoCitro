@@ -12,14 +12,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.bornochitra.R
 import com.bornochitra.core.model.ExerciseType
+import com.bornochitra.core.model.LearningState
 import com.bornochitra.core.ui.components.BcEmptyState
 import com.bornochitra.core.ui.components.BcExerciseTile
 import com.bornochitra.core.ui.components.BcTopAppBar
 import com.bornochitra.core.ui.components.label
+import com.bornochitra.core.ui.components.learningStatusText
 import com.bornochitra.core.ui.theme.BcSpacing
 import com.bornochitra.core.ui.theme.BornoChitraTheme
 
@@ -54,8 +58,8 @@ private fun BanglaNumbersContent(
     ) { innerPadding ->
         if (state.exercises.isEmpty()) {
             BcEmptyState(
-                title = "No numbers yet",
-                message = "Check back soon for numbers to practice.",
+                title = stringResource(R.string.empty_numbers),
+                message = stringResource(R.string.empty_numbers_message),
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding),
@@ -76,7 +80,7 @@ private fun BanglaNumbersContent(
                 items(state.exercises, key = { it.id }) { item ->
                     BcExerciseTile(
                         label = item.title,
-                        statusText = item.statusText,
+                        statusText = learningStatusText(item.learningState, item.attemptCount),
                         onClick = { onExerciseClick(item.id) },
                     )
                 }
@@ -92,9 +96,9 @@ private fun BanglaNumbersScreenPreview() {
         BanglaNumbersContent(
             state = BanglaNumbersState(
                 exercises = listOf(
-                    BanglaNumberListItem(id = "bangla-number-1", title = "১", statusText = "Completed"),
-                    BanglaNumberListItem(id = "bangla-number-2", title = "২", statusText = "2 attempts"),
-                    BanglaNumberListItem(id = "bangla-number-3", title = "৩", statusText = null),
+                    BanglaNumberListItem(id = "bangla-number-1", title = "১", learningState = LearningState.COMPLETED, attemptCount = 1),
+                    BanglaNumberListItem(id = "bangla-number-2", title = "২", learningState = LearningState.PRACTICING, attemptCount = 2),
+                    BanglaNumberListItem(id = "bangla-number-3", title = "৩"),
                 ),
             ),
             onBackClick = {},

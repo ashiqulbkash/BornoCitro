@@ -1,5 +1,6 @@
 package com.bornochitra.app
 
+import androidx.annotation.StringRes
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.hasContentDescription
@@ -12,6 +13,7 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performTouchInput
 import androidx.test.ext.junit.rules.ActivityScenarioRule
+import com.bornochitra.R
 import com.bornochitra.app.presentation.MainActivity
 import com.bornochitra.core.content.ExerciseCatalog
 import com.bornochitra.core.model.Point
@@ -43,76 +45,81 @@ class CriticalFlowTest {
     fun home_vowels_o_practice_result_progress() {
         openHomeFromTips()
 
-        clickButton("স্বরবর্ণ")
+        clickButton(string(R.string.category_vowel))
         composeRule.onNodeWithText("অ").performClick()
 
         traceWholeExercise(exerciseId = "vowel-o", title = "অ")
 
-        awaitText("View Progress")
-        composeRule.onNodeWithText("Result").assertExists()
-        clickButton("View Progress")
+        awaitResult()
+        clickButton(string(R.string.result_view_progress))
 
-        awaitText("My Progress")
-        composeRule.onNodeWithText("No progress yet").assertDoesNotExist()
+        awaitText(string(R.string.title_progress))
+        composeRule.onNodeWithText(string(R.string.progress_empty)).assertDoesNotExist()
     }
 
     @Test
     fun home_drawing_circle_practice_result() {
         openHomeFromTips()
 
-        clickButton("আঁকা")
-        composeRule.onNodeWithText("Circle").performClick()
+        clickButton(string(R.string.category_drawing))
+        val circle = string(R.string.drawing_circle)
+        composeRule.onNodeWithText(circle).performClick()
 
-        traceWholeExercise(exerciseId = "drawing-circle", title = "Circle")
+        traceWholeExercise(exerciseId = "drawing-circle", title = circle)
 
-        awaitText("View Progress")
-        composeRule.onNodeWithText("Result").assertExists()
+        awaitResult()
     }
 
     @Test
-    fun home_consonants_ko_practice_result() = practiseFromHome("ব্যঞ্জনবর্ণ", "consonant-ko", "ক")
+    fun home_consonants_ko_practice_result() = practiseFromHome(R.string.category_consonant, "consonant-ko", "ক")
 
     @Test
-    fun home_englishSmall_a_practice_result() = practiseFromHome("ছোট হাতের অক্ষর", "english-small-a", "a")
+    fun home_englishSmall_a_practice_result() = practiseFromHome(R.string.category_english_small, "english-small-a", "a")
 
     @Test
-    fun home_englishCapital_a_practice_result() = practiseFromHome("বড় হাতের অক্ষর", "english-capital-a", "A")
+    fun home_englishCapital_a_practice_result() = practiseFromHome(R.string.category_english_capital, "english-capital-a", "A")
 
     @Test
-    fun home_math_1_practice_result() = practiseFromHome("সংখ্যা ও চিহ্ন", "math-1", "1")
+    fun home_math_1_practice_result() = practiseFromHome(R.string.category_math, "math-1", "1")
 
     @Test
-    fun home_banglaNumbers_1_practice_result() = practiseFromHome("বাংলা সংখ্যা", "bangla-number-1", "১")
+    fun home_banglaNumbers_1_practice_result() = practiseFromHome(R.string.category_bangla_number, "bangla-number-1", "১")
 
     @Test
     fun progress_listsEveryCategory() {
         openHomeFromTips()
 
-        clickButton("View Full Progress")
+        clickButton(string(R.string.home_view_full_progress))
 
-        awaitText("My Progress")
-        composeRule.onNodeWithText("Overall", useUnmergedTree = true).assertExists()
+        awaitText(string(R.string.title_progress))
+        composeRule.onNodeWithText(string(R.string.overall), useUnmergedTree = true).assertExists()
         CATEGORY_LABELS.forEach { label ->
-            composeRule.onNode(hasText(label) and hasClickAction()).performScrollTo().assertExists()
+            composeRule.onNode(hasText(string(label)) and hasClickAction()).performScrollTo().assertExists()
         }
     }
 
-    private fun practiseFromHome(category: String, exerciseId: String, title: String) {
+    private fun practiseFromHome(@StringRes category: Int, exerciseId: String, title: String) {
         openHomeFromTips()
 
-        clickButton(category)
+        clickButton(string(category))
         composeRule.onNodeWithText(title).performClick()
 
         traceWholeExercise(exerciseId = exerciseId, title = title)
 
-        awaitText("View Progress")
-        composeRule.onNodeWithText("Result").assertExists()
+        awaitResult()
     }
 
     private fun openHomeFromTips() {
-        composeRule.onNodeWithText("Continue").performClick()
-        awaitText("Welcome!")
+        composeRule.onNodeWithText(string(R.string.tips_continue)).performClick()
+        awaitText(string(R.string.home_welcome))
     }
+
+    private fun awaitResult() {
+        awaitText(string(R.string.result_view_progress))
+        composeRule.onNodeWithText(string(R.string.title_result)).assertExists()
+    }
+
+    private fun string(@StringRes id: Int, vararg args: Any): String = composeRule.activity.getString(id, *args)
 
     private fun clickButton(label: String) {
         composeRule.onNode(hasText(label) and hasClickAction()).performScrollTo().performClick()
@@ -127,7 +134,7 @@ class CriticalFlowTest {
     /** Swipes each stroke's real guide points, in teaching order, the way a careful child would. */
     private fun traceWholeExercise(exerciseId: String, title: String) {
         val exercise = ExerciseCatalog.all.first { it.id == exerciseId }
-        val canvasDescription = "Tracing area for $title. Follow the dots with your finger."
+        val canvasDescription = string(R.string.practice_canvas_description, title)
         awaitCanvas(canvasDescription)
 
         exercise.strokes.forEach { stroke ->
@@ -167,7 +174,13 @@ class CriticalFlowTest {
 
         /** Every category's name, in the order Home and Progress show them. */
         val CATEGORY_LABELS = listOf(
-            "স্বরবর্ণ", "ব্যঞ্জনবর্ণ", "ছোট হাতের অক্ষর", "বড় হাতের অক্ষর", "সংখ্যা ও চিহ্ন", "বাংলা সংখ্যা", "আঁকা",
+            R.string.category_vowel,
+            R.string.category_consonant,
+            R.string.category_english_small,
+            R.string.category_english_capital,
+            R.string.category_math,
+            R.string.category_bangla_number,
+            R.string.category_drawing,
         )
     }
 }

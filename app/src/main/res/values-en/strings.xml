@@ -1,0 +1,142 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="app_name">BornoChitra</string>
+
+    <!-- Toolbar titles: short, one line at 360dp. -->
+    <string name="title_home">BornoChitra</string>
+    <string name="title_tips">How to Write</string>
+    <string name="title_practice">Practice</string>
+    <string name="title_result">Result</string>
+    <string name="title_progress">Progress</string>
+    <string name="title_fill_blanks">Fill the Blanks</string>
+
+    <!-- Categories: buttons, progress bars and their screens' titles. -->
+    <string name="category_vowel">Vowels</string>
+    <string name="category_consonant">Consonants</string>
+    <string name="category_english_small">Small Letters</string>
+    <string name="category_english_capital">Capital Letters</string>
+    <string name="category_math">Numbers &amp; Signs</string>
+    <string name="category_bangla_number">Bangla Numbers</string>
+    <string name="category_drawing">Drawing</string>
+
+    <!-- Drawing names; letters and numbers are shown as their own glyphs. -->
+    <string name="drawing_line">Line</string>
+    <string name="drawing_circle">Circle</string>
+    <string name="drawing_square">Square</string>
+    <string name="drawing_triangle">Triangle</string>
+    <string name="drawing_house">House</string>
+
+    <string name="action_back">Back</string>
+    <string name="action_reset">Reset</string>
+    <string name="percent">%1$d%%</string>
+    <!-- "percent" and "of 3 stars" read the same for any count, so these are not plurals. -->
+    <string name="percent_description" tools:ignore="PluralsCandidate">%1$d percent</string>
+    <string name="labeled_progress_description" tools:ignore="PluralsCandidate">%1$s, %2$d percent</string>
+
+    <!-- How far an exercise has got. -->
+    <plurals name="status_attempts">
+        <item quantity="one">%d attempt</item>
+        <item quantity="other">%d attempts</item>
+    </plurals>
+    <string name="status_started">Started</string>
+    <string name="status_practicing">Practicing</string>
+    <string name="status_completed">Completed</string>
+    <string name="status_mastered">Mastered</string>
+
+    <string name="empty_vowels">No vowels yet</string>
+    <string name="empty_consonants">No consonants yet</string>
+    <string name="empty_letters">No letters yet</string>
+    <string name="empty_numbers">No numbers yet</string>
+    <string name="empty_drawings">No drawings yet</string>
+    <string name="empty_exercises">No exercises yet</string>
+    <string name="empty_letters_message">Check back soon for letters to practice.</string>
+    <string name="empty_numbers_message">Check back soon for numbers to practice.</string>
+    <string name="empty_drawings_message">Check back soon for drawings to practice.</string>
+
+    <!-- Home -->
+    <string name="home_welcome">Welcome!</string>
+    <string name="home_continue">Continue Learning</string>
+    <string name="home_your_progress">Your Progress</string>
+    <string name="home_view_full_progress">View Full Progress</string>
+    <string name="overall">Overall</string>
+
+    <!-- Handwriting model dialog -->
+    <string name="model_dialog_title">Handwriting models</string>
+    <string name="model_checking">Checking for the models.</string>
+    <string name="model_offer">Fill the Blanks reads your handwriting. It needs a one-time download of about 50 MB, and opens once the download is done.</string>
+    <string name="model_no_internet">Fill the Blanks needs its handwriting models, and your internet is off. Turn on Wi-Fi or mobile data to download them.</string>
+    <string name="model_downloading">Downloading. This can take a minute.</string>
+    <string name="model_waiting_for_internet">The internet went off. Turn on Wi-Fi or mobile data and the download carries on.</string>
+    <string name="model_failed">The download did not finish. Try again.</string>
+    <string name="model_download">Download</string>
+    <string name="model_try_again">Try again</string>
+    <string name="model_hide">Hide</string>
+    <string name="model_not_now">Not now</string>
+
+    <!-- Tips (onboarding) -->
+    <string name="tips_follow_dots">Follow the dots.</string>
+    <string name="tips_start_at_end">Start at one end of the line.</string>
+    <string name="tips_move_slowly">Move your finger slowly.</string>
+    <string name="tips_stay_close">Stay close to the dotted line.</string>
+    <string name="tips_complete_strokes">Complete all strokes.</string>
+    <string name="tips_step_number">%1$d</string>
+    <string name="tips_continue">Continue</string>
+
+    <!-- Contextual tips: positive, never blaming the child. -->
+    <string name="tip_first_attempt">Try tracing slowly.</string>
+    <string name="tip_unfinished_trace">Not finished yet — keep tracing the rest of the dots</string>
+    <string name="tip_repeated_low_scores">Try going a little slower — steady fingers stay on the dots.</string>
+    <string name="tip_difficult_completed">That was a tricky one — well done for finishing it!</string>
+
+    <!-- Practice -->
+    <string name="practice_tracing_instruction">Practice tracing over the dots</string>
+    <string name="practice_canvas_description">Tracing area for %1$s. Follow the dots with your finger.</string>
+    <string name="practice_unavailable">Exercise unavailable</string>
+    <string name="error_exercise_not_found">We couldn\'t find that exercise.</string>
+
+    <!-- Result -->
+    <string name="result_unavailable">Result unavailable</string>
+    <string name="error_result_not_found">We couldn\'t find that practice result.</string>
+    <string name="result_perfect_headline">Great Job! 🎉</string>
+    <string name="result_perfect_message">Perfect!</string>
+    <string name="result_medium_headline">Good Try!</string>
+    <string name="result_medium_message">Nice tracing — keep going!</string>
+    <string name="result_low_headline">Let\'s Practice Again!</string>
+    <string name="result_low_message">Follow the dots slowly. You can do it!</string>
+    <string name="result_practice_again">Practice Again</string>
+    <string name="result_try_again">Try Again</string>
+    <string name="result_next">Next</string>
+    <string name="result_view_progress">View Progress</string>
+    <plurals name="result_session_summary">
+        <item quantity="one">You tried %1$d time. Your overall progress is %2$d%%.</item>
+        <item quantity="other">You tried %1$d times. Your overall progress is %2$d%%.</item>
+    </plurals>
+
+    <!-- Progress -->
+    <string name="progress_unavailable">Progress unavailable</string>
+    <string name="error_progress_load">We couldn\'t load your progress.</string>
+    <string name="progress_empty">No progress yet</string>
+    <string name="progress_empty_message">Practice a letter and your stars will show up here.</string>
+    <string name="progress_stars_description" tools:ignore="PluralsCandidate">%1$d of %2$d stars</string>
+
+    <!-- Fill in the blanks -->
+    <string name="fill_blanks_difficulty">Difficulty</string>
+    <string name="fill_blanks_easy">Easy</string>
+    <string name="fill_blanks_hard">Hard</string>
+    <string name="fill_blanks_choose_category">Choose a category</string>
+    <string name="fill_blanks_no_sequence">No sequence</string>
+    <string name="error_no_sequences">This category has no sequences.</string>
+    <string name="error_too_few_items">This category has too few items yet.</string>
+    <string name="fill_blanks_cell_blank">Blank</string>
+    <string name="fill_blanks_cell_active">Blank to fill in now</string>
+    <string name="fill_blanks_cell_filled">Filled in: %1$s</string>
+    <string name="fill_blanks_not_recognized">Not quite. Tap Reset and try again.</string>
+    <string name="fill_blanks_trace_hint">Trace over the dots</string>
+    <string name="fill_blanks_write_missing">Write the missing one in the box</string>
+    <string name="fill_blanks_canvas_description">Writing area for the missing item.</string>
+    <string name="fill_blanks_hint">Hint</string>
+    <plurals name="fill_blanks_summary">
+        <item quantity="one">You filled %1$d blank. Your score is %2$d%%.</item>
+        <item quantity="other">You filled %1$d blanks. Your score is %2$d%%.</item>
+    </plurals>
+    <string name="fill_blanks_next_sequence">Next sequence</string>
+</resources>

@@ -11,7 +11,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.bornochitra.R
 import com.bornochitra.core.ui.theme.BcDimens
 import com.bornochitra.core.ui.theme.BornoChitraTheme
 
@@ -30,7 +32,7 @@ fun BcTopAppBar(
                 IconButton(onClick = onBackClick, modifier = Modifier.size(BcDimens.minTouchTarget)) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "Back",
+                        contentDescription = stringResource(R.string.action_back),
                     )
                 }
             }

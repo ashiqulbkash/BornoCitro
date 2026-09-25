@@ -1,4 +1,144 @@
 <resources>
-    <string name="app_name">BornoChitra</string>
-    <string name="practice_tracing_instruction">Practice tracing over the dots</string>
+    <string name="app_name">বর্ণচিত্র</string>
+
+    <!-- Toolbar titles: short, one line at 360dp. -->
+    <string name="title_home">বর্ণচিত্র</string>
+    <string name="title_tips">লেখার নিয়ম</string>
+    <string name="title_practice">অনুশীলন</string>
+    <string name="title_result">ফলাফল</string>
+    <string name="title_progress">অগ্রগতি</string>
+    <string name="title_fill_blanks">শূন্যস্থান পূরণ</string>
+
+    <!-- Categories: buttons, progress bars and their screens' titles. -->
+    <string name="category_vowel">স্বরবর্ণ</string>
+    <string name="category_consonant">ব্যঞ্জনবর্ণ</string>
+    <string name="category_english_small">ছোট হাতের অক্ষর</string>
+    <string name="category_english_capital">বড় হাতের অক্ষর</string>
+    <string name="category_math">সংখ্যা ও চিহ্ন</string>
+    <string name="category_bangla_number">বাংলা সংখ্যা</string>
+    <string name="category_drawing">আঁকা</string>
+
+    <!-- Drawing names; letters and numbers are shown as their own glyphs. -->
+    <string name="drawing_line">রেখা</string>
+    <string name="drawing_circle">বৃত্ত</string>
+    <string name="drawing_square">বর্গ</string>
+    <string name="drawing_triangle">ত্রিভুজ</string>
+    <string name="drawing_house">বাড়ি</string>
+
+    <string name="action_back">পিছনে</string>
+    <string name="action_reset">আবার শুরু</string>
+    <string name="percent">%1$d%%</string>
+    <string name="percent_description">%1$d শতাংশ</string>
+    <string name="labeled_progress_description">%1$s, %2$d শতাংশ</string>
+
+    <!-- How far an exercise has got. -->
+    <plurals name="status_attempts">
+        <item quantity="one">%d বার চেষ্টা</item>
+        <item quantity="other">%d বার চেষ্টা</item>
+    </plurals>
+    <string name="status_started">শুরু হয়েছে</string>
+    <string name="status_practicing">অনুশীলন চলছে</string>
+    <string name="status_completed">শেষ হয়েছে</string>
+    <string name="status_mastered">আয়ত্ত হয়েছে</string>
+
+    <string name="empty_vowels">এখনো কোনো স্বরবর্ণ নেই</string>
+    <string name="empty_consonants">এখনো কোনো ব্যঞ্জনবর্ণ নেই</string>
+    <string name="empty_letters">এখনো কোনো অক্ষর নেই</string>
+    <string name="empty_numbers">এখনো কোনো সংখ্যা নেই</string>
+    <string name="empty_drawings">এখনো কোনো আঁকা নেই</string>
+    <string name="empty_exercises">এখনো কোনো অনুশীলন নেই</string>
+    <string name="empty_letters_message">শিগগিরই অনুশীলনের জন্য অক্ষর আসবে।</string>
+    <string name="empty_numbers_message">শিগগিরই অনুশীলনের জন্য সংখ্যা আসবে।</string>
+    <string name="empty_drawings_message">শিগগিরই অনুশীলনের জন্য আঁকা আসবে।</string>
+
+    <!-- Home -->
+    <!-- Each language is named in its own language, whichever one the app is in. -->
+    <string name="language_bangla" translatable="false">বাংলা</string>
+    <string name="language_english" translatable="false">English</string>
+    <string name="home_welcome">স্বাগতম!</string>
+    <string name="home_continue">শেখা চালিয়ে যাও</string>
+    <string name="home_your_progress">তোমার অগ্রগতি</string>
+    <string name="home_view_full_progress">পুরো অগ্রগতি দেখো</string>
+    <string name="overall">সব মিলিয়ে</string>
+
+    <!-- Handwriting model dialog -->
+    <string name="model_dialog_title">হাতের লেখা পড়ার মডেল</string>
+    <string name="model_checking">মডেল আছে কি না দেখা হচ্ছে।</string>
+    <string name="model_offer">শূন্যস্থান পূরণ তোমার হাতের লেখা পড়ে। এর জন্য একবার প্রায় ৫০ এমবি নামাতে হবে, নামানো শেষ হলেই এটি খুলবে।</string>
+    <string name="model_no_internet">শূন্যস্থান পূরণের জন্য হাতের লেখা পড়ার মডেল লাগবে, কিন্তু ইন্টারনেট বন্ধ। মডেল নামাতে ওয়াই-ফাই বা মোবাইল ডেটা চালু করো।</string>
+    <string name="model_downloading">নামানো হচ্ছে। এক মিনিটের মতো লাগতে পারে।</string>
+    <string name="model_waiting_for_internet">ইন্টারনেট বন্ধ হয়ে গেছে। ওয়াই-ফাই বা মোবাইল ডেটা চালু করলে নামানো আবার চলবে।</string>
+    <string name="model_failed">নামানো শেষ হয়নি। আবার চেষ্টা করো।</string>
+    <string name="model_download">নামাও</string>
+    <string name="model_try_again">আবার চেষ্টা করো</string>
+    <string name="model_hide">লুকাও</string>
+    <string name="model_not_now">এখন না</string>
+
+    <!-- Tips (onboarding) -->
+    <string name="tips_follow_dots">ফোঁটাগুলো ধরে চলো।</string>
+    <string name="tips_start_at_end">রেখার এক মাথা থেকে শুরু করো।</string>
+    <string name="tips_move_slowly">আঙুল ধীরে সরাও।</string>
+    <string name="tips_stay_close">ফোঁটার রেখার কাছাকাছি থাকো।</string>
+    <string name="tips_complete_strokes">সবগুলো টান শেষ করো।</string>
+    <string name="tips_step_number">%1$d</string>
+    <string name="tips_continue">এগিয়ে চলো</string>
+
+    <!-- Contextual tips: positive, never blaming the child. -->
+    <string name="tip_first_attempt">ধীরে লেখো।</string>
+    <string name="tip_unfinished_trace">এখনো শেষ হয়নি — বাকি ফোঁটাগুলোও ধরে চলো</string>
+    <string name="tip_repeated_low_scores">আরেকটু ধীরে চলো — স্থির আঙুল ফোঁটার ওপরে থাকে।</string>
+    <string name="tip_difficult_completed">এটা একটু কঠিন ছিল — শেষ করেছ, দারুণ!</string>
+
+    <!-- Practice -->
+    <string name="practice_tracing_instruction">ফোঁটার ওপর দিয়ে আঙুল টেনে লেখো</string>
+    <string name="practice_canvas_description">%1$s লেখার জায়গা। আঙুল দিয়ে ফোঁটাগুলো ধরে চলো।</string>
+    <string name="practice_unavailable">অনুশীলনটি পাওয়া যাচ্ছে না</string>
+    <string name="error_exercise_not_found">অনুশীলনটি খুঁজে পাওয়া যায়নি।</string>
+
+    <!-- Result -->
+    <string name="result_unavailable">ফলাফল পাওয়া যাচ্ছে না</string>
+    <string name="error_result_not_found">এই অনুশীলনের ফলাফল খুঁজে পাওয়া যায়নি।</string>
+    <string name="result_perfect_headline">দারুণ! 🎉</string>
+    <string name="result_perfect_message">একদম ঠিক!</string>
+    <string name="result_medium_headline">ভালো চেষ্টা!</string>
+    <string name="result_medium_message">সুন্দর লিখেছ — চালিয়ে যাও!</string>
+    <string name="result_low_headline">চলো আবার অনুশীলন করি!</string>
+    <string name="result_low_message">ধীরে ফোঁটাগুলো ধরে চলো। তুমি পারবে!</string>
+    <string name="result_practice_again">আবার অনুশীলন করো</string>
+    <string name="result_try_again">আবার চেষ্টা করো</string>
+    <string name="result_next">পরেরটি</string>
+    <string name="result_view_progress">অগ্রগতি দেখো</string>
+    <plurals name="result_session_summary">
+        <item quantity="one">তুমি %1$d বার চেষ্টা করেছ। তোমার গড় অগ্রগতি %2$d%%।</item>
+        <item quantity="other">তুমি %1$d বার চেষ্টা করেছ। তোমার গড় অগ্রগতি %2$d%%।</item>
+    </plurals>
+
+    <!-- Progress -->
+    <string name="progress_unavailable">অগ্রগতি দেখা যাচ্ছে না</string>
+    <string name="error_progress_load">তোমার অগ্রগতি খোলা গেল না।</string>
+    <string name="progress_empty">এখনো কোনো অগ্রগতি নেই</string>
+    <string name="progress_empty_message">একটা অক্ষর অনুশীলন করো, তোমার তারাগুলো এখানে দেখা যাবে।</string>
+    <string name="progress_stars_description">%2$dটির মধ্যে %1$dটি তারা</string>
+
+    <!-- Fill in the blanks -->
+    <string name="fill_blanks_difficulty">কতটা কঠিন</string>
+    <string name="fill_blanks_easy">সহজ</string>
+    <string name="fill_blanks_hard">কঠিন</string>
+    <string name="fill_blanks_choose_category">একটা বিভাগ বেছে নাও</string>
+    <string name="fill_blanks_no_sequence">কোনো সারি নেই</string>
+    <string name="error_no_sequences">এই বিভাগে কোনো সারি নেই।</string>
+    <string name="error_too_few_items">এই বিভাগে এখনো যথেষ্ট অক্ষর বা সংখ্যা নেই।</string>
+    <string name="fill_blanks_cell_blank">ফাঁকা ঘর</string>
+    <string name="fill_blanks_cell_active">এখন এই ফাঁকা ঘরটি পূরণ করো</string>
+    <string name="fill_blanks_cell_filled">পূরণ হয়েছে: %1$s</string>
+    <string name="fill_blanks_not_recognized">ঠিক হয়নি। আবার শুরু করো।</string>
+    <string name="fill_blanks_trace_hint">ফোঁটার ওপর দিয়ে লেখো</string>
+    <string name="fill_blanks_write_missing">বাদ পড়াটি ঘরে লেখো</string>
+    <string name="fill_blanks_canvas_description">বাদ পড়াটি লেখার জায়গা।</string>
+    <string name="fill_blanks_hint">সাহায্য</string>
+    <plurals name="fill_blanks_summary">
+        <item quantity="one">তুমি %1$dটি ফাঁকা ঘর পূরণ করেছ। তোমার স্কোর %2$d%%।</item>
+        <item quantity="other">তুমি %1$dটি ফাঁকা ঘর পূরণ করেছ। তোমার স্কোর %2$d%%।</item>
+    </plurals>
+    <string name="fill_blanks_next_sequence">পরের সারি</string>
 </resources>

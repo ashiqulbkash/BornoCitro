@@ -3,6 +3,8 @@ package com.bornochitra.feature.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bornochitra.core.database.repository.ProgressRepository
+import com.bornochitra.core.locale.AppLanguage
+import com.bornochitra.core.locale.AppLanguageStore
 import com.bornochitra.core.network.NetworkMonitor
 import com.bornochitra.core.recognition.InkRecognizer
 import com.bornochitra.core.recognition.WritingScript
@@ -56,6 +58,7 @@ data class HomeState(
     val modelDialog: ModelDialog? = null,
     /** Set once fill-in-the-blanks may open; the screen navigates and reports [HomeEvent.FillBlanksOpened]. */
     val openFillBlanks: Boolean = false,
+    val language: AppLanguage = AppLanguage.BANGLA,
 )
 
 sealed interface HomeEvent {
@@ -66,6 +69,8 @@ sealed interface HomeEvent {
     data object DownloadModelsClicked : HomeEvent
 
     data object ModelDialogDismissed : HomeEvent
+
+    data class LanguageSelected(val language: AppLanguage) : HomeEvent
 }
 
 /** What Home shows besides progress: the handwriting-model gate in front of fill-in-the-blanks. */
@@ -104,15 +109,21 @@ private const val STATE_SHARING_TIMEOUT_MS = 5_000L
  * that are downloaded once, and has no offline reader, so the models are mandatory. On start Home
  * offers the download if they are missing, asking for the internet first when the device is
  * offline, and the fill-in-the-blanks button opens it only once they are on the device.
+ *
+ * Home also holds the app's language switch.
  */
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     progressRepository: ProgressRepository,
     private val inkRecognizer: InkRecognizer,
     networkMonitor: NetworkMonitor,
+    private val appLanguageStore: AppLanguageStore,
 ) : ViewModel() {
 
     private val modelGate = MutableStateFlow(ModelGate())
+
+    // Choosing a language recreates the activity, but this ViewModel outlives it, so it keeps its own copy.
+    private val language = MutableStateFlow(appLanguageStore.language)
 
     private val isOnline: StateFlow<Boolean> =
         networkMonitor.isOnline.stateIn(viewModelScope, SharingStarted.Eagerly, initialValue = true)
@@ -121,7 +132,8 @@ class HomeViewModel @Inject constructor(
         progressRepository.observeProgress(),
         modelGate,
         isOnline,
-    ) { progress, gate, isOnline ->
+        language,
+    ) { progress, gate, isOnline, language ->
         HomeState(
             overallProgress = progress.overallProgress,
             vowelProgress = progress.vowelProgress,
@@ -135,6 +147,7 @@ class HomeViewModel @Inject constructor(
             modelStatus = gate.status,
             modelDialog = gate.dialog(isOnline),
             openFillBlanks = gate.openFillBlanks,
+            language = language,
         )
     }.stateIn(
         scope = viewModelScope,
@@ -169,7 +182,14 @@ class HomeViewModel @Inject constructor(
             HomeEvent.ModelDialogDismissed -> modelGate.update {
                 it.copy(isDialogShown = false, isOpenWaitingForModels = false)
             }
+            is HomeEvent.LanguageSelected -> selectLanguage(event.language)
         }
+    }
+
+    private fun selectLanguage(selected: AppLanguage) {
+        if (selected == language.value) return
+        language.value = selected
+        appLanguageStore.setLanguage(selected)
     }
 
     private fun downloadModels() {

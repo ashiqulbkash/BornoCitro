@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bornochitra.core.content.ExerciseRepository
 import com.bornochitra.core.database.repository.ProgressRepository
-import com.bornochitra.core.model.ExerciseProgress
 import com.bornochitra.core.model.ExerciseType
 import com.bornochitra.core.model.LearningState
 import com.bornochitra.core.model.toLearningState
@@ -20,7 +19,8 @@ import javax.inject.Inject
 data class DrawingListItem(
     val id: String,
     val title: String,
-    val statusText: String? = null,
+    val learningState: LearningState = LearningState.NOT_STARTED,
+    val attemptCount: Int = 0,
 )
 
 data class DrawingState(
@@ -44,7 +44,8 @@ class DrawingViewModel @Inject constructor(
                         DrawingListItem(
                             id = exercise.id,
                             title = exercise.title,
-                            statusText = progressByExerciseId[exercise.id].toStatusText(),
+                            learningState = progressByExerciseId[exercise.id].toLearningState(),
+                            attemptCount = progressByExerciseId[exercise.id]?.attemptCount ?: 0,
                         )
                     },
                 )
@@ -55,15 +56,4 @@ class DrawingViewModel @Inject constructor(
             started = SharingStarted.WhileSubscribed(STATE_SHARING_TIMEOUT_MS),
             initialValue = DrawingState(),
         )
-}
-
-private fun ExerciseProgress?.toStatusText(): String? {
-    val progress = this ?: return null
-    return when (progress.toLearningState()) {
-        LearningState.NOT_STARTED -> null
-        LearningState.STARTED -> "1 attempt"
-        LearningState.PRACTICING -> "${progress.attemptCount} attempts"
-        LearningState.COMPLETED -> "Completed"
-        LearningState.MASTERED -> "Mastered"
-    }
 }

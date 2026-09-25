@@ -174,12 +174,6 @@ class ResultViewModelTest {
     }
 
     @Test
-    fun `session summary says how many times the child tried and the overall progress`() {
-        assertEquals("You tried 1 time. Your overall progress is 94%.", sessionSummary(1, 94))
-        assertEquals("You tried 3 times. Your overall progress is 78%.", sessionSummary(3, 78))
-    }
-
-    @Test
     fun `score is rounded to a whole percentage`() = runTest(dispatcher) {
         val viewModel = viewModel(results = mapOf(1L to practiceResult(score = 75.6f, scoreLevel = ScoreLevel.MEDIUM)))
 

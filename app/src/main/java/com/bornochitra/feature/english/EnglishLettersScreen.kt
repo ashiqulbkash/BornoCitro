@@ -12,14 +12,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.bornochitra.R
 import com.bornochitra.core.model.ExerciseType
+import com.bornochitra.core.model.LearningState
 import com.bornochitra.core.ui.components.BcEmptyState
 import com.bornochitra.core.ui.components.BcExerciseTile
 import com.bornochitra.core.ui.components.BcTopAppBar
 import com.bornochitra.core.ui.components.label
+import com.bornochitra.core.ui.components.learningStatusText
 import com.bornochitra.core.ui.theme.BcSpacing
 import com.bornochitra.core.ui.theme.BornoChitraTheme
 
@@ -54,8 +58,8 @@ private fun EnglishLettersContent(
     ) { innerPadding ->
         if (state.exercises.isEmpty()) {
             BcEmptyState(
-                title = "No letters yet",
-                message = "Check back soon for letters to practice.",
+                title = stringResource(R.string.empty_letters),
+                message = stringResource(R.string.empty_letters_message),
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding),
@@ -76,7 +80,7 @@ private fun EnglishLettersContent(
                 items(state.exercises, key = { it.id }) { item ->
                     BcExerciseTile(
                         label = item.title,
-                        statusText = item.statusText,
+                        statusText = learningStatusText(item.learningState, item.attemptCount),
                         onClick = { onExerciseClick(item.id) },
                     )
                 }
@@ -93,9 +97,9 @@ private fun EnglishLettersScreenPreview() {
             state = EnglishLettersState(
                 type = ExerciseType.ENGLISH_SMALL,
                 exercises = listOf(
-                    EnglishLetterListItem(id = "english-small-a", title = "a", statusText = "Completed"),
-                    EnglishLetterListItem(id = "english-small-b", title = "b", statusText = "2 attempts"),
-                    EnglishLetterListItem(id = "english-small-c", title = "c", statusText = null),
+                    EnglishLetterListItem(id = "english-small-a", title = "a", learningState = LearningState.COMPLETED, attemptCount = 1),
+                    EnglishLetterListItem(id = "english-small-b", title = "b", learningState = LearningState.PRACTICING, attemptCount = 2),
+                    EnglishLetterListItem(id = "english-small-c", title = "c"),
                 ),
             ),
             onBackClick = {},

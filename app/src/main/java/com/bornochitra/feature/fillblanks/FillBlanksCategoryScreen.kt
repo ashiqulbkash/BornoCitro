@@ -17,11 +17,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.bornochitra.R
 import com.bornochitra.core.model.Difficulty
 import com.bornochitra.core.model.ExerciseType
+import com.bornochitra.core.ui.components.BcChoiceButton
 import com.bornochitra.core.ui.components.BcPrimaryButton
-import com.bornochitra.core.ui.components.BcSecondaryButton
 import com.bornochitra.core.ui.components.BcTopAppBar
 import com.bornochitra.core.ui.components.label
 import com.bornochitra.core.ui.theme.BcSpacing
@@ -37,7 +39,6 @@ private val sequenceCategories = listOf(
     ExerciseType.BANGLA_NUMBER,
 )
 
-internal const val FILL_BLANKS_TITLE = "শূন্যস্থান পূরণ"
 
 /**
  * Picks the category and difficulty for fill-in-the-blanks (plan.md Step 6). The list is fixed, so
@@ -69,7 +70,7 @@ private fun FillBlanksCategoryContent(
 ) {
     Scaffold(
         modifier = modifier,
-        topBar = { BcTopAppBar(title = FILL_BLANKS_TITLE, onBackClick = onBackClick) },
+        topBar = { BcTopAppBar(title = stringResource(R.string.title_fill_blanks), onBackClick = onBackClick) },
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -79,41 +80,27 @@ private fun FillBlanksCategoryContent(
                 .padding(BcSpacing.md),
             verticalArrangement = Arrangement.spacedBy(BcSpacing.md),
         ) {
-            Text(text = "Difficulty", style = MaterialTheme.typography.titleLarge)
+            Text(text = stringResource(R.string.fill_blanks_difficulty), style = MaterialTheme.typography.titleLarge)
             Row(horizontalArrangement = Arrangement.spacedBy(BcSpacing.sm)) {
-                DifficultyButton(
-                    text = "Easy",
+                BcChoiceButton(
+                    text = stringResource(R.string.fill_blanks_easy),
                     selected = difficulty == Difficulty.BEGINNER,
                     onClick = { onDifficultyChange(Difficulty.BEGINNER) },
                     modifier = Modifier.weight(1f),
                 )
-                DifficultyButton(
-                    text = "Hard",
+                BcChoiceButton(
+                    text = stringResource(R.string.fill_blanks_hard),
                     selected = difficulty == Difficulty.ADVANCED,
                     onClick = { onDifficultyChange(Difficulty.ADVANCED) },
                     modifier = Modifier.weight(1f),
                 )
             }
 
-            Text(text = "Choose a category", style = MaterialTheme.typography.titleLarge)
+            Text(text = stringResource(R.string.fill_blanks_choose_category), style = MaterialTheme.typography.titleLarge)
             sequenceCategories.forEach { type ->
                 BcPrimaryButton(text = type.label(), onClick = { onCategoryClick(type) }, modifier = Modifier.fillMaxWidth())
             }
         }
-    }
-}
-
-@Composable
-private fun DifficultyButton(
-    text: String,
-    selected: Boolean,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    if (selected) {
-        BcPrimaryButton(text = text, onClick = onClick, modifier = modifier)
-    } else {
-        BcSecondaryButton(text = text, onClick = onClick, modifier = modifier)
     }
 }
 

@@ -6,6 +6,7 @@ import com.bornochitra.core.model.Difficulty
 import com.bornochitra.core.model.Exercise
 import com.bornochitra.core.model.ExerciseProgress
 import com.bornochitra.core.model.ExerciseType
+import com.bornochitra.core.model.LearningState
 import com.bornochitra.core.model.Stroke
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -97,10 +98,10 @@ class ConsonantsViewModelTest {
 
         val items = viewModel.uiState.value.exercises
         assertEquals(4, items.size)
-        assertEquals(ConsonantListItem(id = "consonant-ko", title = "ক", statusText = "Completed"), items[0])
-        assertEquals(ConsonantListItem(id = "consonant-kho", title = "খ", statusText = "2 attempts"), items[1])
-        assertEquals(ConsonantListItem(id = "consonant-go", title = "গ", statusText = "Mastered"), items[2])
-        assertEquals(ConsonantListItem(id = "consonant-gho", title = "ঘ", statusText = null), items[3])
+        assertEquals(ConsonantListItem(id = "consonant-ko", title = "ক", learningState = LearningState.COMPLETED, attemptCount = 1), items[0])
+        assertEquals(ConsonantListItem(id = "consonant-kho", title = "খ", learningState = LearningState.PRACTICING, attemptCount = 2), items[1])
+        assertEquals(ConsonantListItem(id = "consonant-go", title = "গ", learningState = LearningState.MASTERED, attemptCount = 5), items[2])
+        assertEquals(ConsonantListItem(id = "consonant-gho", title = "ঘ"), items[3])
     }
 
     @Test

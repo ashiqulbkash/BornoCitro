@@ -18,13 +18,19 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.bornochitra.R
+import com.bornochitra.core.model.ExerciseType
+import com.bornochitra.core.locale.AppLanguage
+import com.bornochitra.core.ui.components.BcChoiceButton
 import com.bornochitra.core.ui.components.BcLabeledProgress
 import com.bornochitra.core.ui.components.BcPrimaryButton
 import com.bornochitra.core.ui.components.BcSecondaryButton
 import com.bornochitra.core.ui.components.BcTopAppBar
+import com.bornochitra.core.ui.components.label
 import com.bornochitra.core.ui.theme.BcSpacing
 import com.bornochitra.core.ui.theme.BornoChitraTheme
 
@@ -85,7 +91,7 @@ private fun HomeContent(
     state.modelDialog?.let { dialog -> HandwritingModelDialog(dialog = dialog, onEvent = onEvent) }
     Scaffold(
         modifier = modifier,
-        topBar = { BcTopAppBar(title = "বর্ণচিত্র") },
+        topBar = { BcTopAppBar(title = stringResource(R.string.title_home)) },
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -95,38 +101,66 @@ private fun HomeContent(
                 .padding(BcSpacing.md),
             verticalArrangement = Arrangement.spacedBy(BcSpacing.md),
         ) {
-            Text(text = "Welcome!", style = MaterialTheme.typography.headlineMedium)
+            Text(text = stringResource(R.string.home_welcome), style = MaterialTheme.typography.headlineMedium)
+
+            LanguageSwitch(
+                language = state.language,
+                onLanguageSelected = { onEvent(HomeEvent.LanguageSelected(it)) },
+            )
 
             val continueExerciseId = state.continueExerciseId
             if (continueExerciseId != null) {
                 BcPrimaryButton(
-                    text = "Continue Learning",
+                    text = stringResource(R.string.home_continue),
                     onClick = { onContinueClick(continueExerciseId) },
                     modifier = Modifier.fillMaxWidth(),
                 )
             }
 
-            BcPrimaryButton(text = "স্বরবর্ণ", onClick = onVowelsClick, modifier = Modifier.fillMaxWidth())
-            BcPrimaryButton(text = "ব্যঞ্জনবর্ণ", onClick = onConsonantsClick, modifier = Modifier.fillMaxWidth())
-            BcPrimaryButton(text = "ছোট হাতের অক্ষর", onClick = onEnglishSmallClick, modifier = Modifier.fillMaxWidth())
-            BcPrimaryButton(text = "বড় হাতের অক্ষর", onClick = onEnglishCapitalClick, modifier = Modifier.fillMaxWidth())
-            BcPrimaryButton(text = "সংখ্যা ও চিহ্ন", onClick = onMathClick, modifier = Modifier.fillMaxWidth())
-            BcPrimaryButton(text = "বাংলা সংখ্যা", onClick = onBanglaNumbersClick, modifier = Modifier.fillMaxWidth())
-            BcPrimaryButton(text = "আঁকা", onClick = onDrawingClick, modifier = Modifier.fillMaxWidth())
-            BcPrimaryButton(text = "শূন্যস্থান পূরণ", onClick = { onEvent(HomeEvent.FillBlanksClicked) }, modifier = Modifier.fillMaxWidth())
+            BcPrimaryButton(text = ExerciseType.VOWEL.label(), onClick = onVowelsClick, modifier = Modifier.fillMaxWidth())
+            BcPrimaryButton(text = ExerciseType.CONSONANT.label(), onClick = onConsonantsClick, modifier = Modifier.fillMaxWidth())
+            BcPrimaryButton(text = ExerciseType.ENGLISH_SMALL.label(), onClick = onEnglishSmallClick, modifier = Modifier.fillMaxWidth())
+            BcPrimaryButton(text = ExerciseType.ENGLISH_CAPITAL.label(), onClick = onEnglishCapitalClick, modifier = Modifier.fillMaxWidth())
+            BcPrimaryButton(text = ExerciseType.MATH.label(), onClick = onMathClick, modifier = Modifier.fillMaxWidth())
+            BcPrimaryButton(text = ExerciseType.BANGLA_NUMBER.label(), onClick = onBanglaNumbersClick, modifier = Modifier.fillMaxWidth())
+            BcPrimaryButton(text = ExerciseType.DRAWING.label(), onClick = onDrawingClick, modifier = Modifier.fillMaxWidth())
+            BcPrimaryButton(text = stringResource(R.string.title_fill_blanks), onClick = { onEvent(HomeEvent.FillBlanksClicked) }, modifier = Modifier.fillMaxWidth())
 
-            Text(text = "Your Progress", style = MaterialTheme.typography.titleLarge)
-            BcLabeledProgress(label = "Overall", progress = state.overallProgress)
-            BcLabeledProgress(label = "স্বরবর্ণ", progress = state.vowelProgress)
-            BcLabeledProgress(label = "ব্যঞ্জনবর্ণ", progress = state.consonantProgress)
-            BcLabeledProgress(label = "ছোট হাতের অক্ষর", progress = state.englishSmallProgress)
-            BcLabeledProgress(label = "বড় হাতের অক্ষর", progress = state.englishCapitalProgress)
-            BcLabeledProgress(label = "সংখ্যা ও চিহ্ন", progress = state.mathProgress)
-            BcLabeledProgress(label = "বাংলা সংখ্যা", progress = state.banglaNumberProgress)
-            BcLabeledProgress(label = "আঁকা", progress = state.drawingProgress)
+            Text(text = stringResource(R.string.home_your_progress), style = MaterialTheme.typography.titleLarge)
+            BcLabeledProgress(label = stringResource(R.string.overall), progress = state.overallProgress)
+            BcLabeledProgress(label = ExerciseType.VOWEL.label(), progress = state.vowelProgress)
+            BcLabeledProgress(label = ExerciseType.CONSONANT.label(), progress = state.consonantProgress)
+            BcLabeledProgress(label = ExerciseType.ENGLISH_SMALL.label(), progress = state.englishSmallProgress)
+            BcLabeledProgress(label = ExerciseType.ENGLISH_CAPITAL.label(), progress = state.englishCapitalProgress)
+            BcLabeledProgress(label = ExerciseType.MATH.label(), progress = state.mathProgress)
+            BcLabeledProgress(label = ExerciseType.BANGLA_NUMBER.label(), progress = state.banglaNumberProgress)
+            BcLabeledProgress(label = ExerciseType.DRAWING.label(), progress = state.drawingProgress)
 
-            BcSecondaryButton(text = "View Full Progress", onClick = onProgressClick, modifier = Modifier.fillMaxWidth())
+            BcSecondaryButton(text = stringResource(R.string.home_view_full_progress), onClick = onProgressClick, modifier = Modifier.fillMaxWidth())
         }
+    }
+}
+
+/** The app's language, each option named in its own language so it can be found from either. */
+@Composable
+private fun LanguageSwitch(
+    language: AppLanguage,
+    onLanguageSelected: (AppLanguage) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Row(modifier = modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(BcSpacing.sm)) {
+        BcChoiceButton(
+            text = stringResource(R.string.language_bangla),
+            selected = language == AppLanguage.BANGLA,
+            onClick = { onLanguageSelected(AppLanguage.BANGLA) },
+            modifier = Modifier.weight(1f),
+        )
+        BcChoiceButton(
+            text = stringResource(R.string.language_english),
+            selected = language == AppLanguage.ENGLISH,
+            onClick = { onLanguageSelected(AppLanguage.ENGLISH) },
+            modifier = Modifier.weight(1f),
+        )
     }
 }
 
@@ -141,23 +175,18 @@ private fun HandwritingModelDialog(
     onEvent: (HomeEvent) -> Unit,
 ) {
     val message = when (dialog) {
-        ModelDialog.CHECKING -> "Checking for the models."
-        ModelDialog.OFFER ->
-            "শূন্যস্থান পূরণ reads your handwriting. It needs a one-time download of about 50 MB, " +
-                "and opens once the download is done."
-        ModelDialog.NO_INTERNET ->
-            "শূন্যস্থান পূরণ needs its handwriting models, and your internet is off. " +
-                "Turn on Wi-Fi or mobile data to download them."
-        ModelDialog.DOWNLOADING -> "Downloading. This can take a minute."
-        ModelDialog.WAITING_FOR_INTERNET ->
-            "The internet went off. Turn on Wi-Fi or mobile data and the download carries on."
-        ModelDialog.FAILED -> "The download did not finish. Try again."
+        ModelDialog.CHECKING -> stringResource(R.string.model_checking)
+        ModelDialog.OFFER -> stringResource(R.string.model_offer)
+        ModelDialog.NO_INTERNET -> stringResource(R.string.model_no_internet)
+        ModelDialog.DOWNLOADING -> stringResource(R.string.model_downloading)
+        ModelDialog.WAITING_FOR_INTERNET -> stringResource(R.string.model_waiting_for_internet)
+        ModelDialog.FAILED -> stringResource(R.string.model_failed)
     }
     val isBusy = dialog == ModelDialog.CHECKING || dialog == ModelDialog.DOWNLOADING ||
         dialog == ModelDialog.WAITING_FOR_INTERNET
     AlertDialog(
         onDismissRequest = { onEvent(HomeEvent.ModelDialogDismissed) },
-        title = { Text(text = "Download handwriting models") },
+        title = { Text(text = stringResource(R.string.model_dialog_title)) },
         text = {
             if (isBusy) {
                 Row(
@@ -174,11 +203,11 @@ private fun HandwritingModelDialog(
         confirmButton = {
             when (dialog) {
                 ModelDialog.OFFER -> BcPrimaryButton(
-                    text = "Download",
+                    text = stringResource(R.string.model_download),
                     onClick = { onEvent(HomeEvent.DownloadModelsClicked) },
                 )
                 ModelDialog.FAILED -> BcPrimaryButton(
-                    text = "Try again",
+                    text = stringResource(R.string.model_try_again),
                     onClick = { onEvent(HomeEvent.DownloadModelsClicked) },
                 )
                 ModelDialog.CHECKING,
@@ -190,7 +219,7 @@ private fun HandwritingModelDialog(
         },
         dismissButton = {
             BcSecondaryButton(
-                text = if (isBusy) "Hide" else "Not now",
+                text = if (isBusy) stringResource(R.string.model_hide) else stringResource(R.string.model_not_now),
                 onClick = { onEvent(HomeEvent.ModelDialogDismissed) },
             )
         },

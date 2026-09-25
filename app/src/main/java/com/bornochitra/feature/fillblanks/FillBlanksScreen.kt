@@ -18,6 +18,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.liveRegion
@@ -27,6 +29,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.bornochitra.R
 import com.bornochitra.core.model.Exercise
 import com.bornochitra.core.model.ScoreLevel
 import com.bornochitra.core.tracing.ExerciseTracingCanvas
@@ -34,7 +37,6 @@ import com.bornochitra.core.ui.components.BcEmptyState
 import com.bornochitra.core.ui.components.BcPrimaryButton
 import com.bornochitra.core.ui.components.BcSecondaryButton
 import com.bornochitra.core.ui.components.BcTopAppBar
-import com.bornochitra.core.ui.components.label
 import com.bornochitra.core.ui.components.letterFontFamily
 import com.bornochitra.core.ui.theme.BcSpacing
 import com.bornochitra.core.ui.theme.BornoChitraTheme
@@ -61,18 +63,17 @@ private fun FillBlanksContent(
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val title = state.type?.let { "$FILL_BLANKS_TITLE · ${it.label()}" } ?: FILL_BLANKS_TITLE
     Scaffold(
         modifier = modifier,
-        topBar = { BcTopAppBar(title = title, onBackClick = onBackClick) },
+        topBar = { BcTopAppBar(title = stringResource(R.string.title_fill_blanks), onBackClick = onBackClick) },
     ) { innerPadding ->
         val contentModifier = Modifier
             .fillMaxSize()
             .padding(innerPadding)
         when {
             state.error != null -> BcEmptyState(
-                title = "No sequence",
-                message = state.error,
+                title = stringResource(R.string.fill_blanks_no_sequence),
+                message = stringResource(state.error),
                 modifier = contentModifier,
             )
 
@@ -131,9 +132,9 @@ private fun SequenceCellBox(cell: SequenceCell, modifier: Modifier = Modifier) {
     val borderWidth = if (cell.status == CellStatus.ACTIVE) 3.dp else 1.dp
     val (text, description) = when (cell.status) {
         CellStatus.SHOWN -> cell.title to cell.title
-        CellStatus.BLANK -> "_" to "Blank"
-        CellStatus.ACTIVE -> "?" to "Blank to fill in now"
-        CellStatus.FILLED -> cell.title to "Filled in: ${cell.title}"
+        CellStatus.BLANK -> "_" to stringResource(R.string.fill_blanks_cell_blank)
+        CellStatus.ACTIVE -> "?" to stringResource(R.string.fill_blanks_cell_active)
+        CellStatus.FILLED -> cell.title to stringResource(R.string.fill_blanks_cell_filled, cell.title)
     }
     Box(
         modifier = modifier
@@ -173,9 +174,9 @@ private fun ColumnScope.BlankTracing(
     // area does not move under the ink.
     Text(
         text = when {
-            isNotRecognized -> "Not quite. Tap Reset and try again."
-            isHintShown -> "Trace over the dots"
-            else -> "Write the missing one in the box"
+            isNotRecognized -> stringResource(R.string.fill_blanks_not_recognized)
+            isHintShown -> stringResource(R.string.fill_blanks_trace_hint)
+            else -> stringResource(R.string.fill_blanks_write_missing)
         },
         style = MaterialTheme.typography.titleMedium,
         color = if (isNotRecognized) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
@@ -186,7 +187,7 @@ private fun ColumnScope.BlankTracing(
     ExerciseTracingCanvas(
         exercise = exercise,
         attemptId = attemptId,
-        contentDescription = "Writing area for the missing item.",
+        contentDescription = stringResource(R.string.fill_blanks_canvas_description),
         onExerciseCompleted = { score, level -> onEvent(FillBlanksEvent.BlankCompleted(score, level)) },
         onTraceUnfinished = {},
         showGuide = isHintShown,
@@ -199,11 +200,11 @@ private fun ColumnScope.BlankTracing(
     )
     Row(horizontalArrangement = Arrangement.spacedBy(BcSpacing.sm)) {
         BcSecondaryButton(
-            text = "Hint",
+            text = stringResource(R.string.fill_blanks_hint),
             onClick = { onEvent(FillBlanksEvent.HintUsed) },
             enabled = !isHintShown,
         )
-        BcPrimaryButton(text = "Reset", onClick = { onEvent(FillBlanksEvent.BlankRestarted) })
+        BcPrimaryButton(text = stringResource(R.string.action_reset), onClick = { onEvent(FillBlanksEvent.BlankRestarted) })
     }
 }
 
@@ -214,11 +215,11 @@ private fun SequenceSummary(
     onNextSequence: () -> Unit,
 ) {
     Text(
-        text = "You filled $blankCount blank${if (blankCount == 1) "" else "s"}. Your score is $averagePercent%.",
+        text = pluralStringResource(R.plurals.fill_blanks_summary, blankCount, blankCount, averagePercent),
         style = MaterialTheme.typography.titleLarge,
         textAlign = TextAlign.Center,
     )
-    BcPrimaryButton(text = "Next sequence", onClick = onNextSequence, modifier = Modifier.fillMaxWidth())
+    BcPrimaryButton(text = stringResource(R.string.fill_blanks_next_sequence), onClick = onNextSequence, modifier = Modifier.fillMaxWidth())
 }
 
 private val previewCells = listOf(
@@ -262,7 +263,7 @@ private fun SequenceRowPreview() {
 private fun FillBlanksErrorPreview() {
     BornoChitraTheme {
         FillBlanksContent(
-            state = FillBlanksState(isLoading = false, error = "This category has too few items yet."),
+            state = FillBlanksState(isLoading = false, error = R.string.error_too_few_items),
             onEvent = {},
             onBackClick = {},
         )

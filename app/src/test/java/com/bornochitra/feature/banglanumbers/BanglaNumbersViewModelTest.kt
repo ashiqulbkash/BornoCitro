@@ -7,6 +7,7 @@ import com.bornochitra.core.model.Exercise
 import com.bornochitra.core.model.ExerciseProgress
 import com.bornochitra.core.model.ExerciseType
 import com.bornochitra.core.model.LearningProgress
+import com.bornochitra.core.model.LearningState
 import com.bornochitra.core.model.PracticeResult
 import com.bornochitra.core.model.Stroke
 import kotlinx.coroutines.Dispatchers
@@ -103,10 +104,10 @@ class BanglaNumbersViewModelTest {
         assertEquals(ExerciseType.BANGLA_NUMBER, requestedType)
         assertEquals(
             listOf(
-                BanglaNumberListItem(id = "bangla-number-1", title = "১", statusText = "Completed"),
-                BanglaNumberListItem(id = "bangla-number-5", title = "৫", statusText = null),
-                BanglaNumberListItem(id = "bangla-number-12", title = "১২", statusText = "2 attempts"),
-                BanglaNumberListItem(id = "bangla-number-20", title = "২০", statusText = "Mastered"),
+                BanglaNumberListItem(id = "bangla-number-1", title = "১", learningState = LearningState.COMPLETED, attemptCount = 1),
+                BanglaNumberListItem(id = "bangla-number-5", title = "৫"),
+                BanglaNumberListItem(id = "bangla-number-12", title = "১২", learningState = LearningState.PRACTICING, attemptCount = 2),
+                BanglaNumberListItem(id = "bangla-number-20", title = "২০", learningState = LearningState.MASTERED, attemptCount = 5),
             ),
             viewModel.uiState.value.exercises,
         )

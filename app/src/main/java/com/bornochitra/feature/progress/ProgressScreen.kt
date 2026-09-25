@@ -20,17 +20,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.bornochitra.R
 import com.bornochitra.core.model.ExerciseType
 import com.bornochitra.core.model.LearningState
 import com.bornochitra.core.ui.components.BcEmptyState
 import com.bornochitra.core.ui.components.BcLabeledProgress
 import com.bornochitra.core.ui.components.BcPrimaryButton
 import com.bornochitra.core.ui.components.BcTopAppBar
+import com.bornochitra.core.ui.components.exerciseTitle
 import com.bornochitra.core.ui.components.label
 import com.bornochitra.core.ui.components.letterFontFamily
 import com.bornochitra.core.ui.theme.BcFeedbackGood
@@ -76,7 +79,7 @@ private fun ProgressContent(
         modifier = modifier,
         topBar = {
             BcTopAppBar(
-                title = openCategory?.type?.label() ?: "My Progress",
+                title = openCategory?.type?.label() ?: stringResource(R.string.title_progress),
                 onBackClick = {
                     if (openCategory != null) onEvent(ProgressEvent.CategoryClosed) else onBackClick()
                 },
@@ -89,8 +92,8 @@ private fun ProgressContent(
 
         when {
             state.error != null -> BcEmptyState(
-                title = "Progress unavailable",
-                message = state.error,
+                title = stringResource(R.string.progress_unavailable),
+                message = stringResource(state.error),
                 modifier = contentModifier,
             )
 
@@ -109,8 +112,8 @@ private fun ProgressContent(
             )
 
             state.categories.isEmpty() -> BcEmptyState(
-                title = "No progress yet",
-                message = "Practice a letter and your stars will show up here.",
+                title = stringResource(R.string.progress_empty),
+                message = stringResource(R.string.progress_empty_message),
                 modifier = contentModifier,
             )
 
@@ -136,7 +139,7 @@ private fun CategoryButtons(
             .padding(BcSpacing.md),
         verticalArrangement = Arrangement.spacedBy(BcSpacing.md),
     ) {
-        BcLabeledProgress(label = "Overall", progress = state.overallProgress)
+        BcLabeledProgress(label = stringResource(R.string.overall), progress = state.overallProgress)
 
         state.categories.forEach { category ->
             BcPrimaryButton(
@@ -157,8 +160,8 @@ private fun CategoryProgressList(
 ) {
     if (category.exercises.isEmpty()) {
         BcEmptyState(
-            title = "No exercises yet",
-            message = "Check back soon for letters to practice.",
+            title = stringResource(R.string.empty_exercises),
+            message = stringResource(R.string.empty_letters_message),
             modifier = modifier.padding(innerPadding),
         )
         return
@@ -180,7 +183,7 @@ private fun CategoryProgressList(
 
         items(category.exercises, key = { it.id }) { exercise ->
             ExerciseStarsRow(
-                title = exercise.title,
+                title = exerciseTitle(exercise.id, exercise.title),
                 stars = exercise.stars,
                 stateText = exercise.state.label(),
             )
@@ -195,6 +198,7 @@ private fun ExerciseStarsRow(
     stateText: String?,
     modifier: Modifier = Modifier,
 ) {
+    val starsDescription = stringResource(R.string.progress_stars_description, stars, MAX_EXERCISE_STARS)
     Row(
         modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -215,7 +219,7 @@ private fun ExerciseStarsRow(
         Row(
             // The star glyphs read as punctuation to a screen reader, so say the rating instead.
             modifier = Modifier.clearAndSetSemantics {
-                contentDescription = "$stars of $MAX_EXERCISE_STARS stars"
+                contentDescription = starsDescription
             },
         ) {
             // Earned stars are filled as well as coloured, so the rating still reads without colour.
@@ -233,12 +237,13 @@ private fun ExerciseStarsRow(
     }
 }
 
+@Composable
 private fun LearningState.label(): String? = when (this) {
     LearningState.NOT_STARTED -> null
-    LearningState.STARTED -> "Started"
-    LearningState.PRACTICING -> "Practicing"
-    LearningState.COMPLETED -> "Completed"
-    LearningState.MASTERED -> "Mastered"
+    LearningState.STARTED -> stringResource(R.string.status_started)
+    LearningState.PRACTICING -> stringResource(R.string.status_practicing)
+    LearningState.COMPLETED -> stringResource(R.string.status_completed)
+    LearningState.MASTERED -> stringResource(R.string.status_mastered)
 }
 
 private val previewState = ProgressState(
@@ -313,7 +318,7 @@ private fun ProgressScreenEmptyPreview() {
 private fun ProgressScreenErrorPreview() {
     BornoChitraTheme {
         ProgressContent(
-            state = ProgressState(isLoading = false, error = "We couldn't load your progress."),
+            state = ProgressState(isLoading = false, error = R.string.error_progress_load),
             onEvent = {},
             onBackClick = {},
         )

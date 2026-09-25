@@ -6,6 +6,7 @@ import com.bornochitra.core.model.Difficulty
 import com.bornochitra.core.model.Exercise
 import com.bornochitra.core.model.ExerciseProgress
 import com.bornochitra.core.model.ExerciseType
+import com.bornochitra.core.model.LearningState
 import com.bornochitra.core.model.Stroke
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -97,10 +98,10 @@ class VowelsViewModelTest {
 
         val items = viewModel.uiState.value.exercises
         assertEquals(4, items.size)
-        assertEquals(VowelListItem(id = "vowel-o", title = "অ", statusText = "Completed"), items[0])
-        assertEquals(VowelListItem(id = "vowel-aa", title = "আ", statusText = "2 attempts"), items[1])
-        assertEquals(VowelListItem(id = "vowel-i", title = "ই", statusText = "Mastered"), items[2])
-        assertEquals(VowelListItem(id = "vowel-ii", title = "ঈ", statusText = null), items[3])
+        assertEquals(VowelListItem(id = "vowel-o", title = "অ", learningState = LearningState.COMPLETED, attemptCount = 1), items[0])
+        assertEquals(VowelListItem(id = "vowel-aa", title = "আ", learningState = LearningState.PRACTICING, attemptCount = 2), items[1])
+        assertEquals(VowelListItem(id = "vowel-i", title = "ই", learningState = LearningState.MASTERED, attemptCount = 5), items[2])
+        assertEquals(VowelListItem(id = "vowel-ii", title = "ঈ"), items[3])
     }
 
     @Test

@@ -6,6 +6,7 @@ import com.bornochitra.core.model.Difficulty
 import com.bornochitra.core.model.Exercise
 import com.bornochitra.core.model.ExerciseProgress
 import com.bornochitra.core.model.ExerciseType
+import com.bornochitra.core.model.LearningState
 import com.bornochitra.core.model.Stroke
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -97,10 +98,10 @@ class DrawingViewModelTest {
 
         val items = viewModel.uiState.value.exercises
         assertEquals(4, items.size)
-        assertEquals(DrawingListItem(id = "drawing-line", title = "Line", statusText = "Completed"), items[0])
-        assertEquals(DrawingListItem(id = "drawing-circle", title = "Circle", statusText = "2 attempts"), items[1])
-        assertEquals(DrawingListItem(id = "drawing-square", title = "Square", statusText = "Mastered"), items[2])
-        assertEquals(DrawingListItem(id = "drawing-triangle", title = "Triangle", statusText = null), items[3])
+        assertEquals(DrawingListItem(id = "drawing-line", title = "Line", learningState = LearningState.COMPLETED, attemptCount = 1), items[0])
+        assertEquals(DrawingListItem(id = "drawing-circle", title = "Circle", learningState = LearningState.PRACTICING, attemptCount = 2), items[1])
+        assertEquals(DrawingListItem(id = "drawing-square", title = "Square", learningState = LearningState.MASTERED, attemptCount = 5), items[2])
+        assertEquals(DrawingListItem(id = "drawing-triangle", title = "Triangle"), items[3])
     }
 
     @Test

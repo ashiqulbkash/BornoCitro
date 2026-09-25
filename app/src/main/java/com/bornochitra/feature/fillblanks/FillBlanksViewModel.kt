@@ -1,8 +1,10 @@
 package com.bornochitra.feature.fillblanks
 
+import androidx.annotation.StringRes
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bornochitra.R
 import com.bornochitra.core.content.ExerciseRepository
 import com.bornochitra.core.database.repository.ProgressRepository
 import com.bornochitra.core.model.Difficulty
@@ -68,7 +70,7 @@ data class BlankResult(
 data class FillBlanksState(
     val type: ExerciseType? = null,
     val isLoading: Boolean = true,
-    val error: String? = null,
+    @StringRes val error: Int? = null,
     val cells: List<SequenceCell> = emptyList(),
     /** The missing item being traced, or null once every blank is filled. */
     val activeExercise: Exercise? = null,
@@ -168,12 +170,12 @@ class FillBlanksViewModel @Inject constructor(
 
     private suspend fun load() {
         if (type == null || type == ExerciseType.DRAWING) {
-            mutableState.value = FillBlanksState(type = type, isLoading = false, error = "This category has no sequences.")
+            mutableState.value = FillBlanksState(type = type, isLoading = false, error = R.string.error_no_sequences)
             return
         }
         sequenceItems = exerciseRepository.observeExercises(type).first().sequenceItems(type)
         if (sequenceItems.size < BlankSequenceGenerator.MIN_WINDOW) {
-            mutableState.value = FillBlanksState(type = type, isLoading = false, error = "This category has too few items yet.")
+            mutableState.value = FillBlanksState(type = type, isLoading = false, error = R.string.error_too_few_items)
             return
         }
         val seed = savedStateHandle.get<Long>(KEY_SEED) ?: System.currentTimeMillis().also { savedStateHandle[KEY_SEED] = it }

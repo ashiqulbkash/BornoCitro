@@ -1,5 +1,6 @@
 package com.bornochitra.feature.result
 
+import androidx.annotation.StringRes
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
@@ -25,12 +26,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalInspectionMode
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.bornochitra.R
 import com.bornochitra.core.model.ScoreLevel
 import com.bornochitra.core.ui.components.BcEmptyState
 import com.bornochitra.core.ui.components.BcExerciseHeading
@@ -40,6 +44,7 @@ import com.bornochitra.core.ui.components.BcPrimaryButton
 import com.bornochitra.core.ui.components.BcSecondaryButton
 import com.bornochitra.core.ui.components.BcTip
 import com.bornochitra.core.ui.components.BcTopAppBar
+import com.bornochitra.core.ui.components.exerciseTitle
 import com.bornochitra.core.ui.theme.BcSpacing
 import com.bornochitra.core.ui.theme.BornoChitraTheme
 import kotlinx.coroutines.launch
@@ -77,12 +82,12 @@ private fun ResultContent(
 ) {
     Scaffold(
         modifier = modifier,
-        topBar = { BcTopAppBar(title = "Result") },
+        topBar = { BcTopAppBar(title = stringResource(R.string.title_result)) },
     ) { innerPadding ->
         when {
             state.error != null -> BcEmptyState(
-                title = "Result unavailable",
-                message = state.error,
+                title = stringResource(R.string.result_unavailable),
+                message = stringResource(state.error),
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding),
@@ -130,16 +135,25 @@ private fun AttemptSummary(
             verticalArrangement = Arrangement.spacedBy(BcSpacing.md, Alignment.CenterVertically),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            BcFeedbackBanner(tone = wording.tone, title = wording.headline, message = wording.message)
+            BcFeedbackBanner(
+                tone = wording.tone,
+                title = stringResource(wording.headline),
+                message = stringResource(wording.message),
+            )
 
             ResultHeadline(
-                title = attempt.title,
+                title = exerciseTitle(attempt.exerciseId, attempt.title),
                 scorePercent = attempt.scorePercent,
                 celebrate = attempt.scoreLevel == ScoreLevel.PERFECT,
             )
 
             Text(
-                text = sessionSummary(attempt.sessionAttempts, attempt.sessionAveragePercent),
+                text = pluralStringResource(
+                    R.plurals.result_session_summary,
+                    attempt.sessionAttempts,
+                    attempt.sessionAttempts,
+                    attempt.sessionAveragePercent,
+                ),
                 style = MaterialTheme.typography.titleMedium,
                 textAlign = TextAlign.Center,
             )
@@ -147,7 +161,7 @@ private fun AttemptSummary(
             attempt.tip?.let { BcTip(tip = it) }
 
             BcPrimaryButton(
-                text = wording.retryText,
+                text = stringResource(wording.retryText),
                 onClick = { onPracticeClick(attempt.exerciseId, attempt.sessionScores) },
                 modifier = Modifier.fillMaxWidth(),
             )
@@ -157,14 +171,14 @@ private fun AttemptSummary(
             val nextExerciseId = attempt.nextExerciseId
             if (nextExerciseId != null && attempt.scoreLevel != ScoreLevel.LOW) {
                 BcSecondaryButton(
-                    text = "Next",
+                    text = stringResource(R.string.result_next),
                     onClick = { onPracticeClick(nextExerciseId, emptyList()) },
                     modifier = Modifier.fillMaxWidth(),
                 )
             }
 
             BcSecondaryButton(
-                text = "View Progress",
+                text = stringResource(R.string.result_view_progress),
                 onClick = onProgressClick,
                 modifier = Modifier.fillMaxWidth(),
             )
@@ -196,6 +210,7 @@ private fun ResultHeadline(
         pop.animateTo(1f, spring(dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessLow))
     }
 
+    val scoreDescription = stringResource(R.string.percent_description, scorePercent)
     Column(
         modifier = modifier.graphicsLayer {
             scaleX = pop.value
@@ -206,17 +221,12 @@ private fun ResultHeadline(
     ) {
         BcExerciseHeading(title = title)
         Text(
-            text = "${countedScore(scorePercent, reveal.value)}%",
+            text = stringResource(R.string.percent, countedScore(scorePercent, reveal.value)),
             style = MaterialTheme.typography.headlineLarge,
             // A counting number is noise to a screen reader, so it gets the final score straight away.
-            modifier = Modifier.clearAndSetSemantics { contentDescription = "$scorePercent percent" },
+            modifier = Modifier.clearAndSetSemantics { contentDescription = scoreDescription },
         )
     }
-}
-
-internal fun sessionSummary(attempts: Int, averagePercent: Int): String {
-    val times = if (attempts == 1) "1 time" else "$attempts times"
-    return "You tried $times. Your overall progress is $averagePercent%."
 }
 
 /** The score to show part-way through the count-up, from 0 up to [target] as [progress] goes 0..1. */
@@ -225,31 +235,31 @@ internal fun countedScore(target: Int, progress: Float): Int =
 
 private data class ResultWording(
     val tone: BcFeedbackTone,
-    val headline: String,
-    val message: String,
-    val retryText: String,
+    @StringRes val headline: Int,
+    @StringRes val message: Int,
+    @StringRes val retryText: Int,
 )
 
 private fun ScoreLevel.wording(): ResultWording = when (this) {
     ScoreLevel.PERFECT -> ResultWording(
         tone = BcFeedbackTone.GREAT,
-        headline = "Great Job! 🎉",
-        message = "Perfect!",
-        retryText = "Practice Again",
+        headline = R.string.result_perfect_headline,
+        message = R.string.result_perfect_message,
+        retryText = R.string.result_practice_again,
     )
 
     ScoreLevel.MEDIUM -> ResultWording(
         tone = BcFeedbackTone.GOOD,
-        headline = "Good Try!",
-        message = "Nice tracing — keep going!",
-        retryText = "Try Again",
+        headline = R.string.result_medium_headline,
+        message = R.string.result_medium_message,
+        retryText = R.string.result_try_again,
     )
 
     ScoreLevel.LOW -> ResultWording(
         tone = BcFeedbackTone.ENCOURAGING,
-        headline = "Let's Practice Again!",
-        message = "Follow the dots slowly. You can do it!",
-        retryText = "Try Again",
+        headline = R.string.result_low_headline,
+        message = R.string.result_low_message,
+        retryText = R.string.result_try_again,
     )
 }
 
@@ -324,7 +334,7 @@ private fun ResultScreenLowPreview() {
 private fun ResultScreenErrorPreview() {
     BornoChitraTheme {
         ResultContent(
-            state = ResultState(isLoading = false, error = "We couldn't find that practice result."),
+            state = ResultState(isLoading = false, error = R.string.error_result_not_found),
             onPracticeClick = { _, _ -> },
             onProgressClick = {},
         )

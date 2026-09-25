@@ -1,5 +1,6 @@
 package com.bornochitra.core.ui.components
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,8 +11,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import com.bornochitra.R
 import com.bornochitra.core.tips.ContextualTip
 import com.bornochitra.core.ui.theme.BcSpacing
 import com.bornochitra.core.ui.theme.BornoChitraTheme
@@ -31,7 +34,7 @@ fun BcTip(
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer),
     ) {
         Text(
-            text = tip.message,
+            text = stringResource(tip.messageRes()),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(BcSpacing.md),
@@ -53,4 +56,12 @@ private fun BcTipPreview() {
             ContextualTip.entries.forEach { BcTip(tip = it) }
         }
     }
+}
+
+@StringRes
+private fun ContextualTip.messageRes(): Int = when (this) {
+    ContextualTip.FIRST_ATTEMPT -> R.string.tip_first_attempt
+    ContextualTip.UNFINISHED_TRACE -> R.string.tip_unfinished_trace
+    ContextualTip.REPEATED_LOW_SCORES -> R.string.tip_repeated_low_scores
+    ContextualTip.DIFFICULT_COMPLETED -> R.string.tip_difficult_completed
 }

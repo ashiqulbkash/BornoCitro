@@ -1,8 +1,10 @@
 package com.bornochitra.feature.practice
 
+import androidx.annotation.StringRes
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bornochitra.R
 import com.bornochitra.core.analytics.AnalyticsEvent
 import com.bornochitra.core.analytics.AnalyticsTracker
 import com.bornochitra.core.content.ExerciseRepository
@@ -29,7 +31,7 @@ private const val ARG_EXERCISE_ID = "exerciseId"
 data class PracticeState(
     val exercise: Exercise? = null,
     val isLoading: Boolean = true,
-    val error: String? = null,
+    @StringRes val error: Int? = null,
     val isExerciseCompleted: Boolean = false,
     val score: Float? = null,
     val scoreLevel: ScoreLevel? = null,
@@ -94,7 +96,7 @@ class PracticeViewModel @Inject constructor(
                     sessionScores = earlierSessionScores,
                 )
             } else {
-                PracticeState(isLoading = false, error = "We couldn't find that exercise.")
+                PracticeState(isLoading = false, error = R.string.error_exercise_not_found)
             }
         }
     }

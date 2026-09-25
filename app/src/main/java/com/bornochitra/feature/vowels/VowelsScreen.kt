@@ -12,12 +12,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.bornochitra.R
+import com.bornochitra.core.model.ExerciseType
+import com.bornochitra.core.model.LearningState
 import com.bornochitra.core.ui.components.BcEmptyState
 import com.bornochitra.core.ui.components.BcExerciseTile
 import com.bornochitra.core.ui.components.BcTopAppBar
+import com.bornochitra.core.ui.components.label
+import com.bornochitra.core.ui.components.learningStatusText
 import com.bornochitra.core.ui.theme.BcSpacing
 import com.bornochitra.core.ui.theme.BornoChitraTheme
 
@@ -48,12 +54,12 @@ private fun VowelsContent(
 ) {
     Scaffold(
         modifier = modifier,
-        topBar = { BcTopAppBar(title = "স্বরবর্ণ", onBackClick = onBackClick) },
+        topBar = { BcTopAppBar(title = ExerciseType.VOWEL.label(), onBackClick = onBackClick) },
     ) { innerPadding ->
         if (state.exercises.isEmpty()) {
             BcEmptyState(
-                title = "No vowels yet",
-                message = "Check back soon for letters to practice.",
+                title = stringResource(R.string.empty_vowels),
+                message = stringResource(R.string.empty_letters_message),
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding),
@@ -74,7 +80,7 @@ private fun VowelsContent(
                 items(state.exercises, key = { it.id }) { item ->
                     BcExerciseTile(
                         label = item.title,
-                        statusText = item.statusText,
+                        statusText = learningStatusText(item.learningState, item.attemptCount),
                         onClick = { onExerciseClick(item.id) },
                     )
                 }
@@ -90,10 +96,10 @@ private fun VowelsScreenPreview() {
         VowelsContent(
             state = VowelsState(
                 exercises = listOf(
-                    VowelListItem(id = "vowel-o", title = "অ", statusText = "Completed"),
-                    VowelListItem(id = "vowel-aa", title = "আ", statusText = "2 attempts"),
-                    VowelListItem(id = "vowel-i", title = "ই", statusText = "Mastered"),
-                    VowelListItem(id = "vowel-ii", title = "ঈ", statusText = null),
+                    VowelListItem(id = "vowel-o", title = "অ", learningState = LearningState.COMPLETED, attemptCount = 1),
+                    VowelListItem(id = "vowel-aa", title = "আ", learningState = LearningState.PRACTICING, attemptCount = 2),
+                    VowelListItem(id = "vowel-i", title = "ই", learningState = LearningState.MASTERED, attemptCount = 3),
+                    VowelListItem(id = "vowel-ii", title = "ঈ"),
                 ),
             ),
             onBackClick = {},

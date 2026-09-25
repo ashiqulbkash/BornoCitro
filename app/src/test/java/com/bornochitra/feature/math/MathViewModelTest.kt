@@ -7,6 +7,7 @@ import com.bornochitra.core.model.Exercise
 import com.bornochitra.core.model.ExerciseProgress
 import com.bornochitra.core.model.ExerciseType
 import com.bornochitra.core.model.LearningProgress
+import com.bornochitra.core.model.LearningState
 import com.bornochitra.core.model.PracticeResult
 import com.bornochitra.core.model.Stroke
 import kotlinx.coroutines.Dispatchers
@@ -103,10 +104,10 @@ class MathViewModelTest {
         assertEquals(ExerciseType.MATH, requestedType)
         assertEquals(
             listOf(
-                MathListItem(id = "math-1", title = "1", statusText = "Completed"),
-                MathListItem(id = "math-12", title = "12", statusText = "2 attempts"),
-                MathListItem(id = "math-20", title = "20", statusText = "Mastered"),
-                MathListItem(id = "math-plus", title = "+", statusText = null),
+                MathListItem(id = "math-1", title = "1", learningState = LearningState.COMPLETED, attemptCount = 1),
+                MathListItem(id = "math-12", title = "12", learningState = LearningState.PRACTICING, attemptCount = 2),
+                MathListItem(id = "math-20", title = "20", learningState = LearningState.MASTERED, attemptCount = 5),
+                MathListItem(id = "math-plus", title = "+"),
             ),
             viewModel.uiState.value.exercises,
         )

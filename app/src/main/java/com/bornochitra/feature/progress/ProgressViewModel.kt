@@ -1,7 +1,9 @@
 package com.bornochitra.feature.progress
 
+import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bornochitra.R
 import com.bornochitra.core.content.ExerciseRepository
 import com.bornochitra.core.database.repository.ProgressRepository
 import com.bornochitra.core.model.Exercise
@@ -42,7 +44,7 @@ data class ProgressCategory(
 
 data class ProgressState(
     val isLoading: Boolean = true,
-    val error: String? = null,
+    @StringRes val error: Int? = null,
     val overallProgress: Float = 0f,
     val categories: List<ProgressCategory> = emptyList(),
     /** The category whose individual progress is open, or null while the category buttons show. */
@@ -60,7 +62,6 @@ sealed interface ProgressEvent {
 }
 
 private const val STATE_SHARING_TIMEOUT_MS = 5_000L
-private const val PROGRESS_UNAVAILABLE = "We couldn't load your progress."
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
@@ -102,7 +103,7 @@ class ProgressViewModel @Inject constructor(
         }
         // Progress is read from Room, so a failing read leaves the screen with something to say
         // instead of taking the app down.
-        .catch { emit(ProgressState(isLoading = false, error = PROGRESS_UNAVAILABLE)) }
+        .catch { emit(ProgressState(isLoading = false, error = R.string.error_progress_load)) }
 
     val uiState: StateFlow<ProgressState> = combine(progressData, openCategory) { state, category ->
         state.copy(openCategory = category)

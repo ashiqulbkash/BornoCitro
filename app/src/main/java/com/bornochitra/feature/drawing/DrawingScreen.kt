@@ -12,12 +12,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.bornochitra.R
+import com.bornochitra.core.model.ExerciseType
+import com.bornochitra.core.model.LearningState
 import com.bornochitra.core.ui.components.BcEmptyState
 import com.bornochitra.core.ui.components.BcExerciseTile
 import com.bornochitra.core.ui.components.BcTopAppBar
+import com.bornochitra.core.ui.components.exerciseTitle
+import com.bornochitra.core.ui.components.label
+import com.bornochitra.core.ui.components.learningStatusText
 import com.bornochitra.core.ui.theme.BcSpacing
 import com.bornochitra.core.ui.theme.BornoChitraTheme
 
@@ -48,12 +55,12 @@ private fun DrawingContent(
 ) {
     Scaffold(
         modifier = modifier,
-        topBar = { BcTopAppBar(title = "আঁকা", onBackClick = onBackClick) },
+        topBar = { BcTopAppBar(title = ExerciseType.DRAWING.label(), onBackClick = onBackClick) },
     ) { innerPadding ->
         if (state.exercises.isEmpty()) {
             BcEmptyState(
-                title = "No drawings yet",
-                message = "Check back soon for drawings to practice.",
+                title = stringResource(R.string.empty_drawings),
+                message = stringResource(R.string.empty_drawings_message),
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding),
@@ -73,8 +80,8 @@ private fun DrawingContent(
             ) {
                 items(state.exercises, key = { it.id }) { item ->
                     BcExerciseTile(
-                        label = item.title,
-                        statusText = item.statusText,
+                        label = exerciseTitle(item.id, item.title),
+                        statusText = learningStatusText(item.learningState, item.attemptCount),
                         onClick = { onExerciseClick(item.id) },
                     )
                 }
@@ -90,10 +97,10 @@ private fun DrawingScreenPreview() {
         DrawingContent(
             state = DrawingState(
                 exercises = listOf(
-                    DrawingListItem(id = "drawing-line", title = "Line", statusText = "Completed"),
-                    DrawingListItem(id = "drawing-circle", title = "Circle", statusText = "2 attempts"),
-                    DrawingListItem(id = "drawing-square", title = "Square", statusText = "Mastered"),
-                    DrawingListItem(id = "drawing-triangle", title = "Triangle", statusText = null),
+                    DrawingListItem(id = "drawing-line", title = "Line", learningState = LearningState.COMPLETED, attemptCount = 1),
+                    DrawingListItem(id = "drawing-circle", title = "Circle", learningState = LearningState.PRACTICING, attemptCount = 2),
+                    DrawingListItem(id = "drawing-square", title = "Square", learningState = LearningState.MASTERED, attemptCount = 3),
+                    DrawingListItem(id = "drawing-triangle", title = "Triangle"),
                 ),
             ),
             onBackClick = {},

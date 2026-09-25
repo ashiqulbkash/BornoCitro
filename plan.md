@@ -849,7 +849,60 @@ Confirm all new categories and modes behave as one coherent product.
 
 ---
 
-# 9. Feature Completion Definition
+# 9. Step 8 — Localization
+
+## Requirement
+
+Every piece of UI text comes from string resources, so the app can be shown in Bangla or in English. Bangla is the default. The child (or a parent) picks the language inside the app. Toolbar titles stay short.
+
+## Implement (sub-steps 8.1–8.2)
+
+- **Cadence.** 8.1 does Bangla, 8.2 does English. Each sub-step stops when it is done; do not start 8.2 in 8.1.
+- **What is UI text.** Toolbar titles, buttons, headings, messages, dialogs, empty/error states, tile status ("n attempts", "Mastered"), tips, Result/summary sentences, progress labels, accessibility content descriptions, drawing titles (Line, Circle …) and the launcher label. **Not** UI text: the glyphs being practised (অ, a, ১, + …), routes, ids, analytics names, `require`/`check` messages, log tags, and preview-only sample data.
+- **Toolbar titles are short**: one line at 360dp, at most three words. The fill-in-the-blanks sequence screen drops the `· <category>` suffix and uses the short title alone; Progress uses a short title.
+- **MVI.** ViewModels do not hold a `Context` or build sentences. Where a ViewModel produces text today it exposes data instead: tile items carry `learningState` and `attemptCount` (rendered by one shared Composable in `core/ui`), errors are `@StringRes Int?`, and `ContextualTip` gets its wording in the UI layer. Numbers are formatted by the resource (`%d`, `%1$d%%`), so they follow the app's locale.
+- **Counts** use `<plurals>` (Bangla has one form; English needs one/other).
+
+## Sub-steps
+
+- [x] 8.1 Bangla — move every UI string into `res/values/strings.xml` (the default set), written in Bangla; ViewModel text becomes data as above; drawing titles mapped by id in the UI; short toolbar titles; tests updated (ViewModel tests assert data, not text; a resource test checks that every Bangla string is non-empty and has no Latin letters, and that the tip wording never blames the child; `CriticalFlowTest`/`AccessibilityTest` use the Bangla text).
+- [x] 8.2 English — `res/values-en/strings.xml` with every key translated (same short toolbar rule); an in-app **বাংলা / English** switch on Home, stored with AppCompat per-app locales (`AppCompatDelegate.setApplicationLocales`, `locales_config.xml`, `autoStoreLocales`), so it survives restarts and shows in Android 13+ app language settings; the app starts in Bangla whatever the phone's language; a resource test checks that both sets have the same keys and plural quantities.
+
+## Definition of Done (8.1)
+
+- [x] No user-visible literal is left in `main` Kotlin code (outside previews and the practised glyphs)
+- [x] Every screen, dialog, empty/error state and content description shows Bangla
+- [x] Toolbar titles fit on one line at 720x1280
+- [x] ViewModels expose data, not sentences; their tests assert the data
+- [x] Full unit test suite and instrumented tests (emulator) pass
+- [x] Verified by running the app on the device through Home, a category, Practice, Result, Progress, Tips and fill in the blanks
+
+## Definition of Done (8.2)
+
+- [x] Every key has an English translation; the key-parity test passes
+- [x] The switch changes the whole UI at once and is remembered after a restart
+- [x] The app opens in Bangla on a phone set to English, until English is chosen
+- [x] Toolbar titles fit on one line at 720x1280 in both languages
+- [x] Full unit test suite and instrumented tests (emulator) pass
+- [x] Verified by running the app on the device in both languages
+
+## Notes
+
+- **8.1 Bangla.** `res/values/strings.xml` now holds all UI text in Bangla (101 strings, 3 plurals); the launcher label is বর্ণচিত্র.
+  - **Code.** Tile items in the six category ViewModels carry `learningState` + `attemptCount` instead of `statusText`, rendered by `core/ui/components/learningStatusText`; `ExerciseType.label()` is a Composable over `category_*`; `exerciseTitle(id, title)` translates the five drawing titles by id (letters and numbers stay glyphs); `error` in `PracticeState`, `ResultState`, `ProgressState` and `FillBlanksState` is `@StringRes Int?`; `ContextualTip` lost its English `message` and `BcTip` maps each tip to `tip_*`; Result wording is `@StringRes`, and its session sentence and fill-in-the-blanks' summary are `<plurals>` with `%1$d`/`%2$d%%`; percentages and screen-reader descriptions (progress bars, score, stars, Back, canvases, sequence cells) come from resources. Toolbar titles: বর্ণচিত্র, লেখার নিয়ম, অনুশীলন, ফলাফল, অগ্রগতি, শূন্যস্থান পূরণ (the `· category` suffix is gone) and the category names. Left alone: previews' sample data, the unused dev `LetterTracingPrototype`, ids, routes, analytics and `require` messages.
+  - **Numbers.** Digits follow the app's locale; on a phone set to English they were still Latin (e.g. "তুমি 1 বার চেষ্টা করেছ") until 8.2 set the app locale to Bangla.
+  - **Tests.** 447 unit tests, 0 failures. Six ViewModel tests assert `learningState`/`attemptCount`. The two tip-wording tests and the `sessionSummary` test moved into the new `StringResourcesTest` (+6), which checks that every string has text, has no Latin letters, that `title_*` is at most three words, that each tip has its own wording that never blames the child, and that both summaries carry the count and the percentage. `CriticalFlowTest` and `AccessibilityTest` read expected text from resources. Instrumented 21/21 on the Pixel_5_2 emulator. Lint: the same 14 Gradle/dependency warnings. Lint's `Typos` flagged the doubled words ধীরে ধীরে and ধরে ধরে, so the text uses a single word.
+  - **Device (RMX3624, `install -r`, progress kept).** Tips, Home (buttons and bars), আঁকা (রেখা, বৃত্ত … with "শেষ হয়েছে"), Practice (রেখা traced, 100%), Result (দারুণ! 🎉, the session sentence, আবার অনুশীলন করো / পরেরটি / অগ্রগতি দেখো), Progress with its আঁকা section, and fill in the blanks (picker, sequence, a wrong stroke, the hint) are all Bangla. The first wrong-item message wrapped to two lines and moved the writing area down 48 px, so it was shortened to "ঠিক হয়নি। আবার শুরু করো।", which fits the instruction's one line. The longest toolbar title (ছোট হাতের অক্ষর) fits on one line at 720x1280. The model-download dialog was not shown on the phone (the models are there); it was checked in Bangla on the emulator in 8.2.
+- **8.2 English and the language switch.**
+  - **Code.** `res/values-en/strings.xml` translates every key, with toolbar titles BornoChitra, How to Write, Practice, Result, Progress, Fill the Blanks, and categories Vowels, Consonants, Small Letters, Capital Letters, Numbers & Signs, Bangla Numbers, Drawing. The two language names (বাংলা, English) are `translatable="false"`, so each is written in its own language. `core/locale`: `AppLanguage` (BANGLA `bn`, ENGLISH `en`), `AppLanguageStore` (+ `AppCompatLanguageStore` over `AppCompatDelegate.setApplicationLocales`, bound in `LocaleModule`; `AppLanguageEntryPoint` for use before injection). `MainActivity` is an `AppCompatActivity` (the Material3 theme already derives from AppCompat; `androidx.appcompat` 1.7.0 is now declared, the version Material already pulled in). The manifest gets `localeConfig` (`xml/locales_config.xml`: bn, en) and AppCompat's `autoStoreLocales` service. `HomeState.language` + `HomeEvent.LanguageSelected`; the ViewModel keeps its own copy, because it outlives the recreated activity. Home shows a বাংলা / English pair under the welcome line. It uses `BcChoiceButton`, the fill-in-the-blanks difficulty button moved to `core/ui` and now announced as selected.
+  - **Bangla by default.** When no language is set, `applyDefault` sets Bangla. From Android 13 this needs a created activity (AppCompat reaches the framework `LocaleManager` through an active delegate), so it runs after `super.onCreate` and the framework recreates the activity once. On Android 12 a recreate asked for during `onCreate` never came: the first screen stayed English though `bn` was stored. So below 13 it runs before `super.onCreate`, where AppCompat has already loaded the stored choice and applies the new one in place. Choosing "System default" in Android's settings clears the choice, and the next start is Bangla again.
+  - **Numbers.** With the app locale `bn`, `%d` gives Bengali digits (Tips ১–৫, percentages, attempt counts); in English they are Latin.
+  - **Tests.** 453 unit tests, 0 failures. `HomeViewModelTest` +3 (shows the store's language; choosing one stores and shows it; the language already in use is not set again). `StringResourcesTest` now checks both sets (+3): same keys and plural names, English plurals have one and other, the same format arguments, no Bengali letters in English, and toolbar-length and tip rules in both. Instrumented 21/21 on the Pixel_5_2 emulator (API 31, which exercises the in-place default). Lint: the same Gradle/dependency warnings, one more for the pinned AppCompat; `localeConfig`'s API-33-only warning and three "percent"/"stars" plural suggestions are suppressed in place.
+  - **Device.** RMX3624 (Android 13, phone set to en-US, `install -r`, progress kept): with no app language it opened in Bangla with Bengali digits and stored `[bn]`. English on Home switched the whole UI and survived a force-stop. In English: Drawing, Practice (Line traced, 91%), Result ("You tried 1 time…"), Progress, and the Fill the Blanks picker. Back to বাংলা survived a restart. Setting `en` from the system side (`cmd locale set-app-locales`) opened the app in English with the switch on English. Android's App Language page lists BornoChitra with English and বাংলা. The phone is left on `bn`. Pixel_5_2 emulator (Android 12, fresh install): first start Bangla, English and back both survive restarts, and the model-download dialog shows in Bangla. Toolbar titles: width is the same 720 px at 1280 and 1600, and the longest in each language (ছোট হাতের অক্ষর, Capital Letters) fits one line.
+
+---
+
+# 10. Feature Completion Definition
 
 A step is complete only when it satisfies:
 

@@ -9,6 +9,8 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.selected
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import com.bornochitra.core.ui.theme.BcDimens
 import com.bornochitra.core.ui.theme.BcSpacing
@@ -45,6 +47,25 @@ fun BcSecondaryButton(
         shape = MaterialTheme.shapes.large,
     ) {
         Text(text = text, style = MaterialTheme.typography.titleMedium)
+    }
+}
+
+/**
+ * One option of a small set, such as a difficulty or the app's language: filled when [selected],
+ * outlined otherwise, and announced as selected to a screen reader.
+ */
+@Composable
+fun BcChoiceButton(
+    text: String,
+    selected: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val choiceModifier = modifier.semantics { this.selected = selected }
+    if (selected) {
+        BcPrimaryButton(text = text, onClick = onClick, modifier = choiceModifier)
+    } else {
+        BcSecondaryButton(text = text, onClick = onClick, modifier = choiceModifier)
     }
 }
 
