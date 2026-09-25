@@ -1,5 +1,6 @@
 package com.bornochitra.app.navigation
 
+import com.bornochitra.core.locale.AppLanguage
 import com.bornochitra.core.model.Difficulty
 import com.bornochitra.core.model.ExerciseType
 import com.bornochitra.core.model.SessionScores
@@ -55,9 +56,12 @@ sealed interface BcDestination {
         override val route = "drawing"
     }
 
-    /** The fill-in-the-blanks category picker. */
+    /** The fill-in-the-blanks category picker, listing the categories of the hub it was opened from. */
     data object FillBlanks : BcDestination {
-        override val route = "fill-blanks"
+        const val ARG_LANGUAGE = "language"
+        override val route = "fill-blanks/{$ARG_LANGUAGE}"
+
+        fun createRoute(language: AppLanguage) = "fill-blanks/${language.name}"
     }
 
     /** A fill-in-the-blanks sequence from one category at one difficulty. */

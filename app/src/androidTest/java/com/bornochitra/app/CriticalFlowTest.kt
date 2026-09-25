@@ -30,7 +30,10 @@ import org.junit.Test
 import kotlin.math.hypot
 import kotlin.math.max
 
-/** End-to-end flows through the real navigation graph: one practice flow per category, Progress and the drawer. */
+/**
+ * End-to-end flows through the real navigation graph: one practice flow per category, fill in the blanks
+ * from each hub, Progress and the drawer.
+ */
 @HiltAndroidTest
 class CriticalFlowTest {
 
@@ -144,6 +147,24 @@ class CriticalFlowTest {
     }
 
     @Test
+    fun banglaHub_fillBlanks_listsBanglaCategoriesOnly() =
+        fillBlanksFromHub(
+            hub = R.string.title_bangla,
+            shown = BANGLA_FILL_BLANKS_LABELS,
+            hidden = listOf(R.string.category_english_small, R.string.category_english_capital),
+            category = R.string.category_consonant,
+        )
+
+    @Test
+    fun englishHub_fillBlanks_listsEnglishCategoriesOnly() =
+        fillBlanksFromHub(
+            hub = R.string.title_english,
+            shown = ENGLISH_FILL_BLANKS_LABELS,
+            hidden = listOf(R.string.category_vowel, R.string.category_consonant, R.string.category_bangla_number),
+            category = R.string.category_english_small,
+        )
+
+    @Test
     fun drawer_progress_listsEveryCategory() {
         openHomeFromWelcome()
         // Home no longer shows progress; it is in the drawer only.
@@ -216,6 +237,39 @@ class CriticalFlowTest {
         composeRule.waitForIdle()
         composeRule.onNodeWithText(string(R.string.drawer_progress)).assertIsNotDisplayed()
         composeRule.onNodeWithText(string(R.string.home_welcome)).assertIsDisplayed()
+    }
+
+    /**
+     * Opens fill in the blanks from [hub]: the picker lists [shown] and none of [hidden], [category]
+     * opens a sequence, and Back returns through the picker to the hub.
+     */
+    private fun fillBlanksFromHub(
+        @StringRes hub: Int,
+        shown: List<Int>,
+        hidden: List<Int>,
+        @StringRes category: Int,
+    ) {
+        openHomeFromWelcome()
+        clickButton(string(hub))
+        clickButton(string(R.string.title_fill_blanks))
+
+        awaitText(string(R.string.fill_blanks_choose_category))
+        shown.forEach { label ->
+            composeRule.onNode(hasText(string(label)) and hasClickAction()).performScrollTo().assertExists()
+        }
+        hidden.forEach { label ->
+            composeRule.onNode(hasText(string(label)) and hasClickAction()).assertDoesNotExist()
+        }
+
+        clickButton(string(category))
+        awaitText(string(R.string.fill_blanks_hint))
+        composeRule.onNodeWithContentDescription(string(R.string.action_back)).performClick()
+        awaitText(string(R.string.fill_blanks_choose_category))
+        composeRule.onNodeWithContentDescription(string(R.string.action_back)).performClick()
+        composeRule.waitUntil(timeoutMillis = 10_000) {
+            composeRule.onAllNodesWithText(string(R.string.fill_blanks_choose_category)).fetchSemanticsNodes().isEmpty()
+        }
+        composeRule.onNode(hasText(string(R.string.title_fill_blanks)) and hasClickAction()).assertExists()
     }
 
     private fun practiseFromHub(@StringRes hub: Int, @StringRes category: Int, exerciseId: String, title: String) {
@@ -306,10 +360,27 @@ class CriticalFlowTest {
             R.string.category_consonant,
             R.string.category_bangla_number,
             R.string.category_math,
+            R.string.title_fill_blanks,
         )
 
         /** The English hub's buttons, in order. */
         val ENGLISH_HUB_LABELS = listOf(
+            R.string.category_english_small,
+            R.string.category_english_capital,
+            R.string.category_math,
+            R.string.title_fill_blanks,
+        )
+
+        /** The Bangla fill-in-the-blanks picker's categories. */
+        val BANGLA_FILL_BLANKS_LABELS = listOf(
+            R.string.category_vowel,
+            R.string.category_consonant,
+            R.string.category_bangla_number,
+            R.string.category_math,
+        )
+
+        /** The English fill-in-the-blanks picker's categories. */
+        val ENGLISH_FILL_BLANKS_LABELS = listOf(
             R.string.category_english_small,
             R.string.category_english_capital,
             R.string.category_math,

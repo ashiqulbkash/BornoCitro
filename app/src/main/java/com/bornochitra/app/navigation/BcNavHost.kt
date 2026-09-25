@@ -17,6 +17,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navArgument
+import com.bornochitra.core.locale.AppLanguage
 import com.bornochitra.core.model.ExerciseType
 import com.bornochitra.core.model.SessionScores
 import com.bornochitra.feature.banglanumbers.BanglaNumbersScreen
@@ -27,7 +28,10 @@ import com.bornochitra.feature.drawer.DrawerViewModel
 import com.bornochitra.feature.drawing.DrawingScreen
 import com.bornochitra.feature.english.EnglishLettersScreen
 import com.bornochitra.feature.fillblanks.FillBlanksCategoryScreen
+import com.bornochitra.feature.fillblanks.FillBlanksGateEvent
+import com.bornochitra.feature.fillblanks.FillBlanksGateViewModel
 import com.bornochitra.feature.fillblanks.FillBlanksScreen
+import com.bornochitra.feature.fillblanks.HandwritingModelDialog
 import com.bornochitra.feature.home.HomeScreen
 import com.bornochitra.feature.hub.BanglaHubScreen
 import com.bornochitra.feature.hub.EnglishHubScreen
@@ -58,6 +62,8 @@ fun BcNavHost(
     val scope = rememberCoroutineScope()
     val drawerViewModel: DrawerViewModel = hiltViewModel()
     val drawerUiState by drawerViewModel.uiState.collectAsStateWithLifecycle()
+    val fillBlanksGateViewModel: FillBlanksGateViewModel = hiltViewModel()
+    val fillBlanksGateState by fillBlanksGateViewModel.uiState.collectAsStateWithLifecycle()
     val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
 
     LaunchedEffect(drawerState.targetValue) {
@@ -67,6 +73,15 @@ fun BcNavHost(
     // back handlers and Back closes the drawer instead of leaving the screen behind it.
     if (drawerState.targetValue == DrawerValue.Open) {
         BackHandler { scope.launch { drawerState.close() } }
+    }
+
+    fillBlanksGateState.modelDialog?.let { dialog ->
+        HandwritingModelDialog(dialog = dialog, onEvent = fillBlanksGateViewModel::onEvent)
+    }
+    LaunchedEffect(fillBlanksGateState.openFillBlanks) {
+        val language = fillBlanksGateState.openFillBlanks ?: return@LaunchedEffect
+        fillBlanksGateViewModel.onEvent(FillBlanksGateEvent.FillBlanksOpened)
+        navController.navigate(BcDestination.FillBlanks.createRoute(language))
     }
 
     ModalNavigationDrawer(
@@ -108,7 +123,6 @@ fun BcNavHost(
                     onBanglaClick = { navController.navigate(BcDestination.BanglaHub.route) },
                     onEnglishClick = { navController.navigate(BcDestination.EnglishHub.route) },
                     onDrawingClick = { navController.navigate(BcDestination.Drawing.route) },
-                    onFillBlanksClick = { navController.navigate(BcDestination.FillBlanks.route) },
                     onMenuClick = { scope.launch { drawerState.open() } },
                     onContinueClick = { exerciseId ->
                         navController.navigate(BcDestination.Practice.createRoute(exerciseId))
@@ -123,6 +137,9 @@ fun BcNavHost(
                     onConsonantsClick = { navController.navigate(BcDestination.Consonants.route) },
                     onBanglaNumbersClick = { navController.navigate(BcDestination.BanglaNumbers.route) },
                     onMathClick = { navController.navigate(BcDestination.Math.route) },
+                    onFillBlanksClick = {
+                        fillBlanksGateViewModel.onEvent(FillBlanksGateEvent.FillBlanksClicked(AppLanguage.BANGLA))
+                    },
                 )
             }
 
@@ -136,6 +153,9 @@ fun BcNavHost(
                         navController.navigate(BcDestination.EnglishLetters.createRoute(ExerciseType.ENGLISH_CAPITAL))
                     },
                     onMathClick = { navController.navigate(BcDestination.Math.route) },
+                    onFillBlanksClick = {
+                        fillBlanksGateViewModel.onEvent(FillBlanksGateEvent.FillBlanksClicked(AppLanguage.ENGLISH))
+                    },
                 )
             }
 
@@ -196,8 +216,15 @@ fun BcNavHost(
                 )
             }
 
-            composable(BcDestination.FillBlanks.route) {
+            composable(
+                route = BcDestination.FillBlanks.route,
+                arguments = listOf(navArgument(BcDestination.FillBlanks.ARG_LANGUAGE) { type = NavType.StringType }),
+            ) { backStackEntry ->
+                val language = AppLanguage.valueOf(
+                    checkNotNull(backStackEntry.arguments?.getString(BcDestination.FillBlanks.ARG_LANGUAGE)),
+                )
                 FillBlanksCategoryScreen(
+                    language = language,
                     onBackClick = { navController.popBackStack() },
                     onCategoryClick = { type, difficulty ->
                         navController.navigate(BcDestination.FillBlanksSequence.createRoute(type, difficulty))

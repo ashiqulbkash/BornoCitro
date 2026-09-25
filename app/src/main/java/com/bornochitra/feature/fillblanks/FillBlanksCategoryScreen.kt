@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.bornochitra.R
+import com.bornochitra.core.locale.AppLanguage
 import com.bornochitra.core.model.Difficulty
 import com.bornochitra.core.model.ExerciseType
 import com.bornochitra.core.ui.components.BcChoiceButton
@@ -29,29 +30,39 @@ import com.bornochitra.core.ui.components.label
 import com.bornochitra.core.ui.theme.BcSpacing
 import com.bornochitra.core.ui.theme.BornoChitraTheme
 
-/** The categories whose items form an ordered sequence; drawings do not. */
-private val sequenceCategories = listOf(
-    ExerciseType.VOWEL,
-    ExerciseType.CONSONANT,
-    ExerciseType.ENGLISH_SMALL,
-    ExerciseType.ENGLISH_CAPITAL,
-    ExerciseType.MATH,
-    ExerciseType.BANGLA_NUMBER,
-)
-
+/**
+ * The categories whose items form an ordered sequence (drawings do not), split by the hub that opens the
+ * picker. Math is in both, as it is in both hubs.
+ */
+internal fun sequenceCategories(language: AppLanguage): List<ExerciseType> = when (language) {
+    AppLanguage.BANGLA -> listOf(
+        ExerciseType.VOWEL,
+        ExerciseType.CONSONANT,
+        ExerciseType.BANGLA_NUMBER,
+        ExerciseType.MATH,
+    )
+    AppLanguage.ENGLISH -> listOf(
+        ExerciseType.ENGLISH_SMALL,
+        ExerciseType.ENGLISH_CAPITAL,
+        ExerciseType.MATH,
+    )
+}
 
 /**
- * Picks the category and difficulty for fill-in-the-blanks (plan.md Step 6). The list is fixed, so
- * there is no ViewModel; the difficulty choice is plain UI state held until a category is tapped.
+ * Picks the category and difficulty for fill-in-the-blanks (plan.md Step 6), from the categories of the
+ * [language] whose hub opened it. The list is fixed, so there is no ViewModel; the difficulty choice
+ * is plain UI state held until a category is tapped.
  */
 @Composable
 fun FillBlanksCategoryScreen(
+    language: AppLanguage,
     onBackClick: () -> Unit,
     onCategoryClick: (type: ExerciseType, difficulty: Difficulty) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var difficulty by rememberSaveable { mutableStateOf(Difficulty.BEGINNER) }
     FillBlanksCategoryContent(
+        categories = sequenceCategories(language),
         difficulty = difficulty,
         onDifficultyChange = { difficulty = it },
         onBackClick = onBackClick,
@@ -62,6 +73,7 @@ fun FillBlanksCategoryScreen(
 
 @Composable
 private fun FillBlanksCategoryContent(
+    categories: List<ExerciseType>,
     difficulty: Difficulty,
     onDifficultyChange: (Difficulty) -> Unit,
     onBackClick: () -> Unit,
@@ -97,7 +109,7 @@ private fun FillBlanksCategoryContent(
             }
 
             Text(text = stringResource(R.string.fill_blanks_choose_category), style = MaterialTheme.typography.titleLarge)
-            sequenceCategories.forEach { type ->
+            categories.forEach { type ->
                 BcPrimaryButton(text = type.label(), onClick = { onCategoryClick(type) }, modifier = Modifier.fillMaxWidth())
             }
         }
@@ -109,6 +121,7 @@ private fun FillBlanksCategoryContent(
 private fun FillBlanksCategoryScreenPreview() {
     BornoChitraTheme {
         FillBlanksCategoryContent(
+            categories = sequenceCategories(AppLanguage.BANGLA),
             difficulty = Difficulty.BEGINNER,
             onDifficultyChange = {},
             onBackClick = {},

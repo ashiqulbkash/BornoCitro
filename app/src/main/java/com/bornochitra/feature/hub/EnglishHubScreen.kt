@@ -20,13 +20,17 @@ import com.bornochitra.core.ui.components.label
 import com.bornochitra.core.ui.theme.BcSpacing
 import com.bornochitra.core.ui.theme.BornoChitraTheme
 
-/** The English hub: small and capital letters, and Math, which the Bangla hub also opens. */
+/**
+ * The English hub: small and capital letters, Math, which the Bangla hub also opens, and fill in the
+ * blanks with the English categories.
+ */
 @Composable
 fun EnglishHubScreen(
     onBackClick: () -> Unit,
     onEnglishSmallClick: () -> Unit,
     onEnglishCapitalClick: () -> Unit,
     onMathClick: () -> Unit,
+    onFillBlanksClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
@@ -44,6 +48,7 @@ fun EnglishHubScreen(
             BcPrimaryButton(text = ExerciseType.ENGLISH_SMALL.label(), onClick = onEnglishSmallClick, modifier = Modifier.fillMaxWidth())
             BcPrimaryButton(text = ExerciseType.ENGLISH_CAPITAL.label(), onClick = onEnglishCapitalClick, modifier = Modifier.fillMaxWidth())
             BcPrimaryButton(text = ExerciseType.MATH.label(), onClick = onMathClick, modifier = Modifier.fillMaxWidth())
+            BcPrimaryButton(text = stringResource(R.string.title_fill_blanks), onClick = onFillBlanksClick, modifier = Modifier.fillMaxWidth())
         }
     }
 }
@@ -57,6 +62,7 @@ private fun EnglishHubScreenPreview() {
             onEnglishSmallClick = {},
             onEnglishCapitalClick = {},
             onMathClick = {},
+            onFillBlanksClick = {},
         )
     }
 }

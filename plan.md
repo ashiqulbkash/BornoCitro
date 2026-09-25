@@ -993,15 +993,15 @@ Home shows the two hub buttons plus Drawing. Math is reachable from both hubs (o
 
 - [x] 11.1 Bangla screen
 - [x] 11.2 English screen
-- [ ] 11.3 Fill in the blanks per language
+- [x] 11.3 Fill in the blanks per language
 
 ## Definition of Done
 
-- [ ] Home shows Bangla, English and Drawing only
-- [ ] Every previous Home practice button is reachable from exactly the hub described above
-- [ ] Fill in the blanks shows only the categories of the language it was opened from; sequence generation is unchanged
-- [ ] Existing tracing, progress and fill-blanks tests pass unmodified; Home tests updated for the new events
-- [ ] Verified by running the app through one flow per category from its hub
+- [x] Home shows Bangla, English and Drawing only
+- [x] Every previous Home practice button is reachable from exactly the hub described above
+- [x] Fill in the blanks shows only the categories of the language it was opened from; sequence generation is unchanged
+- [x] Existing tracing, progress and fill-blanks tests pass unmodified; Home tests updated for the new events
+- [x] Verified by running the app through one flow per category from its hub
 
 ## Notes
 
@@ -1011,6 +1011,9 @@ Home shows the two hub buttons plus Drawing. Math is reachable from both hubs (o
 - **11.2 English hub.** `EnglishHubScreen` (`feature/hub`) mirrors the Bangla hub: stateless, no ViewModel, a `title_english` top bar (ইংরেজি / English) with a back arrow, and one button each for Small Letters, Capital Letters and Math (`BcDestination.EnglishHub`, route `english`). Home's Small Letters, Capital Letters and Math buttons became one **English** button, so Home now shows Bangla, English, Drawing and Fill the Blanks (the last leaves in 11.3). Both hubs open the same `Math` destination, so Math has one screen and one progress.
   - **Tests.** 459 unit tests, 0 failures. In `CriticalFlowTest`, the small, capital and math flows now go through the English hub (`english_*`), and `practiseFromHome` is gone with its last callers. New `englishHub_listsEnglishCategoriesAndMath` checks that Home has none of the three buttons, that the hub lists them, that Math opens and Back returns to the hub, and that the hub has no menu and Back returns Home. `banglaHub_listsBanglaCategoriesAndMath` now also checks that Math is gone from Home, and `drawer_isOnHomeOnly` checks the English hub. Instrumented 26/26 on the Pixel_5_2 emulator. Lint: nothing new.
   - **Device (RMX3624, `install -r`).** In English at 720x1600, Home shows Bangla, English, Drawing and Fill the Blanks. The English hub lists its three categories, each opens its screen, and Back returns to the hub. An edge swipe on the hub does not open the drawer, and Back from the hub lands on Home. In Bangla at 720x1280, Home (বাংলা, ইংরেজি) and the English hub (ছোট হাতের অক্ষর, বড় হাতের অক্ষর, সংখ্যা ও চিহ্ন) lay out on one screen, and the Bangla hub still opens Math. `wm size` was reset afterwards, and the phone is left on `en`, as it was found.
+- **11.3 Fill in the blanks per language.** Each hub has a **শূন্যস্থান পূরণ / Fill the Blanks** button under its categories, and Home's is gone, so Home shows Bangla, English and Drawing only. The picker's route is `fill-blanks/{language}` (`AppLanguage`), and `sequenceCategories(language)` lists the Bangla hub's categories (vowels, consonants, Bangla numbers, math) or the English hub's (small, capital, math). Math is in both, as in the hubs. Nothing else in fill in the blanks changed: sequence route, generator, ViewModel and recognition are as before. The handwriting-model gate (check, download dialog, offline states, the waiting tap) moved unchanged from `HomeViewModel` into `FillBlanksGateViewModel` (`feature/fillblanks`). The only difference is that the tap carries its language, and the picker opens in it. The gate is owned by the nav host, like `DrawerViewModel`, not by a hub: both hubs then share one model status, and a download keeps running after its hub is left. The hubs stay stateless. `HandwritingModelDialog` moved with it, and `BcNavHost` shows it and navigates when the gate opens. `HomeViewModel` keeps only `continueExerciseId` and has no events left.
+  - **Tests.** 464 unit tests, 0 failures. The gate tests moved from `HomeViewModelTest` to `FillBlanksGateViewModelTest` with the same assertions, plus 2 new ones: the picker opens in the tapped hub's language, and so does a tap that waited for the download. `HomeViewModelTest` keeps its two continue-button tests. New `SequenceCategoriesTest` (3): each language's list, and together they cover every category except drawings. `FillBlanksViewModelTest`, `BlankSequenceGeneratorTest` and `HintRuleTest` are unmodified. In `CriticalFlowTest`, both hub-label lists now include Fill the Blanks, so the hub tests also check that Home has no such button. New `banglaHub_fillBlanks_listsBanglaCategoriesOnly` and `englishHub_fillBlanks_listsEnglishCategoriesOnly` open the picker from the hub and check which categories it lists and which it does not. Each then opens a sequence and presses Back through the picker to the hub. Instrumented 28/28 on the Pixel_5_2 emulator. Lint: nothing new.
+  - **Device (RMX3624, `install -r`).** In English at 720x1600, Home shows Bangla, English and Drawing. On this phone the models were reported missing, so Bangla → Fill the Blanks showed the download offer. Download → "Downloading" → the Bangla picker opened by itself (Vowels, Consonants, Bangla Numbers, Numbers & Signs). The English picker lists Small Letters, Capital Letters and Numbers & Signs. Every category opened a sequence from its own hub (ই _ উ …, ৯ ১০ ? ১২ …, 10 ? 12 …, h i j k ? m, E ? G …, 9 10 11 ? 13 …). Back goes sequence → picker → hub → Home. In Bangla at 720x1280, both hubs (five and four buttons) and both pickers fit on one screen. No blank was traced this time, because the tracing and recognition paths are unchanged. `wm size` was reset afterwards, and the phone is left on `en`, as it was found.
 
 ---
 

@@ -9,8 +9,8 @@ import dagger.hilt.testing.TestInstallIn
 import javax.inject.Singleton
 
 /**
- * Gives every Hilt test handwriting models that are already on the device, so Home's download
- * dialog never stands in the way and no test needs the network. Nothing is read by a model, so
+ * Gives every Hilt test handwriting models that are already on the device, so the fill-in-the-blanks
+ * download dialog never stands in the way and no test needs the network. Nothing is read by a model, so
  * fill-in-the-blanks falls back to shape matching.
  */
 @Module
