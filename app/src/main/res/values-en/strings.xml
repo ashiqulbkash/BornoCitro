@@ -10,6 +10,7 @@
     <string name="title_result">Result</string>
     <string name="title_progress">Progress</string>
     <string name="title_fill_blanks">Fill the Blanks</string>
+    <string name="title_learn">Listen and Learn</string>
 
     <!-- Categories: buttons, progress bars and their screens' titles. -->
     <string name="category_vowel">Vowels</string>
@@ -142,4 +143,8 @@
         <item quantity="other">You filled %1$d blanks. Your score is %2$d%%.</item>
     </plurals>
     <string name="fill_blanks_next_sequence">Next sequence</string>
+
+    <!-- Learn with audio; %1$s is the language, named as in the hub titles. -->
+    <string name="learn_no_voice_title">No voice to speak</string>
+    <string name="learn_no_voice_message">This phone has no %1$s voice, so nothing can be heard. Open text-to-speech in the phone\'s settings and download the %1$s voice.</string>
 </resources>

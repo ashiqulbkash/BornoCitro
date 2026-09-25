@@ -10,6 +10,7 @@
     <string name="title_result">ফলাফল</string>
     <string name="title_progress">অগ্রগতি</string>
     <string name="title_fill_blanks">শূন্যস্থান পূরণ</string>
+    <string name="title_learn">শুনে শিখি</string>
 
     <!-- Categories: buttons, progress bars and their screens' titles. -->
     <string name="category_vowel">স্বরবর্ণ</string>
@@ -144,4 +145,8 @@
         <item quantity="other">তুমি %1$dটি ফাঁকা ঘর পূরণ করেছ। তোমার স্কোর %2$d%%।</item>
     </plurals>
     <string name="fill_blanks_next_sequence">পরের সারি</string>
+
+    <!-- Learn with audio; %1$s is the language, named as in the hub titles. -->
+    <string name="learn_no_voice_title">কথা বলার কণ্ঠ নেই</string>
+    <string name="learn_no_voice_message">এই ফোনে %1$s বলার কণ্ঠ নেই, তাই কিছু শোনা যাবে না। ফোনের সেটিংসে লেখা থেকে কথা (টেক্সট-টু-স্পিচ) খুলে %1$s কণ্ঠ নামিয়ে নাও।</string>
 </resources>

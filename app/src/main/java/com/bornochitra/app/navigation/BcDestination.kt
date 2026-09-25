@@ -52,6 +52,11 @@ sealed interface BcDestination {
         override val route = "bangla-numbers"
     }
 
+    /** Learn with audio: each letter spoken, and its word. */
+    data object Learn : BcDestination {
+        override val route = "learn"
+    }
+
     data object Drawing : BcDestination {
         override val route = "drawing"
     }

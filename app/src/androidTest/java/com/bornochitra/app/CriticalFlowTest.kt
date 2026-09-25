@@ -6,6 +6,7 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.hasContentDescription
+import androidx.compose.ui.test.hasScrollToNodeAction
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.isSelectable
 import androidx.compose.ui.test.junit4.AndroidComposeTestRule
@@ -15,15 +16,19 @@ import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
+import androidx.compose.ui.test.performScrollToNode
 import androidx.compose.ui.test.performTouchInput
 import androidx.test.espresso.Espresso
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import com.bornochitra.R
 import com.bornochitra.app.presentation.MainActivity
 import com.bornochitra.core.content.ExerciseCatalog
+import com.bornochitra.core.locale.AppLanguage
 import com.bornochitra.core.model.Point
+import com.bornochitra.core.speech.TestSpeechModule
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -144,6 +149,33 @@ class CriticalFlowTest {
         composeRule.onNodeWithContentDescription(string(R.string.action_menu)).assertDoesNotExist()
         composeRule.onNodeWithContentDescription(string(R.string.action_back)).performClick()
         awaitText(string(R.string.home_welcome))
+    }
+
+    @Test
+    fun englishHub_learn_speaksLetterAndExplanation() {
+        openHomeFromWelcome()
+        clickButton(string(R.string.title_english))
+        clickButton(string(R.string.title_learn))
+        awaitText("A for apple")
+        TestSpeechModule.spoken.clear()
+
+        clickButton("A")
+        clickButton("A for apple")
+        // Z is at the end of a lazy list, so it has to be scrolled into composition first.
+        composeRule.onNode(hasScrollToNodeAction()).performScrollToNode(hasText("Z for zebra"))
+        clickButton("Z for zebra")
+
+        composeRule.waitUntil(timeoutMillis = 10_000) { TestSpeechModule.spoken.size == 3 }
+        assertEquals(
+            listOf("A", "A for apple", "Z for zebra").map { it to AppLanguage.ENGLISH },
+            TestSpeechModule.spoken.toList(),
+        )
+        composeRule.onNodeWithText(string(R.string.learn_no_voice_title)).assertDoesNotExist()
+
+        // Learn is below the English hub: no menu, and Back returns to the hub.
+        composeRule.onNodeWithContentDescription(string(R.string.action_menu)).assertDoesNotExist()
+        composeRule.onNodeWithContentDescription(string(R.string.action_back)).performClick()
+        awaitText(string(R.string.category_english_small))
     }
 
     @Test
@@ -369,6 +401,7 @@ class CriticalFlowTest {
             R.string.category_english_capital,
             R.string.category_math,
             R.string.title_fill_blanks,
+            R.string.title_learn,
         )
 
         /** The Bangla fill-in-the-blanks picker's categories. */

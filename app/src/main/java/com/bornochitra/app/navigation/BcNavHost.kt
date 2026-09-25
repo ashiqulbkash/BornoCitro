@@ -35,6 +35,7 @@ import com.bornochitra.feature.fillblanks.HandwritingModelDialog
 import com.bornochitra.feature.home.HomeScreen
 import com.bornochitra.feature.hub.BanglaHubScreen
 import com.bornochitra.feature.hub.EnglishHubScreen
+import com.bornochitra.feature.learn.LearnScreen
 import com.bornochitra.feature.math.MathScreen
 import com.bornochitra.feature.practice.PracticeScreen
 import com.bornochitra.feature.progress.ProgressScreen
@@ -156,6 +157,7 @@ fun BcNavHost(
                     onFillBlanksClick = {
                         fillBlanksGateViewModel.onEvent(FillBlanksGateEvent.FillBlanksClicked(AppLanguage.ENGLISH))
                     },
+                    onLearnClick = { navController.navigate(BcDestination.Learn.route) },
                 )
             }
 
@@ -204,6 +206,12 @@ fun BcNavHost(
                     onExerciseClick = { exerciseId ->
                         navController.navigate(BcDestination.Practice.createRoute(exerciseId))
                     },
+                )
+            }
+
+            composable(BcDestination.Learn.route) {
+                LearnScreen(
+                    onBackClick = { navController.popBackStack() },
                 )
             }
 
