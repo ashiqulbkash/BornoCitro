@@ -1,5 +1,6 @@
 package com.bornochitra.feature.learn
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStore
 import androidx.lifecycle.viewmodel.initializer
@@ -32,8 +33,11 @@ class LearnViewModelTest {
         Dispatchers.resetMain()
     }
 
-    private fun startedViewModel(player: FakeSpeechPlayer): LearnViewModel =
-        LearnViewModel(player).also { dispatcher.scheduler.advanceUntilIdle() }
+    private fun viewModel(player: FakeSpeechPlayer, language: AppLanguage = AppLanguage.ENGLISH) =
+        LearnViewModel(SavedStateHandle(mapOf("language" to language.name)), player)
+
+    private fun startedViewModel(player: FakeSpeechPlayer, language: AppLanguage = AppLanguage.ENGLISH): LearnViewModel =
+        viewModel(player, language).also { dispatcher.scheduler.advanceUntilIdle() }
 
     @Test
     fun listsEveryEnglishLetterWithItsExplanation() {
@@ -47,7 +51,7 @@ class LearnViewModelTest {
     @Test
     fun checksTheVoiceWhenOpened() {
         val player = FakeSpeechPlayer()
-        val viewModel = LearnViewModel(player)
+        val viewModel = viewModel(player)
         assertEquals(VoiceStatus.CHECKING, viewModel.uiState.value.voiceStatus)
 
         dispatcher.scheduler.advanceUntilIdle()
@@ -75,6 +79,61 @@ class LearnViewModelTest {
         dispatcher.scheduler.advanceUntilIdle()
 
         assertEquals(listOf("A for apple" to AppLanguage.ENGLISH), player.spoken)
+    }
+
+    @Test
+    fun listsEveryBanglaVowelAndConsonantWithItsExplanation() {
+        val state = startedViewModel(FakeSpeechPlayer(), AppLanguage.BANGLA).uiState.value
+
+        assertEquals(AppLanguage.BANGLA, state.language)
+        assertEquals(banglaLearnLetters.map { it.letter }, state.items.map { it.letter })
+        assertEquals(LearnItem(letter = "অ", explanation = "অ তে অজগর", spokenLetter = "স্বরে অ"), state.items.first())
+    }
+
+    @Test
+    fun banglaButtons_speakTheLetterAndItsWordInBangla() {
+        val player = FakeSpeechPlayer()
+        val viewModel = startedViewModel(player, AppLanguage.BANGLA)
+        val kho = viewModel.uiState.value.items.first { it.letter == "খ" }
+
+        viewModel.onEvent(LearnEvent.LetterClicked(kho))
+        viewModel.onEvent(LearnEvent.ExplanationClicked(kho))
+        dispatcher.scheduler.advanceUntilIdle()
+
+        assertEquals(listOf("খ", "খ তে খরগোশ").map { it to AppLanguage.BANGLA }, player.spoken)
+    }
+
+    @Test
+    fun banglaVowelButton_speaksTheVowelsPrimerName() {
+        val player = FakeSpeechPlayer()
+        val viewModel = startedViewModel(player, AppLanguage.BANGLA)
+        val items = viewModel.uiState.value.items
+
+        viewModel.onEvent(LearnEvent.LetterClicked(items.first { it.letter == "ই" }))
+        viewModel.onEvent(LearnEvent.LetterClicked(items.first { it.letter == "ঈ" }))
+        viewModel.onEvent(LearnEvent.ExplanationClicked(items.first { it.letter == "ঈ" }))
+        dispatcher.scheduler.advanceUntilIdle()
+
+        assertEquals(listOf("হ্রস্ব ই", "দীর্ঘ ঈ", "ঈ তে ঈগল").map { it to AppLanguage.BANGLA }, player.spoken)
+    }
+
+    @Test
+    fun banglaSibilantButtons_speakNamesThatTellThemApart() {
+        val player = FakeSpeechPlayer()
+        val viewModel = startedViewModel(player, AppLanguage.BANGLA)
+        val items = viewModel.uiState.value.items
+
+        listOf("শ", "ষ", "স").forEach { letter -> viewModel.onEvent(LearnEvent.LetterClicked(items.first { it.letter == letter })) }
+        dispatcher.scheduler.advanceUntilIdle()
+
+        assertEquals(listOf("তালব্য শ", "মূর্ধন্য ষ", "দন্ত্য স").map { it to AppLanguage.BANGLA }, player.spoken)
+    }
+
+    @Test
+    fun noBanglaVoice_showsItAsMissing() {
+        val viewModel = startedViewModel(FakeSpeechPlayer(voices = setOf(AppLanguage.ENGLISH)), AppLanguage.BANGLA)
+
+        assertEquals(VoiceStatus.MISSING, viewModel.uiState.value.voiceStatus)
     }
 
     @Test
@@ -113,7 +172,7 @@ class LearnViewModelTest {
     fun leavingTheScreen_releasesThePlayer() {
         val player = FakeSpeechPlayer()
         val store = ViewModelStore()
-        ViewModelProvider.create(store, viewModelFactory { initializer { LearnViewModel(player) } })[LearnViewModel::class]
+        ViewModelProvider.create(store, viewModelFactory { initializer { viewModel(player) } })[LearnViewModel::class]
         dispatcher.scheduler.advanceUntilIdle()
 
         store.clear()

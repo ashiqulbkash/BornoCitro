@@ -127,7 +127,9 @@ private fun LearnRow(
     }
 }
 
-private val previewItems = englishLearnLetters.take(3).map { LearnItem(letter = it.letter, explanation = it.explanation) }
+private val previewItems = englishLearnLetters.take(3).map {
+    LearnItem(letter = it.letter, explanation = it.explanation(AppLanguage.ENGLISH))
+}
 
 @Preview(showBackground = true, name = "Voice ready")
 @Composable

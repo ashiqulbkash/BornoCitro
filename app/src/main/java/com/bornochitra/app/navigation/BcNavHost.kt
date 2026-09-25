@@ -141,6 +141,7 @@ fun BcNavHost(
                     onFillBlanksClick = {
                         fillBlanksGateViewModel.onEvent(FillBlanksGateEvent.FillBlanksClicked(AppLanguage.BANGLA))
                     },
+                    onLearnClick = { navController.navigate(BcDestination.Learn.createRoute(AppLanguage.BANGLA)) },
                 )
             }
 
@@ -157,7 +158,7 @@ fun BcNavHost(
                     onFillBlanksClick = {
                         fillBlanksGateViewModel.onEvent(FillBlanksGateEvent.FillBlanksClicked(AppLanguage.ENGLISH))
                     },
-                    onLearnClick = { navController.navigate(BcDestination.Learn.route) },
+                    onLearnClick = { navController.navigate(BcDestination.Learn.createRoute(AppLanguage.ENGLISH)) },
                 )
             }
 
@@ -209,7 +210,10 @@ fun BcNavHost(
                 )
             }
 
-            composable(BcDestination.Learn.route) {
+            composable(
+                route = BcDestination.Learn.route,
+                arguments = listOf(navArgument(BcDestination.Learn.ARG_LANGUAGE) { type = NavType.StringType }),
+            ) {
                 LearnScreen(
                     onBackClick = { navController.popBackStack() },
                 )

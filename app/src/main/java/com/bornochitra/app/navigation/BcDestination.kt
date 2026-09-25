@@ -52,9 +52,12 @@ sealed interface BcDestination {
         override val route = "bangla-numbers"
     }
 
-    /** Learn with audio: each letter spoken, and its word. */
+    /** Learn with audio: each letter of the hub's language spoken, and its word. */
     data object Learn : BcDestination {
-        override val route = "learn"
+        const val ARG_LANGUAGE = "language"
+        override val route = "learn/{$ARG_LANGUAGE}"
+
+        fun createRoute(language: AppLanguage) = "learn/${language.name}"
     }
 
     data object Drawing : BcDestination {

@@ -1,5 +1,6 @@
 package com.bornochitra.feature.learn
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bornochitra.core.locale.AppLanguage
@@ -12,6 +13,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+private const val ARG_LANGUAGE = "language"
+
 /** Whether the device can speak the screen's language. */
 enum class VoiceStatus {
     CHECKING,
@@ -22,6 +25,7 @@ enum class VoiceStatus {
 data class LearnItem(
     val letter: String,
     val explanation: String,
+    val spokenLetter: String = letter,
 )
 
 data class LearnUiState(
@@ -37,20 +41,24 @@ sealed interface LearnEvent {
 }
 
 /**
- * Learn with audio (plan.md Step 12): each letter's button speaks the letter, and its explanation
- * button speaks "A for apple". The screen owns its [SpeechPlayer] and releases it when it is left.
+ * Learn with audio (plan.md Step 12), in the language the route asks for: each letter's button speaks
+ * the letter, and its explanation button speaks "A for apple" or "অ তে অজগর". The screen owns its
+ * [SpeechPlayer] and releases it when it is left.
  */
 @HiltViewModel
 class LearnViewModel @Inject constructor(
+    savedStateHandle: SavedStateHandle,
     private val speechPlayer: SpeechPlayer,
 ) : ViewModel() {
 
-    private val language = AppLanguage.ENGLISH
+    private val language: AppLanguage = AppLanguage.valueOf(checkNotNull(savedStateHandle[ARG_LANGUAGE]))
 
     private val mutableState = MutableStateFlow(
         LearnUiState(
             language = language,
-            items = englishLearnLetters.map { LearnItem(letter = it.letter, explanation = it.explanation) },
+            items = learnLetters(language).map {
+                LearnItem(letter = it.letter, explanation = it.explanation(language), spokenLetter = it.spoken)
+            },
         ),
     )
     val uiState: StateFlow<LearnUiState> = mutableState.asStateFlow()
@@ -63,7 +71,7 @@ class LearnViewModel @Inject constructor(
 
     fun onEvent(event: LearnEvent) {
         when (event) {
-            is LearnEvent.LetterClicked -> speak(event.item.letter)
+            is LearnEvent.LetterClicked -> speak(event.item.spokenLetter)
             is LearnEvent.ExplanationClicked -> speak(event.item.explanation)
         }
     }

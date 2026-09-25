@@ -21,8 +21,8 @@ import com.bornochitra.core.ui.theme.BcSpacing
 import com.bornochitra.core.ui.theme.BornoChitraTheme
 
 /**
- * The Bangla hub: the Bangla practice categories, Math, which the English hub also opens, and fill in
- * the blanks with the Bangla categories.
+ * The Bangla hub: the Bangla practice categories, Math, which the English hub also opens, fill in the
+ * blanks with the Bangla categories, and learning the vowels and consonants by listening.
  */
 @Composable
 fun BanglaHubScreen(
@@ -32,6 +32,7 @@ fun BanglaHubScreen(
     onBanglaNumbersClick: () -> Unit,
     onMathClick: () -> Unit,
     onFillBlanksClick: () -> Unit,
+    onLearnClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
@@ -51,6 +52,7 @@ fun BanglaHubScreen(
             BcPrimaryButton(text = ExerciseType.BANGLA_NUMBER.label(), onClick = onBanglaNumbersClick, modifier = Modifier.fillMaxWidth())
             BcPrimaryButton(text = ExerciseType.MATH.label(), onClick = onMathClick, modifier = Modifier.fillMaxWidth())
             BcPrimaryButton(text = stringResource(R.string.title_fill_blanks), onClick = onFillBlanksClick, modifier = Modifier.fillMaxWidth())
+            BcPrimaryButton(text = stringResource(R.string.title_learn), onClick = onLearnClick, modifier = Modifier.fillMaxWidth())
         }
     }
 }
@@ -66,6 +68,7 @@ private fun BanglaHubScreenPreview() {
             onBanglaNumbersClick = {},
             onMathClick = {},
             onFillBlanksClick = {},
+            onLearnClick = {},
         )
     }
 }

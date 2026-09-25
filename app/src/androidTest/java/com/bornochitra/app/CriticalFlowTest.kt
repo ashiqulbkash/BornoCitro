@@ -179,6 +179,34 @@ class CriticalFlowTest {
     }
 
     @Test
+    fun banglaHub_learn_speaksLetterAndExplanationInBangla() {
+        openHomeFromWelcome()
+        clickButton(string(R.string.title_bangla))
+        clickButton(string(R.string.title_learn))
+        awaitText("অ তে অজগর")
+        TestSpeechModule.spoken.clear()
+
+        clickButton("অ")
+        clickButton("অ তে অজগর")
+        // ঁ is the last consonant, at the end of a lazy list, so it has to be scrolled into composition first.
+        composeRule.onNode(hasScrollToNodeAction()).performScrollToNode(hasText("ঁ তে চাঁদ"))
+        clickButton("ঁ তে চাঁদ")
+
+        composeRule.waitUntil(timeoutMillis = 10_000) { TestSpeechModule.spoken.size == 3 }
+        assertEquals(
+            // অ is spoken by its primer name: the Bangla voice says a lone অ as near silence.
+            listOf("স্বরে অ", "অ তে অজগর", "ঁ তে চাঁদ").map { it to AppLanguage.BANGLA },
+            TestSpeechModule.spoken.toList(),
+        )
+        composeRule.onNodeWithText(string(R.string.learn_no_voice_title)).assertDoesNotExist()
+
+        // Learn is below the Bangla hub: no menu, and Back returns to the hub.
+        composeRule.onNodeWithContentDescription(string(R.string.action_menu)).assertDoesNotExist()
+        composeRule.onNodeWithContentDescription(string(R.string.action_back)).performClick()
+        awaitText(string(R.string.category_vowel))
+    }
+
+    @Test
     fun banglaHub_fillBlanks_listsBanglaCategoriesOnly() =
         fillBlanksFromHub(
             hub = R.string.title_bangla,
@@ -393,6 +421,7 @@ class CriticalFlowTest {
             R.string.category_bangla_number,
             R.string.category_math,
             R.string.title_fill_blanks,
+            R.string.title_learn,
         )
 
         /** The English hub's buttons, in order. */
