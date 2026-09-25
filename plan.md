@@ -1080,9 +1080,15 @@ Create a Barnacitro launcher icon and set it as the app's launcher icon.
 
 ## Definition of Done
 
-- [ ] The icon shows correctly on the launcher, in round and squircle masks, and as a themed icon on Android 13+
-- [ ] Debug build succeeds and lint reports no icon warnings
-- [ ] Verified on the device launcher
+- [x] The icon shows correctly on the launcher, in round and squircle masks, and as a themed icon on Android 13+
+- [x] Debug build succeeds and lint reports no icon warnings
+- [x] Verified on the device launcher
+
+## Notes
+
+- **Icon.** A white অ (the bold Noto Sans Bengali outline, not hand-drawn) sits on a diagonal purple gradient (`#8250EC` → `#5A2BC8`, around the brand primary `#6F3CE0`). Under the letter, a dotted guide in `WOOD` turns into a solid orange stroke that ends at an orange pencil tip. That is the app's trace-the-dots idea. Everything stays inside the 66dp safe circle. `ic_launcher_foreground`/`ic_launcher_background` replace the Android Studio defaults. The new `ic_launcher_monochrome` is the same letter, dots, stroke and pencil in one colour, with the pencil split into tip, body and eraser by small gaps, and both adaptive icons now use it. The `mipmap-*dpi` webps (used on API 24–25 only) are rendered from the same geometry (rounded square and circle). The manifest's `android:icon`/`android:roundIcon` were already wired and are unchanged. The generator (fontTools outline → vector pathData, matplotlib → webp) was a scratchpad script, not part of the repo.
+  - **Tests.** Debug build OK. 487 unit tests, 0 failures. Lint: 16 warnings, the same Gradle/dependency set as before, none about icons.
+  - **Device.** RMX3624 (Android 13, Launcher3, `install -r`): the circle icon in the app drawer and suggestions is complete, with nothing clipped. Pixel_10 emulator (Android 16, Pixel launcher): circle in the hotseat and the app list, the Square (squircle) shape on the home screen, and with Themed icons on, the monochrome layer tinted like the system icons. Not checked: the raster fallback on a real API 24–25 launcher (no such device or AVD), and the Samsung One UI launcher (the S938B disconnected before the check).
 
 ---
 
