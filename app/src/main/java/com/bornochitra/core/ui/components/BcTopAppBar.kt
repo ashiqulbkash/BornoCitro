@@ -3,6 +3,7 @@ package com.bornochitra.core.ui.components
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -23,6 +24,7 @@ fun BcTopAppBar(
     title: String,
     modifier: Modifier = Modifier,
     onBackClick: (() -> Unit)? = null,
+    onMenuClick: (() -> Unit)? = null,
 ) {
     CenterAlignedTopAppBar(
         title = { Text(text = title) },
@@ -33,6 +35,13 @@ fun BcTopAppBar(
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = stringResource(R.string.action_back),
+                    )
+                }
+            } else if (onMenuClick != null) {
+                IconButton(onClick = onMenuClick, modifier = Modifier.size(BcDimens.minTouchTarget)) {
+                    Icon(
+                        imageVector = Icons.Filled.Menu,
+                        contentDescription = stringResource(R.string.action_menu),
                     )
                 }
             }

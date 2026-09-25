@@ -945,7 +945,7 @@ Add a drawer available from the main screens. It holds the language toggle, Home
 
 ## Sub-steps
 
-- [ ] 10.1 Drawer shell with the language toggle
+- [x] 10.1 Drawer shell with the language toggle
 - [ ] 10.2 Home item clears the back stack
 - [ ] 10.3 Progress moved from Home to the drawer
 - [ ] 10.4 About item

@@ -24,8 +24,6 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bornochitra.R
 import com.bornochitra.core.model.ExerciseType
-import com.bornochitra.core.locale.AppLanguage
-import com.bornochitra.core.ui.components.BcChoiceButton
 import com.bornochitra.core.ui.components.BcLabeledProgress
 import com.bornochitra.core.ui.components.BcPrimaryButton
 import com.bornochitra.core.ui.components.BcSecondaryButton
@@ -46,6 +44,7 @@ fun HomeScreen(
     onFillBlanksClick: () -> Unit,
     onProgressClick: () -> Unit,
     onContinueClick: (exerciseId: String) -> Unit,
+    onMenuClick: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
@@ -62,6 +61,7 @@ fun HomeScreen(
         onDrawingClick = onDrawingClick,
         onProgressClick = onProgressClick,
         onContinueClick = onContinueClick,
+        onMenuClick = onMenuClick,
         modifier = modifier,
     )
 
@@ -86,12 +86,13 @@ private fun HomeContent(
     onDrawingClick: () -> Unit,
     onProgressClick: () -> Unit,
     onContinueClick: (exerciseId: String) -> Unit,
+    onMenuClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     state.modelDialog?.let { dialog -> HandwritingModelDialog(dialog = dialog, onEvent = onEvent) }
     Scaffold(
         modifier = modifier,
-        topBar = { BcTopAppBar(title = stringResource(R.string.title_home)) },
+        topBar = { BcTopAppBar(title = stringResource(R.string.title_home), onMenuClick = onMenuClick) },
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -102,11 +103,6 @@ private fun HomeContent(
             verticalArrangement = Arrangement.spacedBy(BcSpacing.md),
         ) {
             Text(text = stringResource(R.string.home_welcome), style = MaterialTheme.typography.headlineMedium)
-
-            LanguageSwitch(
-                language = state.language,
-                onLanguageSelected = { onEvent(HomeEvent.LanguageSelected(it)) },
-            )
 
             val continueExerciseId = state.continueExerciseId
             if (continueExerciseId != null) {
@@ -138,29 +134,6 @@ private fun HomeContent(
 
             BcSecondaryButton(text = stringResource(R.string.home_view_full_progress), onClick = onProgressClick, modifier = Modifier.fillMaxWidth())
         }
-    }
-}
-
-/** The app's language, each option named in its own language so it can be found from either. */
-@Composable
-private fun LanguageSwitch(
-    language: AppLanguage,
-    onLanguageSelected: (AppLanguage) -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    Row(modifier = modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(BcSpacing.sm)) {
-        BcChoiceButton(
-            text = stringResource(R.string.language_bangla),
-            selected = language == AppLanguage.BANGLA,
-            onClick = { onLanguageSelected(AppLanguage.BANGLA) },
-            modifier = Modifier.weight(1f),
-        )
-        BcChoiceButton(
-            text = stringResource(R.string.language_english),
-            selected = language == AppLanguage.ENGLISH,
-            onClick = { onLanguageSelected(AppLanguage.ENGLISH) },
-            modifier = Modifier.weight(1f),
-        )
     }
 }
 
@@ -268,6 +241,7 @@ private fun HomeScreenPreview() {
             onDrawingClick = {},
             onProgressClick = {},
             onContinueClick = {},
+            onMenuClick = {},
         )
     }
 }
@@ -288,6 +262,7 @@ private fun HomeScreenEmptyPreview() {
             onDrawingClick = {},
             onProgressClick = {},
             onContinueClick = {},
+            onMenuClick = {},
         )
     }
 }

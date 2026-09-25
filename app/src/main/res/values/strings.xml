@@ -26,6 +26,7 @@
     <string name="drawing_house">বাড়ি</string>
 
     <string name="action_back">পিছনে</string>
+    <string name="action_menu">মেনু</string>
     <string name="action_reset">আবার শুরু</string>
     <string name="percent">%1$d%%</string>
     <string name="percent_description">%1$d শতাংশ</string>

@@ -1,8 +1,6 @@
 package com.bornochitra.feature.home
 
 import com.bornochitra.core.database.repository.ProgressRepository
-import com.bornochitra.core.locale.AppLanguage
-import com.bornochitra.core.locale.AppLanguageStore
 import com.bornochitra.core.model.ExerciseProgress
 import com.bornochitra.core.model.LearningProgress
 import com.bornochitra.core.network.NetworkMonitor
@@ -72,7 +70,7 @@ class HomeViewModelTest {
             ): List<com.bornochitra.core.model.PracticeResult> = emptyList()
         }
 
-        val viewModel = HomeViewModel(repository, FakeRecognizer(ready = WritingScript.entries.toSet()), FakeNetworkMonitor(), FakeLanguageStore())
+        val viewModel = HomeViewModel(repository, FakeRecognizer(ready = WritingScript.entries.toSet()), FakeNetworkMonitor())
         backgroundScope.launch(dispatcher) { viewModel.uiState.collect {} }
         dispatcher.scheduler.advanceUntilIdle()
 
@@ -103,7 +101,7 @@ class HomeViewModelTest {
             ): List<com.bornochitra.core.model.PracticeResult> = emptyList()
         }
 
-        val viewModel = HomeViewModel(repository, FakeRecognizer(ready = WritingScript.entries.toSet()), FakeNetworkMonitor(), FakeLanguageStore())
+        val viewModel = HomeViewModel(repository, FakeRecognizer(ready = WritingScript.entries.toSet()), FakeNetworkMonitor())
 
         assertEquals(HomeState(), viewModel.uiState.value)
     }
@@ -151,26 +149,11 @@ class HomeViewModelTest {
         override val isOnline = MutableStateFlow(online)
     }
 
-    /** Remembers the language like the real store; [setCount] counts the changes asked for. */
-    private class FakeLanguageStore(private var current: AppLanguage = AppLanguage.BANGLA) : AppLanguageStore {
-        var setCount = 0
-
-        override val language: AppLanguage get() = current
-
-        override fun setLanguage(language: AppLanguage) {
-            current = language
-            setCount++
-        }
-
-        override fun applyDefault() = Unit
-    }
-
     private fun kotlinx.coroutines.test.TestScope.startedViewModel(
         recognizer: FakeRecognizer = FakeRecognizer(ready = WritingScript.entries.toSet()),
         network: FakeNetworkMonitor = FakeNetworkMonitor(),
-        languageStore: FakeLanguageStore = FakeLanguageStore(),
     ): HomeViewModel {
-        val viewModel = HomeViewModel(emptyProgressRepository, recognizer, network, languageStore)
+        val viewModel = HomeViewModel(emptyProgressRepository, recognizer, network)
         backgroundScope.launch(dispatcher) { viewModel.uiState.collect {} }
         dispatcher.scheduler.advanceUntilIdle()
         return viewModel
@@ -349,37 +332,5 @@ class HomeViewModelTest {
         network.isOnline.value = false
         dispatcher.scheduler.advanceUntilIdle()
         assertEquals(ModelDialog.NO_INTERNET, viewModel.uiState.value.modelDialog)
-    }
-
-    @Test
-    fun `home shows the language the app is in`() = runTest(dispatcher) {
-        val viewModel = startedViewModel(languageStore = FakeLanguageStore(AppLanguage.ENGLISH))
-
-        assertEquals(AppLanguage.ENGLISH, viewModel.uiState.value.language)
-    }
-
-    @Test
-    fun `choosing a language stores it and shows it`() = runTest(dispatcher) {
-        val store = FakeLanguageStore()
-        val viewModel = startedViewModel(languageStore = store)
-        assertEquals(AppLanguage.BANGLA, viewModel.uiState.value.language)
-
-        viewModel.onEvent(HomeEvent.LanguageSelected(AppLanguage.ENGLISH))
-        dispatcher.scheduler.advanceUntilIdle()
-
-        assertEquals(AppLanguage.ENGLISH, store.language)
-        assertEquals(AppLanguage.ENGLISH, viewModel.uiState.value.language)
-    }
-
-    @Test
-    fun `choosing the language already in use changes nothing`() = runTest(dispatcher) {
-        val store = FakeLanguageStore(AppLanguage.BANGLA)
-        val viewModel = startedViewModel(languageStore = store)
-
-        viewModel.onEvent(HomeEvent.LanguageSelected(AppLanguage.BANGLA))
-        dispatcher.scheduler.advanceUntilIdle()
-
-        assertEquals(0, store.setCount)
-        assertEquals(AppLanguage.BANGLA, viewModel.uiState.value.language)
     }
 }
