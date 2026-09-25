@@ -37,30 +37,6 @@ import com.bornochitra.feature.vowels.VowelsScreen
 import com.bornochitra.feature.welcome.WelcomeScreen
 import kotlinx.coroutines.launch
 
-/** Goes to Home from anywhere and leaves nothing behind it, so Back from Home leaves the app. */
-private fun NavHostController.navigateToHome() {
-    navigate(BcDestination.Home.route) {
-        popUpTo(BcDestination.Home.route) { inclusive = true }
-        launchSingleTop = true
-    }
-}
-
-/**
- * Screens where swiping from the edge opens the drawer. Where the child writes or draws, that
- * swipe would fight the strokes, so the menu icon is the only way in there. Welcome has no drawer.
- */
-private val DRAWER_SWIPE_ROUTES = setOf(
-    BcDestination.Home.route,
-    BcDestination.Vowels.route,
-    BcDestination.Consonants.route,
-    BcDestination.EnglishLetters.route,
-    BcDestination.Math.route,
-    BcDestination.BanglaNumbers.route,
-    BcDestination.Drawing.route,
-    BcDestination.FillBlanks.route,
-    BcDestination.Progress.route,
-)
-
 /** Opens Progress with only Home behind it, so opening it again from the drawer does not stack copies. */
 private fun NavHostController.navigateToProgress() {
     navigate(BcDestination.Progress.route) {
@@ -96,10 +72,6 @@ fun BcNavHost(
             DrawerContent(
                 state = drawerUiState,
                 onEvent = drawerViewModel::onEvent,
-                onHomeClick = {
-                    scope.launch { drawerState.close() }
-                    navController.navigateToHome()
-                },
                 onProgressClick = {
                     scope.launch { drawerState.close() }
                     navController.navigateToProgress()
@@ -107,7 +79,8 @@ fun BcNavHost(
             )
         },
         modifier = modifier,
-        gesturesEnabled = currentRoute in DRAWER_SWIPE_ROUTES,
+        // The drawer holds the top-level destinations, so it belongs to Home only; deeper screens use Back.
+        gesturesEnabled = currentRoute == BcDestination.Home.route,
     ) {
         NavHost(
             navController = navController,
@@ -147,7 +120,6 @@ fun BcNavHost(
             composable(BcDestination.Vowels.route) {
                 VowelsScreen(
                     onBackClick = { navController.popBackStack() },
-                    onMenuClick = { scope.launch { drawerState.open() } },
                     onExerciseClick = { exerciseId ->
                         navController.navigate(BcDestination.Practice.createRoute(exerciseId))
                     },
@@ -157,7 +129,6 @@ fun BcNavHost(
             composable(BcDestination.Consonants.route) {
                 ConsonantsScreen(
                     onBackClick = { navController.popBackStack() },
-                    onMenuClick = { scope.launch { drawerState.open() } },
                     onExerciseClick = { exerciseId ->
                         navController.navigate(BcDestination.Practice.createRoute(exerciseId))
                     },
@@ -170,7 +141,6 @@ fun BcNavHost(
             ) {
                 EnglishLettersScreen(
                     onBackClick = { navController.popBackStack() },
-                    onMenuClick = { scope.launch { drawerState.open() } },
                     onExerciseClick = { exerciseId ->
                         navController.navigate(BcDestination.Practice.createRoute(exerciseId))
                     },
@@ -180,7 +150,6 @@ fun BcNavHost(
             composable(BcDestination.Math.route) {
                 MathScreen(
                     onBackClick = { navController.popBackStack() },
-                    onMenuClick = { scope.launch { drawerState.open() } },
                     onExerciseClick = { exerciseId ->
                         navController.navigate(BcDestination.Practice.createRoute(exerciseId))
                     },
@@ -190,7 +159,6 @@ fun BcNavHost(
             composable(BcDestination.BanglaNumbers.route) {
                 BanglaNumbersScreen(
                     onBackClick = { navController.popBackStack() },
-                    onMenuClick = { scope.launch { drawerState.open() } },
                     onExerciseClick = { exerciseId ->
                         navController.navigate(BcDestination.Practice.createRoute(exerciseId))
                     },
@@ -200,7 +168,6 @@ fun BcNavHost(
             composable(BcDestination.Drawing.route) {
                 DrawingScreen(
                     onBackClick = { navController.popBackStack() },
-                    onMenuClick = { scope.launch { drawerState.open() } },
                     onExerciseClick = { exerciseId ->
                         navController.navigate(BcDestination.Practice.createRoute(exerciseId))
                     },
@@ -210,7 +177,6 @@ fun BcNavHost(
             composable(BcDestination.FillBlanks.route) {
                 FillBlanksCategoryScreen(
                     onBackClick = { navController.popBackStack() },
-                    onMenuClick = { scope.launch { drawerState.open() } },
                     onCategoryClick = { type, difficulty ->
                         navController.navigate(BcDestination.FillBlanksSequence.createRoute(type, difficulty))
                     },
@@ -226,7 +192,6 @@ fun BcNavHost(
             ) {
                 FillBlanksScreen(
                     onBackClick = { navController.popBackStack() },
-                    onMenuClick = { scope.launch { drawerState.open() } },
                 )
             }
 
@@ -244,7 +209,6 @@ fun BcNavHost(
                 PracticeScreen(
                     exerciseId = exerciseId,
                     onBackClick = { navController.popBackStack() },
-                    onMenuClick = { scope.launch { drawerState.open() } },
                     onCompleteClick = { sessionId, sessionScores ->
                         navController.navigate(BcDestination.Result.createRoute(sessionId, sessionScores))
                     },
@@ -270,14 +234,12 @@ fun BcNavHost(
                         }
                     },
                     onProgressClick = { navController.navigateToProgress() },
-                    onMenuClick = { scope.launch { drawerState.open() } },
                 )
             }
 
             composable(BcDestination.Progress.route) {
                 ProgressScreen(
                     onBackClick = { navController.popBackStack() },
-                    onMenuClick = { scope.launch { drawerState.open() } },
                 )
             }
         }

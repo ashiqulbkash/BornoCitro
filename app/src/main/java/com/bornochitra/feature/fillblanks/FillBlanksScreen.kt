@@ -44,7 +44,6 @@ import com.bornochitra.core.ui.theme.BornoChitraTheme
 @Composable
 fun FillBlanksScreen(
     onBackClick: () -> Unit,
-    onMenuClick: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: FillBlanksViewModel = hiltViewModel(),
 ) {
@@ -53,7 +52,6 @@ fun FillBlanksScreen(
         state = state,
         onEvent = viewModel::onEvent,
         onBackClick = onBackClick,
-        onMenuClick = onMenuClick,
         modifier = modifier,
     )
 }
@@ -63,12 +61,11 @@ private fun FillBlanksContent(
     state: FillBlanksState,
     onEvent: (FillBlanksEvent) -> Unit,
     onBackClick: () -> Unit,
-    onMenuClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
         modifier = modifier,
-        topBar = { BcTopAppBar(title = stringResource(R.string.title_fill_blanks), onBackClick = onBackClick, onMenuClick = onMenuClick) },
+        topBar = { BcTopAppBar(title = stringResource(R.string.title_fill_blanks), onBackClick = onBackClick) },
     ) { innerPadding ->
         val contentModifier = Modifier
             .fillMaxSize()
@@ -249,7 +246,6 @@ private fun FillBlanksFinishedPreview() {
             ),
             onEvent = {},
             onBackClick = {},
-            onMenuClick = {},
         )
     }
 }
@@ -270,7 +266,6 @@ private fun FillBlanksErrorPreview() {
             state = FillBlanksState(isLoading = false, error = R.string.error_too_few_items),
             onEvent = {},
             onBackClick = {},
-            onMenuClick = {},
         )
     }
 }

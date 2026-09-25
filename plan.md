@@ -934,26 +934,26 @@ Replace the Tips screen ("how to exercise") with a Welcome screen that says what
 
 ## Requirement
 
-Add a drawer available from the main screens. It holds the language toggle, Home, Progress and About. Progress moves out of Home into the drawer.
+Add a drawer on Home, the app's top-level screen. Deeper screens show only a back arrow, following the Material rule that the menu icon belongs to top-level destinations and child screens use Up. It holds the language toggle, Progress and About. Progress moves out of Home into the drawer.
 
 ## Implement (sub-steps 10.1–10.4)
 
-- **10.1** Drawer shell (`ModalNavigationDrawer`) in the nav host, with a menu icon in the top bar of the drawer-enabled screens, and the language toggle inside it. Drawer open/close state is owned by one place (nav host scaffold), not by each screen.
-- **10.2** **Home** item: navigates to Home from anywhere and clears the back stack (`popUpTo(Home) { inclusive = true }`, single top).
+- **10.1** Drawer shell (`ModalNavigationDrawer`) in the nav host, with a menu icon in Home's top bar only (edge-swipe also on Home only), and the language toggle inside it. Drawer open/close state is owned by one place (nav host scaffold), not by each screen.
+- **10.2** ~~**Home** item~~ — dropped: the drawer opens only on Home, so a Home item would lead nowhere.
 - **10.3** **Progress** item opens the Progress screen. Remove the progress bars and the "view full progress" button from Home; `HomeViewModel` no longer computes the per-category progress it no longer shows.
 - **10.4** **About** item opens the About content from Step 9.
 
 ## Sub-steps
 
 - [x] 10.1 Drawer shell with the language toggle
-- [x] 10.2 Home item clears the back stack
+- [x] 10.2 Home item (dropped; see Notes)
 - [x] 10.3 Progress moved from Home to the drawer
 - [ ] 10.4 About item
 
 ## Definition of Done
 
 - [x] The drawer opens from the menu icon and closes on selection and on back
-- [x] Home from a deep screen (e.g. a Practice screen) lands on Home with an empty back stack behind it
+- [x] The drawer is on Home only; deeper screens (category lists, Practice, Result, Progress) have no menu icon and no edge-swipe
 - [x] Home no longer shows progress; Progress is reachable only through the drawer and still shows every category
 - [ ] The language toggle in the drawer matches the Welcome one and survives restarts
 - [ ] `HomeViewModelTest` updated; navigation/drawer behavior covered by a test
@@ -961,9 +961,11 @@ Add a drawer available from the main screens. It holds the language toggle, Home
 
 ## Notes
 
-- **10.3 Progress in the drawer.** `DrawerContent` has a Progress item (`drawer_progress`: অগ্রগতি / Progress, star icon) under Home. `BcNavHost.navigateToProgress()` opens it with only Home behind it (`popUpTo(Home)`, single top), so opening it again does not stack copies. Result's **View Progress** (Step 2) uses the same function. Home lost its progress bars and the "view full progress" button, and `home_your_progress`/`home_view_full_progress` are gone from both string sets. `HomeState` keeps only `continueExerciseId` from the repository. `overall` stays because Progress uses it.
+- **10.3 Progress in the drawer.** `DrawerContent` has a Progress item (`drawer_progress`: অগ্রগতি / Progress, star icon). `BcNavHost.navigateToProgress()` opens it with only Home behind it (`popUpTo(Home)`, single top), so opening it again does not stack copies. Result's **View Progress** (Step 2) uses the same function. Home lost its progress bars and the "view full progress" button, and `home_your_progress`/`home_view_full_progress` are gone from both string sets. `HomeState` keeps only `continueExerciseId` from the repository. `overall` stays because Progress uses it.
   - **Tests.** 459 unit tests, 0 failures. `HomeViewModelTest` now checks that the exercise to continue follows the repository. `CriticalFlowTest.drawer_progress_listsEveryCategory` (replaces `progress_listsEveryCategory`) checks that Home has no progress, then opens Progress from the drawer and finds every category. Instrumented 23/23 on the Pixel_5_2 emulator.
   - **Device (RMX3624, `install -r`).** Home shows no progress. Drawer → অগ্রগতি lists all seven categories. Opening it again from the drawer and pressing Back lands on Home, and Back again leaves the app. Checked in English (Progress item, Progress screen), at 720x1600 and at 720x1280 (`wm size`, reset afterwards). The phone is left on `bn`.
+- **Drawer on Home only.** Deeper screens lost `onMenuClick`; `BcTopAppBar` is back to one navigation icon (back, else menu), without the right-side menu action. `gesturesEnabled` is `currentRoute == Home`, replacing `DRAWER_SWIPE_ROUTES`. Result has no top-bar icon again, as before the drawer; its buttons and system Back move on. Reasons: the drawer lists top-level destinations, a child screen with both back and menu has two competing ways out, and a child mid-exercise should not be one tap from switching language or leaving. `CriticalFlowTest.drawer_isOnHomeOnly` replaces `drawer_home_fromPractice_leavesNothingBehindHome`, `drawer_closesOnBack_andKeepsHomeBehindIt` replaces the Vowels variant, and `drawer_progress_listsEveryCategory` also checks that Back from Progress returns Home.
+- **Home item removed.** With the drawer on Home only it duplicated where the child already is. `DrawerContent` lost the item and `onHomeClick`, `BcNavHost` lost `navigateToHome()`, and `drawer_home` is gone from both string sets.
 
 ---
 

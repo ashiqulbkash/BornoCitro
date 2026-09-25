@@ -33,7 +33,6 @@ private const val GRID_COLUMNS = 3
 @Composable
 fun DrawingScreen(
     onBackClick: () -> Unit,
-    onMenuClick: () -> Unit,
     onExerciseClick: (exerciseId: String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: DrawingViewModel = hiltViewModel(),
@@ -42,7 +41,6 @@ fun DrawingScreen(
     DrawingContent(
         state = state,
         onBackClick = onBackClick,
-        onMenuClick = onMenuClick,
         onExerciseClick = onExerciseClick,
         modifier = modifier,
     )
@@ -52,13 +50,12 @@ fun DrawingScreen(
 private fun DrawingContent(
     state: DrawingState,
     onBackClick: () -> Unit,
-    onMenuClick: () -> Unit,
     onExerciseClick: (exerciseId: String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
         modifier = modifier,
-        topBar = { BcTopAppBar(title = ExerciseType.DRAWING.label(), onBackClick = onBackClick, onMenuClick = onMenuClick) },
+        topBar = { BcTopAppBar(title = ExerciseType.DRAWING.label(), onBackClick = onBackClick) },
     ) { innerPadding ->
         if (state.exercises.isEmpty()) {
             BcEmptyState(
@@ -107,7 +104,6 @@ private fun DrawingScreenPreview() {
                 ),
             ),
             onBackClick = {},
-            onMenuClick = {},
             onExerciseClick = {},
         )
     }
@@ -117,6 +113,6 @@ private fun DrawingScreenPreview() {
 @Composable
 private fun DrawingScreenEmptyPreview() {
     BornoChitraTheme {
-        DrawingContent(state = DrawingState(), onBackClick = {}, onMenuClick = {}, onExerciseClick = {})
+        DrawingContent(state = DrawingState(), onBackClick = {}, onExerciseClick = {})
     }
 }

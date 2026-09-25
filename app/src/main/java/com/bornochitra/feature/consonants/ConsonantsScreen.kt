@@ -32,7 +32,6 @@ private const val GRID_COLUMNS = 3
 @Composable
 fun ConsonantsScreen(
     onBackClick: () -> Unit,
-    onMenuClick: () -> Unit,
     onExerciseClick: (exerciseId: String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: ConsonantsViewModel = hiltViewModel(),
@@ -41,7 +40,6 @@ fun ConsonantsScreen(
     ConsonantsContent(
         state = state,
         onBackClick = onBackClick,
-        onMenuClick = onMenuClick,
         onExerciseClick = onExerciseClick,
         modifier = modifier,
     )
@@ -51,13 +49,12 @@ fun ConsonantsScreen(
 private fun ConsonantsContent(
     state: ConsonantsState,
     onBackClick: () -> Unit,
-    onMenuClick: () -> Unit,
     onExerciseClick: (exerciseId: String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
         modifier = modifier,
-        topBar = { BcTopAppBar(title = ExerciseType.CONSONANT.label(), onBackClick = onBackClick, onMenuClick = onMenuClick) },
+        topBar = { BcTopAppBar(title = ExerciseType.CONSONANT.label(), onBackClick = onBackClick) },
     ) { innerPadding ->
         if (state.exercises.isEmpty()) {
             BcEmptyState(
@@ -106,7 +103,6 @@ private fun ConsonantsScreenPreview() {
                 ),
             ),
             onBackClick = {},
-            onMenuClick = {},
             onExerciseClick = {},
         )
     }
@@ -116,6 +112,6 @@ private fun ConsonantsScreenPreview() {
 @Composable
 private fun ConsonantsScreenEmptyPreview() {
     BornoChitraTheme {
-        ConsonantsContent(state = ConsonantsState(), onBackClick = {}, onMenuClick = {}, onExerciseClick = {})
+        ConsonantsContent(state = ConsonantsState(), onBackClick = {}, onExerciseClick = {})
     }
 }

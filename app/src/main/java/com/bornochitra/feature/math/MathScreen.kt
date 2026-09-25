@@ -32,7 +32,6 @@ private const val GRID_COLUMNS = 3
 @Composable
 fun MathScreen(
     onBackClick: () -> Unit,
-    onMenuClick: () -> Unit,
     onExerciseClick: (exerciseId: String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: MathViewModel = hiltViewModel(),
@@ -41,7 +40,6 @@ fun MathScreen(
     MathContent(
         state = state,
         onBackClick = onBackClick,
-        onMenuClick = onMenuClick,
         onExerciseClick = onExerciseClick,
         modifier = modifier,
     )
@@ -51,13 +49,12 @@ fun MathScreen(
 private fun MathContent(
     state: MathState,
     onBackClick: () -> Unit,
-    onMenuClick: () -> Unit,
     onExerciseClick: (exerciseId: String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
         modifier = modifier,
-        topBar = { BcTopAppBar(title = ExerciseType.MATH.label(), onBackClick = onBackClick, onMenuClick = onMenuClick) },
+        topBar = { BcTopAppBar(title = ExerciseType.MATH.label(), onBackClick = onBackClick) },
     ) { innerPadding ->
         if (state.exercises.isEmpty()) {
             BcEmptyState(
@@ -105,7 +102,6 @@ private fun MathScreenPreview() {
                 ),
             ),
             onBackClick = {},
-            onMenuClick = {},
             onExerciseClick = {},
         )
     }
@@ -115,6 +111,6 @@ private fun MathScreenPreview() {
 @Composable
 private fun MathScreenEmptyPreview() {
     BornoChitraTheme {
-        MathContent(state = MathState(), onBackClick = {}, onMenuClick = {}, onExerciseClick = {})
+        MathContent(state = MathState(), onBackClick = {}, onExerciseClick = {})
     }
 }

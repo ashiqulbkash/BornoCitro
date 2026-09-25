@@ -61,7 +61,6 @@ private const val POP_START_SCALE = 0.7f
 fun ResultScreen(
     onPracticeClick: (exerciseId: String, sessionScores: List<Float>) -> Unit,
     onProgressClick: () -> Unit,
-    onMenuClick: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: ResultViewModel = hiltViewModel(),
 ) {
@@ -70,7 +69,6 @@ fun ResultScreen(
         state = state,
         onPracticeClick = onPracticeClick,
         onProgressClick = onProgressClick,
-        onMenuClick = onMenuClick,
         modifier = modifier,
     )
 }
@@ -80,12 +78,11 @@ private fun ResultContent(
     state: ResultState,
     onPracticeClick: (exerciseId: String, sessionScores: List<Float>) -> Unit,
     onProgressClick: () -> Unit,
-    onMenuClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
         modifier = modifier,
-        topBar = { BcTopAppBar(title = stringResource(R.string.title_result), onMenuClick = onMenuClick) },
+        topBar = { BcTopAppBar(title = stringResource(R.string.title_result)) },
     ) { innerPadding ->
         when {
             state.error != null -> BcEmptyState(
@@ -284,7 +281,6 @@ private fun ResultScreenPerfectPreview() {
             ),
             onPracticeClick = { _, _ -> },
             onProgressClick = {},
-            onMenuClick = {},
         )
     }
 }
@@ -307,7 +303,6 @@ private fun ResultScreenMediumPreview() {
             ),
             onPracticeClick = { _, _ -> },
             onProgressClick = {},
-            onMenuClick = {},
         )
     }
 }
@@ -330,7 +325,6 @@ private fun ResultScreenLowPreview() {
             ),
             onPracticeClick = { _, _ -> },
             onProgressClick = {},
-            onMenuClick = {},
         )
     }
 }
@@ -343,7 +337,6 @@ private fun ResultScreenErrorPreview() {
             state = ResultState(isLoading = false, error = R.string.error_result_not_found),
             onPracticeClick = { _, _ -> },
             onProgressClick = {},
-            onMenuClick = {},
         )
     }
 }

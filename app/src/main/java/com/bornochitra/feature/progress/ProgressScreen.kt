@@ -51,7 +51,6 @@ private const val EMPTY_STAR = "☆"
 @Composable
 fun ProgressScreen(
     onBackClick: () -> Unit,
-    onMenuClick: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: ProgressViewModel = hiltViewModel(),
 ) {
@@ -60,7 +59,6 @@ fun ProgressScreen(
         state = state,
         onEvent = viewModel::onEvent,
         onBackClick = onBackClick,
-        onMenuClick = onMenuClick,
         modifier = modifier,
     )
 }
@@ -70,7 +68,6 @@ private fun ProgressContent(
     state: ProgressState,
     onEvent: (ProgressEvent) -> Unit,
     onBackClick: () -> Unit,
-    onMenuClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val openCategory = state.categories.firstOrNull { it.type == state.openCategory }
@@ -86,7 +83,6 @@ private fun ProgressContent(
                 onBackClick = {
                     if (openCategory != null) onEvent(ProgressEvent.CategoryClosed) else onBackClick()
                 },
-                onMenuClick = onMenuClick,
             )
         },
     ) { innerPadding ->
@@ -285,7 +281,7 @@ private val previewState = ProgressState(
 @Composable
 private fun ProgressScreenPreview() {
     BornoChitraTheme {
-        ProgressContent(state = previewState, onEvent = {}, onBackClick = {}, onMenuClick = {})
+        ProgressContent(state = previewState, onEvent = {}, onBackClick = {})
     }
 }
 
@@ -297,7 +293,6 @@ private fun ProgressScreenCategoryPreview() {
             state = previewState.copy(openCategory = ExerciseType.VOWEL),
             onEvent = {},
             onBackClick = {},
-            onMenuClick = {},
         )
     }
 }
@@ -306,7 +301,7 @@ private fun ProgressScreenCategoryPreview() {
 @Composable
 private fun ProgressScreenLoadingPreview() {
     BornoChitraTheme {
-        ProgressContent(state = ProgressState(), onEvent = {}, onBackClick = {}, onMenuClick = {})
+        ProgressContent(state = ProgressState(), onEvent = {}, onBackClick = {})
     }
 }
 
@@ -314,7 +309,7 @@ private fun ProgressScreenLoadingPreview() {
 @Composable
 private fun ProgressScreenEmptyPreview() {
     BornoChitraTheme {
-        ProgressContent(state = ProgressState(isLoading = false), onEvent = {}, onBackClick = {}, onMenuClick = {})
+        ProgressContent(state = ProgressState(isLoading = false), onEvent = {}, onBackClick = {})
     }
 }
 
@@ -326,7 +321,6 @@ private fun ProgressScreenErrorPreview() {
             state = ProgressState(isLoading = false, error = R.string.error_progress_load),
             onEvent = {},
             onBackClick = {},
-            onMenuClick = {},
         )
     }
 }

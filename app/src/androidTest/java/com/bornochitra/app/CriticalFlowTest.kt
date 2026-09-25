@@ -15,7 +15,6 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performTouchInput
-import androidx.lifecycle.Lifecycle
 import androidx.test.espresso.Espresso
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import com.bornochitra.R
@@ -104,39 +103,38 @@ class CriticalFlowTest {
         CATEGORY_LABELS.forEach { label ->
             composeRule.onNode(hasText(string(label)) and hasClickAction()).performScrollTo().assertExists()
         }
-    }
 
-    @Test
-    fun drawer_home_fromPractice_leavesNothingBehindHome() {
-        openHomeFromWelcome()
-        clickButton(string(R.string.category_vowel))
-        composeRule.onNodeWithText("অ").performClick()
-        awaitCanvas(string(R.string.practice_canvas_description, "অ"))
-
-        composeRule.onNodeWithContentDescription(string(R.string.action_menu)).performClick()
-        composeRule.onNodeWithText(string(R.string.drawer_home)).performClick()
+        // Progress is a step below Home: it has no menu, and Back returns to Home.
+        composeRule.onNodeWithContentDescription(string(R.string.action_menu)).assertDoesNotExist()
+        composeRule.onNodeWithContentDescription(string(R.string.action_back)).performClick()
         awaitText(string(R.string.home_welcome))
-
-        // Nothing is left behind Home, so Back leaves the app instead of returning to the vowels.
-        Espresso.pressBackUnconditionally()
-        composeRule.waitUntil(timeoutMillis = 10_000) {
-            !composeRule.activityRule.scenario.state.isAtLeast(Lifecycle.State.STARTED)
-        }
     }
 
     @Test
-    fun drawer_closesOnBack_andKeepsTheScreenBehindIt() {
+    fun drawer_isOnHomeOnly() {
         openHomeFromWelcome()
+        composeRule.onNodeWithContentDescription(string(R.string.action_menu)).assertIsDisplayed()
+
         clickButton(string(R.string.category_vowel))
         awaitText("অ")
+        composeRule.onNodeWithContentDescription(string(R.string.action_menu)).assertDoesNotExist()
+
+        composeRule.onNodeWithText("অ").performClick()
+        awaitCanvas(string(R.string.practice_canvas_description, "অ"))
+        composeRule.onNodeWithContentDescription(string(R.string.action_menu)).assertDoesNotExist()
+    }
+
+    @Test
+    fun drawer_closesOnBack_andKeepsHomeBehindIt() {
+        openHomeFromWelcome()
 
         composeRule.onNodeWithContentDescription(string(R.string.action_menu)).performClick()
-        composeRule.onNodeWithText(string(R.string.drawer_home)).assertIsDisplayed()
+        composeRule.onNodeWithText(string(R.string.drawer_progress)).assertIsDisplayed()
 
         Espresso.pressBack()
         composeRule.waitForIdle()
-        composeRule.onNodeWithText(string(R.string.drawer_home)).assertIsNotDisplayed()
-        composeRule.onNodeWithText("অ").assertIsDisplayed()
+        composeRule.onNodeWithText(string(R.string.drawer_progress)).assertIsNotDisplayed()
+        composeRule.onNodeWithText(string(R.string.home_welcome)).assertIsDisplayed()
     }
 
     private fun practiseFromHome(@StringRes category: Int, exerciseId: String, title: String) {
