@@ -78,4 +78,9 @@ sealed interface BcDestination {
     data object Progress : BcDestination {
         override val route = "progress"
     }
+
+    /** The drawer's About page; the same content Welcome shows on first launch. */
+    data object About : BcDestination {
+        override val route = "about"
+    }
 }

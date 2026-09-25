@@ -28,6 +28,7 @@
     <string name="action_back">পিছনে</string>
     <string name="action_menu">মেনু</string>
     <string name="drawer_progress">অগ্রগতি</string>
+    <string name="drawer_about">পরিচিতি</string>
     <string name="action_reset">আবার শুরু</string>
     <string name="percent">%1$d%%</string>
     <string name="percent_description">%1$d শতাংশ</string>

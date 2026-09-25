@@ -34,12 +34,13 @@ import com.bornochitra.feature.practice.PracticeScreen
 import com.bornochitra.feature.progress.ProgressScreen
 import com.bornochitra.feature.result.ResultScreen
 import com.bornochitra.feature.vowels.VowelsScreen
+import com.bornochitra.feature.welcome.AboutScreen
 import com.bornochitra.feature.welcome.WelcomeScreen
 import kotlinx.coroutines.launch
 
-/** Opens Progress with only Home behind it, so opening it again from the drawer does not stack copies. */
-private fun NavHostController.navigateToProgress() {
-    navigate(BcDestination.Progress.route) {
+/** Opens [destination] with only Home behind it, so opening it again from the drawer does not stack copies. */
+private fun NavHostController.navigateAboveHome(destination: BcDestination) {
+    navigate(destination.route) {
         popUpTo(BcDestination.Home.route)
         launchSingleTop = true
     }
@@ -74,7 +75,11 @@ fun BcNavHost(
                 onEvent = drawerViewModel::onEvent,
                 onProgressClick = {
                     scope.launch { drawerState.close() }
-                    navController.navigateToProgress()
+                    navController.navigateAboveHome(BcDestination.Progress)
+                },
+                onAboutClick = {
+                    scope.launch { drawerState.close() }
+                    navController.navigateAboveHome(BcDestination.About)
                 },
             )
         },
@@ -233,12 +238,18 @@ fun BcNavHost(
                             popUpTo(BcDestination.Practice.route) { inclusive = true }
                         }
                     },
-                    onProgressClick = { navController.navigateToProgress() },
+                    onProgressClick = { navController.navigateAboveHome(BcDestination.Progress) },
                 )
             }
 
             composable(BcDestination.Progress.route) {
                 ProgressScreen(
+                    onBackClick = { navController.popBackStack() },
+                )
+            }
+
+            composable(BcDestination.About.route) {
+                AboutScreen(
                     onBackClick = { navController.popBackStack() },
                 )
             }

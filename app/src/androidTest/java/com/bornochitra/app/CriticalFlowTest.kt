@@ -111,6 +111,23 @@ class CriticalFlowTest {
     }
 
     @Test
+    fun drawer_about_showsAboutContent() {
+        openHomeFromWelcome()
+
+        composeRule.onNodeWithContentDescription(string(R.string.action_menu)).performClick()
+        composeRule.onNodeWithText(string(R.string.drawer_about)).performClick()
+
+        awaitText(string(R.string.about_heading))
+        // About is the drawer's page, not Welcome: no Continue button.
+        composeRule.onNodeWithText(string(R.string.welcome_continue)).assertDoesNotExist()
+
+        // About is a step below Home: it has no menu, and Back returns to Home.
+        composeRule.onNodeWithContentDescription(string(R.string.action_menu)).assertDoesNotExist()
+        composeRule.onNodeWithContentDescription(string(R.string.action_back)).performClick()
+        awaitText(string(R.string.home_welcome))
+    }
+
+    @Test
     fun drawer_isOnHomeOnly() {
         openHomeFromWelcome()
         composeRule.onNodeWithContentDescription(string(R.string.action_menu)).assertIsDisplayed()
