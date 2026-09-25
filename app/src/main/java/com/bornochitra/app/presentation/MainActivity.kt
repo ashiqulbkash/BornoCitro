@@ -14,10 +14,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.rememberNavController
+import com.bornochitra.app.navigation.BcDestination
 import com.bornochitra.app.navigation.BcNavHost
 import com.bornochitra.core.database.AppDatabase
 import com.bornochitra.core.locale.AppLanguageEntryPoint
 import com.bornochitra.core.locale.AppLanguageStore
+import com.bornochitra.core.onboarding.OnboardingStore
 import com.bornochitra.core.ui.theme.BornoChitraTheme
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.EntryPointAccessors
@@ -34,6 +36,9 @@ class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var appDatabase: AppDatabase
 
+    @Inject
+    lateinit var onboardingStore: OnboardingStore
+
     // Needed before super.onCreate, where field injection has not happened yet.
     private val appLanguageStore: AppLanguageStore by lazy {
         EntryPointAccessors.fromApplication<AppLanguageEntryPoint>(applicationContext).appLanguageStore()
@@ -47,9 +52,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) appLanguageStore.applyDefault()
         enableEdgeToEdge()
+        val startDestination = if (onboardingStore.hasSeenWelcome) BcDestination.Home.route else BcDestination.Welcome.route
         setContent {
             BornoChitraTheme {
-                BornoChitraApp()
+                BornoChitraApp(startDestination = startDestination)
             }
         }
         verifyDatabaseInitializes()
@@ -67,13 +73,13 @@ class MainActivity : AppCompatActivity() {
 }
 
 @Composable
-private fun BornoChitraApp() {
+private fun BornoChitraApp(startDestination: String) {
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background,
     ) {
         val navController = rememberNavController()
-        BcNavHost(navController = navController, modifier = Modifier.fillMaxSize())
+        BcNavHost(navController = navController, startDestination = startDestination, modifier = Modifier.fillMaxSize())
     }
 }
 
@@ -81,6 +87,6 @@ private fun BornoChitraApp() {
 @Composable
 private fun BornoChitraAppPreview() {
     BornoChitraTheme {
-        BornoChitraApp()
+        BornoChitraApp(startDestination = BcDestination.Home.route)
     }
 }

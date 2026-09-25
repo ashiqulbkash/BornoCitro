@@ -26,11 +26,12 @@ import com.bornochitra.feature.welcome.WelcomeScreen
 @Composable
 fun BcNavHost(
     navController: NavHostController,
+    startDestination: String,
     modifier: Modifier = Modifier,
 ) {
     NavHost(
         navController = navController,
-        startDestination = BcDestination.Welcome.route,
+        startDestination = startDestination,
         modifier = modifier,
     ) {
         composable(BcDestination.Welcome.route) {

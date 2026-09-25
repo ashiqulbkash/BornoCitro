@@ -7,6 +7,7 @@ import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.AndroidComposeTestRule
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -109,8 +110,11 @@ class CriticalFlowTest {
         awaitResult()
     }
 
+    /** Welcome shows only on the first launch of an install, so a later test starts on Home already. */
     private fun openHomeFromWelcome() {
-        composeRule.onNodeWithText(string(R.string.welcome_continue)).performClick()
+        val isWelcomeShown = composeRule.onAllNodesWithText(string(R.string.welcome_continue))
+            .fetchSemanticsNodes().isNotEmpty()
+        if (isWelcomeShown) composeRule.onNodeWithText(string(R.string.welcome_continue)).performClick()
         awaitText(string(R.string.home_welcome))
     }
 

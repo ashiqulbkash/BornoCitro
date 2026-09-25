@@ -917,8 +917,8 @@ Replace the Tips screen ("how to exercise") with a Welcome screen that says what
 ## Sub-steps
 
 - [x] 9.1 About content replaces the tips
-- [ ] 9.2 Animated language switch on Welcome
-- [ ] 9.3 First-launch-only flag and start destination
+- [x] 9.2 Animated language switch on Welcome
+- [x] 9.3 First-launch-only flag and start destination
 
 ## Definition of Done
 

@@ -22,6 +22,7 @@
 
         <activity
             android:name=".app.presentation.MainActivity"
+            android:configChanges="locale|layoutDirection"
             android:exported="true"
             android:theme="@style/Theme.BornoChitra">
             <intent-filter>
