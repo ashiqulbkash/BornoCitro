@@ -1,5 +1,6 @@
 package com.bornochitra.feature.result
 
+import androidx.activity.compose.BackHandler
 import androidx.annotation.StringRes
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.Spring
@@ -65,6 +66,9 @@ fun ResultScreen(
     viewModel: ResultViewModel = hiltViewModel(),
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+    // Back would reopen the finished attempt, which completes again straight away and replays this
+    // result, so the child leaves through one of the buttons. The error state has no buttons.
+    BackHandler(enabled = state.error == null) {}
     ResultContent(
         state = state,
         onPracticeClick = onPracticeClick,

@@ -85,6 +85,23 @@ class CriticalFlowTest {
     }
 
     @Test
+    fun result_ignoresSystemBack() {
+        openHomeFromWelcome()
+        clickButton(string(R.string.category_drawing))
+        val circle = string(R.string.drawing_circle)
+        composeRule.onNodeWithText(circle).performClick()
+        traceWholeExercise(exerciseId = "drawing-circle", title = circle)
+        awaitResult()
+
+        Espresso.pressBack()
+        composeRule.waitForIdle()
+
+        composeRule.onNodeWithText(string(R.string.title_result)).assertIsDisplayed()
+        composeRule.onNodeWithContentDescription(string(R.string.practice_canvas_description, circle))
+            .assertDoesNotExist()
+    }
+
+    @Test
     fun bangla_consonants_ko_practice_result() =
         practiseFromHub(R.string.title_bangla, R.string.category_consonant, "consonant-ko", "ক")
 
