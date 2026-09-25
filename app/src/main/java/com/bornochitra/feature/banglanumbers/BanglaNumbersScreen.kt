@@ -32,6 +32,7 @@ private const val GRID_COLUMNS = 3
 @Composable
 fun BanglaNumbersScreen(
     onBackClick: () -> Unit,
+    onMenuClick: () -> Unit,
     onExerciseClick: (exerciseId: String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: BanglaNumbersViewModel = hiltViewModel(),
@@ -40,6 +41,7 @@ fun BanglaNumbersScreen(
     BanglaNumbersContent(
         state = state,
         onBackClick = onBackClick,
+        onMenuClick = onMenuClick,
         onExerciseClick = onExerciseClick,
         modifier = modifier,
     )
@@ -49,12 +51,13 @@ fun BanglaNumbersScreen(
 private fun BanglaNumbersContent(
     state: BanglaNumbersState,
     onBackClick: () -> Unit,
+    onMenuClick: () -> Unit,
     onExerciseClick: (exerciseId: String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
         modifier = modifier,
-        topBar = { BcTopAppBar(title = ExerciseType.BANGLA_NUMBER.label(), onBackClick = onBackClick) },
+        topBar = { BcTopAppBar(title = ExerciseType.BANGLA_NUMBER.label(), onBackClick = onBackClick, onMenuClick = onMenuClick) },
     ) { innerPadding ->
         if (state.exercises.isEmpty()) {
             BcEmptyState(
@@ -102,6 +105,7 @@ private fun BanglaNumbersScreenPreview() {
                 ),
             ),
             onBackClick = {},
+            onMenuClick = {},
             onExerciseClick = {},
         )
     }
@@ -111,6 +115,6 @@ private fun BanglaNumbersScreenPreview() {
 @Composable
 private fun BanglaNumbersScreenEmptyPreview() {
     BornoChitraTheme {
-        BanglaNumbersContent(state = BanglaNumbersState(), onBackClick = {}, onExerciseClick = {})
+        BanglaNumbersContent(state = BanglaNumbersState(), onBackClick = {}, onMenuClick = {}, onExerciseClick = {})
     }
 }

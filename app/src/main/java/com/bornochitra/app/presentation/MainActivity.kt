@@ -1,5 +1,6 @@
 package com.bornochitra.app.presentation
 
+import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -59,6 +60,14 @@ class MainActivity : AppCompatActivity() {
             }
         }
         verifyDatabaseInitializes()
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        // Below Android 13 AppCompat applies a new app language in place (the manifest handles locale
+        // changes) but tells only the activity, so Compose kept showing the old strings. From 13 the
+        // framework owns per-app languages and already sends the change to the views.
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) window.decorView.dispatchConfigurationChanged(newConfig)
     }
 
     /** Bootstrap smoke check: confirms Room opens successfully, off the main thread. */

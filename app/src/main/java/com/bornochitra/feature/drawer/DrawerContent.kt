@@ -3,8 +3,12 @@ package com.bornochitra.feature.drawer
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
+import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -23,15 +27,22 @@ private const val DRAWER_WIDTH_FRACTION = 0.8f
 fun DrawerContent(
     state: DrawerUiState,
     onEvent: (DrawerEvent) -> Unit,
+    onHomeClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     ModalDrawerSheet(modifier = modifier.fillMaxWidth(DRAWER_WIDTH_FRACTION)) {
-        Column(modifier = Modifier.padding(BcSpacing.md)) {
+        Column(modifier = Modifier.padding(horizontal = BcSpacing.md, vertical = BcSpacing.md)) {
             Text(text = stringResource(R.string.title_home), style = MaterialTheme.typography.headlineSmall)
             BcLanguageSwitch(
                 language = state.language,
                 onLanguageSelected = { onEvent(DrawerEvent.LanguageSelected(it)) },
-                modifier = Modifier.padding(top = BcSpacing.md),
+                modifier = Modifier.padding(vertical = BcSpacing.md),
+            )
+            NavigationDrawerItem(
+                label = { Text(text = stringResource(R.string.drawer_home)) },
+                selected = false,
+                onClick = onHomeClick,
+                icon = { Icon(imageVector = Icons.Filled.Home, contentDescription = null) },
             )
         }
     }
@@ -41,6 +52,6 @@ fun DrawerContent(
 @Composable
 private fun DrawerContentPreview() {
     BornoChitraTheme {
-        DrawerContent(state = DrawerUiState(language = AppLanguage.ENGLISH), onEvent = {})
+        DrawerContent(state = DrawerUiState(language = AppLanguage.ENGLISH), onEvent = {}, onHomeClick = {})
     }
 }

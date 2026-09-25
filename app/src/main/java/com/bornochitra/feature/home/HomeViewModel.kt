@@ -101,9 +101,9 @@ private const val STATE_SHARING_TIMEOUT_MS = 5_000L
 
 /**
  * Home's progress, plus the gate in front of fill-in-the-blanks: it reads handwriting with models
- * that are downloaded once, and has no offline reader, so the models are mandatory. On start Home
- * offers the download if they are missing, asking for the internet first when the device is
- * offline, and the fill-in-the-blanks button opens it only once they are on the device.
+ * that are downloaded once, and has no offline reader, so the models are mandatory. The
+ * fill-in-the-blanks button opens it only once they are on the device; tapping it while they are
+ * missing offers the download, asking for the internet first when the device is offline.
  */
 @HiltViewModel
 class HomeViewModel @Inject constructor(
@@ -149,7 +149,7 @@ class HomeViewModel @Inject constructor(
                 if (isReady) {
                     gate.withStatus(HandwritingModelStatus.READY)
                 } else {
-                    gate.withStatus(HandwritingModelStatus.MISSING).copy(isDialogShown = true)
+                    gate.withStatus(HandwritingModelStatus.MISSING)
                 }
             }
         }

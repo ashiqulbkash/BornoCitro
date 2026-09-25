@@ -32,6 +32,7 @@ private const val GRID_COLUMNS = 3
 @Composable
 fun EnglishLettersScreen(
     onBackClick: () -> Unit,
+    onMenuClick: () -> Unit,
     onExerciseClick: (exerciseId: String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: EnglishLettersViewModel = hiltViewModel(),
@@ -40,6 +41,7 @@ fun EnglishLettersScreen(
     EnglishLettersContent(
         state = state,
         onBackClick = onBackClick,
+        onMenuClick = onMenuClick,
         onExerciseClick = onExerciseClick,
         modifier = modifier,
     )
@@ -49,12 +51,13 @@ fun EnglishLettersScreen(
 private fun EnglishLettersContent(
     state: EnglishLettersState,
     onBackClick: () -> Unit,
+    onMenuClick: () -> Unit,
     onExerciseClick: (exerciseId: String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
         modifier = modifier,
-        topBar = { BcTopAppBar(title = state.type.label(), onBackClick = onBackClick) },
+        topBar = { BcTopAppBar(title = state.type.label(), onBackClick = onBackClick, onMenuClick = onMenuClick) },
     ) { innerPadding ->
         if (state.exercises.isEmpty()) {
             BcEmptyState(
@@ -103,6 +106,7 @@ private fun EnglishLettersScreenPreview() {
                 ),
             ),
             onBackClick = {},
+            onMenuClick = {},
             onExerciseClick = {},
         )
     }
@@ -115,6 +119,7 @@ private fun EnglishLettersScreenEmptyPreview() {
         EnglishLettersContent(
             state = EnglishLettersState(type = ExerciseType.ENGLISH_CAPITAL),
             onBackClick = {},
+            onMenuClick = {},
             onExerciseClick = {},
         )
     }

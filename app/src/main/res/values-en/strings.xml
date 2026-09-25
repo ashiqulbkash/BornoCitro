@@ -27,6 +27,7 @@
 
     <string name="action_back">Back</string>
     <string name="action_menu">Menu</string>
+    <string name="drawer_home">Home</string>
     <string name="action_reset">Reset</string>
     <string name="percent">%1$d%%</string>
     <!-- "percent" and "of 3 stars" read the same for any count, so these are not plurals. -->

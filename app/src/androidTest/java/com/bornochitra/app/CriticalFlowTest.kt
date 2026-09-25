@@ -2,6 +2,8 @@ package com.bornochitra.app
 
 import androidx.annotation.StringRes
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.hasText
@@ -13,6 +15,8 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performTouchInput
+import androidx.lifecycle.Lifecycle
+import androidx.test.espresso.Espresso
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import com.bornochitra.R
 import com.bornochitra.app.presentation.MainActivity
@@ -97,6 +101,39 @@ class CriticalFlowTest {
         CATEGORY_LABELS.forEach { label ->
             composeRule.onNode(hasText(string(label)) and hasClickAction()).performScrollTo().assertExists()
         }
+    }
+
+    @Test
+    fun drawer_home_fromPractice_leavesNothingBehindHome() {
+        openHomeFromWelcome()
+        clickButton(string(R.string.category_vowel))
+        composeRule.onNodeWithText("অ").performClick()
+        awaitCanvas(string(R.string.practice_canvas_description, "অ"))
+
+        composeRule.onNodeWithContentDescription(string(R.string.action_menu)).performClick()
+        composeRule.onNodeWithText(string(R.string.drawer_home)).performClick()
+        awaitText(string(R.string.home_welcome))
+
+        // Nothing is left behind Home, so Back leaves the app instead of returning to the vowels.
+        Espresso.pressBackUnconditionally()
+        composeRule.waitUntil(timeoutMillis = 10_000) {
+            !composeRule.activityRule.scenario.state.isAtLeast(Lifecycle.State.STARTED)
+        }
+    }
+
+    @Test
+    fun drawer_closesOnBack_andKeepsTheScreenBehindIt() {
+        openHomeFromWelcome()
+        clickButton(string(R.string.category_vowel))
+        awaitText("অ")
+
+        composeRule.onNodeWithContentDescription(string(R.string.action_menu)).performClick()
+        composeRule.onNodeWithText(string(R.string.drawer_home)).assertIsDisplayed()
+
+        Espresso.pressBack()
+        composeRule.waitForIdle()
+        composeRule.onNodeWithText(string(R.string.drawer_home)).assertIsNotDisplayed()
+        composeRule.onNodeWithText("অ").assertIsDisplayed()
     }
 
     private fun practiseFromHome(@StringRes category: Int, exerciseId: String, title: String) {

@@ -79,4 +79,30 @@ class DrawerViewModelTest {
         assertEquals(0, store.setCount)
         assertEquals(AppLanguage.BANGLA, viewModel.uiState.value.language)
     }
+
+    @Test
+    fun `opening the drawer shows a language chosen elsewhere`() {
+        val store = FakeLanguageStore(AppLanguage.BANGLA)
+        val viewModel = DrawerViewModel(store)
+
+        // e.g. chosen on Welcome, or in Android's app language settings, while this ViewModel lived on.
+        store.setLanguage(AppLanguage.ENGLISH)
+        viewModel.onEvent(DrawerEvent.Opened)
+
+        assertEquals(AppLanguage.ENGLISH, viewModel.uiState.value.language)
+    }
+
+    @Test
+    fun `opening the drawer during the slide keeps the language just chosen`() = runTest(dispatcher) {
+        val store = FakeLanguageStore(AppLanguage.BANGLA)
+        val viewModel = DrawerViewModel(store)
+
+        viewModel.onEvent(DrawerEvent.LanguageSelected(AppLanguage.ENGLISH))
+        dispatcher.scheduler.runCurrent()
+        viewModel.onEvent(DrawerEvent.Opened)
+
+        assertEquals(AppLanguage.ENGLISH, viewModel.uiState.value.language)
+        dispatcher.scheduler.advanceUntilIdle()
+        assertEquals(AppLanguage.ENGLISH, store.language)
+    }
 }

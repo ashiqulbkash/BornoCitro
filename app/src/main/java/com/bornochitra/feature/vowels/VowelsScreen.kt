@@ -32,6 +32,7 @@ private const val GRID_COLUMNS = 3
 @Composable
 fun VowelsScreen(
     onBackClick: () -> Unit,
+    onMenuClick: () -> Unit,
     onExerciseClick: (exerciseId: String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: VowelsViewModel = hiltViewModel(),
@@ -40,6 +41,7 @@ fun VowelsScreen(
     VowelsContent(
         state = state,
         onBackClick = onBackClick,
+        onMenuClick = onMenuClick,
         onExerciseClick = onExerciseClick,
         modifier = modifier,
     )
@@ -49,12 +51,13 @@ fun VowelsScreen(
 private fun VowelsContent(
     state: VowelsState,
     onBackClick: () -> Unit,
+    onMenuClick: () -> Unit,
     onExerciseClick: (exerciseId: String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
         modifier = modifier,
-        topBar = { BcTopAppBar(title = ExerciseType.VOWEL.label(), onBackClick = onBackClick) },
+        topBar = { BcTopAppBar(title = ExerciseType.VOWEL.label(), onBackClick = onBackClick, onMenuClick = onMenuClick) },
     ) { innerPadding ->
         if (state.exercises.isEmpty()) {
             BcEmptyState(
@@ -103,6 +106,7 @@ private fun VowelsScreenPreview() {
                 ),
             ),
             onBackClick = {},
+            onMenuClick = {},
             onExerciseClick = {},
         )
     }
@@ -112,6 +116,6 @@ private fun VowelsScreenPreview() {
 @Composable
 private fun VowelsScreenEmptyPreview() {
     BornoChitraTheme {
-        VowelsContent(state = VowelsState(), onBackClick = {}, onExerciseClick = {})
+        VowelsContent(state = VowelsState(), onBackClick = {}, onMenuClick = {}, onExerciseClick = {})
     }
 }

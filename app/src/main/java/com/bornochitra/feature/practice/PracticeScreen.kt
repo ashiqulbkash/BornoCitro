@@ -53,6 +53,7 @@ import com.bornochitra.core.ui.theme.BornoChitraTheme
 fun PracticeScreen(
     exerciseId: String,
     onBackClick: () -> Unit,
+    onMenuClick: () -> Unit,
     onCompleteClick: (sessionId: String, sessionScores: List<Float>) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: PracticeViewModel = hiltViewModel(),
@@ -61,6 +62,7 @@ fun PracticeScreen(
     PracticeContent(
         state = state,
         onBackClick = onBackClick,
+        onMenuClick = onMenuClick,
         onExerciseCompleted = { score, level -> viewModel.onEvent(PracticeEvent.ExerciseCompleted(score, level)) },
         onTraceUnfinished = { viewModel.onEvent(PracticeEvent.TraceUnfinished) },
         onRestart = { viewModel.onEvent(PracticeEvent.Restarted) },
@@ -77,6 +79,7 @@ fun PracticeScreen(
 private fun PracticeContent(
     state: PracticeState,
     onBackClick: () -> Unit,
+    onMenuClick: () -> Unit,
     onExerciseCompleted: (score: Float, level: ScoreLevel) -> Unit,
     onTraceUnfinished: () -> Unit,
     onRestart: () -> Unit,
@@ -84,7 +87,7 @@ private fun PracticeContent(
 ) {
     Scaffold(
         modifier = modifier,
-        topBar = { BcTopAppBar(title = stringResource(R.string.title_practice), onBackClick = onBackClick) },
+        topBar = { BcTopAppBar(title = stringResource(R.string.title_practice), onBackClick = onBackClick, onMenuClick = onMenuClick) },
     ) { innerPadding ->
         when {
             state.error != null -> BcEmptyState(
@@ -219,6 +222,7 @@ private fun PracticeScreenTracingPreview() {
         PracticeContent(
             state = PracticeState(exercise = previewExercise, isLoading = false, tip = ContextualTip.FIRST_ATTEMPT),
             onBackClick = {},
+            onMenuClick = {},
             onExerciseCompleted = { _, _ -> },
             onTraceUnfinished = {},
             onRestart = {},
@@ -233,6 +237,7 @@ private fun PracticeScreenLoadingPreview() {
         PracticeContent(
             state = PracticeState(isLoading = true),
             onBackClick = {},
+            onMenuClick = {},
             onExerciseCompleted = { _, _ -> },
             onTraceUnfinished = {},
             onRestart = {},
@@ -247,6 +252,7 @@ private fun PracticeScreenErrorPreview() {
         PracticeContent(
             state = PracticeState(isLoading = false, error = R.string.error_exercise_not_found),
             onBackClick = {},
+            onMenuClick = {},
             onExerciseCompleted = { _, _ -> },
             onTraceUnfinished = {},
             onRestart = {},

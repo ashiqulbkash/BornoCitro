@@ -175,20 +175,20 @@ class HomeViewModelTest {
     }
 
     @Test
-    fun `a missing model offers the download on start and keeps fill in the blanks shut`() = runTest(dispatcher) {
+    fun `a missing model shows no dialog on start and offers the download when fill in the blanks is tapped`() = runTest(dispatcher) {
         // Only one of the two models is there.
         val viewModel = startedViewModel(FakeRecognizer(ready = setOf(WritingScript.LATIN)))
         assertEquals(HandwritingModelStatus.MISSING, viewModel.uiState.value.modelStatus)
-        assertEquals(ModelDialog.OFFER, viewModel.uiState.value.modelDialog)
-
-        viewModel.onEvent(HomeEvent.ModelDialogDismissed)
-        dispatcher.scheduler.advanceUntilIdle()
         assertNull(viewModel.uiState.value.modelDialog)
 
         viewModel.onEvent(HomeEvent.FillBlanksClicked)
         dispatcher.scheduler.advanceUntilIdle()
         assertFalse(viewModel.uiState.value.openFillBlanks)
-        assertNotNull(viewModel.uiState.value.modelDialog)
+        assertEquals(ModelDialog.OFFER, viewModel.uiState.value.modelDialog)
+
+        viewModel.onEvent(HomeEvent.ModelDialogDismissed)
+        dispatcher.scheduler.advanceUntilIdle()
+        assertNull(viewModel.uiState.value.modelDialog)
     }
 
     @Test
@@ -206,7 +206,7 @@ class HomeViewModelTest {
         assertEquals(WritingScript.entries.toSet(), recognizer.ready)
         assertEquals(HandwritingModelStatus.READY, viewModel.uiState.value.modelStatus)
         assertNull(viewModel.uiState.value.modelDialog)
-        // Downloaded from the start-up offer, not from a tap, so it does not open by itself.
+        // Downloaded without a tap on fill in the blanks, so it does not open by itself.
         assertFalse(viewModel.uiState.value.openFillBlanks)
         viewModel.onEvent(HomeEvent.FillBlanksClicked)
         dispatcher.scheduler.advanceUntilIdle()
@@ -281,11 +281,12 @@ class HomeViewModelTest {
         val recognizer = FakeRecognizer()
         val network = FakeNetworkMonitor(online = false)
         val viewModel = startedViewModel(recognizer, network)
-        assertEquals(ModelDialog.NO_INTERNET, viewModel.uiState.value.modelDialog)
+        assertNull(viewModel.uiState.value.modelDialog)
 
-        viewModel.onEvent(HomeEvent.DownloadModelsClicked)
         viewModel.onEvent(HomeEvent.FillBlanksClicked)
+        viewModel.onEvent(HomeEvent.DownloadModelsClicked)
         dispatcher.scheduler.advanceUntilIdle()
+        assertEquals(ModelDialog.NO_INTERNET, viewModel.uiState.value.modelDialog)
         assertEquals(HandwritingModelStatus.MISSING, viewModel.uiState.value.modelStatus)
         assertTrue(recognizer.ready.isEmpty())
         assertFalse(viewModel.uiState.value.openFillBlanks)

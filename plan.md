@@ -946,14 +946,14 @@ Add a drawer available from the main screens. It holds the language toggle, Home
 ## Sub-steps
 
 - [x] 10.1 Drawer shell with the language toggle
-- [ ] 10.2 Home item clears the back stack
+- [x] 10.2 Home item clears the back stack
 - [ ] 10.3 Progress moved from Home to the drawer
 - [ ] 10.4 About item
 
 ## Definition of Done
 
-- [ ] The drawer opens from the menu icon and closes on selection and on back
-- [ ] Home from a deep screen (e.g. a Practice screen) lands on Home with an empty back stack behind it
+- [x] The drawer opens from the menu icon and closes on selection and on back
+- [x] Home from a deep screen (e.g. a Practice screen) lands on Home with an empty back stack behind it
 - [ ] Home no longer shows progress; Progress is reachable only through the drawer and still shows every category
 - [ ] The language toggle in the drawer matches the Welcome one and survives restarts
 - [ ] `HomeViewModelTest` updated; navigation/drawer behavior covered by a test

@@ -38,22 +38,31 @@ fun BcTopAppBar(
                     )
                 }
             } else if (onMenuClick != null) {
-                IconButton(onClick = onMenuClick, modifier = Modifier.size(BcDimens.minTouchTarget)) {
-                    Icon(
-                        imageVector = Icons.Filled.Menu,
-                        contentDescription = stringResource(R.string.action_menu),
-                    )
-                }
+                MenuButton(onClick = onMenuClick)
             }
+        },
+        // Where a screen has a back arrow on the left, the menu moves to the right.
+        actions = {
+            if (onBackClick != null && onMenuClick != null) MenuButton(onClick = onMenuClick)
         },
         colors = TopAppBarDefaults.topAppBarColors(),
     )
+}
+
+@Composable
+private fun MenuButton(onClick: () -> Unit) {
+    IconButton(onClick = onClick, modifier = Modifier.size(BcDimens.minTouchTarget)) {
+        Icon(
+            imageVector = Icons.Filled.Menu,
+            contentDescription = stringResource(R.string.action_menu),
+        )
+    }
 }
 
 @Preview(showBackground = true)
 @Composable
 private fun BcTopAppBarPreview() {
     BornoChitraTheme {
-        BcTopAppBar(title = "স্বরবর্ণ", onBackClick = {})
+        BcTopAppBar(title = "স্বরবর্ণ", onBackClick = {}, onMenuClick = {})
     }
 }

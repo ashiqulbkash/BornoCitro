@@ -1,16 +1,16 @@
 package com.bornochitra.core.ui.components
 
+import androidx.activity.ComponentActivity
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.assertHeightIsAtLeast
 import androidx.compose.ui.test.assertWidthIsAtLeast
-import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
-import androidx.test.platform.app.InstrumentationRegistry
 import com.bornochitra.R
 import com.bornochitra.core.ui.theme.BcDimens
 import com.bornochitra.core.ui.theme.BornoChitraTheme
@@ -21,9 +21,11 @@ import org.junit.Test
 class AccessibilityTest {
 
     @get:Rule
-    val composeRule = createComposeRule()
+    val composeRule = createAndroidComposeRule<ComponentActivity>()
 
-    private val context = InstrumentationRegistry.getInstrumentation().targetContext
+    // The activity's own resources, which the components read: after an earlier test has set the app's
+    // language, they can differ from the application context's.
+    private val context get() = composeRule.activity
 
     @Test
     fun exerciseTile_isAButton_andMeetsMinimumSize() {

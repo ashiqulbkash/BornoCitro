@@ -47,6 +47,7 @@ private val sequenceCategories = listOf(
 @Composable
 fun FillBlanksCategoryScreen(
     onBackClick: () -> Unit,
+    onMenuClick: () -> Unit,
     onCategoryClick: (type: ExerciseType, difficulty: Difficulty) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -55,6 +56,7 @@ fun FillBlanksCategoryScreen(
         difficulty = difficulty,
         onDifficultyChange = { difficulty = it },
         onBackClick = onBackClick,
+        onMenuClick = onMenuClick,
         onCategoryClick = { type -> onCategoryClick(type, difficulty) },
         modifier = modifier,
     )
@@ -65,12 +67,13 @@ private fun FillBlanksCategoryContent(
     difficulty: Difficulty,
     onDifficultyChange: (Difficulty) -> Unit,
     onBackClick: () -> Unit,
+    onMenuClick: () -> Unit,
     onCategoryClick: (ExerciseType) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
         modifier = modifier,
-        topBar = { BcTopAppBar(title = stringResource(R.string.title_fill_blanks), onBackClick = onBackClick) },
+        topBar = { BcTopAppBar(title = stringResource(R.string.title_fill_blanks), onBackClick = onBackClick, onMenuClick = onMenuClick) },
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -112,6 +115,7 @@ private fun FillBlanksCategoryScreenPreview() {
             difficulty = Difficulty.BEGINNER,
             onDifficultyChange = {},
             onBackClick = {},
+            onMenuClick = {},
             onCategoryClick = {},
         )
     }
