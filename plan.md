@@ -1036,7 +1036,7 @@ The screen lives under the Bangla and English hubs from Step 11 (each opens its 
 
 ## Sub-steps
 
-- [ ] 12.1 Speech player
+- [x] 12.1 Speech player
 - [ ] 12.2 English letters with audio
 - [ ] 12.3 Bangla vowels and consonants with audio
 
@@ -1047,6 +1047,11 @@ The screen lives under the Bangla and English hubs from Step 11 (each opens its 
 - [ ] Missing TTS voice is handled with a visible message
 - [ ] The player is released when leaving the screen; ViewModel tests use the fake player
 - [ ] Verified by running the app on a device and listening to both buttons in both languages
+
+## Notes
+
+- **12.1 Speech player.** `SpeechPlayer` (`core/speech`) has `hasVoice(language)`, `speak(text, language)` and `release()`, keyed on `AppLanguage` (Bangla → `bn-BD`, English → `en-US`). `TextToSpeechPlayer` starts the Android engine on first use, on `Dispatchers.IO`, and waits for `onInit`. Calls made together share one engine (behind a mutex). The engine's binder calls (`isLanguageAvailable`, `setLanguage`, `speak`) also run off the main thread. A missing voice, including a missing or failed engine, returns `false` instead of staying silent without a reason, so 12.2's screen can show the message. `speak` uses `QUEUE_FLUSH`, so a new tap cuts off the previous word. After `release()` the player stays silent. A release that comes while the engine is still starting shuts it down as soon as it is ready. `SpeechModule` binds the player `@ViewModelScoped` in `ViewModelComponent`: each Learn screen gets its own player and releases it in `onCleared` (12.2). The manifest declares a `TTS_SERVICE` `<queries>` entry, because from Android 11 the engines are otherwise hidden from the app. `FakeSpeechPlayer` (unit-test source set) has configurable voices and records what was spoken, for the 12.2/12.3 ViewModel tests. The missing-voice message string comes with the screen in 12.2, where it is first shown.
+  - **Tests.** 464 unit tests, 0 failures (unchanged: nothing uses the player yet). New instrumented `TextToSpeechPlayerTest` (4) runs on the real engine: `speak` succeeds exactly when `hasVoice` says so, in both languages; two calls together agree; after release, and when released before first use, both calls return false. Instrumented 32/32 on the Pixel_5_2 emulator. A throwaway probe (removed) confirmed on the emulator's Google TTS that bn-BD (`bn-bd-x-ban-server`) and en-US both report a voice and speak. Lint: nothing new.
 
 ---
 

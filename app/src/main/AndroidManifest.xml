@@ -6,6 +6,13 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
+    <!-- Learn with audio: from Android 11 the speech engines are hidden from the app unless it asks for them. -->
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.TTS_SERVICE" />
+        </intent>
+    </queries>
+
     <!-- localeConfig is read from Android 13; below it the autoStoreLocales service keeps the choice. -->
     <application
         android:name=".app.BornoChitraApplication"
