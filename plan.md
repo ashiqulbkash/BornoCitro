@@ -922,11 +922,11 @@ Replace the Tips screen ("how to exercise") with a Welcome screen that says what
 
 ## Definition of Done
 
-- [ ] No tips text or screen is left; the string-resource tests (key parity, non-empty, no Latin in Bangla) pass
-- [ ] The language switch animates and changes the whole UI at once
-- [ ] A fresh install opens on Welcome; after Continue, and after a restart, the app opens on Home
-- [ ] ViewModel tests cover the flag and the language event
-- [ ] Verified by running the app on a fresh install and on a second launch
+- [x] No tips text or screen is left; the string-resource tests (key parity, non-empty, no Latin in Bangla) pass
+- [x] The language switch animates and changes the whole UI at once
+- [x] A fresh install opens on Welcome; after Continue, and after a restart, the app opens on Home
+- [x] ViewModel tests cover the flag and the language event
+- [x] Verified by running the app on a fresh install and on a second launch
 
 ---
 
@@ -955,9 +955,9 @@ Add a drawer on Home, the app's top-level screen. Deeper screens show only a bac
 - [x] The drawer opens from the menu icon and closes on selection and on back
 - [x] The drawer is on Home only; deeper screens (category lists, Practice, Result, Progress) have no menu icon and no edge-swipe
 - [x] Home no longer shows progress; Progress is reachable only through the drawer and still shows every category
-- [ ] The language toggle in the drawer matches the Welcome one and survives restarts
-- [ ] `HomeViewModelTest` updated; navigation/drawer behavior covered by a test
-- [ ] Verified by running the app at 720x1280 and 720x1600, in both languages
+- [x] The language toggle in the drawer matches the Welcome one and survives restarts
+- [x] `HomeViewModelTest` updated; navigation/drawer behavior covered by a test
+- [x] Verified by running the app at 720x1280 and 720x1600, in both languages
 
 ## Notes
 
@@ -1046,7 +1046,7 @@ The screen lives under the Bangla and English hubs from Step 11 (each opens its 
 - [x] The letter button speaks the letter and the explanation button speaks the "X for word" phrase in the right language
 - [x] Missing TTS voice is handled with a visible message
 - [x] The player is released when leaving the screen; ViewModel tests use the fake player
-- [ ] Verified by running the app on a device and listening to both buttons in both languages
+- [x] Verified by running the app on a device and listening to both buttons in both languages
 
 ## Notes
 
@@ -1162,12 +1162,12 @@ Redesign the whole app's UI to match the design in `design/`, keeping every exis
 
 ## Definition of Done
 
-- [ ] Every screen matches its design page, in light and dark, apart from the listed intentional differences
-- [ ] All existing functionality works as before (tracing, scoring, progress, fill the blanks, listening, drawing, language switch, first-launch flow)
-- [ ] Unit and instrumented tests pass after every sub-step
-- [ ] No hard-coded colours, fonts, sizes or spacing inside screens
-- [ ] `NEW_STRINGS.md` lists every new string in Bangla and English
-- [ ] Verified on the user's phone
+- [x] Every screen matches its design page, in light and dark, apart from the listed intentional differences
+- [x] All existing functionality works as before (tracing, scoring, progress, fill the blanks, listening, drawing, language switch, first-launch flow)
+- [x] Unit and instrumented tests pass after every sub-step
+- [x] No hard-coded colours, fonts, sizes or spacing inside screens
+- [x] `NEW_STRINGS.md` lists every new string in Bangla and English
+- [x] Verified on the user's phone
 
 ## Notes
 

@@ -62,7 +62,7 @@ round stroke, are tinted where they are used, and cover every icon the spec name
 | 5 | Fill picker, model dialog, sequence, hint sheet, done view, Listen and learn | 16–21 | Done |
 | 6 | Progress tab, Progress detail, splash | 2, 22, 23 | Done |
 | 7 | Polish: dark mode, 1.3× font scale, small phones, landscape Practice; unused code and strings; `NEW_STRINGS.md`; list of remaining differences | 24 | Done |
-| 8 | Deferred items below, one at a time, each only after the user decides | — | Next |
+| 8 | Deferred items below, one at a time, each only after the user decides | — | Done (DEFER-2 built; DEFER-1 (c)+(d) not on master, see below) |
 
 ## Verification loop (every phase)
 
@@ -134,7 +134,7 @@ child sees on top of the letter. Colouring each passed dot needs the tracker's p
 - (d) Optionally expose "dots reached so far" from the tracker as a read-only list and colour those dots primary. This
   touches the engine and needs tests, but does not change scoring.
 
-**Status:** done. Phase 1 applied (a) and (b); the user chose (c) and (d), built in Phase 8. The ink is
+**Status:** (a) and (b) done. (c) and (d) were built in `87d1561` but that commit was dropped by a reset, so the 9dp ink and coloured passed dots are NOT on master; it can be recovered with `git cherry-pick 87d1561`. The text below describes that dropped work. Phase 1 applied (a) and (b); the user chose (c) and (d), built in Phase 8. The ink is
 `DottedPathStyle.inkWidth` (9dp at 320dp, scaling with the canvas). `MultiStrokeTracker.reachedDots` lists the guide
 dots a traced point has come within the scoring tolerance of, during the touch too; a cancelled touch gives its dots
 back. The canvas draws them in primary while the guide shows. Scoring is unchanged.
