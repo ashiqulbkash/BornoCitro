@@ -72,9 +72,6 @@ import com.bornochitra.core.ui.theme.BornoChitraTheme
 import kotlin.math.roundToInt
 import com.bornochitra.core.model.Stroke as ExerciseStroke
 
-/** Where the writing area's two dashed lines sit, as a share of its height (design/DESIGN_SPEC.md 4, Tracing canvas). */
-private val WritingLines = listOf(0.29f, 0.78f)
-
 /** The hint preview's dots are primary at 55%. */
 private const val HINT_DOT_ALPHA = 0.55f
 
@@ -251,7 +248,6 @@ private fun ColumnScope.BlankTracing(
             textAlign = TextAlign.Center,
         )
         val scheme = MaterialTheme.colorScheme
-        val lineColor = BcTheme.colors.guide
         // Square, but never taller than what the row, instruction, tip and buttons leave.
         ExerciseTracingCanvas(
             exercise = exercise,
@@ -267,14 +263,6 @@ private fun ColumnScope.BlankTracing(
                 .aspectRatio(1f)
                 .clip(BcShapes.xxl)
                 .background(scheme.surfaceContainerLowest)
-                .drawBehind {
-                    val stroke = BcDimens.tileBorder.toPx()
-                    val dash = PathEffect.dashPathEffect(floatArrayOf(BcDimens.dashLength.toPx(), BcDimens.dashGap.toPx()))
-                    WritingLines.forEach { share ->
-                        val y = size.height * share
-                        drawLine(lineColor, Offset(0f, y), Offset(size.width, y), strokeWidth = stroke, pathEffect = dash)
-                    }
-                }
                 .border(BcDimens.tileBorder, scheme.outlineVariant, BcShapes.xxl),
         )
         if (isNotRecognized) {
@@ -285,15 +273,17 @@ private fun ColumnScope.BlankTracing(
             )
         }
     }
+    // Help is hidden once used, not disabled (design/DESIGN_SPEC.md: prefer hiding over disabling).
     Row(horizontalArrangement = Arrangement.spacedBy(BcSpacing.s)) {
-        BcOutlineButton(
-            text = stringResource(R.string.fill_blanks_hint),
-            onClick = { onEvent(FillBlanksEvent.HintRequested) },
-            enabled = !isHintShown,
-            icon = R.drawable.bc_ic_bulb,
-            compactPadding = true,
-            modifier = Modifier.weight(1f),
-        )
+        if (!isHintShown) {
+            BcOutlineButton(
+                text = stringResource(R.string.fill_blanks_hint),
+                onClick = { onEvent(FillBlanksEvent.HintRequested) },
+                icon = R.drawable.bc_ic_bulb,
+                compactPadding = true,
+                modifier = Modifier.weight(1f),
+            )
+        }
         BcOutlineButton(
             text = stringResource(R.string.action_reset),
             onClick = { onEvent(FillBlanksEvent.BlankRestartRequested) },

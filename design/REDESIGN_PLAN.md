@@ -85,9 +85,9 @@ group was agreed during the phases; the second is how the app handles sizes the 
 **Agreed differences**
 - **Learning-character fonts (D1).** Letters, digits and signs use the font their tracing guide was derived from:
   Noto Sans Bengali Bold, Andika Bold, or Inter. The PDF uses Baloo Da 2.
-- **Canvas (DEFER-1).** Guide dots, guide line and ink keep today's sizes; only their colours follow the spec. The
-  guide keeps its darker colour (user correction b), and passed dots are not coloured.
-- **Fill-the-blanks Help (DEFER-2).** "সাহায্য" is disabled after use rather than hidden.
+- **Canvas (DEFER-1).** Guide dots and guide line keep today's sizes; only their colours follow the spec. The
+  guide keeps its darker colour (user correction b). The ink (9dp) and the passed dots (primary) follow the spec; a
+  dot counts as passed within the scoring tolerance, so the dot just ahead of the finger may turn first.
 - **Drawing pictures.** Tiles, the Practice model, Result and Progress show the exercise's own strokes, so the line
   is horizontal (the PDF draws it diagonal) and the house is the exercise's roof and walls (not the house icon).
 - **Stars.** Filled stars keep their thin outline in light mode (user correction c).
@@ -134,8 +134,13 @@ child sees on top of the letter. Colouring each passed dot needs the tracker's p
 - (d) Optionally expose "dots reached so far" from the tracker as a read-only list and colour those dots primary. This
   touches the engine and needs tests, but does not change scoring.
 
-**Status:** waiting for the user's decision on (c) and (d). Phase 1 applied (a) and (b) only.
+**Status:** done. Phase 1 applied (a) and (b); the user chose (c) and (d), built in Phase 8. The ink is
+`DottedPathStyle.inkWidth` (9dp at 320dp, scaling with the canvas). `MultiStrokeTracker.reachedDots` lists the guide
+dots a traced point has come within the scoring tolerance of, during the touch too; a cancelled touch gives its dots
+back. The canvas draws them in primary while the guide shows. Scoring is unchanged.
 
 ### DEFER-2 · Hide "সাহায্য" after the hint is used
-See `design/plans/HINT_HELP_HIDE.md`. Until then, Phase 5 keeps today's behaviour: the button is disabled after
-it is used. Before this item is built, the user gets a prompt describing it, and afterwards the result is shown.
+See `design/plans/HINT_HELP_HIDE.md`.
+
+**Status:** done. The user chose to hide it, built in Phase 8. Once the hint is used, "সাহায্য" is not shown and
+"আবার শুরু" takes the full row; a new blank brings Help back. Rendering only; scoring is unchanged.

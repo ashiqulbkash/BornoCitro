@@ -284,6 +284,24 @@ class CriticalFlowTest {
         )
 
     @Test
+    fun fillBlanksHelp_isHiddenOnceTheHintIsUsed() {
+        openHome()
+        clickButton(string(R.string.title_bangla))
+        clickButton(string(R.string.title_fill_blanks))
+        clickButton(string(R.string.category_vowel))
+        val help = string(R.string.fill_blanks_hint)
+        val reset = string(R.string.action_reset)
+        awaitText(help)
+
+        composeRule.onNode(hasText(help) and hasClickAction()).performClick()
+        composeRule.onNodeWithText(string(R.string.fill_blanks_hint_confirm)).performClick()
+
+        awaitText(string(R.string.fill_blanks_trace_hint))
+        composeRule.onNodeWithText(help).assertDoesNotExist()
+        composeRule.onNode(hasText(reset) and hasClickAction()).assertIsDisplayed()
+    }
+
+    @Test
     fun progressTab_listsEveryCategory_andBackReturnsHome() {
         openHome()
         // Home does not show progress; it is in its own tab.

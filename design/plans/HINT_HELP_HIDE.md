@@ -13,5 +13,8 @@ No ViewModel or scoring change: rendering only.
 **Tests.** A Compose UI test on the sequence content: Help visible before the hint; after `HintUsed`, Help is
 absent and Reset is shown.
 
+z![img.png](img.png)**Status.** Done (Phase 8): the user chose to hide it. The test is end-to-end,
+`CriticalFlowTest.fillBlanksHelp_isHiddenOnceTheHintIsUsed`.
+
 **Process.** Before implementing, give the user a prompt describing this change; after, show before/after
 screenshots.
