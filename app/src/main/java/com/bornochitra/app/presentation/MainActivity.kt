@@ -24,12 +24,10 @@ import androidx.navigation.compose.rememberNavController
 import com.bornochitra.app.navigation.BcDestination
 import com.bornochitra.app.navigation.BcNavHost
 import com.bornochitra.core.database.AppDatabase
-import com.bornochitra.core.locale.AppLanguageEntryPoint
-import com.bornochitra.core.locale.AppLanguageStore
+import com.bornochitra.core.locale.BanglaLocale
 import com.bornochitra.core.onboarding.OnboardingStore
 import com.bornochitra.core.ui.theme.BornoChitraTheme
 import dagger.hilt.android.AndroidEntryPoint
-import dagger.hilt.android.EntryPointAccessors
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -46,21 +44,16 @@ class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var onboardingStore: OnboardingStore
 
-    // Needed before super.onCreate, where field injection has not happened yet.
-    private val appLanguageStore: AppLanguageStore by lazy {
-        EntryPointAccessors.fromApplication<AppLanguageEntryPoint>(applicationContext).appLanguageStore()
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         // BrandSplash draws the same icon in the same place, so the system splash's default fade-out
         // would only dim the icon for a moment: remove it at once instead.
         installSplashScreen().setOnExitAnimationListener { it.remove() }
-        // No language chosen yet means Bangla. Below Android 13 AppCompat applies it in place when it is
-        // set before the activity is created (on Android 12 a recreate asked for during onCreate never
-        // came); from 13 the framework needs the created activity, and recreates it once.
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) appLanguageStore.applyDefault()
+        // The UI is Bangla only. Below Android 13 AppCompat applies it in place when it is set before the
+        // activity is created (on Android 12 a recreate asked for during onCreate never came); from 13 the
+        // framework needs the created activity, and recreates it once.
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) BanglaLocale.apply()
         super.onCreate(savedInstanceState)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) appLanguageStore.applyDefault()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) BanglaLocale.apply()
         enableEdgeToEdge()
         val startDestination = if (onboardingStore.hasSeenWelcome) BcDestination.Home.route else BcDestination.Onboarding.route
         setContent {
@@ -73,9 +66,9 @@ class MainActivity : AppCompatActivity() {
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-        // Below Android 13 AppCompat applies a new app language in place (the manifest handles locale
-        // changes) but tells only the activity, so Compose kept showing the old strings. From 13 the
-        // framework owns per-app languages and already sends the change to the views.
+        // Below Android 13 AppCompat applies Bangla in place over a language an older build kept (the
+        // manifest handles locale changes) but tells only the activity, so Compose kept showing the old
+        // strings. From 13 the framework owns per-app languages and already sends the change to the views.
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) window.decorView.dispatchConfigurationChanged(newConfig)
     }
 
@@ -96,7 +89,7 @@ private fun BornoChitraApp(startDestination: String) {
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background,
     ) {
-        // Saved, so the language recreate on first start and configuration changes do not replay it.
+        // Saved, so a configuration change does not replay it.
         var showBrandSplash by rememberSaveable { mutableStateOf(true) }
         Box {
             val navController = rememberNavController()

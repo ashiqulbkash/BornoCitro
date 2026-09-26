@@ -43,6 +43,6 @@ fun BcAppLogo(
 @Composable
 private fun BcAppLogoPreview() {
     BornoChitraTheme {
-        BcAppLogo(size = BcDimens.logoOnboarding)
+        BcAppLogo(size = BcDimens.logoWelcome)
     }
 }

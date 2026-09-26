@@ -59,8 +59,6 @@ fun HomeScreen(
     onEnglishClick: () -> Unit,
     onDrawingClick: () -> Unit,
     onContinueClick: (exerciseId: String) -> Unit,
-    languageName: String,
-    onLanguageClick: () -> Unit,
     navigationBar: @Composable () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = hiltViewModel(),
@@ -72,8 +70,6 @@ fun HomeScreen(
         onEnglishClick = onEnglishClick,
         onDrawingClick = onDrawingClick,
         onContinueClick = onContinueClick,
-        languageName = languageName,
-        onLanguageClick = onLanguageClick,
         navigationBar = navigationBar,
         modifier = modifier,
     )
@@ -86,14 +82,12 @@ private fun HomeContent(
     onEnglishClick: () -> Unit,
     onDrawingClick: () -> Unit,
     onContinueClick: (exerciseId: String) -> Unit,
-    languageName: String,
-    onLanguageClick: () -> Unit,
     navigationBar: @Composable () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
         modifier = modifier,
-        topBar = { BcHomeTopAppBar(languageName = languageName, onLanguageClick = onLanguageClick) },
+        topBar = { BcHomeTopAppBar() },
         bottomBar = navigationBar,
     ) { innerPadding ->
         Column(
@@ -318,8 +312,6 @@ private fun HomeScreenPreview() {
             onEnglishClick = {},
             onDrawingClick = {},
             onContinueClick = {},
-            languageName = "বাংলা",
-            onLanguageClick = {},
             navigationBar = {},
         )
     }
@@ -335,8 +327,6 @@ private fun HomeScreenEmptyPreview() {
             onEnglishClick = {},
             onDrawingClick = {},
             onContinueClick = {},
-            languageName = "বাংলা",
-            onLanguageClick = {},
             navigationBar = {},
         )
     }

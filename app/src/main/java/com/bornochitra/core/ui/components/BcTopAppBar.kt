@@ -99,13 +99,9 @@ fun BcTopAppBar(
     }
 }
 
-/** Home's bar: the logo, the app's name in primary, and the language chip. */
+/** Home's bar: the logo and the app's name in primary. */
 @Composable
-fun BcHomeTopAppBar(
-    languageName: String,
-    onLanguageClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
+fun BcHomeTopAppBar(modifier: Modifier = Modifier) {
     TopBarRow(modifier = modifier, startPadding = BcSpacing.m) {
         Row(
             modifier = Modifier.weight(1f),
@@ -120,7 +116,6 @@ fun BcHomeTopAppBar(
                 modifier = Modifier.semantics { heading() },
             )
         }
-        BcLanguageChip(languageName = languageName, onClick = onLanguageClick, modifier = Modifier.padding(end = BcSpacing.xs))
     }
 }
 
@@ -161,7 +156,7 @@ private fun TopBarRow(
 private fun BcTopAppBarPreview() {
     BornoChitraTheme {
         Column {
-            BcHomeTopAppBar(languageName = "বাংলা", onLanguageClick = {})
+            BcHomeTopAppBar()
             BcTopAppBar(title = "অনুশীলন", onBackClick = {}, trailing = { BcChip(text = "স্বরবর্ণ · ২/১১") })
             BcTopAppBar(title = "অগ্রগতি")
             BcTopAppBar(title = "ফলাফল", centered = true)

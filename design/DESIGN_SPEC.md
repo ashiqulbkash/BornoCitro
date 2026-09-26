@@ -1,6 +1,7 @@
 # BornoChitra (বর্ণচিত্র) — Design Spec for Compose + Material 3
 
 Source of truth: the "বর্ণচিত্র — BornoChitra redesign" design canvas. This spec only describes it; nothing is added or removed.
+Since 2026-09-27 the app's UI is **Bangla only**: the canvas's language page, chip, sheet and switch are not built. They are marked *removed* below, and §7 lists them. The English *learning content* (English hub, letters, numbers, fill-the-blanks, listen-and-learn) is unchanged.
 Units: dp for size/space, sp for text. Screen reference: 360 × 800 dp, portrait. Status bar / gesture bar are system (not drawn).
 `(cw)` = new Bengali text, check wording before shipping.
 
@@ -33,7 +34,7 @@ Units: dp for size/space, sp for text. Screen reference: 360 × 800 dp, portrait
 | onSurfaceVariant | `#4A4458` | `#CBC3D6` | secondary text, inactive nav, captions |
 | surfaceContainerLowest | `#FFFFFF` | `#1E1A25` | cards, rows, tiles, canvas, sequence cells (dark: intentionally lighter than surface) |
 | surfaceContainerLow | `#F7F1FC` | `#221E2A` | nav bar, flat cards, sheets, dialogs; cards in dark |
-| surfaceContainer | `#F0E9F8` | `#2B2634` | segmented track, chips, tonal icon button |
+| surfaceContainer | `#F0E9F8` | `#2B2634` | chips, tonal icon button |
 | surfaceContainerHigh | `#E4DCEF` | `#39323F` | progress track, disabled button |
 | outline | `#7A7289` | `#958DA1` | radio ring, dashed blank cell, chevrons, sheet handle |
 | outlineVariant | `#D4CCDF` | `#4A4456` | 2dp borders of tiles/choices/canvas/outline buttons, dividers, empty stars (dark empty star `#6A6378`) |
@@ -62,20 +63,20 @@ Card elevation: light = shadow `0 1dp 2dp` + `0 4dp 14dp`, color `#32146E` @ 8% 
 Fonts (bundle as `res/font`, Google Fonts OFL):
 - **Baloo Da 2** (500/600/700/800) — display, titles, buttons, letters. Bengali + Latin.
 - **Hind Siliguri** (400/500/600) — body, captions, labels in text.
-- **Andika** (400/700) — English letters only (tiles, tracing, English glyphs, "English" label).
+- **Andika** (400/700) — English letters only (tiles, tracing, English glyphs).
 Fallback: Noto Sans Bengali → system sans.
 
 | M3 role | Font | Size / line height | Weight | Used for |
 |---|---|---|---|---|
-| displaySmall | Baloo Da 2 | 40 / 50 | 800 | স্বাগতম! (onboarding), দারুণ!, splash wordmark |
+| displaySmall | Baloo Da 2 | 40 / 50 | 800 | স্বাগতম! (Welcome), দারুণ!, splash wordmark |
 | headlineMedium | Baloo Da 2 | 28 / 38 | 700 | Home "স্বাগতম!", "বর্ণচিত্র কী?" |
 | titleLarge | Baloo Da 2 | 22 / 30 | 700 | top-bar titles, subject names, sheet & dialog titles, Continue title |
 | titleMedium | Baloo Da 2 | 18 / 24 | 700 | row names, game-card names, % labels, choice labels |
-| bodyLarge | Hind Siliguri | 18 / 29 | 500 (600 for instructions) | instructions, onboarding subtitle |
+| bodyLarge | Hind Siliguri | 18 / 29 | 500 (600 for instructions) | instructions |
 | bodyMedium | Hind Siliguri | 16 / 25 | 500 | body copy, feature cards, dialog body |
 | bodySmall | Hind Siliguri | 14 / 20 | 500 (600 in chips/meta) | captions, row meta, chips |
 | labelLarge | Baloo Da 2 | 17 / 20 | 700 | buttons (15sp in small buttons) |
-| labelMedium | Baloo Da 2 | 15 / 20 | 700 | section labels, language chip |
+| labelMedium | Baloo Da 2 | 15 / 20 | 700 | section labels |
 | labelSmall | Hind Siliguri | 13 / 16 | 600 (700 active) | nav labels, tile status line |
 
 Custom styles (`BcType`): `letterTile` Baloo 40/46 700 · `letterPractice` Baloo 56 800 · `letterResult` Baloo 72/80 800 · `scoreXL` Baloo 56/62 800 · `scoreL` Baloo 48/53 800 · `percentHeader` Baloo 30/33 800 · `flag` Baloo 11 700.
@@ -95,14 +96,14 @@ Corner radius (dp):
 | xs | 7–10 | mini cells inside cards |
 | sm | 12–14 | small glyph tiles (36–48dp), chips-square |
 | md | 16 | sequence cells, row lead (52dp), banners (18) |
-| lg | 20 | letter tiles, rows, choice cards, glyph tile (72dp), language/choice leads |
+| lg | 20 | letter tiles, rows, choice cards, glyph tile (72dp), choice leads |
 | xl | 24 | cards, subject cards, header cards, practice letter tile |
 | xxl | 28 | Continue card, canvas, sheets (top corners), dialogs |
-| full | 50% | buttons, chips, segmented, nav indicator, progress bars, icon buttons |
+| full | 50% | buttons, chips, nav indicator, progress bars, icon buttons |
 
 Touch targets: child action buttons 56 tall; rows ≥ 76 (Progress rows 62); tiles ≥ 96; icon buttons 48; nothing tappable < 48 (chips in top bar are 40 tall inside a 48 touch area).
 
-Icons: 24dp outline, stroke 2dp, round caps/joins (Material Symbols Rounded, outlined, weight 400 is a good match). 22dp inside buttons, 20dp in chips/language chip, 16dp in small chips.
+Icons: 24dp outline, stroke 2dp, round caps/joins (Material Symbols Rounded, outlined, weight 400 is a good match). 22dp inside buttons, 20dp in chips, 16dp in small chips.
 
 ---
 
@@ -120,12 +121,10 @@ Rule: one primary button per screen = the screen's main action.
 
 ### Icon button — 48×48, radius full, icon 24 onSurface. Tonal variant: surfaceContainer bg. Back icon = arrow-left.
 
-### Language chip *(new, Home top bar)* — height 40, padding start 10 / end 14, radius full, surfaceContainer, globe 20 + gap 6 + current language name (labelMedium). Tap → Language sheet.
-
 ### Top app bar (BcTopAppBar)
 - **Inner**: height 64, padding horizontal 8; [back IconButton 48] + title titleLarge (left-aligned, start padding 4) + optional trailing Chip (margin end 8).
 - **Tab screens** (Progress, Grown-ups): no back, title start padding 16.
-- **Home**: start padding 16, gap 10: logo circle 36 (primary, "অ" Baloo 800 20sp onPrimary) + "বর্ণচিত্র" titleLarge in primary + Language chip.
+- **Home**: start padding 16, gap 10: logo circle 36 (primary, "অ" Baloo 800 20sp onPrimary) + "বর্ণচিত্র" titleLarge in primary. Nothing on the right.
 - **Result**: title centered, no back.
 
 ### Navigation bar *(new, replaces drawer)* — M3 `NavigationBar`, height 80, container surfaceContainerLow, padding 12 top/bottom, 8 sides. 3 items, labels always shown: indicator pill 64×32 primaryContainer, icon 24; label labelSmall, 4dp below. Selected: icon onPrimaryContainer, label onSurface 700. Unselected: onSurfaceVariant.
@@ -172,11 +171,10 @@ surfaceContainerLow, radius 24, padding 14/16, gap 10: [bar 14 flex + % titleMed
 
 ### Chip — height 32, padding 12, radius full, surfaceContainer, bodySmall 600 onSurfaceVariant, icon 16 gap 6.
 
-### Segmented switch (BcLanguageSwitch)
-Track surfaceContainer, radius full, padding 4, gap 4. Segments flex, height 48, radius full, labelLarge-ish 17sp 700. Selected: primary / onPrimary, animated thumb (keep current animation). Unselected: onSurfaceVariant. "English" in Andika.
+### Segmented switch (BcLanguageSwitch) — **removed** (it only carried the language choice).
 
 ### Choice card (BcChoiceButton)
-Full width, padding 14/16, radius 20, gap 14, 2dp outlineVariant border, surfaceContainerLowest. Radio 24 (2dp outline ring). Selected: 3dp primary border, primaryContainer fill, radio = 7dp primary ring. Variants: row (language, 72–88 tall, lead tile 44–56 radius 14–16) and column (difficulty: radio+label row, mini pattern, caption; gap 10).
+Full width, padding 14/16, radius 20, gap 14, 2dp outlineVariant border, surfaceContainerLowest. Radio 24 (2dp outline ring). Selected: 3dp primary border, primaryContainer fill, radio = 7dp primary ring. One variant: column (difficulty: radio+label row, mini pattern, caption; gap 10). The row variant (lead tile 44–56, label, radio) was only used by the language cards and is removed.
 
 ### Tracing canvas (ExerciseTracingCanvas)
 Square, width = screen − 40 (320 at 360dp), radius 28, surfaceContainerLowest, 2dp outlineVariant border, clip.
@@ -200,7 +198,7 @@ Sheet header: icon circle 48 (tonal) + title titleLarge (+ optional caption), ga
 
 ### Dialog — centered, insets 24 left/right, radius 28, padding 24, gap 16, surfaceContainerLow. Icon circle 56 (icon 28) centered · title titleLarge + body bodyMedium onSurfaceVariant, centered, gap 6–8 · buttons: stacked full-width (primary + text) or right-aligned row (text + primary).
 
-### Page indicator — dots 8×8 radius 4 outlineVariant, active 24×8 primary, gap 8.
+### Page indicator — **removed** (only the two-page onboarding used it).
 
 ### Empty / loading / error states (unchanged behavior)
 Use banner Error or BcEmptyState centered in content: icon circle 56, titleMedium, bodyMedium, optional primary button. Loading: M3 CircularProgressIndicator, primary.
@@ -214,21 +212,15 @@ Common: background = surface; content padding 20 horizontal unless noted. Tab sc
 ### 1 · Splash (BrandSplash) — existing
 Centered column, gap 28, padding 24: logo 176 (purple circle, white "অ", dotted line + orange pencil — current icon) · wordmark "বর্ণচিত্র" displaySmall primary · tagline "লেখো, শেখো, বেড়ে ওঠো" titleLarge onSurfaceVariant. Fades out as today.
 
-### 2a · Onboarding — Language — **NEW, replaces Welcome (part 1/2)**
-Padding 56 top / 20 / 24 bottom, gap 24.
-1. Centered column gap 12 (+16 top): logo 104 · "স্বাগতম!" displaySmall · "অ্যাপটা কোন ভাষায় দেখবে?" (cw) + "Which language should the app use?" bodyLarge onSurfaceVariant.
-2. Two row choice cards (gap 12, min height 88): lead 56 "অ" primary / "A" englishContainer · "বাংলা" / "English" titleLarge · radio. Selecting switches language immediately (same setting as the switch).
-3. Caption centered: "পরে “বড়দের জন্য” থেকে বদলানো যাবে।" (cw).
-4. Bottom (gap 20): page indicator (1 of 2) · Primary full-width "এগিয়ে চলো" → page 2 (swipe also works; HorizontalPager).
-
-### 2b · Onboarding — About — **NEW, replaces Welcome (part 2/2)**
-Padding 40 top / 20 / 24, gap 16.
-1. "বর্ণচিত্র কী?" headlineMedium + intro bodyMedium (existing AboutContent text), gap 6.
-2. 4 feature cards (existing text), gap 10: card padding 14, gap 14, lead 52 radius 16 (অa primaryContainer · ১+২ englishContainer · house icon secondaryContainer · star icon tertiaryContainer) + bodyMedium.
-3. Bottom: indicator (2 of 2) · Primary "শুরু করো →" (cw). Does exactly what Welcome's Continue did: mark seen, open Home, remove onboarding from back stack.
+### 2 · Welcome — one page (the canvas's onboarding pages 3–4 without the language page)
+Padding 32 top / 20 / 24 bottom, gap 16. Scrolls; the button stays at the bottom.
+1. Header row (gap 14, centered vertically): logo 64 + "স্বাগতম!" displaySmall.
+2. "বর্ণচিত্র কী?" headlineMedium + intro bodyMedium (existing AboutContent text), gap 6.
+3. 4 feature cards (existing text), gap 10: card padding 14, gap 14, lead 52 radius 16 (অa primaryContainer · ১+২ englishContainer · house icon secondaryContainer · star icon tertiaryContainer) + bodyMedium.
+4. Bottom: Primary full-width "শুরু করো →" (cw). Marks Welcome as seen, opens Home, removes Welcome from the back stack.
 
 ### 3 · Home — existing, redesigned (drawer removed)
-1. Home top bar (64): logo + "বর্ণচিত্র" + Language chip.
+1. Home top bar (64): logo + "বর্ণচিত্র". Nothing on the right.
 2. Content: padding 8 top / 20 / 16, gap 16.
    - Greeting: "স্বাগতম!" headlineMedium + "আজ কী শিখবে?" (cw) bodyMedium onSurfaceVariant.
    - Continue card (only when continueExerciseId exists).
@@ -236,14 +228,11 @@ Padding 40 top / 20 / 24, gap 16.
 3. Navigation bar (শিখি selected).
 Data added to HomeUiState (display only): continue item's letter, category, best stars, completions; progress % per subject.
 
-### 4 · Language sheet — **NEW, replaces the language switch in the drawer**
-Opened by the Language chip on Home. ModalBottomSheet over Home:
-header (globe circle 48 primaryContainer/primary + "অ্যাপের ভাষা" (cw) titleLarge + "App language" caption) · 2 row choice cards (min height 72, lead 44) · caption centered "বেছে নিলেই বদলে যাবে। অগ্রগতি মুছবে না।" (cw). Choice applies at once and persists (same setting/API as today). Dismiss: drag, scrim, Back.
+### 4 · Language sheet — **removed** (canvas page 6). The UI is Bangla only, so nothing opens it. The numbering of screens 5–20 is kept, because it follows the canvas pages.
 
 ### 5 · Grown-ups tab (বড়দের জন্য) — **NEW tab, replaces the drawer and the About screen**
 1. Tab top bar "বড়দের জন্য" (cw).
 2. Scrollable column, padding 4 top / 20 / 20, gap 22:
-   - Section "অ্যাপের ভাষা · App language" (cw, labelMedium) + Segmented switch (BcLanguageSwitch).
    - Section "অগ্রগতি কীভাবে গোনা হয়" (cw): card padding 16, gap 12, three rows (leading 54 wide, gap 12, bodySmall): stars "প্রতিটা অক্ষরের তারা আসে সবচেয়ে ভালো লেখা থেকে।" (cw) · check badge "৩ বার লিখলে আর অন্তত একবার ৮০% পেলে অক্ষরটা শেখা হয়ে যায়।" (cw) · phone icon "সব অগ্রগতি এই ফোনেই থাকে। কোনো অ্যাকাউন্ট লাগে না।" (cw).
    - Section "পরিচিতি": "বর্ণচিত্র কী?" titleLarge + intro bodyMedium + flat card (padding 6/16) with the 4 feature lines, numbered ১–৪ in primary, 1dp outlineVariant dividers, rows padding 10 vertical, bodySmall.
 3. Navigation bar (বড়দের জন্য selected).
@@ -351,15 +340,14 @@ Every screen uses the same layout with the dark scheme. Reference artboards: Hom
 
 ```
 App start ─► System splash ─► BrandSplash
-   first launch? ─ yes ─► Onboarding 2a ─► 2b ──শুরু করো──► Home   (onboarding removed from back stack)
-                └ no ──────────────────────────────────► Home
+   first launch? ─ yes ─► Welcome ──শুরু করো──► Home   (Welcome removed from back stack)
+                └ no ─────────────────────────► Home
 
 Bottom bar (tab screens only):  শিখি = Home │ অগ্রগতি = Progress │ বড়দের জন্য = Grown-ups
    Tabs: single top, restore state, never stack copies (replaces navigateAboveHome).
    Back from Progress / Grown-ups → Home tab; Back from Home exits.
 
-Home ─┬─ Language chip ─► Language sheet (NEW)
-      ├─ Continue card ─► Practice
+Home ─┬─ Continue card ─► Practice
       ├─ বাংলা  ─► Bangla hub  ─┬─ 4 rows ─► Category grid ─► Practice
       │                         ├─ শূন্যস্থান পূরণ ─► [Model dialog if needed] ─► Picker ─► Sequence ─┬─ সাহায্য ─► Hint sheet (NEW)
       │                         │                                                             ├─ আবার শুরু ─► Restart dialog (NEW, if ink)
@@ -381,9 +369,20 @@ Unchanged rules: Result blocks system Back; Practice→Result→Practice pops th
 | NEW | Replaces / adds to | Behavior change |
 |---|---|---|
 | Bottom navigation bar | ModalNavigationDrawer + menu icon | none: same 3 destinations, one tap away |
-| Onboarding 2a + 2b | Welcome (single page) | none: same language switch, About content, Continue logic |
-| Language sheet | Language switch in drawer | none: same setting |
-| Grown-ups tab | Drawer + About screen | none: About content + language switch in one place |
+| Welcome (single page) | the redesign's two onboarding pages | the language page is gone; About content and Continue logic unchanged |
+| Grown-ups tab | Drawer + About screen | none: the About content in its own tab |
 | Restart confirm dialog | Instant Reset on Practice / Fill sequence | asks only when ink exists |
 | Hint sheet | Instant Help on Fill sequence | one extra confirm; same hint + 70 cap |
 | Continue card, subject/row progress, tile stars, result stars | Plain pills / plain result | display only, from existing progress data |
+
+### Removed — the UI is Bangla only (2026-09-27)
+
+| Removed | Was on | Note |
+|---|---|---|
+| Onboarding language page | first launch | Welcome is one page |
+| Language chip + Language sheet | Home top bar | — |
+| "অ্যাপের ভাষা · App language" section + `BcLanguageSwitch` | Grown-ups tab | the tab starts with the counting card |
+| Choice card, row variant · Page indicator · `bc_ic_globe` | the above | `BcChoiceButton`'s column variant stays (Easy / Hard) |
+| `values-en/strings.xml` · `locales_config.xml` · `autoStoreLocales` | resources / manifest | the default (Bangla) set is the only one |
+
+Bangla is applied on every launch (`AppCompatDelegate.setApplicationLocales("bn")`), so a language a previous build stored does not stick. Nothing in the UI, and nothing in Android's app-language settings, changes it. Colors and typography are unchanged: `englishContainer` and Andika still serve the English learning content.

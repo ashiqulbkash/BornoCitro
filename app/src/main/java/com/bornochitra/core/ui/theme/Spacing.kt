@@ -39,7 +39,6 @@ object BcDimens {
 
     val topBarHeight = 64.dp
     val topBarLogo = 36.dp
-    val chipTopBarHeight = 40.dp
     val chipHeight = 32.dp
 
     val navIndicatorWidth = 64.dp
@@ -97,10 +96,6 @@ object BcDimens {
 
     val choiceRadio = 24.dp
     val choiceRadioSelectedRing = 7.dp
-    val choiceLead = 56.dp
-    val choiceLeadSmall = 44.dp
-    val choiceMinHeight = 88.dp
-    val choiceMinHeightSmall = 72.dp
 
     val practiceTile = 84.dp
     val practiceResetMinWidth = 200.dp
@@ -133,10 +128,7 @@ object BcDimens {
     val dialogIconGlyph = 28.dp
     val emptyStateIcon = 56.dp
 
-    val pageDot = 8.dp
-    val pageDotActive = 24.dp
-
-    val logoOnboarding = 104.dp
+    val logoWelcome = 64.dp
     val logoSplash = 176.dp
     val splashGap = 28.dp
 

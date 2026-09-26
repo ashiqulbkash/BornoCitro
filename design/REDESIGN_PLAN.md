@@ -3,9 +3,14 @@
 This file is the detailed plan for **Step 15 of `plan.md`**. `plan.md` says what the step is and when it is done; this
 file says how it is carried out.
 
+> **Step 16 (2026-09-27) made the UI Bangla only.** This file stays the record of Step 15. What it changes here:
+> decision D3 is void, the PDF's language page and sheet are not built, Welcome is one page, and the app is no longer
+> checked in two languages. Those places are marked below; `design/DESIGN_SPEC.md` describes the app as it is now.
+
 - **What the screens look like:** `design/DESIGN_SPEC.md` (source of truth) and `design/screens.pdf` (visual reference).
 - **Branch:** `ui-redesign`. One commit per phase; stop for the user's OK after each phase.
-- **PDF page map:** 1 design system · 2 splash · 3–4 onboarding · 5 Home · 6 language sheet · 7 Grown-ups ·
+- **PDF page map:** 1 design system · 2 splash · 3–4 onboarding *(now one Welcome page: 4 without 3's language page)* ·
+  5 Home · 6 language sheet *(not built since Step 16)* · 7 Grown-ups ·
   8 Bangla hub · 9 English hub · 10 category grid · 11 drawing grid · 12 Practice · 13 restart dialog ·
   14 Result (great) · 15 Result (low score) · 16 fill picker · 17 model dialog · 18 fill sequence · 19 hint sheet ·
   20 fill done · 21 Listen and learn · 22 Progress · 23 Progress detail · 24 dark mode.
@@ -28,8 +33,9 @@ file says how it is carried out.
   picks the font from the character, so it can be changed in one place. Sizes, line heights and colours follow the
   spec; only the font family and weight differ.
 - Everything else uses the spec's fonts: Baloo Da 2 (500/600/700/800), Hind Siliguri (400/500/600/700) and Andika Bold
-  (the word "English" and the "Aa" mark). Only the weights in use are bundled; their OFL licenses are in
-  `design/licenses/fonts/`. Hind Siliguri has no "→" glyph, which does not matter because arrows are icons.
+  (the "Aa" mark; the word "English" used it too until Step 16 removed the language labels). Only the weights in use
+  are bundled; their OFL licenses are in `design/licenses/fonts/`. Hind Siliguri has no "→" glyph, which does not
+  matter because arrows are icons.
 - **This is an intentional difference from the PDF.** It is not "fixed" when screenshots are compared, and it is listed
   in the final list of differences.
 
@@ -37,9 +43,11 @@ file says how it is carried out.
 The 25 icons in `design/icons/drawable` are copied to `res/drawable` (`bc_ic_*`). All of them are 24×24 with a 2dp
 round stroke, are tinted where they are used, and cover every icon the spec names.
 
-### D3 · Bilingual lines
-"অ্যাপটা কোন ভাষায় দেখবে?" with "Which language should the app use?", "অ্যাপের ভাষা · App language", and the
+### D3 · Bilingual lines — **void since Step 16**
+It read: "অ্যাপটা কোন ভাষায় দেখবে?" with "Which language should the app use?", "অ্যাপের ভাষা · App language", and the
 "App language" caption appear exactly as the design shows them, in both app languages (`translatable="false"` strings).
+Every line it covered belonged to the language page, chip or sheet, so all of them are gone. The app has no bilingual
+UI line left; the Bengali and Latin marks ("অ", "a", "Aa", "১+২") stay `translatable="false"` as glyphs.
 
 ### Other agreed points
 - If a child has finished an item enough times but the best score is still below the mastery score, the Continue
@@ -56,7 +64,7 @@ round stroke, are tinted where they are used, and cover every icon the spec name
 | Phase | Scope | PDF pages | Status |
 |---|---|---|---|
 | 1 | Theme (light/dark), fonts, spacing, shapes, icons, shared components | 1 | Done (`b04b115`, `d462a7e`) |
-| 2 | Navigation shell: bottom bar, Grown-ups tab, two-page onboarding, language sheet; drawer, About and Welcome removed | 3, 4, 6, 7 | Done |
+| 2 | Navigation shell: bottom bar, Grown-ups tab, two-page onboarding, language sheet; drawer, About and Welcome removed | 3, 4, 6, 7 | Done *(Step 16 later removed the language page and the sheet; Welcome is one page)* |
 | 3 | Home, Bangla hub, English hub, category grids, drawing grid | 5, 8–11 | Done |
 | 4 | Practice, restart dialog, Result | 12–15 | Done |
 | 5 | Fill picker, model dialog, sequence, hint sheet, done view, Listen and learn | 16–21 | Done |
@@ -79,7 +87,7 @@ round stroke, are tinted where they are used, and cover every icon the spec name
 ## Remaining differences from the design
 
 Checked in Phase 7 on the Pixel_5_2 emulator at 360 × 800dp and 360 × 640dp, in light and dark, at 1× and 1.3× font
-scale, in Bangla and English, and Practice and Result in landscape. Each item below is intentional. The first
+scale, in Bangla and English (the app was bilingual then), and Practice and Result in landscape. Each item below is intentional. The first
 group was agreed during the phases; the second is how the app handles sizes the design does not draw.
 
 **Agreed differences**
@@ -97,9 +105,9 @@ group was agreed during the phases; the second is how the app handles sizes the 
   "শিখে ফেলেছ" instead. The status is 12sp (user correction d), not 11sp, with a 4dp inner padding.
 
 **Sizes the design does not draw**
-- **Short screens.** Every screen scrolls when its content is taller than the window, including onboarding page 1,
-  whose caption falls below the fold on a phone shorter than 800dp. On Practice and in the fill sequence, the canvas
-  shrinks to the space left, and the ink scales with it.
+- **Short screens.** Every screen scrolls when its content is taller than the window, including Welcome, whose
+  feature cards do not all fit on a short phone. On Practice and in the fill sequence, the canvas shrinks to the
+  space left, and the ink scales with it.
 - **1.3× font scale.** Chip rows wrap to a second line. Button labels shrink to fit one line, down to 13sp; the
   fill sequence's two half-width buttons need this. The Progress detail status shrinks to fit a 4-column tile, down
   to 9sp, which with the 1.3× scale is still about 12sp on screen. On Progress detail, the Info banner stays pinned

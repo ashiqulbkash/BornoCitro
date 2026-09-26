@@ -3,11 +3,7 @@ package com.bornochitra.app.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
@@ -15,7 +11,6 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.bornochitra.R
 import com.bornochitra.core.locale.AppLanguage
 import com.bornochitra.core.model.ExerciseType
 import com.bornochitra.core.model.SessionScores
@@ -32,9 +27,6 @@ import com.bornochitra.feature.grownups.GrownUpsScreen
 import com.bornochitra.feature.home.HomeScreen
 import com.bornochitra.feature.hub.BanglaHubScreen
 import com.bornochitra.feature.hub.EnglishHubScreen
-import com.bornochitra.feature.language.LanguageEvent
-import com.bornochitra.feature.language.LanguageSheet
-import com.bornochitra.feature.language.LanguageViewModel
 import com.bornochitra.feature.learn.LearnScreen
 import com.bornochitra.feature.math.MathScreen
 import com.bornochitra.feature.onboarding.OnboardingScreen
@@ -65,14 +57,8 @@ fun BcNavHost(
     startDestination: String,
     modifier: Modifier = Modifier,
 ) {
-    // Activity-scoped, like the language itself: the Home chip, its sheet and the Grown-ups switch share it.
-    val languageViewModel: LanguageViewModel = hiltViewModel()
-    val languageState by languageViewModel.uiState.collectAsStateWithLifecycle()
     val fillBlanksGateViewModel: FillBlanksGateViewModel = hiltViewModel()
     val fillBlanksGateState by fillBlanksGateViewModel.uiState.collectAsStateWithLifecycle()
-
-    // Runs again after every recreate, which is when a language chosen elsewhere reaches the app.
-    LaunchedEffect(Unit) { languageViewModel.onEvent(LanguageEvent.Shown) }
 
     fillBlanksGateState.modelDialog?.let { dialog ->
         HandwritingModelDialog(dialog = dialog, onEvent = fillBlanksGateViewModel::onEvent)
@@ -86,8 +72,6 @@ fun BcNavHost(
     val tabBar: @Composable (BcTab) -> Unit = { selected ->
         BcTabBar(selected = selected, onTabClick = navController::navigateToTab)
     }
-    val onLanguageSelected: (AppLanguage) -> Unit = { languageViewModel.onEvent(LanguageEvent.LanguageSelected(it)) }
-
     NavHost(
         navController = navController,
         startDestination = startDestination,
@@ -104,7 +88,6 @@ fun BcNavHost(
         }
 
         composable(BcDestination.Home.route) {
-            var showLanguageSheet by rememberSaveable { mutableStateOf(false) }
             HomeScreen(
                 onBanglaClick = { navController.navigate(BcDestination.BanglaHub.route) },
                 onEnglishClick = { navController.navigate(BcDestination.EnglishHub.route) },
@@ -112,25 +95,8 @@ fun BcNavHost(
                 onContinueClick = { exerciseId ->
                     navController.navigate(BcDestination.Practice.createRoute(exerciseId))
                 },
-                languageName = stringResource(languageState.language.nameRes()),
-                onLanguageClick = {
-                    languageViewModel.onEvent(LanguageEvent.Shown)
-                    showLanguageSheet = true
-                },
                 navigationBar = { tabBar(BcTab.LEARN) },
             )
-            if (showLanguageSheet) {
-                LanguageSheet(
-                    language = languageState.language,
-                    // The sheet closes as the choice is made: the screen changing language is the answer, and below
-                    // Android 13 the change is applied in place, which the sheet's own window would not pick up.
-                    onLanguageSelected = { language ->
-                        showLanguageSheet = false
-                        onLanguageSelected(language)
-                    },
-                    onDismissRequest = { showLanguageSheet = false },
-                )
-            }
         }
 
         composable(BcDestination.BanglaHub.route) {
@@ -305,17 +271,7 @@ fun BcNavHost(
         }
 
         composable(BcDestination.GrownUps.route) {
-            GrownUpsScreen(
-                language = languageState.language,
-                onLanguageSelected = onLanguageSelected,
-                navigationBar = { tabBar(BcTab.GROWN_UPS) },
-            )
+            GrownUpsScreen(navigationBar = { tabBar(BcTab.GROWN_UPS) })
         }
     }
-}
-
-/** Each language is named in its own language, whichever one the app is in. */
-private fun AppLanguage.nameRes(): Int = when (this) {
-    AppLanguage.BANGLA -> R.string.language_bangla
-    AppLanguage.ENGLISH -> R.string.language_english
 }

@@ -855,6 +855,8 @@ Confirm all new categories and modes behave as one coherent product.
 
 Every piece of UI text comes from string resources, so the app can be shown in Bangla or in English. Bangla is the default. The child (or a parent) picks the language inside the app. Toolbar titles stay short.
 
+> **Superseded in part by Step 16 (Bangla-only UI).** 8.1 stands: every UI string is a resource, in Bangla. 8.2's in-app language switch, `values-en` and the per-app locale storage are gone; the rest of this section is the record of how it was built.
+
 ## Implement (sub-steps 8.1–8.2)
 
 - **Cadence.** 8.1 does Bangla, 8.2 does English. Each sub-step stops when it is done; do not start 8.2 in 8.1.
@@ -907,6 +909,8 @@ Every piece of UI text comes from string resources, so the app can be shown in B
 ## Requirement
 
 Replace the Tips screen ("how to exercise") with a Welcome screen that says what Barnacitro is about and lets the child change the language with an animation. It is shown once, on first launch; after that the app opens on Home. The same content is reused later as the drawer's **About** page (Step 10).
+
+> **Superseded in part by Step 16 (Bangla-only UI).** The first-launch Welcome and its flag stand. Its language switch (9.2) is gone.
 
 ## Implement (sub-steps 9.1–9.3)
 
@@ -1132,7 +1136,7 @@ Redesign the whole app's UI to match the design in `design/`, keeping every exis
 ## Implement (sub-steps 15.1–15.8, one phase each)
 
 - **15.1** Theme (light and dark), fonts, spacing, shapes, icons and shared components.
-- **15.2** Navigation shell: bottom bar, Grown-ups tab, two-page onboarding and language sheet, replacing the drawer, About and Welcome.
+- **15.2** Navigation shell: bottom bar, Grown-ups tab, two-page onboarding and language sheet, replacing the drawer, About and Welcome. *(Step 16 later removed the onboarding language page and the language sheet; Welcome is one page again.)*
 - **15.3** Home, Bangla hub, English hub, category grids and drawing grid.
 - **15.4** Practice, restart dialog and Result.
 - **15.5** Fill-the-blanks picker, model dialog, sequence, hint sheet, done view, and Listen and learn.
@@ -1203,7 +1207,45 @@ Redesign the whole app's UI to match the design in `design/`, keeping every exis
 
 ---
 
-# 17. Feature Completion Definition
+# 17. Step 16 — Bangla-only UI
+
+## Requirement
+
+The app's UI is Bangla only. Bangla is the default and the only UI language, on every launch and every Android version; no screen offers a language change; and a child whose earlier build was set to English sees Bangla after the update. The English **learning content** stays: the English hub, small and capital letters, English numbers, fill the blanks (English) and listen and learn ("A for apple"). Text-to-speech keeps using the *content's* language, not the UI's. Nothing else changes: scoring, mastery, progress, fill the blanks and the navigation rules are untouched.
+
+`design/TASK_remove_language_switch.md` holds the requirement screen by screen, and `design/DESIGN_SPEC.md` is updated to match.
+
+## Implement
+
+- **Locale.** Drop `AppLanguageStore`, `AppCompatLanguageStore`, `LocaleModule` and `AppLanguageEntryPoint`. `BanglaLocale.apply()` (`core/locale`) sets `bn` through `AppCompatDelegate` on every start, so a choice an older build stored — AppCompat's below Android 13, the framework's from 13 — is overridden instead of read. `MainActivity` calls it at the same two SDK-split points as `applyDefault` did. `AppLanguage` stays: it is the content language for fill the blanks, listen and learn and `TextToSpeechPlayer`.
+- **Screens.** Onboarding is one Welcome page again (header row: logo 64 + "স্বাগতম!", then "বর্ণচিত্র কী?", the four feature cards and "শুরু করো →"); no pager, no dots, no language page. Home's top bar is the logo and "বর্ণচিত্র" alone. The Grown-ups tab starts with the counting card. The language sheet and its state are gone from `BcNavHost`, which no longer holds a `LanguageViewModel`. Route and file names (`BcDestination.Onboarding`, `OnboardingScreen`, `OnboardingViewModel`, whose only event is `StartClicked`) are unchanged.
+- **Components and resources.** Removed: `BcLanguageChip`, `BcLanguageSwitch`, `BcChoiceRow` (the column variant stays for Easy / Hard), `BcPageIndicator`, `bc_ic_globe.xml`, the language strings, `values-en/strings.xml`, `locales_config.xml`, the manifest's `localeConfig` and the `autoStoreLocales` service, and the dimens only they used (`pageDot*`, `choiceLead*`, `choiceMinHeight*`, `chipTopBarHeight`). `logoOnboarding` 104dp became `logoWelcome` 64dp.
+- **Kept.** Every `ColorScheme` role and extended colour (`englishContainer` still serves the English subject card, rows, banner and dialog) and every font, Andika included (English letters).
+
+## Definition of Done
+
+- [x] A fresh install goes Splash → Welcome (one page, logo + স্বাগতম! at the top, no dots) → শুরু করো → Home, and Back from Home leaves the app
+- [x] A second launch opens straight on Home
+- [x] Home's top bar shows the logo and বর্ণচিত্র only: no chip, no sheet
+- [x] The Grown-ups tab shows "অগ্রগতি কীভাবে গোনা হয়" and "পরিচিতি" only
+- [x] No screen offers a language change, and the UI code has no language switch or chip left
+- [x] Updating from a build where English was chosen shows Bangla
+- [x] The English hub, English practice, English fill the blanks and English listen and learn (TTS) still work
+- [x] `bc_ic_globe.xml`, the language chip, `BcLanguageSwitch`, the row choice variant and the page indicator are gone
+- [x] The build has no unused-resource or unused-import warning from the removed items; the tests that covered the language switch are removed or updated
+- [x] Light and dark both look right on the changed screens
+
+## Notes
+
+- **English UI strings.** The user chose to delete `values-en/strings.xml`: with a Bangla-only UI nothing could render it. `StringResourcesTest` now checks the one Bangla set (non-empty, no Latin letters, short toolbar titles, tip wording, summary plurals) and asserts that no other `values-*` string set exists, so a second set cannot come back unnoticed.
+- **The system's app-language page.** `localeConfig` and `autoStoreLocales` went with the switch. Kept, they would still list BornoChitra in Android's per-app language settings, where a choice would be silently overridden on the next start.
+- **Tests.** 510 unit tests pass. `LanguageViewModelTest` is deleted; `OnboardingViewModelTest` keeps its one case (starting marks the welcome as seen); `StringResourcesTest` is down to the Bangla set plus the new "no other string set" test. 37 instrumented tests pass on the Pixel_5_2 emulator: the two language-sheet tests are gone, `grownUpsTab_showsLanguageSwitch_countingAndAbout` became `grownUpsTab_showsCountingAndAbout_withNoLanguageSwitch`, and `openHome` clicks through the single Welcome page. Lint: unchanged (dependency versions, the intentional "দূরে দূরে", the `mastery_rule` plural hint).
+- **Screens checked** on the Pixel_5_2 emulator (API 31, 720x1600 / density 320): Welcome, Home and Grown-ups in light and dark; Back from Home exits to the launcher; a second launch opens on Home; the English hub and English listen and learn render and respond.
+- **Upgrading from English**, both paths. API 31: an AppCompat `application_locales_record` planted with `en` is ignored and the UI opens in Bangla. API 36 (Pixel_10 emulator): `cmd locale set-app-locales com.bornochitra --locales en` is replaced by `[bn]` on the next launch, with a Bangla UI.
+
+---
+
+# 18. Feature Completion Definition
 
 A step is complete only when it satisfies:
 

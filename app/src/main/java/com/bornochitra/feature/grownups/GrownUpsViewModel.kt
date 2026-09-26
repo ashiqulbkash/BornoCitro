@@ -15,7 +15,7 @@ data class GrownUpsUiState(
     val minBestScorePercent: Int,
 )
 
-/** The Grown-ups tab's own content. The language switch belongs to the shared language ViewModel. */
+/** The Grown-ups tab's own content. */
 @HiltViewModel
 class GrownUpsViewModel @Inject constructor(
     masteryRule: MasteryRule,

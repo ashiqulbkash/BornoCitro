@@ -1,7 +1,6 @@
 package com.bornochitra.core.ui.components
 
 import androidx.annotation.DrawableRes
-import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -25,7 +24,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -209,43 +207,17 @@ fun BcRestartDialog(
     }
 }
 
-/** Pager dots: 8dp dots, the current one a 24dp primary pill (design/DESIGN_SPEC.md 4, Page indicator). */
-@Composable
-fun BcPageIndicator(
-    count: Int,
-    current: Int,
-    modifier: Modifier = Modifier,
-) {
-    Row(modifier = modifier, horizontalArrangement = Arrangement.spacedBy(BcSpacing.xs)) {
-        repeat(count) { index ->
-            val active = index == current
-            val width by animateDpAsState(if (active) BcDimens.pageDotActive else BcDimens.pageDot, label = "pageDot")
-            Box(
-                modifier = Modifier
-                    .height(BcDimens.pageDot)
-                    .width(width)
-                    .background(
-                        if (active) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outlineVariant,
-                        BcShapes.full,
-                    ),
-            )
-        }
-    }
-}
-
 @Preview(showBackground = true)
 @Composable
 private fun BcOverlaysPreview() {
     BornoChitraTheme {
         Column(modifier = Modifier.padding(BcSpacing.m), verticalArrangement = Arrangement.spacedBy(BcSpacing.m)) {
             BcSheetHeader(
-                icon = R.drawable.bc_ic_globe,
-                iconContainerColor = MaterialTheme.colorScheme.primaryContainer,
-                iconTint = MaterialTheme.colorScheme.primary,
-                title = "অ্যাপের ভাষা",
-                caption = "App language",
+                icon = R.drawable.bc_ic_bulb,
+                iconContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                iconTint = MaterialTheme.colorScheme.onSecondaryContainer,
+                title = "একটু দেখে নেবে?",
             )
-            BcPageIndicator(count = 2, current = 0)
         }
     }
 }

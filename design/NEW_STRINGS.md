@@ -5,6 +5,11 @@ Every string resource the redesign added or reworded, in Bangla (`values/strings
 shows each English form; Bangla uses one form for every count. Rows marked *same in both* are
 `translatable="false"`: marks, glyphs and the bilingual lines of decision D3, shown the same in both languages.
 
+> **Step 16 (2026-09-27) made the UI Bangla only.** This file stays the record of Step 15's string delta. Since then
+> `values-en/strings.xml` is deleted, so the English column is history: the Bangla set is the only one the app has.
+> Twelve strings went with the language controls; they are listed under *Removed later* at the end, and the rows above
+> them are kept as the record of what Step 15 added.
+
 ## Added
 
 | Resource | Bangla | English |
@@ -94,3 +99,19 @@ The Bangla wording follows `design/DESIGN_SPEC.md`; the English follows it in me
 These belonged to screens or wording the redesign replaced (the drawer, About, Welcome, the one-line splash
 message, the old status words and result wording):
 `splash_message`, `title_home`, `action_menu`, `drawer_progress`, `drawer_about`, `status_attempts`, `status_started`, `status_practicing`, `model_dialog_title`, `result_try_again`, `learn_no_voice_title`
+
+## Removed later — Bangla-only UI (Step 16, 2026-09-27)
+
+The whole English set, `values-en/strings.xml`, is deleted: with a Bangla-only UI nothing could render it.
+
+These twelve strings went with the language page, chip, sheet and switch. Three of them — `language_bangla`,
+`language_english` and `welcome_continue` — are from before the redesign; the other nine are in the *Added* table
+above:
+`language_bangla`, `language_english`, `language_english_mark`, `welcome_continue`, `onboarding_language_question`,
+`onboarding_language_question_english`, `onboarding_change_later`, `language_title`, `language_title_english`,
+`grown_ups_language_label`, `language_chip_description`, `language_sheet_note`
+
+Kept, although their names or wording mention a language: `title_bangla` / `title_english` (the subject cards and hub
+titles), `home_mark_bangla` / `home_mark_english` / `about_mark_bangla` / `about_mark_latin` (glyphs),
+`hub_math_shared`, `learn_no_voice_message` (the *content's* language, named by the hub titles) and
+`onboarding_start` (Welcome's button).

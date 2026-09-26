@@ -73,10 +73,6 @@
     <string name="empty_drawings_message">শিগগিরই অনুশীলনের জন্য আঁকা আসবে।</string>
 
     <!-- Home -->
-    <!-- Each language is named in its own language, whichever one the app is in. -->
-    <string name="language_bangla" translatable="false">বাংলা</string>
-    <string name="language_english" translatable="false">English</string>
-    <string name="language_english_mark" translatable="false">A</string>
     <string name="home_welcome">স্বাগতম!</string>
     <string name="home_continue">শেখা চালিয়ে যাও</string>
     <string name="home_question">আজ কী শিখবে?</string>
@@ -128,21 +124,12 @@
     <string name="about_feature_numbers">বাংলা ও ইংরেজি সংখ্যা এবং গণিতের চিহ্ন লেখো।</string>
     <string name="about_feature_drawing">সহজ ছবি আঁকো।</string>
     <string name="about_feature_progress">খালি ঘর পূরণ করো আর নিজের অগ্রগতি দেখো।</string>
-    <string name="welcome_continue">এগিয়ে চলো</string>
 
-    <!-- Onboarding, language sheet and Grown-ups. The lines marked not translatable are shown in both languages on purpose. -->
-    <string name="onboarding_language_question" translatable="false">অ্যাপটা কোন ভাষায় দেখবে?</string>
-    <string name="onboarding_language_question_english" translatable="false">Which language should the app use?</string>
-    <string name="onboarding_change_later">পরে “বড়দের জন্য” থেকে বদলানো যাবে।</string>
+    <!-- Welcome and Grown-ups. The marks are the same in every language. -->
     <string name="onboarding_start">শুরু করো</string>
     <string name="about_mark_bangla" translatable="false">অ</string>
     <string name="about_mark_latin" translatable="false">a</string>
     <string name="about_mark_numbers" translatable="false">১+২</string>
-    <string name="language_title" translatable="false">অ্যাপের ভাষা</string>
-    <string name="language_title_english" translatable="false">App language</string>
-    <string name="grown_ups_language_label" translatable="false">অ্যাপের ভাষা · App language</string>
-    <string name="language_chip_description">অ্যাপের ভাষা: %1$s</string>
-    <string name="language_sheet_note">বেছে নিলেই বদলে যাবে। অগ্রগতি মুছবে না।</string>
     <string name="grown_ups_counting">অগ্রগতি কীভাবে গোনা হয়</string>
     <string name="grown_ups_stars">প্রতিটা অক্ষরের তারা আসে সবচেয়ে ভালো লেখা থেকে।</string>
     <string name="mastery_rule">%1$d বার লিখলে আর অন্তত একবার %2$d%% পেলে অক্ষরটা শেখা হয়ে যায়।</string>

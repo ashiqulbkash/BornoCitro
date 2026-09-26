@@ -37,7 +37,7 @@ import kotlin.math.max
 
 /**
  * End-to-end flows through the real navigation graph: one practice flow per category, fill in the blanks
- * from each hub, and the bottom bar's tabs: Progress, Grown-ups and the language sheet.
+ * from each hub, and the bottom bar's tabs: Progress and Grown-ups.
  */
 @HiltAndroidTest
 class CriticalFlowTest {
@@ -322,14 +322,13 @@ class CriticalFlowTest {
     }
 
     @Test
-    fun grownUpsTab_showsLanguageSwitch_countingAndAbout() {
+    fun grownUpsTab_showsCountingAndAbout_withNoLanguageSwitch() {
         openHome()
 
         clickTab(string(R.string.title_grown_ups))
 
-        awaitText(string(R.string.grown_ups_language_label))
-        composeRule.onNode(hasText(string(R.string.language_english)) and isSelectable()).assertExists()
-        composeRule.onNodeWithText(string(R.string.grown_ups_counting)).performScrollTo().assertIsDisplayed()
+        awaitText(string(R.string.grown_ups_counting))
+        composeRule.onNodeWithText(string(R.string.grown_ups_stars)).performScrollTo().assertIsDisplayed()
         composeRule.onNodeWithText(string(R.string.about_heading)).performScrollTo().assertIsDisplayed()
 
         composeRule.onNodeWithContentDescription(string(R.string.action_back)).assertDoesNotExist()
@@ -344,7 +343,7 @@ class CriticalFlowTest {
         clickTab(string(R.string.title_progress))
         awaitText(string(R.string.category_consonant))
         clickTab(string(R.string.title_grown_ups))
-        awaitText(string(R.string.grown_ups_language_label))
+        awaitText(string(R.string.grown_ups_counting))
         clickTab(string(R.string.title_progress))
         awaitText(string(R.string.category_consonant))
 
@@ -375,40 +374,6 @@ class CriticalFlowTest {
         composeRule.onNodeWithText("অ").performClick()
         awaitCanvas(string(R.string.practice_canvas_description, "অ"))
         assertNoNavigationBar()
-    }
-
-    @Test
-    fun languageChip_opensLanguageSheet_andBackClosesIt() {
-        openHome()
-
-        composeRule.onNodeWithContentDescription(
-            string(R.string.language_chip_description, string(R.string.language_bangla)),
-        ).performClick()
-
-        awaitText(string(R.string.language_sheet_note))
-        composeRule.onNode(hasText(string(R.string.language_english)) and isSelectable()).assertIsDisplayed()
-
-        Espresso.pressBack()
-        composeRule.waitUntil(timeoutMillis = 10_000) {
-            composeRule.onAllNodesWithText(string(R.string.language_sheet_note)).fetchSemanticsNodes().isEmpty()
-        }
-        composeRule.onNodeWithText(string(R.string.home_welcome)).assertIsDisplayed()
-    }
-
-    @Test
-    fun languageSheet_closesWhenALanguageIsChosen() {
-        openHome()
-        val current = string(R.string.language_bangla)
-        composeRule.onNodeWithContentDescription(string(R.string.language_chip_description, current)).performClick()
-        awaitText(string(R.string.language_sheet_note))
-
-        // The language already in use, so the app's language (shared by every test) does not change.
-        composeRule.onNode(hasText(current) and isSelectable()).performClick()
-
-        composeRule.waitUntil(timeoutMillis = 10_000) {
-            composeRule.onAllNodesWithText(string(R.string.language_sheet_note)).fetchSemanticsNodes().isEmpty()
-        }
-        composeRule.onNodeWithContentDescription(string(R.string.language_chip_description, current)).assertIsDisplayed()
     }
 
     /**
@@ -459,16 +424,14 @@ class CriticalFlowTest {
         awaitResult()
     }
 
-    /** Onboarding shows only on the first launch of an install, so a later test starts on Home already. */
+    /** The welcome shows only on the first launch of an install, so a later test starts on Home already. */
     private fun openHome() {
-        val isOnboardingShown = composeRule.onAllNodesWithText(string(R.string.welcome_continue))
+        val isWelcomeShown = composeRule.onAllNodesWithText(string(R.string.onboarding_start))
             .fetchSemanticsNodes().isNotEmpty()
-        if (isOnboardingShown) {
-            composeRule.onNodeWithText(string(R.string.welcome_continue)).performClick()
-            awaitText(string(R.string.onboarding_start))
+        if (isWelcomeShown) {
             composeRule.onNodeWithText(string(R.string.onboarding_start)).performClick()
         }
-        // The navigation bar is on Home only, not on onboarding, which also says "স্বাগতম!".
+        // The navigation bar is on Home only, not on the welcome, which also says "স্বাগতম!".
         awaitText(string(R.string.nav_learn))
     }
 
@@ -492,7 +455,7 @@ class CriticalFlowTest {
     /** The listen screen's notice that the phone cannot speak the language named by [languageName]. */
     private fun noVoiceMessage(@StringRes languageName: Int): String = string(R.string.learn_no_voice_message, string(languageName))
 
-    /** Skips selectable nodes: tabs and language options, which can share a button's text. */
+    /** Skips selectable nodes: tabs, which can share a button's text. */
     private fun clickButton(label: String) {
         composeRule.onNode(hasText(label) and hasClickAction() and !isSelectable()).performScrollTo().performClick()
     }

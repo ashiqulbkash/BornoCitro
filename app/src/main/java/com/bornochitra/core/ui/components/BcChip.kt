@@ -4,7 +4,6 @@ import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
@@ -24,12 +23,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.semantics.clearAndSetSemantics
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.onClick
-import androidx.compose.ui.semantics.role
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -70,41 +64,6 @@ fun BcChip(
             Icon(painter = painterResource(icon), contentDescription = null, tint = iconTint, modifier = Modifier.size(iconSize))
         }
         Text(text = text, style = textStyle, color = contentColor)
-    }
-}
-
-/**
- * The Home top bar's language chip: globe and the current language's name. 40dp tall, inside a 48dp touch area.
- * Opens the language sheet.
- */
-@Composable
-fun BcLanguageChip(
-    languageName: String,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    val description = stringResource(R.string.language_chip_description, languageName)
-    Box(
-        modifier = modifier
-            .heightIn(min = BcDimens.iconButton)
-            // Read as "App language: বাংলা", so it is not mistaken for the Bangla subject.
-            .clearAndSetSemantics {
-                contentDescription = description
-                role = Role.Button
-                onClick { onClick(); true }
-            },
-        contentAlignment = Alignment.Center,
-    ) {
-        BcChip(
-            text = languageName,
-            icon = R.drawable.bc_ic_globe,
-            iconSize = BcDimens.iconChip,
-            height = BcDimens.chipTopBarHeight,
-            textStyle = MaterialTheme.typography.labelMedium,
-            contentColor = MaterialTheme.colorScheme.onSurface,
-            padding = PaddingValues(start = BcSpacing.snug, end = BcSpacing.roomy),
-            onClick = onClick,
-        )
     }
 }
 
@@ -190,7 +149,6 @@ fun BcDoneChip(
 private fun BcChipPreview() {
     BornoChitraTheme {
         Column(modifier = Modifier.padding(BcSpacing.m), verticalArrangement = Arrangement.spacedBy(BcSpacing.m)) {
-            BcLanguageChip(languageName = "বাংলা", onClick = {})
             BcHeaderProgressCard(label = "স্বরবর্ণ", progress = 0.27f, learnedCount = 1, doneCount = 2, runningCount = 1)
         }
     }

@@ -27,12 +27,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bornochitra.R
-import com.bornochitra.core.locale.AppLanguage
 import com.bornochitra.core.model.MasteryRule
 import com.bornochitra.core.ui.components.BcCard
 import com.bornochitra.core.ui.components.BcFlatCard
 import com.bornochitra.core.ui.components.BcIconCircle
-import com.bornochitra.core.ui.components.BcLanguageSwitch
 import com.bornochitra.core.ui.components.BcSectionLabel
 import com.bornochitra.core.ui.components.BcStarSize
 import com.bornochitra.core.ui.components.BcStars
@@ -47,13 +45,11 @@ import com.bornochitra.feature.about.AboutFeature
 private const val LEGEND_STARS = 2
 
 /**
- * The Grown-ups tab (design/DESIGN_SPEC.md 5.5), in place of the old drawer and About page: the app's language, how
- * progress is counted, and what the app is.
+ * The Grown-ups tab (design/DESIGN_SPEC.md 5.5), in place of the old drawer and About page: how progress is
+ * counted, and what the app is.
  */
 @Composable
 fun GrownUpsScreen(
-    language: AppLanguage,
-    onLanguageSelected: (AppLanguage) -> Unit,
     navigationBar: @Composable () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: GrownUpsViewModel = hiltViewModel(),
@@ -61,8 +57,6 @@ fun GrownUpsScreen(
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     GrownUpsContent(
         state = state,
-        language = language,
-        onLanguageSelected = onLanguageSelected,
         navigationBar = navigationBar,
         modifier = modifier,
     )
@@ -71,8 +65,6 @@ fun GrownUpsScreen(
 @Composable
 private fun GrownUpsContent(
     state: GrownUpsUiState,
-    language: AppLanguage,
-    onLanguageSelected: (AppLanguage) -> Unit,
     navigationBar: @Composable () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -89,9 +81,6 @@ private fun GrownUpsContent(
                 .padding(start = BcSpacing.screen, end = BcSpacing.screen, top = BcSpacing.xxs, bottom = BcSpacing.screen),
             verticalArrangement = Arrangement.spacedBy(BcSpacing.section),
         ) {
-            Section(label = stringResource(R.string.grown_ups_language_label)) {
-                BcLanguageSwitch(language = language, onLanguageSelected = onLanguageSelected)
-            }
             Section(label = stringResource(R.string.grown_ups_counting)) {
                 CountingCard(state)
             }
@@ -183,8 +172,6 @@ private fun GrownUpsScreenPreview() {
     BornoChitraTheme {
         GrownUpsContent(
             state = GrownUpsUiState(MasteryRule.DEFAULT_REQUIRED_COMPLETIONS, MasteryRule.DEFAULT_MIN_BEST_SCORE.toInt()),
-            language = AppLanguage.BANGLA,
-            onLanguageSelected = {},
             navigationBar = {},
         )
     }
