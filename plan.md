@@ -1119,7 +1119,63 @@ Show a splash with the app icon and a short message when the app starts.
 
 ---
 
-# 16. Feature Completion Definition
+# 16. Step 15 — UI Redesign
+
+## Requirement
+
+Redesign the whole app's UI to match the design in `design/`, keeping every existing feature and its behaviour.
+
+- **Follow `design/REDESIGN_PLAN.md`** for this step. It holds the agreed decisions, the phases, the deferred items and the per-phase checklist.
+- `design/DESIGN_SPEC.md` is the source of truth for colours, fonts, sizes, layout and navigation. `design/screens.pdf` is the visual reference (its page map is in `design/REDESIGN_PLAN.md`).
+- Nothing about tracing, scoring, mastery, handwriting recognition, the hint's 70% cap, saved data or route arguments changes. Learning characters keep the font their tracing guide was derived from (decision D1 in the redesign plan).
+
+## Implement (sub-steps 15.1–15.8, one phase each)
+
+- **15.1** Theme (light and dark), fonts, spacing, shapes, icons and shared components.
+- **15.2** Navigation shell: bottom bar, Grown-ups tab, two-page onboarding and language sheet, replacing the drawer, About and Welcome.
+- **15.3** Home, Bangla hub, English hub, category grids and drawing grid.
+- **15.4** Practice, restart dialog and Result.
+- **15.5** Fill-the-blanks picker, model dialog, sequence, hint sheet, done view, and Listen and learn.
+- **15.6** Progress tab, Progress detail and splash.
+- **15.7** Polish: dark mode, 1.3× font scale, small phones, landscape Practice, removal of unused code and strings, `NEW_STRINGS.md`, and the list of remaining differences from the design.
+- **15.8** Deferred items (DEFER-1 canvas look, DEFER-2 hiding Help after the hint), one at a time and only after the user decides. Before DEFER-2 is built, the user gets a prompt describing it, and afterwards before/after screenshots.
+
+## Sub-steps
+
+- [x] 15.1 Theme, fonts, icons and shared components
+- [ ] 15.2 Navigation shell
+- [ ] 15.3 Home, hubs and grids
+- [ ] 15.4 Practice, restart dialog and Result
+- [ ] 15.5 Fill the blanks, and Listen and learn
+- [ ] 15.6 Progress and splash
+- [ ] 15.7 Polish
+- [ ] 15.8 Deferred items
+
+## Verification loop (every sub-step)
+
+1. Build the app and run the unit tests.
+2. Run the instrumented tests (`connectedDebugAndroidTest`) on an emulator, never on the user's phone, because they wipe the app's data.
+3. Install the app on the emulator, screenshot every changed screen, and compare each one with its page in `design/screens.pdf` and with `design/DESIGN_SPEC.md`.
+4. If every test passes and every screen matches the design, the sub-step is finished. If not, fix the design differences or the failures and repeat from step 1.
+5. Intentional differences (for example D1, the learning-character fonts) are not "fixed"; they are listed in 15.7's differences list.
+6. Commit, tell the user what to test on the phone, and stop for the user's OK.
+
+## Definition of Done
+
+- [ ] Every screen matches its design page, in light and dark, apart from the listed intentional differences
+- [ ] All existing functionality works as before (tracing, scoring, progress, fill the blanks, listening, drawing, language switch, first-launch flow)
+- [ ] Unit and instrumented tests pass after every sub-step
+- [ ] No hard-coded colours, fonts, sizes or spacing inside screens
+- [ ] `NEW_STRINGS.md` lists every new string in Bangla and English
+- [ ] Verified on the user's phone
+
+## Notes
+
+- **15.1 Theme, fonts, icons and shared components** (commits `b04b115`, `d462a7e`). Baloo Da 2 (500–800) and Hind Siliguri (400–700) are bundled for UI text, with OFL licenses in `design/licenses/fonts/`. Learning characters use one shared letter style (`BcLetter.kt`): the platform Noto Sans Bengali at Bold for Bengali, Andika Bold for English small letters, and Inter for capitals, digits and signs. The design's 25 icons are in `res/drawable`. The tracing canvas was recoloured only. The star rule moved unchanged to `core/model/StarRule.kt`. Tests: 491 unit tests and 35 instrumented tests pass on the Pixel_5_2 emulator. The first instrumented run found that clickable cards were no longer announced as buttons; this was fixed in `d462a7e`.
+
+---
+
+# 17. Feature Completion Definition
 
 A step is complete only when it satisfies:
 
