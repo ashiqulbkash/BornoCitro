@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
@@ -13,11 +14,16 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -74,6 +80,9 @@ import com.bornochitra.core.model.Stroke as ExerciseStroke
 
 /** The hint preview's dots are primary at 55%. */
 private const val HINT_DOT_ALPHA = 0.55f
+
+/** How many sequence cells fit across the screen (design/DESIGN_SPEC.md 5, screen 15). */
+private const val VISIBLE_SEQUENCE_CELLS = 5
 
 @Composable
 fun FillBlanksScreen(
@@ -167,14 +176,27 @@ private fun Difficulty.label(): String = when (this) {
     Difficulty.ADVANCED -> stringResource(R.string.fill_blanks_hard)
 }
 
+/**
+ * Cells keep the design's width, [VISIBLE_SEQUENCE_CELLS] to a row, so wide letters are not clipped
+ * in 6–8 item sequences; the row scrolls to keep the blank being traced in view.
+ */
 @Composable
 private fun SequenceRow(cells: List<SequenceCell>, modifier: Modifier = Modifier) {
-    Row(
-        modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(BcSpacing.xs),
-    ) {
-        cells.forEach { cell ->
-            SequenceCellBox(cell = cell, modifier = Modifier.weight(1f))
+    val listState = rememberLazyListState()
+    val activeIndex = cells.indexOfFirst { it.status == CellStatus.ACTIVE }
+    LaunchedEffect(activeIndex) {
+        // One cell before the blank stays visible, as in the design, so the child sees what it follows.
+        if (activeIndex >= 0) listState.animateScrollToItem((activeIndex - 1).coerceAtLeast(0))
+    }
+    BoxWithConstraints(modifier = modifier.fillMaxWidth()) {
+        val cellWidth = (maxWidth - BcSpacing.xs * (VISIBLE_SEQUENCE_CELLS - 1)) / VISIBLE_SEQUENCE_CELLS
+        LazyRow(
+            state = listState,
+            horizontalArrangement = Arrangement.spacedBy(BcSpacing.xs),
+        ) {
+            items(cells, key = { it.exerciseId }) { cell ->
+                SequenceCellBox(cell = cell, modifier = Modifier.width(cellWidth))
+            }
         }
     }
 }
