@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,7 +35,7 @@ import com.bornochitra.core.ui.theme.BornoChitraTheme
 private const val STAR_PATH = "M12 2.5l2.9 5.9 6.5 0.9-4.7 4.6 1.1 6.4L12 17.3l-5.8 3 1.1-6.4-4.7-4.6 6.5-0.9z"
 private const val STAR_GRID = 24f
 
-// The empty result star's outline is 1.6 on the 24-unit grid; small stars keep at least the filled outline's width.
+// The empty result star's outline is 1.6 on the 24-unit grid.
 private const val EMPTY_STROKE_UNITS = 1.6f
 private val StarOutlineWidth = 1.5.dp
 private val StarGap = 1.dp
@@ -50,7 +51,7 @@ object BcStarSize {
 
 /**
  * A row of [StarRule.MAX_STARS] stars with [count] filled, announced as one sentence. Filled stars are the star
- * colour with a thin darker outline; empty ones are an outline only (design/DESIGN_SPEC.md 4, Stars).
+ * colour with a thin darker outline; empty ones are filled with the empty-star colour (design/DESIGN_SPEC.md 4, Stars).
  */
 @Composable
 fun BcStars(
@@ -69,14 +70,19 @@ fun BcStars(
     }
 }
 
-/** One star. Result screens draw them large; the row of [BcStars] draws them small. */
+/**
+ * One star. The row of [BcStars] draws them small; Result screens draw them large with [outlineWhenEmpty], because the
+ * design's empty result stars are an outlineVariant outline only.
+ */
 @Composable
 fun BcStar(
     filled: Boolean,
     size: Dp,
     modifier: Modifier = Modifier,
+    outlineWhenEmpty: Boolean = false,
 ) {
     val colors = BcTheme.colors
+    val resultEmptyColor = MaterialTheme.colorScheme.outlineVariant
     Canvas(modifier = modifier.size(size)) {
         val unit = this.size.minDimension / STAR_GRID
         scale(scale = unit, pivot = Offset.Zero) {
@@ -85,9 +91,10 @@ fun BcStar(
                 if (colors.starOutline != Color.Transparent) {
                     drawPath(StarPath, color = colors.starOutline, style = Stroke(width = StarOutlineWidth.toPx() / unit, join = StrokeJoin.Round))
                 }
+            } else if (outlineWhenEmpty) {
+                drawPath(StarPath, color = resultEmptyColor, style = Stroke(width = EMPTY_STROKE_UNITS, join = StrokeJoin.Round))
             } else {
-                val width = maxOf(EMPTY_STROKE_UNITS, StarOutlineWidth.toPx() / unit)
-                drawPath(StarPath, color = colors.starEmpty, style = Stroke(width = width, join = StrokeJoin.Round))
+                drawPath(StarPath, color = colors.starEmpty)
             }
         }
     }
@@ -100,7 +107,7 @@ private fun BcStarsPreview() {
         Column(modifier = Modifier.padding(BcSpacing.m), verticalArrangement = Arrangement.spacedBy(BcSpacing.xs)) {
             (0..3).forEach { BcStars(count = it) }
             BcStars(count = 2, size = BcStarSize.legend)
-            Row { BcStar(filled = true, size = 64.dp); BcStar(filled = false, size = 88.dp) }
+            Row { BcStar(filled = true, size = 64.dp); BcStar(filled = false, size = 88.dp, outlineWhenEmpty = true) }
         }
     }
 }

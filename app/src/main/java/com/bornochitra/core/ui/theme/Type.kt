@@ -60,10 +60,14 @@ val BcLatinCapitalFontFamily = FontFamily(
  */
 val BcBengaliLetterFontFamily: FontFamily = FontFamily.Default
 
-// Bengali matras and conjuncts need the full line height on both sides: never trim it off the first or last line.
+// Every line box is exactly the design's line height, as in the design's CSS. Baloo and Hind are ~1.65em tall, so
+// without Tight the first and last lines grow back to the font's own height and every gap drifts from the spec.
+// Tall matras may reach past the box, which the design's line heights and gaps already allow for; Text only clips
+// when it overflows, so they are still drawn.
 private val BengaliLineHeight = LineHeightStyle(
     alignment = LineHeightStyle.Alignment.Center,
-    trim = LineHeightStyle.Trim.None,
+    trim = LineHeightStyle.Trim.Both,
+    mode = LineHeightStyle.Mode.Tight,
 )
 
 private fun style(
