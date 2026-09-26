@@ -36,16 +36,13 @@ object BcDimens {
     val icon = 24.dp
     val iconChip = 20.dp
     val iconSmall = 16.dp
-    val iconCorner = 14.dp
 
     val topBarHeight = 64.dp
     val topBarLogo = 36.dp
     val chipTopBarHeight = 40.dp
     val chipHeight = 32.dp
 
-    val navBarHeight = 80.dp
     val navIndicatorWidth = 64.dp
-    val navIndicatorHeight = 32.dp
 
     val subjectCardMinHeight = 100.dp
     val subjectGlyphTile = 72.dp

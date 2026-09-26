@@ -40,10 +40,6 @@
     <string name="labeled_progress_description">%1$s, %2$d শতাংশ</string>
 
     <!-- How far an exercise has got. -->
-    <plurals name="status_attempts">
-        <item quantity="one">%d বার চেষ্টা</item>
-        <item quantity="other">%d বার চেষ্টা</item>
-    </plurals>
     <string name="status_completed">শেষ হয়েছে</string>
     <string name="status_mastered">শিখে ফেলেছ</string>
 

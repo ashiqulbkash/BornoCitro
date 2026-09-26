@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
@@ -32,6 +33,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
@@ -103,6 +105,7 @@ private fun ResultContent(
     onProgressClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val scrollState = rememberScrollState()
     Box(modifier = modifier) {
         Scaffold(
             topBar = { BcTopAppBar(title = stringResource(R.string.title_result), centered = true) },
@@ -128,6 +131,7 @@ private fun ResultContent(
 
                 else -> AttemptSummary(
                     attempt = state.attempt,
+                    scrollState = scrollState,
                     onPracticeClick = onPracticeClick,
                     onProgressClick = onProgressClick,
                     modifier = Modifier
@@ -138,12 +142,15 @@ private fun ResultContent(
             }
         }
         // Drawn over the top bar as in the design; it has no touch handling, so it never blocks a tap.
+        // It moves with the summary's scroll, so on a short screen it never lands on the score card.
         if (state.attempt != null && state.attempt.scoreLevel != ScoreLevel.LOW) {
             Confetti(
                 modifier = Modifier
                     .windowInsetsPadding(WindowInsets.statusBars)
                     .fillMaxWidth()
-                    .height(BcDimens.confettiHeight),
+                    .height(BcDimens.confettiHeight)
+                    .clipToBounds()
+                    .graphicsLayer { translationY = -scrollState.value.toFloat() },
             )
         }
     }
@@ -152,6 +159,7 @@ private fun ResultContent(
 @Composable
 private fun AttemptSummary(
     attempt: ResultAttempt,
+    scrollState: ScrollState,
     onPracticeClick: (exerciseId: String, sessionScores: List<Float>) -> Unit,
     onProgressClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -165,7 +173,7 @@ private fun AttemptSummary(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .verticalScroll(rememberScrollState())
+                .verticalScroll(scrollState)
                 .heightIn(min = maxHeight),
             verticalArrangement = Arrangement.SpaceBetween,
             horizontalAlignment = Alignment.CenterHorizontally,

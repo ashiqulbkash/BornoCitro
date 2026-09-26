@@ -38,10 +38,6 @@
     <string name="labeled_progress_description" tools:ignore="PluralsCandidate">%1$s, %2$d percent</string>
 
     <!-- How far an exercise has got. -->
-    <plurals name="status_attempts">
-        <item quantity="one">%d attempt</item>
-        <item quantity="other">%d attempts</item>
-    </plurals>
     <string name="status_completed">Completed</string>
     <string name="status_mastered">Learned</string>
 

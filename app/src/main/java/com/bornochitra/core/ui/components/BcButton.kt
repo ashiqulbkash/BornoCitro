@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
@@ -150,10 +151,13 @@ private fun RowScope.ButtonContent(
         Icon(painter = painterResource(icon), contentDescription = null, modifier = Modifier.size(BcDimens.buttonIcon))
         Spacer(Modifier.width(BcSpacing.xs))
     }
+    val style = if (size == BcButtonSize.SMALL) BcType.labelLargeSmall else MaterialTheme.typography.labelLarge
     Text(
         text = text,
-        style = if (size == BcButtonSize.SMALL) BcType.labelLargeSmall else MaterialTheme.typography.labelLarge,
+        style = style,
         textAlign = TextAlign.Center,
+        maxLines = 1,
+        autoSize = TextAutoSize.StepBased(minFontSize = BcType.buttonLabelMinSize, maxFontSize = style.fontSize),
     )
     if (trailingIcon != null) {
         Spacer(Modifier.width(BcSpacing.xs))

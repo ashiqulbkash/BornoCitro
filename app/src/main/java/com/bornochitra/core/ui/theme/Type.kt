@@ -119,6 +119,15 @@ object BcType {
     /** Small button labels. */
     val labelLargeSmall = baloo(FontWeight.Bold, 15.sp, 20.sp)
 
+    /** Smallest size a button label shrinks to when a large font scale would wrap it: the spec's minimum text. */
+    val buttonLabelMinSize = 13.sp
+
+    /**
+     * Smallest size the Progress detail tile status shrinks to. It is below the spec's 11sp because it is only
+     * reached at large font scales, where the scale lifts it back: "শিখে ফেলেছ" must fit one line of a 4-column tile.
+     */
+    val statusTinyMinSize = 9.sp
+
     /** Segmented-switch labels. */
     val segment = baloo(FontWeight.Bold, 17.sp, 20.sp)
 

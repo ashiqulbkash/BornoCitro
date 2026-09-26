@@ -13,9 +13,6 @@ object BcShapes {
     /** Mini cells inside game cards. */
     val cell = RoundedCornerShape(10.dp)
 
-    /** Square chips. */
-    val chipSquare = RoundedCornerShape(12.dp)
-
     /** Small glyph tiles (36–48dp). */
     val smallTile = RoundedCornerShape(14.dp)
 

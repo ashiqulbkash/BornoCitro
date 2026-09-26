@@ -17,6 +17,7 @@ import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -343,7 +344,16 @@ private fun DetailTile(item: CategoryTileItem, isDrawing: Boolean) {
         }
         BcStars(count = item.stars)
         tileState.statusText(item.attemptCount)?.let { status ->
-            Text(text = status, style = BcType.statusTiny, textAlign = TextAlign.Center, maxLines = 1)
+            Text(
+                text = status,
+                style = BcType.statusTiny,
+                textAlign = TextAlign.Center,
+                maxLines = 1,
+                autoSize = TextAutoSize.StepBased(
+                    minFontSize = BcType.statusTinyMinSize,
+                    maxFontSize = BcType.statusTiny.fontSize,
+                ),
+            )
         }
     }
 }

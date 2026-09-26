@@ -61,8 +61,8 @@ round stroke, are tinted where they are used, and cover every icon the spec name
 | 4 | Practice, restart dialog, Result | 12–15 | Done |
 | 5 | Fill picker, model dialog, sequence, hint sheet, done view, Listen and learn | 16–21 | Done |
 | 6 | Progress tab, Progress detail, splash | 2, 22, 23 | Done |
-| 7 | Polish: dark mode, 1.3× font scale, small phones, landscape Practice; unused code and strings; `NEW_STRINGS.md`; list of remaining differences | 24 | Next |
-| 8 | Deferred items below, one at a time, each only after the user decides | — | |
+| 7 | Polish: dark mode, 1.3× font scale, small phones, landscape Practice; unused code and strings; `NEW_STRINGS.md`; list of remaining differences | 24 | Done |
+| 8 | Deferred items below, one at a time, each only after the user decides | — | Next |
 
 ## Verification loop (every phase)
 
@@ -75,6 +75,39 @@ round stroke, are tinted where they are used, and cover every icon the spec name
    noted for the Phase 7 list.
 6. `git add` new files and commit.
 7. Tell the user what to test on the phone, then stop for the user's OK.
+
+## Remaining differences from the design
+
+Checked in Phase 7 on the Pixel_5_2 emulator at 360 × 800dp and 360 × 640dp, in light and dark, at 1× and 1.3× font
+scale, in Bangla and English, and Practice and Result in landscape. Each item below is intentional. The first
+group was agreed during the phases; the second is how the app handles sizes the design does not draw.
+
+**Agreed differences**
+- **Learning-character fonts (D1).** Letters, digits and signs use the font their tracing guide was derived from:
+  Noto Sans Bengali Bold, Andika Bold, or Inter. The PDF uses Baloo Da 2.
+- **Canvas (DEFER-1).** Guide dots, guide line and ink keep today's sizes; only their colours follow the spec. The
+  guide keeps its darker colour (user correction b), and passed dots are not coloured.
+- **Fill-the-blanks Help (DEFER-2).** "সাহায্য" is disabled after use rather than hidden.
+- **Drawing pictures.** Tiles, the Practice model, Result and Progress show the exercise's own strokes, so the line
+  is horizontal (the PDF draws it diagonal) and the house is the exercise's roof and walls (not the house icon).
+- **Stars.** Filled stars keep their thin outline in light mode (user correction c).
+- **Dialog scrim.** It is black at the spec's strength (48% light, 62% dark), not `#14101E`, because a window dim is
+  always black.
+- **Progress detail tiles.** They have no mastered check badge, as the PDF draws them; the status line says
+  "শিখে ফেলেছ" instead. The status is 12sp (user correction d), not 11sp, with a 4dp inner padding.
+
+**Sizes the design does not draw**
+- **Short screens.** Every screen scrolls when its content is taller than the window, including onboarding page 1,
+  whose caption falls below the fold on a phone shorter than 800dp. On Practice and in the fill sequence, the canvas
+  shrinks to the space left, and the ink scales with it.
+- **1.3× font scale.** Chip rows wrap to a second line. Button labels shrink to fit one line, down to 13sp; the
+  fill sequence's two half-width buttons need this. The Progress detail status shrinks to fit a 4-column tile, down
+  to 9sp, which with the 1.3× scale is still about 12sp on screen. On Progress detail, the Info banner stays pinned
+  at the bottom as designed, so on a short phone with large text the grid above it scrolls in a smaller space.
+- **Result confetti.** It is drawn over the top bar as designed and moves with the content when Result scrolls, so it
+  never lands on the score card.
+- **Landscape.** Practice puts the canvas on the left and the model, instruction, tip and button on the right, as it
+  did before the redesign.
 
 ## Deferred items (nothing is built for these until the user decides)
 
