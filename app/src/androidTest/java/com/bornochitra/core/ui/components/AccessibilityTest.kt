@@ -54,9 +54,9 @@ class AccessibilityTest {
     }
 
     @Test
-    fun labeledProgress_isOneSpokenNode_withTheRealValue() {
+    fun percentProgress_isOneSpokenNode_withTheRealValue() {
         composeRule.setContent {
-            BornoChitraTheme { BcLabeledProgress(label = "Overall", progress = 0.8f) }
+            BornoChitraTheme { BcPercentProgress(label = "Overall", progress = 0.8f) }
         }
 
         composeRule.onNodeWithContentDescription(context.getString(R.string.labeled_progress_description, "Overall", 80))

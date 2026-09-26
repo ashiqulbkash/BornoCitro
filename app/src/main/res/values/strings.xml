@@ -2,7 +2,8 @@
     <string name="app_name">বর্ণচিত্র</string>
     <!-- The letter on the app's logo mark, the same in every language. -->
     <string name="logo_letter" translatable="false">অ</string>
-    <string name="splash_message">বর্ণচিত্র — লেখো, শেখো, বেড়ে ওঠো</string>
+    <!-- Under the splash wordmark, which is app_name. -->
+    <string name="splash_tagline">লেখো, শেখো, বেড়ে ওঠো</string>
 
     <!-- Toolbar titles: short, one line at 360dp. -->
     <string name="title_about">পরিচিতি</string>
@@ -43,8 +44,6 @@
         <item quantity="one">%d বার চেষ্টা</item>
         <item quantity="other">%d বার চেষ্টা</item>
     </plurals>
-    <string name="status_started">শুরু হয়েছে</string>
-    <string name="status_practicing">অনুশীলন চলছে</string>
     <string name="status_completed">শেষ হয়েছে</string>
     <string name="status_mastered">শিখে ফেলেছ</string>
 

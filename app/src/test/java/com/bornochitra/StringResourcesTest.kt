@@ -80,10 +80,11 @@ class StringResourcesTest {
     }
 
     @Test
-    fun `the splash message names the app in both languages`() {
+    fun `the splash tagline leaves the app name to the wordmark above it`() {
         listOf(bangla, english).forEach { set ->
-            val message = checkNotNull(set.strings["splash_message"])
-            assertTrue("\"$message\" does not start with the app name", message.startsWith(set.strings.getValue("app_name")))
+            val tagline = checkNotNull(set.strings["splash_tagline"])
+            assertTrue(tagline.isNotBlank())
+            assertTrue("\"$tagline\" repeats the app name", !tagline.contains(set.strings.getValue("app_name")))
         }
     }
 

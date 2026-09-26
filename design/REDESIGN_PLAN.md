@@ -60,8 +60,8 @@ round stroke, are tinted where they are used, and cover every icon the spec name
 | 3 | Home, Bangla hub, English hub, category grids, drawing grid | 5, 8–11 | Done |
 | 4 | Practice, restart dialog, Result | 12–15 | Done |
 | 5 | Fill picker, model dialog, sequence, hint sheet, done view, Listen and learn | 16–21 | Done |
-| 6 | Progress tab, Progress detail, splash | 2, 22, 23 | Next |
-| 7 | Polish: dark mode, 1.3× font scale, small phones, landscape Practice; unused code and strings; `NEW_STRINGS.md`; list of remaining differences | 24 | |
+| 6 | Progress tab, Progress detail, splash | 2, 22, 23 | Done |
+| 7 | Polish: dark mode, 1.3× font scale, small phones, landscape Practice; unused code and strings; `NEW_STRINGS.md`; list of remaining differences | 24 | Next |
 | 8 | Deferred items below, one at a time, each only after the user decides | — | |
 
 ## Verification loop (every phase)

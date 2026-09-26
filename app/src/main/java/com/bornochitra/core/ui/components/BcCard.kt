@@ -133,7 +133,9 @@ fun LearningState.toTileState(): BcTileState = when (this) {
 /**
  * The tile shell of a letter or drawing: its state's fill and border, the mastered check badge, and the
  * "continue here" ring, halo and flag. [content] is centred in a column, [contentGap] apart. The tile fills the
- * height [modifier] gives it (a square grid tile), and is at least [minHeight] tall.
+ * height [modifier] gives it (a square grid tile), and is at least [minHeight] tall. The small Progress detail
+ * tiles need a narrower [contentPadding] for their status line, and say "learned" there instead of showing the
+ * badge ([showMasteredBadge] false).
  */
 @Composable
 fun BcExerciseTile(
@@ -144,6 +146,8 @@ fun BcExerciseTile(
     cornerRadius: Dp = BcDimens.tileCorner,
     minHeight: Dp = BcDimens.tileMinSize,
     contentGap: Dp = TileContentGap,
+    contentPadding: Dp = BcSpacing.xs,
+    showMasteredBadge: Boolean = true,
     content: @Composable ColumnScope.() -> Unit,
 ) {
     val shape = RoundedCornerShape(cornerRadius)
@@ -170,13 +174,13 @@ fun BcExerciseTile(
             border = border,
         ) {
             Column(
-                modifier = Modifier.heightIn(min = minHeight).padding(BcSpacing.xs),
+                modifier = Modifier.heightIn(min = minHeight).padding(contentPadding),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(contentGap, Alignment.CenterVertically),
                 content = content,
             )
         }
-        if (state == BcTileState.MASTERED) {
+        if (state == BcTileState.MASTERED && showMasteredBadge) {
             MasteredBadge(modifier = Modifier.align(Alignment.TopEnd).offset(x = BadgeOffset, y = -BadgeOffset))
         }
         if (isContinueHere) {

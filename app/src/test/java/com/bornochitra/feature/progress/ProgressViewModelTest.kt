@@ -8,8 +8,10 @@ import com.bornochitra.core.model.ExerciseProgress
 import com.bornochitra.core.model.ExerciseType
 import com.bornochitra.core.model.LearningProgress
 import com.bornochitra.core.model.LearningState
+import com.bornochitra.core.model.MasteryRule
 import com.bornochitra.core.model.PracticeResult
 import com.bornochitra.core.model.Stroke
+import com.bornochitra.feature.category.CategoryTileItem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -65,10 +67,11 @@ class ProgressViewModelTest {
         bestScore: Float,
         attemptCount: Int = 1,
         isMastered: Boolean = false,
+        completedCount: Int = 1,
     ) = ExerciseProgress(
         exerciseId = exerciseId,
         attemptCount = attemptCount,
-        completedCount = 1,
+        completedCount = completedCount,
         bestScore = bestScore,
         lastScore = bestScore,
         lastPracticedAt = 0L,
@@ -80,6 +83,7 @@ class ProgressViewModelTest {
         progressByExerciseId: Map<String, ExerciseProgress> = emptyMap(),
         catalogue: List<Exercise> = this.catalogue,
         progressFails: Boolean = false,
+        masteryRule: MasteryRule = MasteryRule(),
     ): ProgressViewModel {
         val exerciseRepository = object : ExerciseRepository {
             override fun observeExercises(type: ExerciseType): Flow<List<Exercise>> =
@@ -98,7 +102,7 @@ class ProgressViewModelTest {
             override suspend fun getPracticeResult(sessionId: Long): PracticeResult? = null
             override suspend fun getRecentResults(exerciseId: String, limit: Int): List<PracticeResult> = emptyList()
         }
-        return ProgressViewModel(exerciseRepository, progressRepository)
+        return ProgressViewModel(exerciseRepository, progressRepository, masteryRule)
     }
 
     @Test
@@ -153,7 +157,7 @@ class ProgressViewModelTest {
         assertEquals(ExerciseType.VOWEL, opened.openCategory)
         assertEquals(
             listOf("vowel-o", "vowel-aa"),
-            opened.categories.first { it.type == opened.openCategory }.exercises.map { it.id },
+            opened.categories.first { it.type == opened.openCategory }.grid.items.map { it.id },
         )
 
         viewModel.onEvent(ProgressEvent.CategoryClosed)
@@ -175,7 +179,7 @@ class ProgressViewModelTest {
         assertEquals(ExerciseType.CONSONANT, state.openCategory)
         assertEquals(
             listOf("consonant-ko"),
-            state.categories.first { it.type == ExerciseType.CONSONANT }.exercises.map { it.id },
+            state.categories.first { it.type == ExerciseType.CONSONANT }.grid.items.map { it.id },
         )
     }
 
@@ -195,13 +199,14 @@ class ProgressViewModelTest {
         val state = viewModel.uiState.value
         assertEquals(0.5f, state.overallProgress)
         assertEquals(
+            // Bangla, then English, then Drawing (design/DESIGN_SPEC.md 5.19).
             listOf(
                 ExerciseType.VOWEL,
                 ExerciseType.CONSONANT,
+                ExerciseType.BANGLA_NUMBER,
+                ExerciseType.MATH,
                 ExerciseType.ENGLISH_SMALL,
                 ExerciseType.ENGLISH_CAPITAL,
-                ExerciseType.MATH,
-                ExerciseType.BANGLA_NUMBER,
                 ExerciseType.DRAWING,
             ),
             state.categories.map { it.type },
@@ -210,7 +215,7 @@ class ProgressViewModelTest {
         assertEquals(1f, state.categories.first { it.type == ExerciseType.CONSONANT }.progress)
         assertEquals(
             listOf("অ", "আ"),
-            state.categories.first { it.type == ExerciseType.VOWEL }.exercises.map { it.title },
+            state.categories.first { it.type == ExerciseType.VOWEL }.grid.items.map { it.title },
         )
     }
 
@@ -234,8 +239,8 @@ class ProgressViewModelTest {
         val section = state.categories.first { it.type == ExerciseType.ENGLISH_SMALL }
         assertEquals(ExerciseType.ENGLISH_SMALL, state.openCategory)
         assertEquals(0.5f, section.progress)
-        assertEquals(listOf("a", "b"), section.exercises.map { it.title })
-        assertEquals(listOf(3, 0), section.exercises.map { it.stars })
+        assertEquals(listOf("a", "b"), section.grid.items.map { it.title })
+        assertEquals(listOf(3, 0), section.grid.items.map { it.stars })
     }
 
     @Test
@@ -259,8 +264,8 @@ class ProgressViewModelTest {
         val section = state.categories.first { it.type == ExerciseType.ENGLISH_CAPITAL }
         assertEquals(ExerciseType.ENGLISH_CAPITAL, state.openCategory)
         assertEquals(0.5f, section.progress)
-        assertEquals(listOf("A", "B"), section.exercises.map { it.title })
-        assertEquals(listOf(0, 2), section.exercises.map { it.stars })
+        assertEquals(listOf("A", "B"), section.grid.items.map { it.title })
+        assertEquals(listOf(0, 2), section.grid.items.map { it.stars })
     }
 
     @Test
@@ -283,8 +288,8 @@ class ProgressViewModelTest {
         val section = state.categories.first { it.type == ExerciseType.MATH }
         assertEquals(ExerciseType.MATH, state.openCategory)
         assertEquals(0.5f, section.progress)
-        assertEquals(listOf("1", "+"), section.exercises.map { it.title })
-        assertEquals(listOf(3, 0), section.exercises.map { it.stars })
+        assertEquals(listOf("1", "+"), section.grid.items.map { it.title })
+        assertEquals(listOf(3, 0), section.grid.items.map { it.stars })
     }
 
     @Test
@@ -307,8 +312,8 @@ class ProgressViewModelTest {
         val section = state.categories.first { it.type == ExerciseType.BANGLA_NUMBER }
         assertEquals(ExerciseType.BANGLA_NUMBER, state.openCategory)
         assertEquals(0.5f, section.progress)
-        assertEquals(listOf("১", "২"), section.exercises.map { it.title })
-        assertEquals(listOf(0, 3), section.exercises.map { it.stars })
+        assertEquals(listOf("১", "২"), section.grid.items.map { it.title })
+        assertEquals(listOf(0, 3), section.grid.items.map { it.stars })
     }
 
     @Test
@@ -324,7 +329,7 @@ class ProgressViewModelTest {
         dispatcher.scheduler.advanceUntilIdle()
 
         val starsById = viewModel.uiState.value.categories
-            .flatMap { it.exercises }
+            .flatMap { it.grid.items }
             .associate { it.id to it.stars }
 
         assertEquals(3, starsById["vowel-o"])
@@ -344,7 +349,7 @@ class ProgressViewModelTest {
         dispatcher.scheduler.advanceUntilIdle()
 
         val vowels = viewModel.uiState.value.categories.first { it.type == ExerciseType.VOWEL }
-        assertEquals(0, vowels.exercises.first { it.id == "vowel-o" }.stars)
+        assertEquals(0, vowels.grid.items.first { it.id == "vowel-o" }.stars)
     }
 
     @Test
@@ -359,12 +364,62 @@ class ProgressViewModelTest {
         dispatcher.scheduler.advanceUntilIdle()
 
         val stateById = viewModel.uiState.value.categories
-            .flatMap { it.exercises }
-            .associate { it.id to it.state }
+            .flatMap { it.grid.items }
+            .associate { it.id to it.learningState }
 
         assertEquals(LearningState.MASTERED, stateById["vowel-o"])
         assertEquals(LearningState.COMPLETED, stateById["vowel-aa"])
         assertEquals(LearningState.NOT_STARTED, stateById["drawing-line"])
+    }
+
+    @Test
+    fun `the overall counts add up the learned and the finished exercises of every category`() = runTest(dispatcher) {
+        val viewModel = viewModel(
+            progressByExerciseId = mapOf(
+                "vowel-o" to exerciseProgress("vowel-o", bestScore = 94f, attemptCount = 4, isMastered = true),
+                "vowel-aa" to exerciseProgress("vowel-aa", bestScore = 72f),
+                "consonant-ko" to exerciseProgress("consonant-ko", bestScore = 60f),
+                "drawing-line" to exerciseProgress("drawing-line", bestScore = 0f, attemptCount = 2, completedCount = 0),
+            ),
+        )
+        backgroundScope.launch(dispatcher) { viewModel.uiState.collect {} }
+        dispatcher.scheduler.advanceUntilIdle()
+
+        val state = viewModel.uiState.value
+        assertEquals(1, state.learnedCount)
+        assertEquals(2, state.doneCount)
+        val vowels = state.categories.first { it.type == ExerciseType.VOWEL }.grid
+        assertEquals(1, vowels.learnedCount)
+        assertEquals(1, vowels.doneCount)
+        assertEquals(1, state.categories.first { it.type == ExerciseType.DRAWING }.grid.runningCount)
+    }
+
+    @Test
+    fun `a detail tile carries its attempts, and no tile is marked to continue from`() = runTest(dispatcher) {
+        val viewModel = viewModel(
+            learningProgress = LearningProgress(continueExerciseId = "vowel-aa"),
+            progressByExerciseId = mapOf(
+                "vowel-aa" to exerciseProgress("vowel-aa", bestScore = 30f, attemptCount = 2, completedCount = 0),
+            ),
+        )
+        backgroundScope.launch(dispatcher) { viewModel.uiState.collect {} }
+        dispatcher.scheduler.advanceUntilIdle()
+
+        val tile = viewModel.uiState.value.categories.first { it.type == ExerciseType.VOWEL }.grid.items.first { it.id == "vowel-aa" }
+        assertEquals(LearningState.PRACTICING, tile.learningState)
+        assertEquals(2, tile.attemptCount)
+        assertFalse(tile.isContinueHere)
+    }
+
+    @Test
+    fun `the mastery note takes its numbers from the rule the app applies`() = runTest(dispatcher) {
+        val viewModel = viewModel(masteryRule = MasteryRule(requiredCompletions = 5, minBestScore = 90f))
+        backgroundScope.launch(dispatcher) { viewModel.uiState.collect {} }
+        dispatcher.scheduler.advanceUntilIdle()
+
+        val state = viewModel.uiState.value
+        assertEquals(5, state.masteryCompletions)
+        assertEquals(90, state.masteryScorePercent)
     }
 
     @Test
@@ -375,6 +430,6 @@ class ProgressViewModelTest {
 
         val state = viewModel.uiState.value
         assertEquals(ExerciseType.entries.size, state.categories.size)
-        assertEquals(emptyList<ProgressExerciseItem>(), state.categories.flatMap { it.exercises })
+        assertEquals(emptyList<CategoryTileItem>(), state.categories.flatMap { it.grid.items })
     }
 }

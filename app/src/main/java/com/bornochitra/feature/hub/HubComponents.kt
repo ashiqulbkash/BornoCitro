@@ -137,8 +137,8 @@ private fun hubLead(type: ExerciseType, language: AppLanguage): Pair<String, Tex
 }
 
 /**
- * A row that opens the [type] category, led by its glyph in the [language] hub's colours. The hubs and the
- * fill-the-blanks picker use it.
+ * A row that opens the [type] category, led by its glyph in the [language] hub's colours. The hubs, the
+ * fill-the-blanks picker and, [compact], the Progress tab use it.
  */
 @Composable
 internal fun HubCategoryRow(
@@ -146,11 +146,18 @@ internal fun HubCategoryRow(
     language: AppLanguage,
     progress: Float,
     onClick: () -> Unit,
+    compact: Boolean = false,
 ) {
     val colors = hubColors(language)
     val (glyph, glyphStyle) = hubLead(type, language)
-    BcActivityRow(name = type.label(), progress = progress, progressColor = colors.progress, onClick = onClick) {
-        BcRowLead(glyph = glyph, containerColor = colors.leadContainer, contentColor = colors.leadContent, style = glyphStyle)
+    BcActivityRow(name = type.label(), progress = progress, progressColor = colors.progress, onClick = onClick, compact = compact) {
+        BcRowLead(
+            glyph = glyph,
+            containerColor = colors.leadContainer,
+            contentColor = colors.leadContent,
+            compact = compact,
+            style = if (compact) BcType.rowLeadCompact else glyphStyle,
+        )
     }
 }
 

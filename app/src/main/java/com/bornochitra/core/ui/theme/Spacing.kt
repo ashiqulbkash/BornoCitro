@@ -71,6 +71,13 @@ object BcDimens {
     /** The shapes icon on Home's Drawing subject card. */
     val subjectIcon = 44.dp
     val detailTileMinHeight = 96.dp
+
+    /** A drawing's shape on a Progress detail tile, in place of a character. */
+    val detailShape = 40.dp
+    val detailShapeStroke = 4.dp
+
+    /** The shapes icon on the Progress tab's compact Drawing row. */
+    val rowLeadIconCompact = 26.dp
     val badge = 26.dp
     val badgeRing = 3.dp
     val flagOffset = 10.dp
@@ -134,6 +141,7 @@ object BcDimens {
 
     val logoOnboarding = 104.dp
     val logoSplash = 176.dp
+    val splashGap = 28.dp
 
     val cardShadow = 4.dp
     val divider = 1.dp

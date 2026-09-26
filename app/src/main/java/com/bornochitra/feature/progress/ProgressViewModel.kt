@@ -6,13 +6,10 @@ import androidx.lifecycle.viewModelScope
 import com.bornochitra.R
 import com.bornochitra.core.content.ExerciseRepository
 import com.bornochitra.core.database.repository.ProgressRepository
-import com.bornochitra.core.model.Exercise
-import com.bornochitra.core.model.ExerciseProgress
 import com.bornochitra.core.model.ExerciseType
-import com.bornochitra.core.model.LearningState
-import com.bornochitra.core.model.StarRule
-import com.bornochitra.core.model.toLearningState
-import com.bornochitra.core.tracing.ScoreThresholds
+import com.bornochitra.core.model.MasteryRule
+import com.bornochitra.feature.category.CategoryGridState
+import com.bornochitra.feature.category.categoryGridState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -24,57 +21,69 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
+import kotlin.math.roundToInt
 
-data class ProgressExerciseItem(
-    val id: String,
-    val title: String,
-    val stars: Int,
-    val state: LearningState,
-)
-
+/** A category's row on the Progress tab and, once opened, its detail grid. */
 data class ProgressCategory(
     val type: ExerciseType,
     val progress: Float,
-    val exercises: List<ProgressExerciseItem>,
+    /** Each exercise's tile state, attempts and stars, and the header card's counts. */
+    val grid: CategoryGridState,
 )
 
 data class ProgressState(
     val isLoading: Boolean = true,
     @StringRes val error: Int? = null,
     val overallProgress: Float = 0f,
+    /** Mastered exercises across every category. */
+    val learnedCount: Int = 0,
+    /** Finished but not yet mastered exercises across every category. */
+    val doneCount: Int = 0,
     val categories: List<ProgressCategory> = emptyList(),
-    /** The category whose individual progress is open, or null while the category buttons show. */
+    /** The mastery rule's numbers, which the detail's note spells out. */
+    val masteryCompletions: Int = MasteryRule.DEFAULT_REQUIRED_COMPLETIONS,
+    val masteryScorePercent: Int = MasteryRule.DEFAULT_MIN_BEST_SCORE.roundToInt(),
+    /** The category whose detail is open, or null while the category rows show. */
     val openCategory: ExerciseType? = null,
 )
 
 /** What the child does on the Progress screen. */
 sealed interface ProgressEvent {
 
-    /** A category button was tapped, so its exercises' individual progress is shown. */
+    /** A category row was tapped, so its detail is shown. */
     data class CategoryOpened(val type: ExerciseType) : ProgressEvent
 
-    /** The open category was left, returning to the category buttons. */
+    /** The open category was left, returning to the category rows. */
     data object CategoryClosed : ProgressEvent
 }
 
 private const val STATE_SHARING_TIMEOUT_MS = 5_000L
+
+/** The order the Progress tab lists the categories in: Bangla, then English, then Drawing (design/DESIGN_SPEC.md 5.19). */
+internal val PROGRESS_CATEGORY_ORDER = listOf(
+    ExerciseType.VOWEL,
+    ExerciseType.CONSONANT,
+    ExerciseType.BANGLA_NUMBER,
+    ExerciseType.MATH,
+    ExerciseType.ENGLISH_SMALL,
+    ExerciseType.ENGLISH_CAPITAL,
+    ExerciseType.DRAWING,
+)
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class ProgressViewModel @Inject constructor(
     exerciseRepository: ExerciseRepository,
     progressRepository: ProgressRepository,
+    masteryRule: MasteryRule,
 ) : ViewModel() {
-
-    /** Best-score bands, kept configurable in one place rather than spelled out in the UI. */
-    private val thresholds = ScoreThresholds()
 
     private val openCategory = MutableStateFlow<ExerciseType?>(null)
 
-    /** Every category, in the order its button shows — the order the types are declared in. */
+    /** Every category, in the order its row shows. */
     private val exercisesByType =
-        combine(ExerciseType.entries.map { exerciseRepository.observeExercises(it) }) { exercisesPerType ->
-            ExerciseType.entries.zip(exercisesPerType)
+        combine(PROGRESS_CATEGORY_ORDER.map { exerciseRepository.observeExercises(it) }) { exercisesPerType ->
+            PROGRESS_CATEGORY_ORDER.zip(exercisesPerType)
         }
 
     private val progressData: Flow<ProgressState> = exercisesByType
@@ -84,16 +93,22 @@ class ProgressViewModel @Inject constructor(
                 progressRepository.observeProgress(),
                 progressRepository.observeExerciseProgress(exerciseIds),
             ) { learningProgress, progressByExerciseId ->
+                val categories = byType.map { (type, exercises) ->
+                    ProgressCategory(
+                        type = type,
+                        progress = learningProgress.progressOf(type),
+                        // The detail is not a way into Practice, so no tile is marked "continue here".
+                        grid = categoryGridState(exercises, progressByExerciseId, continueExerciseId = null),
+                    )
+                }
                 ProgressState(
                     isLoading = false,
                     overallProgress = learningProgress.overallProgress,
-                    categories = byType.map { (type, exercises) ->
-                        ProgressCategory(
-                            type = type,
-                            progress = learningProgress.progressOf(type),
-                            exercises = exercises.map { it.toItem(progressByExerciseId[it.id]) },
-                        )
-                    },
+                    learnedCount = categories.sumOf { it.grid.learnedCount },
+                    doneCount = categories.sumOf { it.grid.doneCount },
+                    categories = categories,
+                    masteryCompletions = masteryRule.requiredCompletions,
+                    masteryScorePercent = masteryRule.minBestScore.roundToInt(),
                 )
             }
         }
@@ -116,11 +131,4 @@ class ProgressViewModel @Inject constructor(
             ProgressEvent.CategoryClosed -> null
         }
     }
-
-    private fun Exercise.toItem(progress: ExerciseProgress?) = ProgressExerciseItem(
-        id = id,
-        title = title,
-        stars = StarRule.starsOf(progress, thresholds),
-        state = progress.toLearningState(),
-    )
 }

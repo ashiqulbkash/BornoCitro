@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">BornoChitra</string>
-    <string name="splash_message">BornoChitra — write, learn, grow</string>
+    <string name="splash_tagline">Write, learn, grow</string>
 
     <!-- Toolbar titles: short, one line at 360dp. -->
     <string name="title_about">About</string>
@@ -42,8 +42,6 @@
         <item quantity="one">%d attempt</item>
         <item quantity="other">%d attempts</item>
     </plurals>
-    <string name="status_started">Started</string>
-    <string name="status_practicing">Practicing</string>
     <string name="status_completed">Completed</string>
     <string name="status_mastered">Learned</string>
 

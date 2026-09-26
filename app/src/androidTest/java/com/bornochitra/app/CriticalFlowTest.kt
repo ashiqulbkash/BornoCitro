@@ -564,10 +564,10 @@ class CriticalFlowTest {
         val CATEGORY_LABELS = listOf(
             R.string.category_vowel,
             R.string.category_consonant,
+            R.string.category_bangla_number,
+            R.string.category_math,
             R.string.category_english_small,
             R.string.category_english_capital,
-            R.string.category_math,
-            R.string.category_bangla_number,
             R.string.category_drawing,
         )
     }

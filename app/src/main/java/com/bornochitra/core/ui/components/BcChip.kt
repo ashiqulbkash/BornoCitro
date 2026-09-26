@@ -152,13 +152,17 @@ fun BcHeaderProgressCard(
     }
 }
 
-/** "১টি শিখেছ" with a check, on the success container. */
+/** "১টি শিখেছ" with a check, on the success container unless [containerColor] says otherwise. */
 @Composable
-fun BcLearnedChip(count: Int, modifier: Modifier = Modifier) {
+fun BcLearnedChip(
+    count: Int,
+    modifier: Modifier = Modifier,
+    containerColor: Color = MaterialTheme.colorScheme.tertiaryContainer,
+) {
     BcChip(
         text = pluralStringResource(R.plurals.header_learned, count, count),
         icon = R.drawable.bc_ic_check_bold,
-        containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+        containerColor = containerColor,
         contentColor = MaterialTheme.colorScheme.onTertiaryContainer,
         iconTint = MaterialTheme.colorScheme.tertiary,
         modifier = modifier,

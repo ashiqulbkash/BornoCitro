@@ -91,24 +91,6 @@ fun BcPercentProgress(
     }
 }
 
-/** Interim labelled bar for screens not redesigned yet (removed in Phase 6): the label above a bar with its %. */
-@Composable
-fun BcLabeledProgress(
-    label: String,
-    progress: Float,
-    modifier: Modifier = Modifier,
-) {
-    val percent = progressPercent(progress)
-    val description = stringResource(R.string.labeled_progress_description, label, percent)
-    Column(
-        modifier = modifier.fillMaxWidth().clearAndSetSemantics { contentDescription = description },
-        verticalArrangement = Arrangement.spacedBy(BcSpacing.xs),
-    ) {
-        Text(text = label, style = MaterialTheme.typography.titleMedium)
-        BcPercentProgress(label = label, progress = progress)
-    }
-}
-
 @Preview(showBackground = true)
 @Composable
 private fun BcProgressPreview() {
