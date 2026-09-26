@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
@@ -43,6 +44,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.bornochitra.R
+import com.bornochitra.core.model.LearningState
 import com.bornochitra.core.ui.theme.BcDimens
 import com.bornochitra.core.ui.theme.BcShapes
 import com.bornochitra.core.ui.theme.BcSpacing
@@ -120,9 +122,18 @@ internal fun BcSurface(
 /** How far an exercise has got, as its tile shows it (design/DESIGN_SPEC.md 4, Letter tile). */
 enum class BcTileState { NOT_STARTED, PRACTISING, COMPLETED, MASTERED }
 
+/** A tile has no separate "started" look: one unfinished attempt already shows as practising. */
+fun LearningState.toTileState(): BcTileState = when (this) {
+    LearningState.NOT_STARTED -> BcTileState.NOT_STARTED
+    LearningState.STARTED, LearningState.PRACTICING -> BcTileState.PRACTISING
+    LearningState.COMPLETED -> BcTileState.COMPLETED
+    LearningState.MASTERED -> BcTileState.MASTERED
+}
+
 /**
  * The tile shell of a letter or drawing: its state's fill and border, the mastered check badge, and the
- * "continue here" ring, halo and flag. [content] is centred in a column.
+ * "continue here" ring, halo and flag. [content] is centred in a column, [contentGap] apart. The tile fills the
+ * height [modifier] gives it (a square grid tile), and is at least [minHeight] tall.
  */
 @Composable
 fun BcExerciseTile(
@@ -132,6 +143,7 @@ fun BcExerciseTile(
     isContinueHere: Boolean = false,
     cornerRadius: Dp = BcDimens.tileCorner,
     minHeight: Dp = BcDimens.tileMinSize,
+    contentGap: Dp = TileContentGap,
     content: @Composable ColumnScope.() -> Unit,
 ) {
     val shape = RoundedCornerShape(cornerRadius)
@@ -148,6 +160,7 @@ fun BcExerciseTile(
         BcSurface(
             modifier = Modifier
                 .fillMaxWidth()
+                .fillMaxHeight()
                 .heightIn(min = minHeight)
                 .then(if (isContinueHere) Modifier.continueHalo(cornerRadius, colors.accent.copy(alpha = CONTINUE_HALO_ALPHA)) else Modifier),
             onClick = onClick,
@@ -159,7 +172,7 @@ fun BcExerciseTile(
             Column(
                 modifier = Modifier.heightIn(min = minHeight).padding(BcSpacing.xs),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(TileContentGap, Alignment.CenterVertically),
+                verticalArrangement = Arrangement.spacedBy(contentGap, Alignment.CenterVertically),
                 content = content,
             )
         }
@@ -253,24 +266,6 @@ private fun ContinueFlag(modifier: Modifier = Modifier) {
             .background(colors.accent, BcShapes.full)
             .padding(horizontal = BcSpacing.xs, vertical = BcSpacing.xxs),
     )
-}
-
-/**
- * Interim tile for screens not redesigned yet (removed in Phase 3): a label and an optional status line.
- */
-@Composable
-fun BcExerciseTile(
-    label: String,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    statusText: String? = null,
-) {
-    BcExerciseTile(state = BcTileState.NOT_STARTED, onClick = onClick, modifier = modifier) {
-        BcLetterText(text = label, style = if (label.isSingleGlyph()) BcType.letterTile else MaterialTheme.typography.titleMedium)
-        if (statusText != null) {
-            Text(text = statusText, style = MaterialTheme.typography.labelSmall, textAlign = TextAlign.Center)
-        }
-    }
 }
 
 @Preview(showBackground = true)

@@ -9,7 +9,6 @@ import com.bornochitra.core.database.repository.ProgressRepository
 import com.bornochitra.core.model.Exercise
 import com.bornochitra.core.model.ExerciseProgress
 import com.bornochitra.core.model.ExerciseType
-import com.bornochitra.core.model.LearningProgress
 import com.bornochitra.core.model.LearningState
 import com.bornochitra.core.model.StarRule
 import com.bornochitra.core.model.toLearningState
@@ -124,14 +123,4 @@ class ProgressViewModel @Inject constructor(
         stars = StarRule.starsOf(progress, thresholds),
         state = progress.toLearningState(),
     )
-}
-
-private fun LearningProgress.progressOf(type: ExerciseType): Float = when (type) {
-    ExerciseType.VOWEL -> vowelProgress
-    ExerciseType.CONSONANT -> consonantProgress
-    ExerciseType.ENGLISH_SMALL -> englishSmallProgress
-    ExerciseType.ENGLISH_CAPITAL -> englishCapitalProgress
-    ExerciseType.MATH -> mathProgress
-    ExerciseType.BANGLA_NUMBER -> banglaNumberProgress
-    ExerciseType.DRAWING -> drawingProgress
 }

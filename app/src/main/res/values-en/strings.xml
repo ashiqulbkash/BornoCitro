@@ -79,6 +79,21 @@
     <!-- Home -->
     <string name="home_welcome">Welcome!</string>
     <string name="home_continue">Continue Learning</string>
+    <string name="home_question">What will you learn today?</string>
+    <string name="home_bangla_caption">Letters, numbers, games</string>
+    <string name="home_english_caption">Small and capital letters</string>
+    <string name="home_drawing_caption">Lines, circles, houses</string>
+    <string name="home_continue_meta">%1$s ·</string>
+    <plurals name="home_mastery_remaining">
+        <item quantity="one">Write it %1$d more time to learn “%2$s”</item>
+        <item quantity="other">Write it %1$d more times to learn “%2$s”</item>
+    </plurals>
+    <string name="home_mastery_score">Score %1$d%% once to learn “%2$s”</string>
+
+    <!-- Hubs -->
+    <string name="hub_learn_by_writing">Learn by writing</string>
+    <string name="hub_learn_by_playing">Learn by playing</string>
+    <string name="hub_math_shared">“%1$s” is in Bangla too — the progress is shared.</string>
     <string name="overall">Overall</string>
 
     <!-- Handwriting model dialog -->

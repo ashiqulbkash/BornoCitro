@@ -8,6 +8,9 @@ import com.bornochitra.core.model.ExerciseProgress
 import com.bornochitra.core.model.ExerciseType
 import com.bornochitra.core.model.LearningState
 import com.bornochitra.core.model.Stroke
+import com.bornochitra.feature.category.CategoryGridState
+import com.bornochitra.feature.category.TileStatus
+import com.bornochitra.feature.category.statuses
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -96,12 +99,12 @@ class ConsonantsViewModelTest {
         backgroundScope.launch(dispatcher) { viewModel.uiState.collect {} }
         dispatcher.scheduler.advanceUntilIdle()
 
-        val items = viewModel.uiState.value.exercises
+        val items = viewModel.uiState.value.statuses()
         assertEquals(4, items.size)
-        assertEquals(ConsonantListItem(id = "consonant-ko", title = "ক", learningState = LearningState.COMPLETED, attemptCount = 1), items[0])
-        assertEquals(ConsonantListItem(id = "consonant-kho", title = "খ", learningState = LearningState.PRACTICING, attemptCount = 2), items[1])
-        assertEquals(ConsonantListItem(id = "consonant-go", title = "গ", learningState = LearningState.MASTERED, attemptCount = 5), items[2])
-        assertEquals(ConsonantListItem(id = "consonant-gho", title = "ঘ"), items[3])
+        assertEquals(TileStatus(id = "consonant-ko", title = "ক", learningState = LearningState.COMPLETED, attemptCount = 1), items[0])
+        assertEquals(TileStatus(id = "consonant-kho", title = "খ", learningState = LearningState.PRACTICING, attemptCount = 2), items[1])
+        assertEquals(TileStatus(id = "consonant-go", title = "গ", learningState = LearningState.MASTERED, attemptCount = 5), items[2])
+        assertEquals(TileStatus(id = "consonant-gho", title = "ঘ"), items[3])
     }
 
     @Test
@@ -111,6 +114,6 @@ class ConsonantsViewModelTest {
             progressRepository = progressRepositoryOf(emptyMap()),
         )
 
-        assertEquals(ConsonantsState(), viewModel.uiState.value)
+        assertEquals(CategoryGridState(), viewModel.uiState.value)
     }
 }

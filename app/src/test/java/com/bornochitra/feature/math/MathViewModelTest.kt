@@ -10,6 +10,9 @@ import com.bornochitra.core.model.LearningProgress
 import com.bornochitra.core.model.LearningState
 import com.bornochitra.core.model.PracticeResult
 import com.bornochitra.core.model.Stroke
+import com.bornochitra.feature.category.CategoryGridState
+import com.bornochitra.feature.category.TileStatus
+import com.bornochitra.feature.category.statuses
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -104,12 +107,12 @@ class MathViewModelTest {
         assertEquals(ExerciseType.MATH, requestedType)
         assertEquals(
             listOf(
-                MathListItem(id = "math-1", title = "1", learningState = LearningState.COMPLETED, attemptCount = 1),
-                MathListItem(id = "math-12", title = "12", learningState = LearningState.PRACTICING, attemptCount = 2),
-                MathListItem(id = "math-20", title = "20", learningState = LearningState.MASTERED, attemptCount = 5),
-                MathListItem(id = "math-plus", title = "+"),
+                TileStatus(id = "math-1", title = "1", learningState = LearningState.COMPLETED, attemptCount = 1),
+                TileStatus(id = "math-12", title = "12", learningState = LearningState.PRACTICING, attemptCount = 2),
+                TileStatus(id = "math-20", title = "20", learningState = LearningState.MASTERED, attemptCount = 5),
+                TileStatus(id = "math-plus", title = "+"),
             ),
-            viewModel.uiState.value.exercises,
+            viewModel.uiState.value.statuses(),
         )
     }
 
@@ -120,6 +123,6 @@ class MathViewModelTest {
             progressRepository = progressRepositoryOf(emptyMap()),
         )
 
-        assertEquals(MathState(), viewModel.uiState.value)
+        assertEquals(CategoryGridState(), viewModel.uiState.value)
     }
 }

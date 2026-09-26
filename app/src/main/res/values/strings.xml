@@ -26,9 +26,9 @@
 
     <!-- Drawing names; letters and numbers are shown as their own glyphs. -->
     <string name="drawing_line">রেখা</string>
-    <string name="drawing_circle">বৃত্ত</string>
-    <string name="drawing_square">বর্গ</string>
-    <string name="drawing_triangle">ত্রিভুজ</string>
+    <string name="drawing_circle">গোল</string>
+    <string name="drawing_square">চারকোনা</string>
+    <string name="drawing_triangle">তিনকোনা</string>
     <string name="drawing_house">বাড়ি</string>
 
     <string name="action_back">পিছনে</string>
@@ -84,6 +84,27 @@
     <string name="language_english_mark" translatable="false">A</string>
     <string name="home_welcome">স্বাগতম!</string>
     <string name="home_continue">শেখা চালিয়ে যাও</string>
+    <string name="home_question">আজ কী শিখবে?</string>
+    <!-- The subjects' marks, the same in every language. -->
+    <string name="home_mark_bangla" translatable="false">অ</string>
+    <string name="home_mark_english" translatable="false">Aa</string>
+    <string name="home_bangla_caption">বর্ণ, সংখ্যা, খেলা</string>
+    <string name="home_english_caption">ছোট ও বড় হাতের অক্ষর</string>
+    <string name="home_drawing_caption">রেখা, গোল, বাড়ি</string>
+    <!-- The continue card's category, followed by its stars. -->
+    <string name="home_continue_meta">%1$s ·</string>
+    <!-- %1$d finishes still needed, %2$s the letter. -->
+    <plurals name="home_mastery_remaining">
+        <item quantity="one">আর %1$d বার লিখলে “%2$s” শেখা হয়ে যাবে</item>
+        <item quantity="other">আর %1$d বার লিখলে “%2$s” শেখা হয়ে যাবে</item>
+    </plurals>
+    <!-- Enough finishes, but the best score is still below the mastery score %1$d. -->
+    <string name="home_mastery_score">একবার %1$d%% পেলে “%2$s” শেখা হয়ে যাবে</string>
+
+    <!-- Hubs -->
+    <string name="hub_learn_by_writing">লিখে শেখো</string>
+    <string name="hub_learn_by_playing">খেলে শেখো</string>
+    <string name="hub_math_shared">“%1$s” বাংলাতেও আছে — অগ্রগতি একটাই।</string>
     <string name="overall">সব মিলিয়ে</string>
 
     <!-- Handwriting model dialog -->

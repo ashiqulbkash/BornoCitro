@@ -8,6 +8,9 @@ import com.bornochitra.core.model.ExerciseProgress
 import com.bornochitra.core.model.ExerciseType
 import com.bornochitra.core.model.LearningState
 import com.bornochitra.core.model.Stroke
+import com.bornochitra.feature.category.CategoryGridState
+import com.bornochitra.feature.category.TileStatus
+import com.bornochitra.feature.category.statuses
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -96,12 +99,12 @@ class VowelsViewModelTest {
         backgroundScope.launch(dispatcher) { viewModel.uiState.collect {} }
         dispatcher.scheduler.advanceUntilIdle()
 
-        val items = viewModel.uiState.value.exercises
+        val items = viewModel.uiState.value.statuses()
         assertEquals(4, items.size)
-        assertEquals(VowelListItem(id = "vowel-o", title = "অ", learningState = LearningState.COMPLETED, attemptCount = 1), items[0])
-        assertEquals(VowelListItem(id = "vowel-aa", title = "আ", learningState = LearningState.PRACTICING, attemptCount = 2), items[1])
-        assertEquals(VowelListItem(id = "vowel-i", title = "ই", learningState = LearningState.MASTERED, attemptCount = 5), items[2])
-        assertEquals(VowelListItem(id = "vowel-ii", title = "ঈ"), items[3])
+        assertEquals(TileStatus(id = "vowel-o", title = "অ", learningState = LearningState.COMPLETED, attemptCount = 1), items[0])
+        assertEquals(TileStatus(id = "vowel-aa", title = "আ", learningState = LearningState.PRACTICING, attemptCount = 2), items[1])
+        assertEquals(TileStatus(id = "vowel-i", title = "ই", learningState = LearningState.MASTERED, attemptCount = 5), items[2])
+        assertEquals(TileStatus(id = "vowel-ii", title = "ঈ"), items[3])
     }
 
     @Test
@@ -111,6 +114,6 @@ class VowelsViewModelTest {
             progressRepository = progressRepositoryOf(emptyMap()),
         )
 
-        assertEquals(VowelsState(), viewModel.uiState.value)
+        assertEquals(CategoryGridState(), viewModel.uiState.value)
     }
 }

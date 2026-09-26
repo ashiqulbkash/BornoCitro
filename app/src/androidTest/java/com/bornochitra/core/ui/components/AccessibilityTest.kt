@@ -30,7 +30,7 @@ class AccessibilityTest {
     @Test
     fun exerciseTile_isAButton_andMeetsMinimumSize() {
         composeRule.setContent {
-            BornoChitraTheme { BcExerciseTile(label = "অ", statusText = "Mastered", onClick = {}) }
+            BornoChitraTheme { BcLetterTile(character = "অ", state = BcTileState.MASTERED, attemptCount = 4, stars = 3, onClick = {}) }
         }
 
         composeRule.onNodeWithText("অ", useUnmergedTree = false)
@@ -43,7 +43,9 @@ class AccessibilityTest {
     fun exerciseTile_click_invokesCallback() {
         var clicked = false
         composeRule.setContent {
-            BornoChitraTheme { BcExerciseTile(label = "আ", onClick = { clicked = true }) }
+            BornoChitraTheme {
+                BcLetterTile(character = "আ", state = BcTileState.NOT_STARTED, attemptCount = 0, stars = 0, onClick = { clicked = true })
+            }
         }
 
         composeRule.onNodeWithText("আ").performClick()

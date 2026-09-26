@@ -152,6 +152,12 @@ object BcType {
     /** The glyph on a 52dp activity-row lead. */
     val rowLead = baloo(FontWeight.ExtraBold, 26.sp, 32.sp)
 
+    /** The Bangla hub's "+" lead, drawn larger than a letter so the thin sign reads as clearly. */
+    val rowLeadSign = baloo(FontWeight.ExtraBold, 30.sp, 36.sp)
+
+    /** The letter on Home's Continue card tile: letterPractice at 44sp. */
+    val letterContinue = baloo(FontWeight.ExtraBold, 44.sp, 52.sp)
+
     /** The glyph on a 44dp compact-row lead. */
     val rowLeadCompact = baloo(FontWeight.ExtraBold, 22.sp, 28.sp)
 

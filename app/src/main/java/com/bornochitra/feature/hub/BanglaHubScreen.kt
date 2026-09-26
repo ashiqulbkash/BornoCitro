@@ -1,24 +1,20 @@
 package com.bornochitra.feature.hub
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Scaffold
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bornochitra.R
 import com.bornochitra.core.model.ExerciseType
-import com.bornochitra.core.ui.components.BcPrimaryButton
-import com.bornochitra.core.ui.components.BcTopAppBar
-import com.bornochitra.core.ui.components.label
-import com.bornochitra.core.ui.theme.BcSpacing
+import com.bornochitra.core.ui.theme.BcType
 import com.bornochitra.core.ui.theme.BornoChitraTheme
+
+private val FillCells = listOf("অ", GAME_BLANK, "ই")
+private const val LISTEN_GLYPH = "অ"
 
 /**
  * The Bangla hub: the Bangla practice categories, Math, which the English hub also opens, fill in the
@@ -34,26 +30,51 @@ fun BanglaHubScreen(
     onFillBlanksClick: () -> Unit,
     onLearnClick: () -> Unit,
     modifier: Modifier = Modifier,
+    viewModel: HubViewModel = hiltViewModel(),
 ) {
-    Scaffold(
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
+    BanglaHubContent(
+        state = state,
+        onBackClick = onBackClick,
+        onVowelsClick = onVowelsClick,
+        onConsonantsClick = onConsonantsClick,
+        onBanglaNumbersClick = onBanglaNumbersClick,
+        onMathClick = onMathClick,
+        onFillBlanksClick = onFillBlanksClick,
+        onLearnClick = onLearnClick,
         modifier = modifier,
-        topBar = { BcTopAppBar(title = stringResource(R.string.title_bangla), onBackClick = onBackClick) },
-    ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .verticalScroll(rememberScrollState())
-                .padding(BcSpacing.m),
-            verticalArrangement = Arrangement.spacedBy(BcSpacing.m),
-        ) {
-            BcPrimaryButton(text = ExerciseType.VOWEL.label(), onClick = onVowelsClick, modifier = Modifier.fillMaxWidth())
-            BcPrimaryButton(text = ExerciseType.CONSONANT.label(), onClick = onConsonantsClick, modifier = Modifier.fillMaxWidth())
-            BcPrimaryButton(text = ExerciseType.BANGLA_NUMBER.label(), onClick = onBanglaNumbersClick, modifier = Modifier.fillMaxWidth())
-            BcPrimaryButton(text = ExerciseType.MATH.label(), onClick = onMathClick, modifier = Modifier.fillMaxWidth())
-            BcPrimaryButton(text = stringResource(R.string.title_fill_blanks), onClick = onFillBlanksClick, modifier = Modifier.fillMaxWidth())
-            BcPrimaryButton(text = stringResource(R.string.title_learn), onClick = onLearnClick, modifier = Modifier.fillMaxWidth())
-        }
+    )
+}
+
+@Composable
+private fun BanglaHubContent(
+    state: HubState,
+    onBackClick: () -> Unit,
+    onVowelsClick: () -> Unit,
+    onConsonantsClick: () -> Unit,
+    onBanglaNumbersClick: () -> Unit,
+    onMathClick: () -> Unit,
+    onFillBlanksClick: () -> Unit,
+    onLearnClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val scheme = MaterialTheme.colorScheme
+    HubScaffold(
+        title = stringResource(R.string.title_bangla),
+        onBackClick = onBackClick,
+        onFillBlanksClick = onFillBlanksClick,
+        onLearnClick = onLearnClick,
+        fillCells = FillCells,
+        listenGlyph = {
+            ListenGamePicture(glyph = LISTEN_GLYPH, tileColor = scheme.primary, glyphColor = scheme.onPrimary, speakerColor = scheme.primary)
+        },
+        modifier = modifier,
+    ) {
+        val colors = HubColors(leadContainer = scheme.primaryContainer, leadContent = scheme.onPrimaryContainer, progress = scheme.primary)
+        HubCategoryRow(ExerciseType.VOWEL, "অ", state.progressOf(ExerciseType.VOWEL), colors, onVowelsClick)
+        HubCategoryRow(ExerciseType.CONSONANT, "ক", state.progressOf(ExerciseType.CONSONANT), colors, onConsonantsClick)
+        HubCategoryRow(ExerciseType.BANGLA_NUMBER, "১", state.progressOf(ExerciseType.BANGLA_NUMBER), colors, onBanglaNumbersClick)
+        HubCategoryRow(ExerciseType.MATH, "+", state.progressOf(ExerciseType.MATH), colors, onMathClick, glyphStyle = BcType.rowLeadSign)
     }
 }
 
@@ -61,7 +82,8 @@ fun BanglaHubScreen(
 @Composable
 private fun BanglaHubScreenPreview() {
     BornoChitraTheme {
-        BanglaHubScreen(
+        BanglaHubContent(
+            state = HubState(categoryProgress = mapOf(ExerciseType.VOWEL to 0.27f)),
             onBackClick = {},
             onVowelsClick = {},
             onConsonantsClick = {},

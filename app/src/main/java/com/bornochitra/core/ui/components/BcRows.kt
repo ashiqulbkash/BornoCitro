@@ -22,6 +22,8 @@ import androidx.compose.foundation.background
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -181,6 +183,17 @@ fun BcRowLead(
         contentColor = contentColor,
         style = style,
         modifier = modifier,
+    )
+}
+
+/** A section's label above its rows or cards, read as a heading (labelMedium, onSurfaceVariant). */
+@Composable
+fun BcSectionLabel(text: String, modifier: Modifier = Modifier) {
+    Text(
+        text = text,
+        style = MaterialTheme.typography.labelMedium,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        modifier = modifier.semantics { heading() },
     )
 }
 

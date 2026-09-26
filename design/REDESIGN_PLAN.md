@@ -57,8 +57,8 @@ round stroke, are tinted where they are used, and cover every icon the spec name
 |---|---|---|---|
 | 1 | Theme (light/dark), fonts, spacing, shapes, icons, shared components | 1 | Done (`b04b115`, `d462a7e`) |
 | 2 | Navigation shell: bottom bar, Grown-ups tab, two-page onboarding, language sheet; drawer, About and Welcome removed | 3, 4, 6, 7 | Done |
-| 3 | Home, Bangla hub, English hub, category grids, drawing grid | 5, 8–11 | Next |
-| 4 | Practice, restart dialog, Result | 12–15 | |
+| 3 | Home, Bangla hub, English hub, category grids, drawing grid | 5, 8–11 | Done |
+| 4 | Practice, restart dialog, Result | 12–15 | Next |
 | 5 | Fill picker, model dialog, sequence, hint sheet, done view, Listen and learn | 16–21 | |
 | 6 | Progress tab, Progress detail, splash | 2, 22, 23 | |
 | 7 | Polish: dark mode, 1.3× font scale, small phones, landscape Practice; unused code and strings; `NEW_STRINGS.md`; list of remaining differences | 24 | |

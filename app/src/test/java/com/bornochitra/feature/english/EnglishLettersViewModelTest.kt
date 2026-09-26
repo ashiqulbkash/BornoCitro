@@ -9,6 +9,8 @@ import com.bornochitra.core.model.ExerciseProgress
 import com.bornochitra.core.model.ExerciseType
 import com.bornochitra.core.model.LearningState
 import com.bornochitra.core.model.Stroke
+import com.bornochitra.feature.category.TileStatus
+import com.bornochitra.feature.category.statuses
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -99,12 +101,12 @@ class EnglishLettersViewModelTest {
         backgroundScope.launch(dispatcher) { viewModel.uiState.collect {} }
         dispatcher.scheduler.advanceUntilIdle()
 
-        val items = viewModel.uiState.value.exercises
+        val items = viewModel.uiState.value.grid.statuses()
         assertEquals(4, items.size)
-        assertEquals(EnglishLetterListItem(id = "english-small-a", title = "a", learningState = LearningState.COMPLETED, attemptCount = 1), items[0])
-        assertEquals(EnglishLetterListItem(id = "english-small-b", title = "b", learningState = LearningState.PRACTICING, attemptCount = 2), items[1])
-        assertEquals(EnglishLetterListItem(id = "english-small-c", title = "c", learningState = LearningState.MASTERED, attemptCount = 5), items[2])
-        assertEquals(EnglishLetterListItem(id = "english-small-d", title = "d"), items[3])
+        assertEquals(TileStatus(id = "english-small-a", title = "a", learningState = LearningState.COMPLETED, attemptCount = 1), items[0])
+        assertEquals(TileStatus(id = "english-small-b", title = "b", learningState = LearningState.PRACTICING, attemptCount = 2), items[1])
+        assertEquals(TileStatus(id = "english-small-c", title = "c", learningState = LearningState.MASTERED, attemptCount = 5), items[2])
+        assertEquals(TileStatus(id = "english-small-d", title = "d"), items[3])
     }
 
     @Test
@@ -142,10 +144,10 @@ class EnglishLettersViewModelTest {
         assertEquals(ExerciseType.ENGLISH_CAPITAL, state.type)
         assertEquals(
             listOf(
-                EnglishLetterListItem(id = "english-capital-a", title = "A"),
-                EnglishLetterListItem(id = "english-capital-b", title = "B", learningState = LearningState.COMPLETED, attemptCount = 1),
+                TileStatus(id = "english-capital-a", title = "A"),
+                TileStatus(id = "english-capital-b", title = "B", learningState = LearningState.COMPLETED, attemptCount = 1),
             ),
-            state.exercises,
+            state.grid.statuses(),
         )
     }
 

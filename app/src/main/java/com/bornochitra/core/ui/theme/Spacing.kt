@@ -63,6 +63,13 @@ object BcDimens {
     val grownUpsLead = 54.dp
     val drawingTileHeight = 150.dp
     val drawingShape = 64.dp
+    val drawingShapeStroke = 5.dp
+
+    /** Space kept around a drawing's shape inside its box, as the design's shape icons have. */
+    val drawingShapeInset = 8.dp
+
+    /** The shapes icon on Home's Drawing subject card. */
+    val subjectIcon = 44.dp
     val detailTileMinHeight = 96.dp
     val badge = 26.dp
     val badgeRing = 3.dp
@@ -78,6 +85,7 @@ object BcDimens {
     val continuePlay = 52.dp
     val continuePlayIcon = 26.dp
     val masterySegmentHeight = 8.dp
+    val masterySegmentCorner = 4.dp
 
     val progressBar = 10.dp
     val progressBarHeader = 14.dp

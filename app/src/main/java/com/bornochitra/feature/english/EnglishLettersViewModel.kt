@@ -6,27 +6,18 @@ import androidx.lifecycle.viewModelScope
 import com.bornochitra.core.content.ExerciseRepository
 import com.bornochitra.core.database.repository.ProgressRepository
 import com.bornochitra.core.model.ExerciseType
-import com.bornochitra.core.model.LearningState
-import com.bornochitra.core.model.toLearningState
+import com.bornochitra.feature.category.CategoryGridState
+import com.bornochitra.feature.category.observeCategoryGrid
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
-data class EnglishLetterListItem(
-    val id: String,
-    val title: String,
-    val learningState: LearningState = LearningState.NOT_STARTED,
-    val attemptCount: Int = 0,
-)
-
 data class EnglishLettersState(
     val type: ExerciseType,
-    val exercises: List<EnglishLetterListItem> = emptyList(),
+    val grid: CategoryGridState = CategoryGridState(),
 )
 
 private const val STATE_SHARING_TIMEOUT_MS = 5_000L
@@ -38,7 +29,6 @@ private const val ARG_TYPE = "type"
  * The English small letters a-z or capitals A-Z, as the route asks, each with how far the child has
  * got with it (plan.md Step 3).
  */
-@OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class EnglishLettersViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
@@ -48,22 +38,8 @@ class EnglishLettersViewModel @Inject constructor(
 
     private val type: ExerciseType = ExerciseType.valueOf(checkNotNull(savedStateHandle[ARG_TYPE]))
 
-    val uiState: StateFlow<EnglishLettersState> = exerciseRepository.observeExercises(type)
-        .flatMapLatest { exercises ->
-            progressRepository.observeExerciseProgress(exercises.map { it.id }).map { progressByExerciseId ->
-                EnglishLettersState(
-                    type = type,
-                    exercises = exercises.map { exercise ->
-                        EnglishLetterListItem(
-                            id = exercise.id,
-                            title = exercise.title,
-                            learningState = progressByExerciseId[exercise.id].toLearningState(),
-                            attemptCount = progressByExerciseId[exercise.id]?.attemptCount ?: 0,
-                        )
-                    },
-                )
-            }
-        }
+    val uiState: StateFlow<EnglishLettersState> = observeCategoryGrid(type, exerciseRepository, progressRepository)
+        .map { EnglishLettersState(type = type, grid = it) }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(STATE_SHARING_TIMEOUT_MS),

@@ -10,6 +10,9 @@ import com.bornochitra.core.model.LearningProgress
 import com.bornochitra.core.model.LearningState
 import com.bornochitra.core.model.PracticeResult
 import com.bornochitra.core.model.Stroke
+import com.bornochitra.feature.category.CategoryGridState
+import com.bornochitra.feature.category.TileStatus
+import com.bornochitra.feature.category.statuses
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -104,12 +107,12 @@ class BanglaNumbersViewModelTest {
         assertEquals(ExerciseType.BANGLA_NUMBER, requestedType)
         assertEquals(
             listOf(
-                BanglaNumberListItem(id = "bangla-number-1", title = "১", learningState = LearningState.COMPLETED, attemptCount = 1),
-                BanglaNumberListItem(id = "bangla-number-5", title = "৫"),
-                BanglaNumberListItem(id = "bangla-number-12", title = "১২", learningState = LearningState.PRACTICING, attemptCount = 2),
-                BanglaNumberListItem(id = "bangla-number-20", title = "২০", learningState = LearningState.MASTERED, attemptCount = 5),
+                TileStatus(id = "bangla-number-1", title = "১", learningState = LearningState.COMPLETED, attemptCount = 1),
+                TileStatus(id = "bangla-number-5", title = "৫"),
+                TileStatus(id = "bangla-number-12", title = "১২", learningState = LearningState.PRACTICING, attemptCount = 2),
+                TileStatus(id = "bangla-number-20", title = "২০", learningState = LearningState.MASTERED, attemptCount = 5),
             ),
-            viewModel.uiState.value.exercises,
+            viewModel.uiState.value.statuses(),
         )
     }
 
@@ -120,6 +123,6 @@ class BanglaNumbersViewModelTest {
             progressRepository = progressRepositoryOf(emptyMap()),
         )
 
-        assertEquals(BanglaNumbersState(), viewModel.uiState.value)
+        assertEquals(CategoryGridState(), viewModel.uiState.value)
     }
 }
