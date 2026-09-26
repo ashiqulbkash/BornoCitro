@@ -22,7 +22,6 @@ val BcBalooFontFamily = FontFamily(
 
 /** Body text, captions and labels inside text. */
 val BcHindFontFamily = FontFamily(
-    Font(R.font.hind_siliguri_regular, FontWeight.Normal),
     Font(R.font.hind_siliguri_medium, FontWeight.Medium),
     Font(R.font.hind_siliguri_semibold, FontWeight.SemiBold),
     Font(R.font.hind_siliguri_bold, FontWeight.Bold),
