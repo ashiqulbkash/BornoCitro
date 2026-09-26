@@ -10,6 +10,7 @@ import com.bornochitra.core.model.ExerciseType
 import com.bornochitra.core.model.LearningProgress
 import com.bornochitra.core.model.PracticeResult
 import com.bornochitra.core.model.ScoreLevel
+import com.bornochitra.core.model.StarRule
 import com.bornochitra.core.model.Stroke
 import com.bornochitra.core.tips.ContextualTip
 import com.bornochitra.core.tips.TipRules
@@ -142,11 +143,23 @@ class ResultViewModelTest {
                 title = "অ",
                 scorePercent = 94,
                 scoreLevel = ScoreLevel.PERFECT,
-                nextExerciseId = "vowel-aa",
+                stars = 3,
+                nextExercise = NextExercise(id = "vowel-aa", title = "আ"),
                 tip = null,
             ),
             state.attempt,
         )
+    }
+
+    @Test
+    fun `stars follow this try's score by the star rule`() = runTest(dispatcher) {
+        val viewModel = viewModel(results = mapOf(1L to practiceResult(score = 42f, scoreLevel = ScoreLevel.LOW)))
+
+        backgroundScope.launch(dispatcher) { viewModel.uiState.collect {} }
+        dispatcher.scheduler.advanceUntilIdle()
+
+        assertEquals(StarRule.starsFor(42f), viewModel.uiState.value.attempt?.stars)
+        assertEquals(1, viewModel.uiState.value.attempt?.stars)
     }
 
     @Test
@@ -192,7 +205,7 @@ class ResultViewModelTest {
 
         val attempt = viewModel.uiState.value.attempt
         assertEquals("vowel-aa", attempt?.exerciseId)
-        assertNull(attempt?.nextExerciseId)
+        assertNull(attempt?.nextExercise)
     }
 
     @Test
@@ -202,7 +215,7 @@ class ResultViewModelTest {
         backgroundScope.launch(dispatcher) { viewModel.uiState.collect {} }
         dispatcher.scheduler.advanceUntilIdle()
 
-        assertNull(viewModel.uiState.value.attempt?.nextExerciseId)
+        assertNull(viewModel.uiState.value.attempt?.nextExercise)
     }
 
     @Test
@@ -223,8 +236,10 @@ class ResultViewModelTest {
                 title = "Circle",
                 scorePercent = 88,
                 scoreLevel = ScoreLevel.MEDIUM,
-                nextExerciseId = "drawing-square",
+                stars = 2,
+                nextExercise = NextExercise(id = "drawing-square", title = "Square"),
                 tip = null,
+                drawingStrokes = listOf(Stroke(id = "drawing-circle-stroke", points = emptyList())),
             ),
             viewModel.uiState.value.attempt,
         )

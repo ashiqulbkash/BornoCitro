@@ -8,8 +8,11 @@ import com.bornochitra.R
 import com.bornochitra.core.content.ExerciseRepository
 import com.bornochitra.core.database.repository.ProgressRepository
 import com.bornochitra.core.model.Exercise
+import com.bornochitra.core.model.ExerciseType
 import com.bornochitra.core.model.ScoreLevel
 import com.bornochitra.core.model.SessionScores
+import com.bornochitra.core.model.StarRule
+import com.bornochitra.core.model.Stroke
 import com.bornochitra.core.tips.ContextualTip
 import com.bornochitra.core.tips.TipSelector
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,16 +27,23 @@ import kotlin.math.roundToInt
 /** Must match [com.bornochitra.app.navigation.BcDestination.Result.ARG_SESSION_ID]. */
 private const val ARG_SESSION_ID = "sessionId"
 
+/** The exercise after this one in its category, named on the Next button. */
+data class NextExercise(val id: String, val title: String)
+
 /** The finished attempt this screen reports on, as the UI needs it. */
 data class ResultAttempt(
     val exerciseId: String,
     val title: String,
     val scorePercent: Int,
     val scoreLevel: ScoreLevel,
-    val nextExerciseId: String?,
+    /** This try's stars, by [StarRule]. */
+    val stars: Int,
+    val nextExercise: NextExercise?,
     val tip: ContextualTip?,
     /** The scores of every try in this session, including the one being reported. */
     val sessionScores: List<Float> = listOf(scorePercent.toFloat()),
+    /** A drawing's strokes, shown as its picture in place of a letter; null for a letter. */
+    val drawingStrokes: List<Stroke>? = null,
 ) {
     val sessionAttempts: Int get() = sessionScores.size
     val sessionAveragePercent: Int get() = SessionScores.averagePercent(sessionScores)
@@ -78,8 +88,10 @@ class ResultViewModel @Inject constructor(
                 title = exercise.title,
                 scorePercent = result.score.roundToInt(),
                 scoreLevel = result.scoreLevel,
+                stars = StarRule.starsFor(result.score),
                 sessionScores = sessionScores.ifEmpty { listOf(result.score) },
-                nextExerciseId = nextExerciseIdAfter(exercise),
+                nextExercise = nextExerciseAfter(exercise),
+                drawingStrokes = exercise.strokes.takeIf { exercise.type == ExerciseType.DRAWING },
                 tip = tipSelector.afterAttempt(
                     difficulty = exercise.difficulty,
                     recentScores = progressRepository
@@ -91,9 +103,9 @@ class ResultViewModel @Inject constructor(
     }
 
     /** The following exercise in the same category, so "Next" keeps the child in one learning set. */
-    private suspend fun nextExerciseIdAfter(exercise: Exercise): String? =
+    private suspend fun nextExerciseAfter(exercise: Exercise): NextExercise? =
         exerciseRepository.observeExercises(exercise.type).first()
             .filter { it.order > exercise.order }
             .minByOrNull { it.order }
-            ?.id
+            ?.let { NextExercise(id = it.id, title = it.title) }
 }

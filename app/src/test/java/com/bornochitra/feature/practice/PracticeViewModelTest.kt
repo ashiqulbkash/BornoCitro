@@ -214,7 +214,7 @@ class PracticeViewModelTest {
         val viewModel = startedViewModel()
         viewModel.onEvent(PracticeEvent.TraceUnfinished)
 
-        viewModel.onEvent(PracticeEvent.Restarted)
+        viewModel.onEvent(PracticeEvent.RestartRequested)
 
         assertEquals(ContextualTip.FIRST_ATTEMPT, viewModel.uiState.value.tip)
     }
@@ -224,10 +224,10 @@ class PracticeViewModelTest {
         val viewModel = startedViewModel()
         assertEquals(0, viewModel.uiState.value.attemptId)
 
-        viewModel.onEvent(PracticeEvent.Restarted)
+        viewModel.onEvent(PracticeEvent.RestartRequested)
         assertEquals(1, viewModel.uiState.value.attemptId)
 
-        viewModel.onEvent(PracticeEvent.Restarted)
+        viewModel.onEvent(PracticeEvent.RestartRequested)
         assertEquals(2, viewModel.uiState.value.attemptId)
     }
 
@@ -241,11 +241,80 @@ class PracticeViewModelTest {
     }
 
     @Test
+    fun `resetting with ink on the canvas asks first and keeps the attempt`() = runTest(dispatcher) {
+        val viewModel = startedViewModel()
+        viewModel.onEvent(PracticeEvent.StrokeStarted)
+        trackedEvents.clear()
+
+        viewModel.onEvent(PracticeEvent.RestartRequested)
+
+        val state = viewModel.uiState.value
+        assertTrue(state.isRestartConfirmationShown)
+        assertEquals(0, state.attemptId)
+        assertTrue(state.hasInk)
+        assertTrue(trackedEvents.isEmpty())
+    }
+
+    @Test
+    fun `confirming the reset wipes the ink and starts a new attempt`() = runTest(dispatcher) {
+        val viewModel = startedViewModel()
+        viewModel.onEvent(PracticeEvent.StrokeStarted)
+        viewModel.onEvent(PracticeEvent.RestartRequested)
+
+        viewModel.onEvent(PracticeEvent.RestartConfirmed)
+
+        val state = viewModel.uiState.value
+        assertEquals(false, state.isRestartConfirmationShown)
+        assertEquals(1, state.attemptId)
+        assertEquals(false, state.hasInk)
+        assertEquals(AnalyticsEvent.PracticeRepeated("vowel-o"), trackedEvents.last())
+    }
+
+    @Test
+    fun `keeping on writing closes the question and keeps the ink`() = runTest(dispatcher) {
+        val viewModel = startedViewModel()
+        viewModel.onEvent(PracticeEvent.StrokeStarted)
+        viewModel.onEvent(PracticeEvent.RestartRequested)
+
+        viewModel.onEvent(PracticeEvent.RestartDismissed)
+
+        val state = viewModel.uiState.value
+        assertEquals(false, state.isRestartConfirmationShown)
+        assertEquals(0, state.attemptId)
+        assertTrue(state.hasInk)
+    }
+
+    @Test
+    fun `resetting an empty canvas starts over without asking`() = runTest(dispatcher) {
+        val viewModel = startedViewModel()
+
+        viewModel.onEvent(PracticeEvent.RestartRequested)
+
+        assertEquals(false, viewModel.uiState.value.isRestartConfirmationShown)
+        assertEquals(1, viewModel.uiState.value.attemptId)
+    }
+
+    @Test
+    fun `the exercise's place in its category is exposed for the top bar`() = runTest(dispatcher) {
+        val vowels = listOf(
+            exercise.copy(id = "vowel-i", title = "ই", order = 3),
+            exercise,
+            exercise.copy(id = "vowel-aa", title = "আ", order = 2),
+        )
+        val viewModel = viewModel(exerciseId = "vowel-aa", exerciseRepository = exerciseRepositoryOf(vowels))
+        backgroundScope.launch(dispatcher) { viewModel.uiState.collect {} }
+        dispatcher.scheduler.advanceUntilIdle()
+
+        assertEquals(2, viewModel.uiState.value.categoryPosition)
+        assertEquals(3, viewModel.uiState.value.categorySize)
+    }
+
+    @Test
     fun `starting over an exercise practised before leaves no tip`() = runTest(dispatcher) {
         val viewModel = startedViewModel(FakeProgressRepository(previousProgress(attemptCount = 1)))
         viewModel.onEvent(PracticeEvent.TraceUnfinished)
 
-        viewModel.onEvent(PracticeEvent.Restarted)
+        viewModel.onEvent(PracticeEvent.RestartRequested)
 
         assertNull(viewModel.uiState.value.tip)
     }
@@ -340,7 +409,7 @@ class PracticeViewModelTest {
     fun `resetting mid-attempt tracks a repeat`() = runTest(dispatcher) {
         val viewModel = startedViewModel()
 
-        viewModel.onEvent(PracticeEvent.Restarted)
+        viewModel.onEvent(PracticeEvent.RestartRequested)
 
         assertEquals(AnalyticsEvent.PracticeRepeated("vowel-o"), trackedEvents.last())
     }

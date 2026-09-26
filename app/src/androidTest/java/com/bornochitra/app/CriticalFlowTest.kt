@@ -104,6 +104,46 @@ class CriticalFlowTest {
     }
 
     @Test
+    fun practiceReset_asksOnlyWhenThereIsInk() {
+        openHome()
+        clickButton(string(R.string.category_drawing))
+        val circle = string(R.string.drawing_circle)
+        composeRule.onNodeWithText(circle).performClick()
+        val canvasDescription = string(R.string.practice_canvas_description, circle)
+        awaitCanvas(canvasDescription)
+        val reset = string(R.string.action_reset)
+        val question = string(R.string.restart_title)
+
+        // Nothing written yet: Reset starts over without asking.
+        composeRule.onNode(hasText(reset) and hasClickAction()).performClick()
+        composeRule.onNodeWithText(question).assertDoesNotExist()
+
+        val stroke = ExerciseCatalog.all.first { it.id == "drawing-circle" }.strokes.first()
+        composeRule.onNodeWithContentDescription(canvasDescription).performTouchInput {
+            val scale = minOf(width, height) / GUIDE_CANVAS_UNIT
+            val path = densify(stroke.points.take(stroke.points.size / 2)).map { Offset(it.x * scale, it.y * scale) }
+            down(path.first())
+            path.drop(1).forEach { moveTo(it) }
+            up()
+        }
+        composeRule.waitForIdle()
+
+        composeRule.onNode(hasText(reset) and hasClickAction()).performClick()
+        composeRule.onNodeWithText(question).assertIsDisplayed()
+        composeRule.onNodeWithText(string(R.string.restart_dismiss)).performClick()
+        composeRule.onNodeWithText(question).assertDoesNotExist()
+        composeRule.onNodeWithContentDescription(canvasDescription).assertIsDisplayed()
+
+        composeRule.onNode(hasText(reset) and hasClickAction()).performClick()
+        composeRule.onNodeWithText(string(R.string.restart_confirm)).performClick()
+        composeRule.onNodeWithText(question).assertDoesNotExist()
+
+        // The ink is gone, so the next Reset does not ask again.
+        composeRule.onNode(hasText(reset) and hasClickAction()).performClick()
+        composeRule.onNodeWithText(question).assertDoesNotExist()
+    }
+
+    @Test
     fun bangla_consonants_ko_practice_result() =
         practiseFromHub(R.string.title_bangla, R.string.category_consonant, "consonant-ko", "ক")
 

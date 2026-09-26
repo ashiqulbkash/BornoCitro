@@ -24,18 +24,22 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.compose.ui.window.DialogWindowProvider
 import com.bornochitra.R
 import com.bornochitra.core.ui.theme.BcDimens
 import com.bornochitra.core.ui.theme.BcShapes
@@ -138,6 +142,10 @@ fun BcDialog(
     buttons: @Composable ColumnScope.() -> Unit,
 ) {
     Dialog(onDismissRequest = onDismissRequest, properties = DialogProperties(usePlatformDefaultWidth = false)) {
+        // The window's own dim is the scrim: black at the scheme scrim's strength, not the platform's lighter default.
+        val scrimAlpha = MaterialTheme.colorScheme.scrim.alpha
+        val dialogWindow = (LocalView.current.parent as? DialogWindowProvider)?.window
+        SideEffect { dialogWindow?.setDimAmount(scrimAlpha) }
         Surface(
             modifier = modifier.fillMaxWidth().padding(horizontal = BcSpacing.l),
             shape = BcShapes.xxl,
@@ -173,6 +181,30 @@ fun BcDialog(
                 extra?.invoke(this)
                 buttons()
             }
+        }
+    }
+}
+
+/**
+ * Asks before Reset wipes what the child has written (design/DESIGN_SPEC.md 5.11). Only shown when there is ink;
+ * with an empty canvas Reset starts over at once.
+ */
+@Composable
+fun BcRestartDialog(
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit,
+) {
+    BcDialog(
+        onDismissRequest = onDismiss,
+        icon = R.drawable.bc_ic_reset,
+        iconContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+        iconTint = MaterialTheme.colorScheme.onSecondaryContainer,
+        title = stringResource(R.string.restart_title),
+        body = stringResource(R.string.restart_message),
+    ) {
+        Column(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(BcSpacing.xs)) {
+            BcPrimaryButton(text = stringResource(R.string.restart_confirm), onClick = onConfirm, modifier = Modifier.fillMaxWidth())
+            BcTextButton(text = stringResource(R.string.restart_dismiss), onClick = onDismiss, modifier = Modifier.fillMaxWidth())
         }
     }
 }

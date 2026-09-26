@@ -140,19 +140,26 @@
     <string name="practice_canvas_description">Tracing area for %1$s. Follow the dots with your finger.</string>
     <string name="practice_unavailable">Exercise unavailable</string>
     <string name="error_exercise_not_found">We couldn\'t find that exercise.</string>
+    <string name="practice_category_position">%1$s · %2$d/%3$d</string>
+
+    <!-- Restart confirmation -->
+    <string name="restart_title">Start again?</string>
+    <string name="restart_message">Everything you wrote will be wiped.</string>
+    <string name="restart_confirm">Yes, wipe it</string>
+    <string name="restart_dismiss">No, keep writing</string>
 
     <!-- Result -->
     <string name="result_unavailable">Result unavailable</string>
     <string name="error_result_not_found">We couldn\'t find that practice result.</string>
-    <string name="result_perfect_headline">Great Job! 🎉</string>
+    <string name="result_perfect_headline">Great Job!</string>
     <string name="result_perfect_message">Perfect!</string>
     <string name="result_medium_headline">Good Try!</string>
     <string name="result_medium_message">Nice tracing — keep going!</string>
-    <string name="result_low_headline">Let\'s Practice Again!</string>
-    <string name="result_low_message">Follow the dots slowly. You can do it!</string>
+    <string name="result_low_headline">Good Try!</string>
+    <string name="result_low_message">Write it once more to earn more stars.</string>
     <string name="result_practice_again">Practice Again</string>
-    <string name="result_try_again">Try Again</string>
-    <string name="result_next">Next</string>
+    <string name="result_score_caption">This try\'s score</string>
+    <string name="result_next">Next: %1$s</string>
     <string name="result_view_progress">View Progress</string>
     <plurals name="result_session_summary">
         <item quantity="one">You tried %1$d time. Your overall progress is %2$d%%.</item>

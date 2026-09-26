@@ -159,19 +159,26 @@
     <string name="practice_canvas_description">%1$s লেখার জায়গা। আঙুল দিয়ে ফোঁটাগুলো ধরে চলো।</string>
     <string name="practice_unavailable">অনুশীলনটি পাওয়া যাচ্ছে না</string>
     <string name="error_exercise_not_found">অনুশীলনটি খুঁজে পাওয়া যায়নি।</string>
+    <string name="practice_category_position">%1$s · %2$d/%3$d</string>
+
+    <!-- Restart confirmation -->
+    <string name="restart_title">আবার শুরু করবে?</string>
+    <string name="restart_message">যা লিখেছ, সব মুছে যাবে।</string>
+    <string name="restart_confirm">হ্যাঁ, মুছে দাও</string>
+    <string name="restart_dismiss">না, লিখতে থাকি</string>
 
     <!-- Result -->
     <string name="result_unavailable">ফলাফল পাওয়া যাচ্ছে না</string>
     <string name="error_result_not_found">এই অনুশীলনের ফলাফল খুঁজে পাওয়া যায়নি।</string>
-    <string name="result_perfect_headline">দারুণ! 🎉</string>
+    <string name="result_perfect_headline">দারুণ!</string>
     <string name="result_perfect_message">একদম ঠিক!</string>
     <string name="result_medium_headline">ভালো চেষ্টা!</string>
     <string name="result_medium_message">সুন্দর লিখেছ — চালিয়ে যাও!</string>
-    <string name="result_low_headline">চলো আবার অনুশীলন করি!</string>
-    <string name="result_low_message">ধীরে ফোঁটাগুলো ধরে চলো। তুমি পারবে!</string>
+    <string name="result_low_headline">ভালো চেষ্টা!</string>
+    <string name="result_low_message">আরেকবার লিখলে আরও তারা পাবে।</string>
     <string name="result_practice_again">আবার অনুশীলন করো</string>
-    <string name="result_try_again">আবার চেষ্টা করো</string>
-    <string name="result_next">পরেরটি</string>
+    <string name="result_score_caption">এবারের স্কোর</string>
+    <string name="result_next">পরেরটি: %1$s</string>
     <string name="result_view_progress">অগ্রগতি দেখো</string>
     <plurals name="result_session_summary">
         <item quantity="one">তুমি %1$d বার চেষ্টা করেছ। তোমার গড় অগ্রগতি %2$d%%।</item>

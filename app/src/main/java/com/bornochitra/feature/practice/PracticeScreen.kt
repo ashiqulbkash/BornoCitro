@@ -1,13 +1,19 @@
 package com.bornochitra.feature.practice
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
@@ -19,8 +25,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -34,13 +40,20 @@ import com.bornochitra.core.model.Stroke
 import com.bornochitra.core.tips.ContextualTip
 import com.bornochitra.core.tracing.ExerciseTracingCanvas
 import com.bornochitra.core.tracing.TracingEngine
+import com.bornochitra.core.ui.components.BcChip
 import com.bornochitra.core.ui.components.BcEmptyState
-import com.bornochitra.core.ui.components.BcExerciseHeading
-import com.bornochitra.core.ui.components.BcPrimaryButton
+import com.bornochitra.core.ui.components.BcExerciseShape
+import com.bornochitra.core.ui.components.BcLetterText
+import com.bornochitra.core.ui.components.BcOutlineButton
+import com.bornochitra.core.ui.components.BcRestartDialog
 import com.bornochitra.core.ui.components.BcTip
 import com.bornochitra.core.ui.components.BcTopAppBar
 import com.bornochitra.core.ui.components.exerciseTitle
+import com.bornochitra.core.ui.components.label
+import com.bornochitra.core.ui.theme.BcDimens
+import com.bornochitra.core.ui.theme.BcShapes
 import com.bornochitra.core.ui.theme.BcSpacing
+import com.bornochitra.core.ui.theme.BcType
 import com.bornochitra.core.ui.theme.BornoChitraTheme
 
 /**
@@ -61,9 +74,7 @@ fun PracticeScreen(
     PracticeContent(
         state = state,
         onBackClick = onBackClick,
-        onExerciseCompleted = { score, level -> viewModel.onEvent(PracticeEvent.ExerciseCompleted(score, level)) },
-        onTraceUnfinished = { viewModel.onEvent(PracticeEvent.TraceUnfinished) },
-        onRestart = { viewModel.onEvent(PracticeEvent.Restarted) },
+        onEvent = viewModel::onEvent,
         modifier = modifier,
     )
 
@@ -77,14 +88,29 @@ fun PracticeScreen(
 private fun PracticeContent(
     state: PracticeState,
     onBackClick: () -> Unit,
-    onExerciseCompleted: (score: Float, level: ScoreLevel) -> Unit,
-    onTraceUnfinished: () -> Unit,
-    onRestart: () -> Unit,
+    onEvent: (PracticeEvent) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
         modifier = modifier,
-        topBar = { BcTopAppBar(title = stringResource(R.string.title_practice), onBackClick = onBackClick) },
+        topBar = {
+            BcTopAppBar(
+                title = stringResource(R.string.title_practice),
+                onBackClick = onBackClick,
+                trailing = state.exercise?.let { exercise ->
+                    {
+                        BcChip(
+                            text = stringResource(
+                                R.string.practice_category_position,
+                                exercise.type.label(),
+                                state.categoryPosition,
+                                state.categorySize,
+                            ),
+                        )
+                    }
+                },
+            )
+        },
     ) { innerPadding ->
         when {
             state.error != null -> BcEmptyState(
@@ -109,14 +135,19 @@ private fun PracticeContent(
                 exercise = state.exercise,
                 attemptId = state.attemptId,
                 tip = state.tip,
-                onExerciseCompleted = onExerciseCompleted,
-                onTraceUnfinished = onTraceUnfinished,
-                onRestart = onRestart,
+                onEvent = onEvent,
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding),
             )
         }
+    }
+
+    if (state.isRestartConfirmationShown) {
+        BcRestartDialog(
+            onConfirm = { onEvent(PracticeEvent.RestartConfirmed) },
+            onDismiss = { onEvent(PracticeEvent.RestartDismissed) },
+        )
     }
 }
 
@@ -125,9 +156,7 @@ private fun ExerciseTracingContent(
     exercise: Exercise,
     attemptId: Int,
     tip: ContextualTip?,
-    onExerciseCompleted: (score: Float, level: ScoreLevel) -> Unit,
-    onTraceUnfinished: () -> Unit,
-    onRestart: () -> Unit,
+    onEvent: (PracticeEvent) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val title = exerciseTitle(exercise.id, exercise.title)
@@ -136,16 +165,28 @@ private fun ExerciseTracingContent(
             exercise = exercise,
             attemptId = attemptId,
             contentDescription = stringResource(R.string.practice_canvas_description, title),
-            onExerciseCompleted = onExerciseCompleted,
-            onTraceUnfinished = onTraceUnfinished,
-            modifier = canvasModifier,
+            onExerciseCompleted = { score, level -> onEvent(PracticeEvent.ExerciseCompleted(score, level)) },
+            onTraceUnfinished = { onEvent(PracticeEvent.TraceUnfinished) },
+            onStrokeStarted = { onEvent(PracticeEvent.StrokeStarted) },
+            modifier = canvasModifier
+                .clip(BcShapes.xxl)
+                .background(MaterialTheme.colorScheme.surfaceContainerLowest)
+                .border(BcDimens.tileBorder, MaterialTheme.colorScheme.outlineVariant, BcShapes.xxl),
         )
     }
     val reset: @Composable () -> Unit = {
-        BcPrimaryButton(text = stringResource(R.string.action_reset), onClick = onRestart)
+        BcOutlineButton(
+            text = stringResource(R.string.action_reset),
+            onClick = { onEvent(PracticeEvent.RestartRequested) },
+            icon = R.drawable.bc_ic_reset,
+            modifier = Modifier.widthIn(min = BcDimens.practiceResetMinWidth),
+        )
     }
+    val header: @Composable () -> Unit = { PracticeHeader(exercise = exercise, title = title) }
 
-    BoxWithConstraints(modifier = modifier.padding(BcSpacing.m)) {
+    BoxWithConstraints(
+        modifier = modifier.padding(start = BcSpacing.screen, end = BcSpacing.screen, top = BcSpacing.xxs, bottom = BcSpacing.l),
+    ) {
         if (maxWidth > maxHeight) {
             // Side by side, so the canvas takes the full height instead of what a heading, tip and
             // button leave above and below it.
@@ -159,11 +200,10 @@ private fun ExerciseTracingContent(
                     modifier = Modifier
                         .weight(1f)
                         .verticalScroll(rememberScrollState()),
-                    verticalArrangement = Arrangement.spacedBy(BcSpacing.xs, Alignment.CenterVertically),
+                    verticalArrangement = Arrangement.spacedBy(BcSpacing.m, Alignment.CenterVertically),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-                    BcExerciseHeading(title = title)
-                    TracingInstruction()
+                    header()
                     tip?.let { BcTip(tip = it) }
                     reset()
                 }
@@ -171,31 +211,62 @@ private fun ExerciseTracingContent(
         } else {
             Column(
                 modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.spacedBy(BcSpacing.xs),
+                verticalArrangement = Arrangement.spacedBy(BcSpacing.m),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                BcExerciseHeading(title = title)
-                TracingInstruction()
-                // Square, but never taller than what the heading, tip and button leave, so a short
-                // screen shrinks the canvas rather than pushing Reset off screen.
-                canvas(Modifier.weight(1f, fill = false).aspectRatio(1f))
-                tip?.let { BcTip(tip = it) }
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(BcSpacing.m),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    header()
+                    // Square, but never taller than what the header, tip and button leave, so a short
+                    // screen shrinks the canvas rather than pushing Reset off screen.
+                    canvas(Modifier.weight(1f, fill = false).aspectRatio(1f))
+                    tip?.let { BcTip(tip = it) }
+                }
                 reset()
             }
         }
     }
 }
 
-/** Tells the child what to do on the canvas, in place of a marker drawn on it (plan.md step 3). */
+/** The model to copy on a tonal tile, and what to do with it. */
 @Composable
-private fun TracingInstruction(modifier: Modifier = Modifier) {
-    Text(
-        text = stringResource(R.string.practice_tracing_instruction),
-        modifier = modifier,
-        style = MaterialTheme.typography.titleMedium,
-        color = MaterialTheme.colorScheme.onSurfaceVariant,
-        textAlign = TextAlign.Center,
-    )
+private fun PracticeHeader(exercise: Exercise, title: String) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(BcSpacing.m),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        ModelTile(exercise = exercise, title = title)
+        Text(
+            text = stringResource(R.string.practice_tracing_instruction),
+            modifier = Modifier.weight(1f),
+            style = BcType.instruction,
+            color = MaterialTheme.colorScheme.onSurface,
+        )
+    }
+}
+
+/** The letter to copy; a drawing shows its shape, since its name would not fit. */
+@Composable
+private fun ModelTile(exercise: Exercise, title: String) {
+    val scheme = MaterialTheme.colorScheme
+    Box(
+        modifier = Modifier
+            .size(BcDimens.practiceTile)
+            .background(scheme.primaryContainer, BcShapes.xl),
+        contentAlignment = Alignment.Center,
+    ) {
+        if (exercise.type == ExerciseType.DRAWING) {
+            BcExerciseShape(strokes = exercise.strokes, color = scheme.onPrimaryContainer)
+        } else {
+            BcLetterText(text = title, style = BcType.letterPractice, color = scheme.onPrimaryContainer)
+        }
+    }
 }
 
 private val previewExercise = Exercise(
@@ -217,11 +288,15 @@ private val previewExercise = Exercise(
 private fun PracticeScreenTracingPreview() {
     BornoChitraTheme {
         PracticeContent(
-            state = PracticeState(exercise = previewExercise, isLoading = false, tip = ContextualTip.FIRST_ATTEMPT),
+            state = PracticeState(
+                exercise = previewExercise,
+                isLoading = false,
+                tip = ContextualTip.FIRST_ATTEMPT,
+                categoryPosition = 1,
+                categorySize = 11,
+            ),
             onBackClick = {},
-            onExerciseCompleted = { _, _ -> },
-            onTraceUnfinished = {},
-            onRestart = {},
+            onEvent = {},
         )
     }
 }
@@ -230,13 +305,7 @@ private fun PracticeScreenTracingPreview() {
 @Composable
 private fun PracticeScreenLoadingPreview() {
     BornoChitraTheme {
-        PracticeContent(
-            state = PracticeState(isLoading = true),
-            onBackClick = {},
-            onExerciseCompleted = { _, _ -> },
-            onTraceUnfinished = {},
-            onRestart = {},
-        )
+        PracticeContent(state = PracticeState(isLoading = true), onBackClick = {}, onEvent = {})
     }
 }
 
@@ -247,9 +316,7 @@ private fun PracticeScreenErrorPreview() {
         PracticeContent(
             state = PracticeState(isLoading = false, error = R.string.error_exercise_not_found),
             onBackClick = {},
-            onExerciseCompleted = { _, _ -> },
-            onTraceUnfinished = {},
-            onRestart = {},
+            onEvent = {},
         )
     }
 }

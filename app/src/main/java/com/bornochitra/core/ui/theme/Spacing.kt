@@ -99,6 +99,15 @@ object BcDimens {
     val choiceMinHeightSmall = 72.dp
 
     val practiceTile = 84.dp
+    val practiceResetMinWidth = 200.dp
+    val resultStarSide = 64.dp
+    val resultStarMiddle = 88.dp
+
+    /** How much higher the middle result star sits than the side ones. */
+    val resultStarRaise = 14.dp
+
+    /** The top band the Result confetti is scattered over. */
+    val confettiHeight = 280.dp
     val sequenceCellHeight = 64.dp
     val miniCellHeight = 26.dp
     val hintPreview = 112.dp

@@ -45,6 +45,12 @@ data class PracticeState(
     val attemptId: Int = 0,
     /** The score of every try completed in this session, oldest first. */
     val sessionScores: List<Float> = emptyList(),
+    /** Where the exercise sits in its category, from 1, for the top bar's "২/১১". */
+    val categoryPosition: Int = 0,
+    val categorySize: Int = 0,
+    /** Whether the child has written anything in this attempt, so starting over would wipe it. */
+    val hasInk: Boolean = false,
+    val isRestartConfirmationShown: Boolean = false,
 )
 
 /**
@@ -57,8 +63,17 @@ sealed interface PracticeEvent {
     /** The finger was lifted with the letter or drawing still unfinished; the trace so far is kept. */
     data object TraceUnfinished : PracticeEvent
 
-    /** The child started the exercise over. */
-    data object Restarted : PracticeEvent
+    /** The finger touched the canvas: this attempt now has ink. */
+    data object StrokeStarted : PracticeEvent
+
+    /** The child tapped Reset. With ink on the canvas this asks first; without, it starts over at once. */
+    data object RestartRequested : PracticeEvent
+
+    /** The child agreed to wipe the ink and start over. */
+    data object RestartConfirmed : PracticeEvent
+
+    /** The child chose to keep writing. */
+    data object RestartDismissed : PracticeEvent
 }
 
 @HiltViewModel
@@ -89,11 +104,14 @@ class PracticeViewModel @Inject constructor(
                 wasMastered = progress?.isMastered == true
                 analytics.track(AnalyticsEvent.ExerciseStarted(exercise.id, exercise.type))
                 if (previousAttempts > 0) analytics.track(AnalyticsEvent.PracticeRepeated(exercise.id))
+                val category = exerciseRepository.observeExercises(exercise.type).first().sortedBy { it.order }
                 PracticeState(
                     exercise = exercise,
                     isLoading = false,
                     tip = tipSelector.beforeFirstAttempt(previousAttempts),
                     sessionScores = earlierSessionScores,
+                    categoryPosition = category.indexOfFirst { it.id == exercise.id } + 1,
+                    categorySize = category.size,
                 )
             } else {
                 PracticeState(isLoading = false, error = R.string.error_exercise_not_found)
@@ -105,7 +123,18 @@ class PracticeViewModel @Inject constructor(
         when (event) {
             is PracticeEvent.ExerciseCompleted -> onExerciseCompleted(event.score, event.scoreLevel)
             PracticeEvent.TraceUnfinished -> onTraceUnfinished()
-            PracticeEvent.Restarted -> onRestarted()
+            PracticeEvent.StrokeStarted -> mutableState.value = mutableState.value.copy(hasInk = true)
+            PracticeEvent.RestartRequested -> onRestartRequested()
+            PracticeEvent.RestartConfirmed -> restart()
+            PracticeEvent.RestartDismissed -> mutableState.value = mutableState.value.copy(isRestartConfirmationShown = false)
+        }
+    }
+
+    private fun onRestartRequested() {
+        if (mutableState.value.hasInk) {
+            mutableState.value = mutableState.value.copy(isRestartConfirmationShown = true)
+        } else {
+            restart()
         }
     }
 
@@ -113,11 +142,13 @@ class PracticeViewModel @Inject constructor(
         mutableState.value = mutableState.value.copy(tip = tipSelector.afterUnfinishedTrace())
     }
 
-    private fun onRestarted() {
+    private fun restart() {
         analytics.track(AnalyticsEvent.PracticeRepeated(exerciseId))
         mutableState.value = mutableState.value.copy(
             tip = tipSelector.beforeFirstAttempt(previousAttempts),
             attemptId = mutableState.value.attemptId + 1,
+            hasInk = false,
+            isRestartConfirmationShown = false,
         )
     }
 
