@@ -3,7 +3,7 @@ package com.bornochitra.app
 import androidx.annotation.StringRes
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.assertIsNotDisplayed
+import androidx.compose.ui.test.assertIsSelected
 import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.hasScrollToNodeAction
@@ -37,7 +37,7 @@ import kotlin.math.max
 
 /**
  * End-to-end flows through the real navigation graph: one practice flow per category, fill in the blanks
- * from each hub, Progress and the drawer.
+ * from each hub, and the bottom bar's tabs: Progress, Grown-ups and the language sheet.
  */
 @HiltAndroidTest
 class CriticalFlowTest {
@@ -56,7 +56,7 @@ class CriticalFlowTest {
 
     @Test
     fun bangla_vowels_o_practice_result_progress() {
-        openHomeFromWelcome()
+        openHome()
 
         clickButton(string(R.string.title_bangla))
         clickButton(string(R.string.category_vowel))
@@ -67,13 +67,15 @@ class CriticalFlowTest {
         awaitResult()
         clickButton(string(R.string.result_view_progress))
 
-        awaitText(string(R.string.title_progress))
+        awaitText(string(R.string.category_consonant))
         composeRule.onNodeWithText(string(R.string.progress_empty)).assertDoesNotExist()
+        // "View progress" opens the Progress tab, with its navigation bar.
+        composeRule.onNode(hasText(string(R.string.title_progress)) and isSelectable()).assertIsSelected()
     }
 
     @Test
     fun home_drawing_circle_practice_result() {
-        openHomeFromWelcome()
+        openHome()
 
         clickButton(string(R.string.category_drawing))
         val circle = string(R.string.drawing_circle)
@@ -86,7 +88,7 @@ class CriticalFlowTest {
 
     @Test
     fun result_ignoresSystemBack() {
-        openHomeFromWelcome()
+        openHome()
         clickButton(string(R.string.category_drawing))
         val circle = string(R.string.drawing_circle)
         composeRule.onNodeWithText(circle).performClick()
@@ -122,7 +124,7 @@ class CriticalFlowTest {
 
     @Test
     fun banglaHub_listsBanglaCategoriesAndMath() {
-        openHomeFromWelcome()
+        openHome()
         BANGLA_HUB_LABELS.forEach { label ->
             composeRule.onNode(hasText(string(label)) and hasClickAction()).assertDoesNotExist()
         }
@@ -138,15 +140,15 @@ class CriticalFlowTest {
         composeRule.onNodeWithContentDescription(string(R.string.action_back)).performClick()
         awaitText(string(R.string.category_vowel))
 
-        // The hub is a step below Home: it has no menu, and Back returns to Home.
-        composeRule.onNodeWithContentDescription(string(R.string.action_menu)).assertDoesNotExist()
+        // The hub is a step below Home: it has no navigation bar, and Back returns to Home.
+        assertNoNavigationBar()
         composeRule.onNodeWithContentDescription(string(R.string.action_back)).performClick()
         awaitText(string(R.string.home_welcome))
     }
 
     @Test
     fun englishHub_listsEnglishCategoriesAndMath() {
-        openHomeFromWelcome()
+        openHome()
         ENGLISH_HUB_LABELS.forEach { label ->
             composeRule.onNode(hasText(string(label)) and hasClickAction()).assertDoesNotExist()
         }
@@ -162,15 +164,15 @@ class CriticalFlowTest {
         composeRule.onNodeWithContentDescription(string(R.string.action_back)).performClick()
         awaitText(string(R.string.category_english_small))
 
-        // The hub is a step below Home: it has no menu, and Back returns to Home.
-        composeRule.onNodeWithContentDescription(string(R.string.action_menu)).assertDoesNotExist()
+        // The hub is a step below Home: it has no navigation bar, and Back returns to Home.
+        assertNoNavigationBar()
         composeRule.onNodeWithContentDescription(string(R.string.action_back)).performClick()
         awaitText(string(R.string.home_welcome))
     }
 
     @Test
     fun englishHub_learn_speaksLetterAndExplanation() {
-        openHomeFromWelcome()
+        openHome()
         clickButton(string(R.string.title_english))
         clickButton(string(R.string.title_learn))
         awaitText("A for apple")
@@ -189,15 +191,15 @@ class CriticalFlowTest {
         )
         composeRule.onNodeWithText(string(R.string.learn_no_voice_title)).assertDoesNotExist()
 
-        // Learn is below the English hub: no menu, and Back returns to the hub.
-        composeRule.onNodeWithContentDescription(string(R.string.action_menu)).assertDoesNotExist()
+        // Learn is below the English hub: no navigation bar, and Back returns to the hub.
+        assertNoNavigationBar()
         composeRule.onNodeWithContentDescription(string(R.string.action_back)).performClick()
         awaitText(string(R.string.category_english_small))
     }
 
     @Test
     fun banglaHub_learn_speaksLetterAndExplanationInBangla() {
-        openHomeFromWelcome()
+        openHome()
         clickButton(string(R.string.title_bangla))
         clickButton(string(R.string.title_learn))
         awaitText("অ তে অজগর")
@@ -217,8 +219,8 @@ class CriticalFlowTest {
         )
         composeRule.onNodeWithText(string(R.string.learn_no_voice_title)).assertDoesNotExist()
 
-        // Learn is below the Bangla hub: no menu, and Back returns to the hub.
-        composeRule.onNodeWithContentDescription(string(R.string.action_menu)).assertDoesNotExist()
+        // Learn is below the Bangla hub: no navigation bar, and Back returns to the hub.
+        assertNoNavigationBar()
         composeRule.onNodeWithContentDescription(string(R.string.action_back)).performClick()
         awaitText(string(R.string.category_vowel))
     }
@@ -242,78 +244,113 @@ class CriticalFlowTest {
         )
 
     @Test
-    fun drawer_progress_listsEveryCategory() {
-        openHomeFromWelcome()
-        // Home no longer shows progress; it is in the drawer only.
+    fun progressTab_listsEveryCategory_andBackReturnsHome() {
+        openHome()
+        // Home does not show progress; it is in its own tab.
         composeRule.onNodeWithText(string(R.string.overall), useUnmergedTree = true).assertDoesNotExist()
 
-        composeRule.onNodeWithContentDescription(string(R.string.action_menu)).performClick()
-        composeRule.onNodeWithText(string(R.string.drawer_progress)).performClick()
+        clickTab(string(R.string.title_progress))
 
-        awaitText(string(R.string.title_progress))
+        awaitText(string(R.string.category_consonant))
         composeRule.onNodeWithText(string(R.string.overall), useUnmergedTree = true).assertExists()
         CATEGORY_LABELS.forEach { label ->
             composeRule.onNode(hasText(string(label)) and hasClickAction()).performScrollTo().assertExists()
         }
 
-        // Progress is a step below Home: it has no menu, and Back returns to Home.
-        composeRule.onNodeWithContentDescription(string(R.string.action_menu)).assertDoesNotExist()
-        composeRule.onNodeWithContentDescription(string(R.string.action_back)).performClick()
+        // A tab has no back arrow, and Back returns to Home.
+        composeRule.onNodeWithContentDescription(string(R.string.action_back)).assertDoesNotExist()
+        Espresso.pressBack()
         awaitText(string(R.string.home_welcome))
     }
 
     @Test
-    fun drawer_about_showsAboutContent() {
-        openHomeFromWelcome()
+    fun grownUpsTab_showsLanguageSwitch_countingAndAbout() {
+        openHome()
 
-        composeRule.onNodeWithContentDescription(string(R.string.action_menu)).performClick()
-        composeRule.onNodeWithText(string(R.string.drawer_about)).performClick()
+        clickTab(string(R.string.title_grown_ups))
 
-        awaitText(string(R.string.about_heading))
-        // About is the drawer's page, not Welcome: no Continue button.
-        composeRule.onNodeWithText(string(R.string.welcome_continue)).assertDoesNotExist()
+        awaitText(string(R.string.grown_ups_language_label))
+        composeRule.onNode(hasText(string(R.string.language_english)) and isSelectable()).assertExists()
+        composeRule.onNodeWithText(string(R.string.grown_ups_counting)).performScrollTo().assertIsDisplayed()
+        composeRule.onNodeWithText(string(R.string.about_heading)).performScrollTo().assertIsDisplayed()
 
-        // About is a step below Home: it has no menu, and Back returns to Home.
-        composeRule.onNodeWithContentDescription(string(R.string.action_menu)).assertDoesNotExist()
-        composeRule.onNodeWithContentDescription(string(R.string.action_back)).performClick()
+        composeRule.onNodeWithContentDescription(string(R.string.action_back)).assertDoesNotExist()
+        Espresso.pressBack()
         awaitText(string(R.string.home_welcome))
     }
 
     @Test
-    fun drawer_isOnHomeOnly() {
-        openHomeFromWelcome()
-        composeRule.onNodeWithContentDescription(string(R.string.action_menu)).assertIsDisplayed()
+    fun tabs_neverStack_andBackFromAnyTabReturnsHome() {
+        openHome()
+
+        clickTab(string(R.string.title_progress))
+        awaitText(string(R.string.category_consonant))
+        clickTab(string(R.string.title_grown_ups))
+        awaitText(string(R.string.grown_ups_language_label))
+        clickTab(string(R.string.title_progress))
+        awaitText(string(R.string.category_consonant))
+
+        Espresso.pressBack()
+        awaitText(string(R.string.home_welcome))
+        composeRule.onNodeWithText(string(R.string.overall), useUnmergedTree = true).assertDoesNotExist()
+    }
+
+    @Test
+    fun navigationBar_isOnTabScreensOnly() {
+        openHome()
+        composeRule.onNodeWithText(string(R.string.nav_learn)).assertIsDisplayed()
 
         clickButton(string(R.string.title_english))
         awaitText(string(R.string.category_english_small))
-        composeRule.onNodeWithContentDescription(string(R.string.action_menu)).assertDoesNotExist()
+        assertNoNavigationBar()
         composeRule.onNodeWithContentDescription(string(R.string.action_back)).performClick()
         awaitText(string(R.string.home_welcome))
 
         clickButton(string(R.string.title_bangla))
         awaitText(string(R.string.category_vowel))
-        composeRule.onNodeWithContentDescription(string(R.string.action_menu)).assertDoesNotExist()
+        assertNoNavigationBar()
 
         clickButton(string(R.string.category_vowel))
         awaitText("অ")
-        composeRule.onNodeWithContentDescription(string(R.string.action_menu)).assertDoesNotExist()
+        assertNoNavigationBar()
 
         composeRule.onNodeWithText("অ").performClick()
         awaitCanvas(string(R.string.practice_canvas_description, "অ"))
-        composeRule.onNodeWithContentDescription(string(R.string.action_menu)).assertDoesNotExist()
+        assertNoNavigationBar()
     }
 
     @Test
-    fun drawer_closesOnBack_andKeepsHomeBehindIt() {
-        openHomeFromWelcome()
+    fun languageChip_opensLanguageSheet_andBackClosesIt() {
+        openHome()
 
-        composeRule.onNodeWithContentDescription(string(R.string.action_menu)).performClick()
-        composeRule.onNodeWithText(string(R.string.drawer_progress)).assertIsDisplayed()
+        composeRule.onNodeWithContentDescription(
+            string(R.string.language_chip_description, string(R.string.language_bangla)),
+        ).performClick()
+
+        awaitText(string(R.string.language_sheet_note))
+        composeRule.onNode(hasText(string(R.string.language_english)) and isSelectable()).assertIsDisplayed()
 
         Espresso.pressBack()
-        composeRule.waitForIdle()
-        composeRule.onNodeWithText(string(R.string.drawer_progress)).assertIsNotDisplayed()
+        composeRule.waitUntil(timeoutMillis = 10_000) {
+            composeRule.onAllNodesWithText(string(R.string.language_sheet_note)).fetchSemanticsNodes().isEmpty()
+        }
         composeRule.onNodeWithText(string(R.string.home_welcome)).assertIsDisplayed()
+    }
+
+    @Test
+    fun languageSheet_closesWhenALanguageIsChosen() {
+        openHome()
+        val current = string(R.string.language_bangla)
+        composeRule.onNodeWithContentDescription(string(R.string.language_chip_description, current)).performClick()
+        awaitText(string(R.string.language_sheet_note))
+
+        // The language already in use, so the app's language (shared by every test) does not change.
+        composeRule.onNode(hasText(current) and isSelectable()).performClick()
+
+        composeRule.waitUntil(timeoutMillis = 10_000) {
+            composeRule.onAllNodesWithText(string(R.string.language_sheet_note)).fetchSemanticsNodes().isEmpty()
+        }
+        composeRule.onNodeWithContentDescription(string(R.string.language_chip_description, current)).assertIsDisplayed()
     }
 
     /**
@@ -326,7 +363,7 @@ class CriticalFlowTest {
         hidden: List<Int>,
         @StringRes category: Int,
     ) {
-        openHomeFromWelcome()
+        openHome()
         clickButton(string(hub))
         clickButton(string(R.string.title_fill_blanks))
 
@@ -350,7 +387,7 @@ class CriticalFlowTest {
     }
 
     private fun practiseFromHub(@StringRes hub: Int, @StringRes category: Int, exerciseId: String, title: String) {
-        openHomeFromWelcome()
+        openHome()
         clickButton(string(hub))
         practise(category, exerciseId, title)
     }
@@ -364,12 +401,27 @@ class CriticalFlowTest {
         awaitResult()
     }
 
-    /** Welcome shows only on the first launch of an install, so a later test starts on Home already. */
-    private fun openHomeFromWelcome() {
-        val isWelcomeShown = composeRule.onAllNodesWithText(string(R.string.welcome_continue))
+    /** Onboarding shows only on the first launch of an install, so a later test starts on Home already. */
+    private fun openHome() {
+        val isOnboardingShown = composeRule.onAllNodesWithText(string(R.string.welcome_continue))
             .fetchSemanticsNodes().isNotEmpty()
-        if (isWelcomeShown) composeRule.onNodeWithText(string(R.string.welcome_continue)).performClick()
-        awaitText(string(R.string.home_welcome))
+        if (isOnboardingShown) {
+            composeRule.onNodeWithText(string(R.string.welcome_continue)).performClick()
+            awaitText(string(R.string.onboarding_start))
+            composeRule.onNodeWithText(string(R.string.onboarding_start)).performClick()
+        }
+        // The navigation bar is on Home only, not on onboarding, which also says "স্বাগতম!".
+        awaitText(string(R.string.nav_learn))
+    }
+
+    /** Only tab screens have the navigation bar, and "শিখি" is only in the bar. */
+    private fun assertNoNavigationBar() {
+        composeRule.onNodeWithText(string(R.string.nav_learn)).assertDoesNotExist()
+    }
+
+    /** A navigation bar item is selectable, so it is found apart from a title with the same text. */
+    private fun clickTab(label: String) {
+        composeRule.onNode(hasText(label) and isSelectable()).performClick()
     }
 
     private fun awaitResult() {
@@ -379,7 +431,7 @@ class CriticalFlowTest {
 
     private fun string(@StringRes id: Int, vararg args: Any): String = composeRule.activity.getString(id, *args)
 
-    /** Skips selectable nodes: the closed drawer's language switch also has a clickable "বাংলা". */
+    /** Skips selectable nodes: tabs and language options, which can share a button's text. */
     private fun clickButton(label: String) {
         composeRule.onNode(hasText(label) and hasClickAction() and !isSelectable()).performScrollTo().performClick()
     }

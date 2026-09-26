@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import com.bornochitra.core.ui.theme.BcDimens
@@ -39,6 +40,7 @@ fun BcChoiceRow(
     selected: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    labelStyle: TextStyle = MaterialTheme.typography.titleLarge,
     minHeight: Dp = BcDimens.choiceMinHeight,
     lead: (@Composable () -> Unit)? = null,
 ) {
@@ -51,7 +53,7 @@ fun BcChoiceRow(
             lead?.invoke()
             Text(
                 text = label,
-                style = MaterialTheme.typography.titleLarge,
+                style = labelStyle,
                 color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.weight(1f),
             )

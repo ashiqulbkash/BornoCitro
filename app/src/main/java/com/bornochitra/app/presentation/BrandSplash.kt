@@ -2,7 +2,6 @@ package com.bornochitra.app.presentation
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,9 +9,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.requiredSize
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,21 +16,19 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.bornochitra.R
+import com.bornochitra.core.ui.components.BcAppLogo
 import com.bornochitra.core.ui.theme.BcSpacing
 import com.bornochitra.core.ui.theme.BornoChitraTheme
 
 // The system splash draws the icon at 288dp and shows its centre 192dp circle (the adaptive icon's
 // visible part); drawing it the same way at the screen centre makes the handover seamless.
-private val SplashIconSize = 288.dp
 private val SplashIconVisibleSize = 192.dp
 private const val MessageFadeInMillis = 300
 private const val MessageHoldMillis = 900
@@ -71,7 +65,7 @@ fun BrandSplash(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Spacer(Modifier.weight(1f))
-        SplashIcon()
+        BcAppLogo(size = SplashIconVisibleSize)
         Box(modifier = Modifier.weight(1f).fillMaxWidth()) {
             Text(
                 text = stringResource(R.string.splash_message),
@@ -84,27 +78,6 @@ fun BrandSplash(
                     .graphicsLayer { alpha = messageAlpha.value },
             )
         }
-    }
-}
-
-@Composable
-private fun SplashIcon() {
-    Box(
-        modifier = Modifier
-            .size(SplashIconVisibleSize)
-            .clip(CircleShape),
-        contentAlignment = Alignment.Center,
-    ) {
-        Image(
-            painter = painterResource(R.drawable.ic_launcher_background),
-            contentDescription = null,
-            modifier = Modifier.requiredSize(SplashIconSize),
-        )
-        Image(
-            painter = painterResource(R.drawable.ic_launcher_foreground),
-            contentDescription = null,
-            modifier = Modifier.requiredSize(SplashIconSize),
-        )
     }
 }
 

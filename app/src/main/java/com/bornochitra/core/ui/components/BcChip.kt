@@ -24,7 +24,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.onClick
+import androidx.compose.ui.semantics.role
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -78,7 +83,18 @@ fun BcLanguageChip(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Box(modifier = modifier.heightIn(min = BcDimens.iconButton), contentAlignment = Alignment.Center) {
+    val description = stringResource(R.string.language_chip_description, languageName)
+    Box(
+        modifier = modifier
+            .heightIn(min = BcDimens.iconButton)
+            // Read as "App language: বাংলা", so it is not mistaken for the Bangla subject.
+            .clearAndSetSemantics {
+                contentDescription = description
+                role = Role.Button
+                onClick { onClick(); true }
+            },
+        contentAlignment = Alignment.Center,
+    ) {
         BcChip(
             text = languageName,
             icon = R.drawable.bc_ic_globe,

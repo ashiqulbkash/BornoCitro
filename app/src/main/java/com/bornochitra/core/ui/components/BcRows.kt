@@ -51,7 +51,10 @@ fun BcGlyphTile(
     )
 }
 
-/** A glyph tile holding [glyph] — learning characters take their guide's font through [BcLetterText]. */
+/**
+ * A glyph tile holding [glyph]. A [learning] glyph (a category's lead letter) takes its guide's font through
+ * [BcLetterText]; a mark (the language choice's "অ", the "Aa" mark) keeps [style]'s design font.
+ */
 @Composable
 fun BcGlyphTile(
     glyph: String,
@@ -61,9 +64,14 @@ fun BcGlyphTile(
     contentColor: Color,
     style: TextStyle,
     modifier: Modifier = Modifier,
+    learning: Boolean = true,
 ) {
     BcGlyphTile(size = size, shape = shape, containerColor = containerColor, modifier = modifier) {
-        BcLetterText(text = glyph, style = style, color = contentColor)
+        if (learning) {
+            BcLetterText(text = glyph, style = style, color = contentColor)
+        } else {
+            Text(text = glyph, style = style, color = contentColor)
+        }
     }
 }
 

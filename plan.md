@@ -1143,7 +1143,7 @@ Redesign the whole app's UI to match the design in `design/`, keeping every exis
 ## Sub-steps
 
 - [x] 15.1 Theme, fonts, icons and shared components
-- [ ] 15.2 Navigation shell
+- [x] 15.2 Navigation shell
 - [ ] 15.3 Home, hubs and grids
 - [ ] 15.4 Practice, restart dialog and Result
 - [ ] 15.5 Fill the blanks, and Listen and learn
@@ -1172,6 +1172,10 @@ Redesign the whole app's UI to match the design in `design/`, keeping every exis
 ## Notes
 
 - **15.1 Theme, fonts, icons and shared components** (commits `b04b115`, `d462a7e`). Baloo Da 2 (500–800) and Hind Siliguri (400–700) are bundled for UI text, with OFL licenses in `design/licenses/fonts/`. Learning characters use one shared letter style (`BcLetter.kt`): the platform Noto Sans Bengali at Bold for Bengali, Andika Bold for English small letters, and Inter for capitals, digits and signs. The design's 25 icons are in `res/drawable`. The tracing canvas was recoloured only. The star rule moved unchanged to `core/model/StarRule.kt`. Tests: 491 unit tests and 35 instrumented tests pass on the Pixel_5_2 emulator. The first instrumented run found that clickable cards were no longer announced as buttons; this was fixed in `d462a7e`.
+- **15.2 Navigation shell.** The drawer, About and Welcome are gone. A bottom bar (`BcTab`/`BcTabBar`) shows on the three tab screens only: শিখি (Home), অগ্রগতি (Progress) and বড়দের জন্য (the new Grown-ups tab). `navigateToTab` opens a tab with only Home behind it and keeps each tab's state, so Back from Progress or Grown-ups returns to Home and Back from Home exits. Result's "অগ্রগতি দেখো" opens the Progress tab. An open Progress category is an inner screen: it has a back arrow and no bar. The first launch shows a two-page onboarding (`OnboardingScreen`, a `HorizontalPager`): the language cards, then what the app is. "শুরু করো" does what Welcome's Continue did. `DrawerViewModel` became `LanguageViewModel`, shared by Home's language chip, the new language sheet and the Grown-ups switch (same setting). `WelcomeViewModel` became `OnboardingViewModel`, with the same logic. The saved onboarding flag and all routes' arguments are unchanged; the `welcome` and `about` routes became `onboarding` and `grown-ups`. The Grown-ups counting text takes its numbers from the injected `MasteryRule` (`GrownUpsViewModel`). Home's body, and Progress's body, are redesigned in 15.3 and 15.6.
+  - **Found and fixed while checking.** (1) Below Android 13 the language changes in place, and the sheet's own window kept its old strings, so choosing a language now closes the sheet. (2) The "অ a" mark on onboarding clipped the "a" (the PDF draws the same clip); each glyph now gets half the tile. (3) The language chip is read as "অ্যাপের ভাষা: বাংলা", so it is not mistaken for the বাংলা subject.
+  - **Tests.** 493 unit tests pass: `LanguageViewModelTest` and `OnboardingViewModelTest` (renamed, same cases) and the new `GrownUpsViewModelTest` (2). 37 instrumented tests pass on the Pixel_5_2 emulator. `CriticalFlowTest` goes through both onboarding pages, and checks for "no navigation bar" where it used to check for "no menu". The drawer tests were replaced by tests for the Progress tab, the Grown-ups tab, tabs never stacking, the bar being on tab screens only, and the language sheet opening, closing with Back and closing when a language is chosen.
+  - **Screens checked against the PDF** on the emulator: onboarding pages 1 and 2 (PDF 3, 4), Home's top bar and bar (5), the language sheet (6), Grown-ups (7), and the whole app switched to English and back. On this emulator the status bar and 3-button navigation leave about 100dp less than the design's 800dp frame, so onboarding page 1's caption sits below the fold; the page scrolls.
 
 ---
 

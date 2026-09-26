@@ -1,8 +1,9 @@
-package com.bornochitra.feature.drawer
+package com.bornochitra.feature.onboarding
 
 import com.bornochitra.core.locale.AppLanguage
 import com.bornochitra.core.locale.AppLanguageStore
-import com.bornochitra.feature.welcome.LANGUAGE_SWITCH_ANIMATION_MILLIS
+import com.bornochitra.core.onboarding.OnboardingStore
+import com.bornochitra.feature.language.LANGUAGE_SWITCH_ANIMATION_MILLIS
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -11,11 +12,13 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class DrawerViewModelTest {
+class OnboardingViewModelTest {
 
     private val dispatcher = StandardTestDispatcher()
 
@@ -29,7 +32,6 @@ class DrawerViewModelTest {
         Dispatchers.resetMain()
     }
 
-    /** Remembers the language like the real store; [setCount] counts the changes asked for. */
     private class FakeLanguageStore(private var current: AppLanguage = AppLanguage.BANGLA) : AppLanguageStore {
         var setCount = 0
 
@@ -43,9 +45,15 @@ class DrawerViewModelTest {
         override fun applyDefault() = Unit
     }
 
+    private class FakeOnboardingStore(override var hasSeenWelcome: Boolean = false) : OnboardingStore {
+        override fun markWelcomeSeen() {
+            hasSeenWelcome = true
+        }
+    }
+
     @Test
-    fun `drawer shows the language the app is in`() {
-        val viewModel = DrawerViewModel(FakeLanguageStore(AppLanguage.ENGLISH))
+    fun `onboarding shows the language the app is in`() {
+        val viewModel = OnboardingViewModel(FakeLanguageStore(AppLanguage.ENGLISH), FakeOnboardingStore())
 
         assertEquals(AppLanguage.ENGLISH, viewModel.uiState.value.language)
     }
@@ -53,9 +61,9 @@ class DrawerViewModelTest {
     @Test
     fun `choosing a language shows it at once and stores it after the switch has slid`() = runTest(dispatcher) {
         val store = FakeLanguageStore()
-        val viewModel = DrawerViewModel(store)
+        val viewModel = OnboardingViewModel(store, FakeOnboardingStore())
 
-        viewModel.onEvent(DrawerEvent.LanguageSelected(AppLanguage.ENGLISH))
+        viewModel.onEvent(OnboardingEvent.LanguageSelected(AppLanguage.ENGLISH))
         dispatcher.scheduler.runCurrent()
 
         assertEquals(AppLanguage.ENGLISH, viewModel.uiState.value.language)
@@ -71,9 +79,9 @@ class DrawerViewModelTest {
     @Test
     fun `choosing the language already in use changes nothing`() = runTest(dispatcher) {
         val store = FakeLanguageStore()
-        val viewModel = DrawerViewModel(store)
+        val viewModel = OnboardingViewModel(store, FakeOnboardingStore())
 
-        viewModel.onEvent(DrawerEvent.LanguageSelected(AppLanguage.BANGLA))
+        viewModel.onEvent(OnboardingEvent.LanguageSelected(AppLanguage.BANGLA))
         dispatcher.scheduler.advanceUntilIdle()
 
         assertEquals(0, store.setCount)
@@ -81,28 +89,13 @@ class DrawerViewModelTest {
     }
 
     @Test
-    fun `opening the drawer shows a language chosen elsewhere`() {
-        val store = FakeLanguageStore(AppLanguage.BANGLA)
-        val viewModel = DrawerViewModel(store)
+    fun `starting marks onboarding as seen`() {
+        val onboarding = FakeOnboardingStore()
+        val viewModel = OnboardingViewModel(FakeLanguageStore(), onboarding)
+        assertFalse(onboarding.hasSeenWelcome)
 
-        // e.g. chosen on Welcome, or in Android's app language settings, while this ViewModel lived on.
-        store.setLanguage(AppLanguage.ENGLISH)
-        viewModel.onEvent(DrawerEvent.Opened)
+        viewModel.onEvent(OnboardingEvent.StartClicked)
 
-        assertEquals(AppLanguage.ENGLISH, viewModel.uiState.value.language)
-    }
-
-    @Test
-    fun `opening the drawer during the slide keeps the language just chosen`() = runTest(dispatcher) {
-        val store = FakeLanguageStore(AppLanguage.BANGLA)
-        val viewModel = DrawerViewModel(store)
-
-        viewModel.onEvent(DrawerEvent.LanguageSelected(AppLanguage.ENGLISH))
-        dispatcher.scheduler.runCurrent()
-        viewModel.onEvent(DrawerEvent.Opened)
-
-        assertEquals(AppLanguage.ENGLISH, viewModel.uiState.value.language)
-        dispatcher.scheduler.advanceUntilIdle()
-        assertEquals(AppLanguage.ENGLISH, store.language)
+        assertTrue(onboarding.hasSeenWelcome)
     }
 }

@@ -56,8 +56,8 @@ round stroke, are tinted where they are used, and cover every icon the spec name
 | Phase | Scope | PDF pages | Status |
 |---|---|---|---|
 | 1 | Theme (light/dark), fonts, spacing, shapes, icons, shared components | 1 | Done (`b04b115`, `d462a7e`) |
-| 2 | Navigation shell: bottom bar, Grown-ups tab, two-page onboarding, language sheet; drawer, About and Welcome removed | 3, 4, 6, 7 | Next |
-| 3 | Home, Bangla hub, English hub, category grids, drawing grid | 5, 8–11 | |
+| 2 | Navigation shell: bottom bar, Grown-ups tab, two-page onboarding, language sheet; drawer, About and Welcome removed | 3, 4, 6, 7 | Done |
+| 3 | Home, Bangla hub, English hub, category grids, drawing grid | 5, 8–11 | Next |
 | 4 | Practice, restart dialog, Result | 12–15 | |
 | 5 | Fill picker, model dialog, sequence, hint sheet, done view, Listen and learn | 16–21 | |
 | 6 | Progress tab, Progress detail, splash | 2, 22, 23 | |
@@ -67,9 +67,8 @@ round stroke, are tinted where they are used, and cover every icon the spec name
 ## Verification loop (every phase)
 
 1. Build the app and run the unit tests.
-2. Run the instrumented tests (`connectedDebugAndroidTest`) on an emulator (Pixel_5_2, 360dp wide). Never run them on
-   the user's phone: they uninstall the app and wipe its data.
-3. Install the app on the emulator and screenshot every changed screen, in light mode (and in dark mode from Phase 7).
+2. Run the instrumented tests (`connectedDebugAndroidTest`) on a phone (always reinstall for the testing). if phone is not connected, run the tests on the emulator.
+3. Take screenshot every changed screen.
 4. Compare each screenshot with its PDF page and with `DESIGN_SPEC.md`: colours, fonts, sizes, spacing, text and states.
 5. **If every test passes and every screen matches the design, the phase is finished. If not, fix the design
    differences or the failing tests, and go back to step 1.** Intentional differences (D1) are not fixed; they are

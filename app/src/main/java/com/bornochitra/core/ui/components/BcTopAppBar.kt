@@ -14,8 +14,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -71,22 +69,17 @@ fun BcTopAppBar(
     title: String,
     modifier: Modifier = Modifier,
     onBackClick: (() -> Unit)? = null,
-    onMenuClick: (() -> Unit)? = null,
     centered: Boolean = false,
     trailing: (@Composable () -> Unit)? = null,
 ) {
-    TopBarRow(modifier = modifier, startPadding = if (onBackClick != null || onMenuClick != null) BcSpacing.xs else BcSpacing.m) {
+    TopBarRow(modifier = modifier, startPadding = if (onBackClick != null) BcSpacing.xs else BcSpacing.m) {
         if (onBackClick != null) {
             BcIconButton(icon = R.drawable.bc_ic_arrow_back, contentDescription = stringResource(R.string.action_back), onClick = onBackClick)
-        } else if (onMenuClick != null) {
-            IconButton(onClick = onMenuClick, modifier = Modifier.size(BcDimens.iconButton)) {
-                Icon(imageVector = Icons.Filled.Menu, contentDescription = stringResource(R.string.action_menu))
-            }
         }
         Box(
             modifier = Modifier
                 .weight(1f)
-                .padding(start = if (onBackClick != null || onMenuClick != null) BcSpacing.xxs else 0.dp),
+                .padding(start = if (onBackClick != null) BcSpacing.xxs else 0.dp),
             contentAlignment = if (centered) Alignment.Center else Alignment.CenterStart,
         ) {
             Text(

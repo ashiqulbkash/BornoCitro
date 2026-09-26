@@ -62,7 +62,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) appLanguageStore.applyDefault()
         enableEdgeToEdge()
-        val startDestination = if (onboardingStore.hasSeenWelcome) BcDestination.Home.route else BcDestination.Welcome.route
+        val startDestination = if (onboardingStore.hasSeenWelcome) BcDestination.Home.route else BcDestination.Onboarding.route
         setContent {
             BornoChitraTheme {
                 BornoChitraApp(startDestination = startDestination)

@@ -3,8 +3,8 @@
     <string name="splash_message">BornoChitra — write, learn, grow</string>
 
     <!-- Toolbar titles: short, one line at 360dp. -->
-    <string name="title_home">BornoChitra</string>
     <string name="title_about">About</string>
+    <string name="title_grown_ups">For grown-ups</string>
     <string name="title_bangla">Bangla</string>
     <string name="title_english">English</string>
     <string name="title_practice">Practice</string>
@@ -30,9 +30,7 @@
     <string name="drawing_house">House</string>
 
     <string name="action_back">Back</string>
-    <string name="action_menu">Menu</string>
-    <string name="drawer_progress">Progress</string>
-    <string name="drawer_about">About</string>
+    <string name="nav_learn">Learn</string>
     <string name="action_reset">Reset</string>
     <string name="percent">%1$d%%</string>
     <!-- "percent" and "of 3 stars" read the same for any count, so these are not plurals. -->
@@ -104,6 +102,17 @@
     <string name="about_feature_drawing">Draw simple pictures.</string>
     <string name="about_feature_progress">Fill in the blanks and see your progress.</string>
     <string name="welcome_continue">Continue</string>
+
+    <!-- Onboarding, language sheet and Grown-ups. -->
+    <string name="onboarding_change_later">You can change this later in “For grown-ups”.</string>
+    <string name="onboarding_start">Let\'s start</string>
+    <string name="language_chip_description">App language: %1$s</string>
+    <string name="language_sheet_note">It changes as soon as you pick. Your progress stays.</string>
+    <string name="grown_ups_counting">How progress is counted</string>
+    <string name="grown_ups_stars">Each letter\'s stars come from its best writing.</string>
+    <string name="mastery_rule">A letter is learned after it is written %1$d times with at least one score of %2$d%%.</string>
+    <string name="grown_ups_on_phone">All progress stays on this phone. No account is needed.</string>
+    <string name="list_number">%1$d</string>
 
     <!-- Contextual tips: positive, never blaming the child. -->
     <string name="tip_first_attempt">Try tracing slowly.</string>

@@ -151,6 +151,9 @@ object BcType {
     /** The glyph on a 44dp compact-row lead. */
     val rowLeadCompact = baloo(FontWeight.ExtraBold, 22.sp, 28.sp)
 
+    /** The two stacked glyphs of the "অ a" mark on onboarding's letters card. */
+    val stackedMark = baloo(FontWeight.ExtraBold, 18.sp, 20.sp)
+
     /** Game-card mini cells. */
     val gameCell = baloo(FontWeight.Bold, 18.sp, 24.sp)
 

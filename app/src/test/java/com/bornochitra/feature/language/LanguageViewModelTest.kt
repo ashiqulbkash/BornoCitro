@@ -1,8 +1,7 @@
-package com.bornochitra.feature.welcome
+package com.bornochitra.feature.language
 
 import com.bornochitra.core.locale.AppLanguage
 import com.bornochitra.core.locale.AppLanguageStore
-import com.bornochitra.core.onboarding.OnboardingStore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -11,13 +10,11 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class WelcomeViewModelTest {
+class LanguageViewModelTest {
 
     private val dispatcher = StandardTestDispatcher()
 
@@ -31,6 +28,7 @@ class WelcomeViewModelTest {
         Dispatchers.resetMain()
     }
 
+    /** Remembers the language like the real store; [setCount] counts the changes asked for. */
     private class FakeLanguageStore(private var current: AppLanguage = AppLanguage.BANGLA) : AppLanguageStore {
         var setCount = 0
 
@@ -44,15 +42,9 @@ class WelcomeViewModelTest {
         override fun applyDefault() = Unit
     }
 
-    private class FakeOnboardingStore(override var hasSeenWelcome: Boolean = false) : OnboardingStore {
-        override fun markWelcomeSeen() {
-            hasSeenWelcome = true
-        }
-    }
-
     @Test
-    fun `welcome shows the language the app is in`() {
-        val viewModel = WelcomeViewModel(FakeLanguageStore(AppLanguage.ENGLISH), FakeOnboardingStore())
+    fun `the language controls show the language the app is in`() {
+        val viewModel = LanguageViewModel(FakeLanguageStore(AppLanguage.ENGLISH))
 
         assertEquals(AppLanguage.ENGLISH, viewModel.uiState.value.language)
     }
@@ -60,9 +52,9 @@ class WelcomeViewModelTest {
     @Test
     fun `choosing a language shows it at once and stores it after the switch has slid`() = runTest(dispatcher) {
         val store = FakeLanguageStore()
-        val viewModel = WelcomeViewModel(store, FakeOnboardingStore())
+        val viewModel = LanguageViewModel(store)
 
-        viewModel.onEvent(WelcomeEvent.LanguageSelected(AppLanguage.ENGLISH))
+        viewModel.onEvent(LanguageEvent.LanguageSelected(AppLanguage.ENGLISH))
         dispatcher.scheduler.runCurrent()
 
         assertEquals(AppLanguage.ENGLISH, viewModel.uiState.value.language)
@@ -78,9 +70,9 @@ class WelcomeViewModelTest {
     @Test
     fun `choosing the language already in use changes nothing`() = runTest(dispatcher) {
         val store = FakeLanguageStore()
-        val viewModel = WelcomeViewModel(store, FakeOnboardingStore())
+        val viewModel = LanguageViewModel(store)
 
-        viewModel.onEvent(WelcomeEvent.LanguageSelected(AppLanguage.BANGLA))
+        viewModel.onEvent(LanguageEvent.LanguageSelected(AppLanguage.BANGLA))
         dispatcher.scheduler.advanceUntilIdle()
 
         assertEquals(0, store.setCount)
@@ -88,13 +80,28 @@ class WelcomeViewModelTest {
     }
 
     @Test
-    fun `continuing marks the welcome as seen`() {
-        val onboarding = FakeOnboardingStore()
-        val viewModel = WelcomeViewModel(FakeLanguageStore(), onboarding)
-        assertFalse(onboarding.hasSeenWelcome)
+    fun `showing a language control reads a language chosen elsewhere`() {
+        val store = FakeLanguageStore(AppLanguage.BANGLA)
+        val viewModel = LanguageViewModel(store)
 
-        viewModel.onEvent(WelcomeEvent.ContinueClicked)
+        // e.g. chosen on onboarding, or in Android's app language settings, while this ViewModel lived on.
+        store.setLanguage(AppLanguage.ENGLISH)
+        viewModel.onEvent(LanguageEvent.Shown)
 
-        assertTrue(onboarding.hasSeenWelcome)
+        assertEquals(AppLanguage.ENGLISH, viewModel.uiState.value.language)
+    }
+
+    @Test
+    fun `showing a language control during the slide keeps the language just chosen`() = runTest(dispatcher) {
+        val store = FakeLanguageStore(AppLanguage.BANGLA)
+        val viewModel = LanguageViewModel(store)
+
+        viewModel.onEvent(LanguageEvent.LanguageSelected(AppLanguage.ENGLISH))
+        dispatcher.scheduler.runCurrent()
+        viewModel.onEvent(LanguageEvent.Shown)
+
+        assertEquals(AppLanguage.ENGLISH, viewModel.uiState.value.language)
+        dispatcher.scheduler.advanceUntilIdle()
+        assertEquals(AppLanguage.ENGLISH, store.language)
     }
 }

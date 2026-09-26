@@ -20,7 +20,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bornochitra.R
 import com.bornochitra.core.model.ExerciseType
 import com.bornochitra.core.ui.components.BcPrimaryButton
-import com.bornochitra.core.ui.components.BcTopAppBar
+import com.bornochitra.core.ui.components.BcHomeTopAppBar
 import com.bornochitra.core.ui.components.label
 import com.bornochitra.core.ui.theme.BcSpacing
 import com.bornochitra.core.ui.theme.BornoChitraTheme
@@ -31,7 +31,9 @@ fun HomeScreen(
     onEnglishClick: () -> Unit,
     onDrawingClick: () -> Unit,
     onContinueClick: (exerciseId: String) -> Unit,
-    onMenuClick: () -> Unit,
+    languageName: String,
+    onLanguageClick: () -> Unit,
+    navigationBar: @Composable () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
@@ -42,7 +44,9 @@ fun HomeScreen(
         onEnglishClick = onEnglishClick,
         onDrawingClick = onDrawingClick,
         onContinueClick = onContinueClick,
-        onMenuClick = onMenuClick,
+        languageName = languageName,
+        onLanguageClick = onLanguageClick,
+        navigationBar = navigationBar,
         modifier = modifier,
     )
 }
@@ -54,12 +58,15 @@ private fun HomeContent(
     onEnglishClick: () -> Unit,
     onDrawingClick: () -> Unit,
     onContinueClick: (exerciseId: String) -> Unit,
-    onMenuClick: () -> Unit,
+    languageName: String,
+    onLanguageClick: () -> Unit,
+    navigationBar: @Composable () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
         modifier = modifier,
-        topBar = { BcTopAppBar(title = stringResource(R.string.title_home), onMenuClick = onMenuClick) },
+        topBar = { BcHomeTopAppBar(languageName = languageName, onLanguageClick = onLanguageClick) },
+        bottomBar = navigationBar,
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -97,7 +104,9 @@ private fun HomeScreenPreview() {
             onEnglishClick = {},
             onDrawingClick = {},
             onContinueClick = {},
-            onMenuClick = {},
+            languageName = "বাংলা",
+            onLanguageClick = {},
+            navigationBar = {},
         )
     }
 }
@@ -112,7 +121,9 @@ private fun HomeScreenEmptyPreview() {
             onEnglishClick = {},
             onDrawingClick = {},
             onContinueClick = {},
-            onMenuClick = {},
+            languageName = "বাংলা",
+            onLanguageClick = {},
+            navigationBar = {},
         )
     }
 }

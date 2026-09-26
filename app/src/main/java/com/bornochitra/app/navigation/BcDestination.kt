@@ -10,8 +10,9 @@ sealed interface BcDestination {
 
     val route: String
 
-    data object Welcome : BcDestination {
-        override val route = "welcome"
+    /** The first-launch onboarding: language, then what the app is. */
+    data object Onboarding : BcDestination {
+        override val route = "onboarding"
     }
 
     data object Home : BcDestination {
@@ -101,8 +102,8 @@ sealed interface BcDestination {
         override val route = "progress"
     }
 
-    /** The drawer's About page; the same content Welcome shows on first launch. */
-    data object About : BcDestination {
-        override val route = "about"
+    /** The Grown-ups tab: the app language, how progress is counted, and what the app is. */
+    data object GrownUps : BcDestination {
+        override val route = "grown-ups"
     }
 }

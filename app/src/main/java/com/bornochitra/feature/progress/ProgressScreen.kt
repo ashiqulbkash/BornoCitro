@@ -51,7 +51,7 @@ private const val EMPTY_STAR = "☆"
  */
 @Composable
 fun ProgressScreen(
-    onBackClick: () -> Unit,
+    navigationBar: @Composable () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: ProgressViewModel = hiltViewModel(),
 ) {
@@ -59,7 +59,7 @@ fun ProgressScreen(
     ProgressContent(
         state = state,
         onEvent = viewModel::onEvent,
-        onBackClick = onBackClick,
+        navigationBar = navigationBar,
         modifier = modifier,
     )
 }
@@ -68,7 +68,7 @@ fun ProgressScreen(
 private fun ProgressContent(
     state: ProgressState,
     onEvent: (ProgressEvent) -> Unit,
-    onBackClick: () -> Unit,
+    navigationBar: @Composable () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val openCategory = state.categories.firstOrNull { it.type == state.openCategory }
@@ -81,11 +81,12 @@ private fun ProgressContent(
         topBar = {
             BcTopAppBar(
                 title = openCategory?.type?.label() ?: stringResource(R.string.title_progress),
-                onBackClick = {
-                    if (openCategory != null) onEvent(ProgressEvent.CategoryClosed) else onBackClick()
-                },
+                // The tab itself has no back arrow; an open category is a step below it and closes with Back.
+                onBackClick = if (openCategory != null) ({ onEvent(ProgressEvent.CategoryClosed) }) else null,
             )
         },
+        // The bar belongs to the tab; an open category is an inner screen, which has none (design/DESIGN_SPEC.md 6).
+        bottomBar = { if (openCategory == null) navigationBar() },
     ) { innerPadding ->
         val contentModifier = Modifier
             .fillMaxSize()
@@ -282,7 +283,7 @@ private val previewState = ProgressState(
 @Composable
 private fun ProgressScreenPreview() {
     BornoChitraTheme {
-        ProgressContent(state = previewState, onEvent = {}, onBackClick = {})
+        ProgressContent(state = previewState, onEvent = {}, navigationBar = {})
     }
 }
 
@@ -293,7 +294,7 @@ private fun ProgressScreenCategoryPreview() {
         ProgressContent(
             state = previewState.copy(openCategory = ExerciseType.VOWEL),
             onEvent = {},
-            onBackClick = {},
+            navigationBar = {},
         )
     }
 }
@@ -302,7 +303,7 @@ private fun ProgressScreenCategoryPreview() {
 @Composable
 private fun ProgressScreenLoadingPreview() {
     BornoChitraTheme {
-        ProgressContent(state = ProgressState(), onEvent = {}, onBackClick = {})
+        ProgressContent(state = ProgressState(), onEvent = {}, navigationBar = {})
     }
 }
 
@@ -310,7 +311,7 @@ private fun ProgressScreenLoadingPreview() {
 @Composable
 private fun ProgressScreenEmptyPreview() {
     BornoChitraTheme {
-        ProgressContent(state = ProgressState(isLoading = false), onEvent = {}, onBackClick = {})
+        ProgressContent(state = ProgressState(isLoading = false), onEvent = {}, navigationBar = {})
     }
 }
 
@@ -321,7 +322,7 @@ private fun ProgressScreenErrorPreview() {
         ProgressContent(
             state = ProgressState(isLoading = false, error = R.string.error_progress_load),
             onEvent = {},
-            onBackClick = {},
+            navigationBar = {},
         )
     }
 }

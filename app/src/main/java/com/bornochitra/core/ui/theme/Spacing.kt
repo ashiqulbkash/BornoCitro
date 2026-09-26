@@ -16,6 +16,9 @@ object BcSpacing {
 
     /** Screen side margin. */
     val screen = 20.dp
+
+    /** Between the Grown-ups tab's sections. */
+    val section = 22.dp
     val l = 24.dp
     val xl = 32.dp
     val xxl = 40.dp
@@ -57,6 +60,7 @@ object BcDimens {
 
     val tileMinSize = 96.dp
     val tileStatusMinHeight = 16.dp
+    val grownUpsLead = 54.dp
     val drawingTileHeight = 150.dp
     val drawingShape = 64.dp
     val detailTileMinHeight = 96.dp

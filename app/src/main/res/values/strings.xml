@@ -5,8 +5,8 @@
     <string name="splash_message">বর্ণচিত্র — লেখো, শেখো, বেড়ে ওঠো</string>
 
     <!-- Toolbar titles: short, one line at 360dp. -->
-    <string name="title_home">বর্ণচিত্র</string>
     <string name="title_about">পরিচিতি</string>
+    <string name="title_grown_ups">বড়দের জন্য</string>
     <string name="title_bangla">বাংলা</string>
     <string name="title_english">ইংরেজি</string>
     <string name="title_practice">অনুশীলন</string>
@@ -32,9 +32,7 @@
     <string name="drawing_house">বাড়ি</string>
 
     <string name="action_back">পিছনে</string>
-    <string name="action_menu">মেনু</string>
-    <string name="drawer_progress">অগ্রগতি</string>
-    <string name="drawer_about">পরিচিতি</string>
+    <string name="nav_learn">শিখি</string>
     <string name="action_reset">আবার শুরু</string>
     <string name="percent">%1$d%%</string>
     <string name="percent_description">%1$d শতাংশ</string>
@@ -83,6 +81,7 @@
     <!-- Each language is named in its own language, whichever one the app is in. -->
     <string name="language_bangla" translatable="false">বাংলা</string>
     <string name="language_english" translatable="false">English</string>
+    <string name="language_english_mark" translatable="false">A</string>
     <string name="home_welcome">স্বাগতম!</string>
     <string name="home_continue">শেখা চালিয়ে যাও</string>
     <string name="overall">সব মিলিয়ে</string>
@@ -108,6 +107,25 @@
     <string name="about_feature_drawing">সহজ ছবি আঁকো।</string>
     <string name="about_feature_progress">খালি ঘর পূরণ করো আর নিজের অগ্রগতি দেখো।</string>
     <string name="welcome_continue">এগিয়ে চলো</string>
+
+    <!-- Onboarding, language sheet and Grown-ups. The lines marked not translatable are shown in both languages on purpose. -->
+    <string name="onboarding_language_question" translatable="false">অ্যাপটা কোন ভাষায় দেখবে?</string>
+    <string name="onboarding_language_question_english" translatable="false">Which language should the app use?</string>
+    <string name="onboarding_change_later">পরে “বড়দের জন্য” থেকে বদলানো যাবে।</string>
+    <string name="onboarding_start">শুরু করো</string>
+    <string name="about_mark_bangla" translatable="false">অ</string>
+    <string name="about_mark_latin" translatable="false">a</string>
+    <string name="about_mark_numbers" translatable="false">১+২</string>
+    <string name="language_title" translatable="false">অ্যাপের ভাষা</string>
+    <string name="language_title_english" translatable="false">App language</string>
+    <string name="grown_ups_language_label" translatable="false">অ্যাপের ভাষা · App language</string>
+    <string name="language_chip_description">অ্যাপের ভাষা: %1$s</string>
+    <string name="language_sheet_note">বেছে নিলেই বদলে যাবে। অগ্রগতি মুছবে না।</string>
+    <string name="grown_ups_counting">অগ্রগতি কীভাবে গোনা হয়</string>
+    <string name="grown_ups_stars">প্রতিটা অক্ষরের তারা আসে সবচেয়ে ভালো লেখা থেকে।</string>
+    <string name="mastery_rule">%1$d বার লিখলে আর অন্তত একবার %2$d%% পেলে অক্ষরটা শেখা হয়ে যায়।</string>
+    <string name="grown_ups_on_phone">সব অগ্রগতি এই ফোনেই থাকে। কোনো অ্যাকাউন্ট লাগে না।</string>
+    <string name="list_number">%1$d</string>
 
     <!-- Contextual tips: positive, never blaming the child. -->
     <string name="tip_first_attempt">ধীরে লেখো।</string>
