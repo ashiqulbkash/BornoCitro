@@ -111,7 +111,7 @@ internal fun BcSurface(
     content: @Composable () -> Unit,
 ) {
     if (onClick != null) {
-        Surface(onClick = onClick, modifier = modifier, shape = shape, color = color, contentColor = contentColor, border = border, content = content)
+        Surface(onClick = onClick, modifier = modifier.semantics { role = Role.Button }, shape = shape, color = color, contentColor = contentColor, border = border, content = content)
     } else {
         Surface(modifier = modifier, shape = shape, color = color, contentColor = contentColor, border = border, content = content)
     }
@@ -183,7 +183,7 @@ fun BcLetterTile(
     modifier: Modifier = Modifier,
     isContinueHere: Boolean = false,
 ) {
-    BcExerciseTile(state = state, onClick = onClick, isContinueHere = isContinueHere, modifier = modifier.semantics { role = Role.Button }) {
+    BcExerciseTile(state = state, onClick = onClick, isContinueHere = isContinueHere, modifier = modifier) {
         BcLetterText(text = character, style = BcType.letterTile)
         BcTileStatus(state = state, attemptCount = attemptCount, stars = stars)
     }
