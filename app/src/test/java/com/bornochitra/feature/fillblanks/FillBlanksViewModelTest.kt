@@ -226,6 +226,91 @@ class FillBlanksViewModelTest {
     }
 
     @Test
+    fun `help asks in the hint sheet before the guide is shown`() = runTest(dispatcher) {
+        val (viewModel, _) = viewModel()
+        dispatcher.scheduler.advanceUntilIdle()
+
+        viewModel.onEvent(FillBlanksEvent.HintRequested)
+        assertTrue(viewModel.uiState.value.isHintSheetShown)
+        assertFalse(viewModel.uiState.value.isHintShown)
+
+        viewModel.onEvent(FillBlanksEvent.HintUsed)
+        assertFalse(viewModel.uiState.value.isHintSheetShown)
+        assertTrue(viewModel.uiState.value.isHintShown)
+    }
+
+    @Test
+    fun `closing the hint sheet leaves the guide hidden`() = runTest(dispatcher) {
+        val (viewModel, _) = viewModel()
+        dispatcher.scheduler.advanceUntilIdle()
+
+        viewModel.onEvent(FillBlanksEvent.HintRequested)
+        viewModel.onEvent(FillBlanksEvent.HintDismissed)
+
+        assertFalse(viewModel.uiState.value.isHintSheetShown)
+        assertFalse(viewModel.uiState.value.isHintShown)
+    }
+
+    @Test
+    fun `reset with no ink starts the blank over at once`() = runTest(dispatcher) {
+        val (viewModel, _) = viewModel()
+        dispatcher.scheduler.advanceUntilIdle()
+        val before = viewModel.uiState.value.attemptId
+
+        viewModel.onEvent(FillBlanksEvent.BlankRestartRequested)
+
+        assertFalse(viewModel.uiState.value.isRestartConfirmationShown)
+        assertNotEquals(before, viewModel.uiState.value.attemptId)
+    }
+
+    @Test
+    fun `reset with ink asks first and a yes wipes it`() = runTest(dispatcher) {
+        val (viewModel, _) = viewModel()
+        dispatcher.scheduler.advanceUntilIdle()
+        val before = viewModel.uiState.value.attemptId
+        viewModel.onEvent(FillBlanksEvent.StrokeStarted)
+
+        viewModel.onEvent(FillBlanksEvent.BlankRestartRequested)
+        assertTrue(viewModel.uiState.value.isRestartConfirmationShown)
+        assertEquals(before, viewModel.uiState.value.attemptId)
+
+        viewModel.onEvent(FillBlanksEvent.BlankRestarted)
+        val state = viewModel.uiState.value
+        assertFalse(state.isRestartConfirmationShown)
+        assertFalse(state.hasInk)
+        assertNotEquals(before, state.attemptId)
+    }
+
+    @Test
+    fun `reset with ink keeps it when the child says no`() = runTest(dispatcher) {
+        val (viewModel, _) = viewModel()
+        dispatcher.scheduler.advanceUntilIdle()
+        val before = viewModel.uiState.value.attemptId
+        viewModel.onEvent(FillBlanksEvent.StrokeStarted)
+
+        viewModel.onEvent(FillBlanksEvent.BlankRestartRequested)
+        viewModel.onEvent(FillBlanksEvent.BlankRestartDismissed)
+
+        val state = viewModel.uiState.value
+        assertFalse(state.isRestartConfirmationShown)
+        assertTrue(state.hasInk)
+        assertEquals(before, state.attemptId)
+    }
+
+    @Test
+    fun `a filled blank leaves the next one without ink`() = runTest(dispatcher) {
+        val (viewModel, _) = viewModel(seed = seedWithBlanks(2))
+        dispatcher.scheduler.advanceUntilIdle()
+        viewModel.onEvent(FillBlanksEvent.StrokeStarted)
+
+        viewModel.onEvent(FillBlanksEvent.BlankCompleted(score = 90f, scoreLevel = ScoreLevel.PERFECT))
+        viewModel.onEvent(FillBlanksEvent.BlankRestartRequested)
+
+        assertFalse(viewModel.uiState.value.hasInk)
+        assertFalse(viewModel.uiState.value.isRestartConfirmationShown)
+    }
+
+    @Test
     fun `filling the last blank finishes the sequence with the average score`() = runTest(dispatcher) {
         val (viewModel, _) = viewModel(seed = seedWithBlanks(2))
         dispatcher.scheduler.advanceUntilIdle()
@@ -238,6 +323,7 @@ class FillBlanksViewModelTest {
         assertTrue(state.isSequenceFinished)
         assertNull(state.activeExercise)
         assertEquals(81, state.averagePercent)
+        assertEquals(2, state.stars)
         assertTrue(state.cells.none { it.status == CellStatus.BLANK || it.status == CellStatus.ACTIVE })
         assertEquals(2, progressRepository.savedResults.size)
 
@@ -271,6 +357,7 @@ class FillBlanksViewModelTest {
 
         val sequence = expectedSequence(difficulty = Difficulty.ADVANCED)
         assertEquals(sequence.items[sequence.blankIndices.first()], viewModel.uiState.value.activeExercise)
+        assertEquals(Difficulty.ADVANCED, viewModel.uiState.value.difficulty)
     }
 
     @Test

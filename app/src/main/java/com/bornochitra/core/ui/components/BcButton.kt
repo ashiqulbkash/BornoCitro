@@ -88,7 +88,10 @@ fun BcTonalButton(
     }
 }
 
-/** Tools next to the canvas, such as Reset and Help. */
+/**
+ * Tools next to the canvas, such as Reset and Help. [compactPadding] keeps a label on one line when two
+ * buttons share a row.
+ */
 @Composable
 fun BcOutlineButton(
     text: String,
@@ -97,6 +100,7 @@ fun BcOutlineButton(
     enabled: Boolean = true,
     @DrawableRes icon: Int? = null,
     size: BcButtonSize = BcButtonSize.NORMAL,
+    compactPadding: Boolean = false,
 ) {
     val colors = MaterialTheme.colorScheme
     OutlinedButton(
@@ -109,7 +113,7 @@ fun BcOutlineButton(
             contentColor = colors.primary,
             disabledContentColor = colors.outline,
         ),
-        contentPadding = size.padding,
+        contentPadding = if (compactPadding) PaddingValues(horizontal = BcDimens.buttonPaddingSmall) else size.padding,
     ) {
         ButtonContent(text, icon, trailingIcon = null, size = size)
     }

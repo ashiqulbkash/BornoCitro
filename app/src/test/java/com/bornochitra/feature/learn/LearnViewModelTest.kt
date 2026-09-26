@@ -45,7 +45,11 @@ class LearnViewModelTest {
 
         assertEquals(AppLanguage.ENGLISH, state.language)
         assertEquals(englishLearnLetters.map { it.letter }, state.items.map { it.letter })
-        assertEquals(LearnItem(letter = "A", explanation = "A for apple"), state.items.first())
+        assertEquals(
+            LearnItem(letter = "A", explanation = "A for apple", word = "apple", group = LearnGroup.ENGLISH_LETTERS),
+            state.items.first(),
+        )
+        assertTrue(state.items.all { it.group == LearnGroup.ENGLISH_LETTERS })
     }
 
     @Test
@@ -87,7 +91,12 @@ class LearnViewModelTest {
 
         assertEquals(AppLanguage.BANGLA, state.language)
         assertEquals(banglaLearnLetters.map { it.letter }, state.items.map { it.letter })
-        assertEquals(LearnItem(letter = "অ", explanation = "অ তে অজগর", spokenLetter = "স্বরে অ"), state.items.first())
+        assertEquals(
+            LearnItem(letter = "অ", explanation = "অ তে অজগর", word = "অজগর", group = LearnGroup.VOWELS, spokenLetter = "স্বরে অ"),
+            state.items.first(),
+        )
+        // The 11 vowels come first, under their own heading, then the 39 consonants under theirs.
+        assertEquals(List(11) { LearnGroup.VOWELS } + List(39) { LearnGroup.CONSONANTS }, state.items.map { it.group })
     }
 
     @Test

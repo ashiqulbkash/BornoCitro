@@ -102,6 +102,8 @@ object BcDimens {
     val practiceResetMinWidth = 200.dp
     val resultStarSide = 64.dp
     val resultStarMiddle = 88.dp
+    val summaryStarSide = 60.dp
+    val summaryStarMiddle = 80.dp
 
     /** How much higher the middle result star sits than the side ones. */
     val resultStarRaise = 14.dp
@@ -109,10 +111,16 @@ object BcDimens {
     /** The top band the Result confetti is scattered over. */
     val confettiHeight = 280.dp
     val sequenceCellHeight = 64.dp
+    val sequenceCellCorner = 16.dp
+
+    /** Dashed lines: the writing area's guide lines and a later blank's border. */
+    val dashLength = 6.dp
+    val dashGap = 8.dp
     val miniCellHeight = 26.dp
     val hintPreview = 112.dp
     val learnLetterWidth = 72.dp
     val learnRowHeight = 64.dp
+    val learnSpeakerSmall = 14.dp
 
     val sheetHandleWidth = 36.dp
     val sheetHandleHeight = 4.dp

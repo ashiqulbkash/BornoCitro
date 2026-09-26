@@ -9,8 +9,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bornochitra.R
+import com.bornochitra.core.locale.AppLanguage
 import com.bornochitra.core.model.ExerciseType
-import com.bornochitra.core.ui.theme.BcType
 import com.bornochitra.core.ui.theme.BornoChitraTheme
 
 private val FillCells = listOf("অ", GAME_BLANK, "ই")
@@ -70,11 +70,10 @@ private fun BanglaHubContent(
         },
         modifier = modifier,
     ) {
-        val colors = HubColors(leadContainer = scheme.primaryContainer, leadContent = scheme.onPrimaryContainer, progress = scheme.primary)
-        HubCategoryRow(ExerciseType.VOWEL, "অ", state.progressOf(ExerciseType.VOWEL), colors, onVowelsClick)
-        HubCategoryRow(ExerciseType.CONSONANT, "ক", state.progressOf(ExerciseType.CONSONANT), colors, onConsonantsClick)
-        HubCategoryRow(ExerciseType.BANGLA_NUMBER, "১", state.progressOf(ExerciseType.BANGLA_NUMBER), colors, onBanglaNumbersClick)
-        HubCategoryRow(ExerciseType.MATH, "+", state.progressOf(ExerciseType.MATH), colors, onMathClick, glyphStyle = BcType.rowLeadSign)
+        HubCategoryRow(ExerciseType.VOWEL, AppLanguage.BANGLA, state.progressOf(ExerciseType.VOWEL), onVowelsClick)
+        HubCategoryRow(ExerciseType.CONSONANT, AppLanguage.BANGLA, state.progressOf(ExerciseType.CONSONANT), onConsonantsClick)
+        HubCategoryRow(ExerciseType.BANGLA_NUMBER, AppLanguage.BANGLA, state.progressOf(ExerciseType.BANGLA_NUMBER), onBanglaNumbersClick)
+        HubCategoryRow(ExerciseType.MATH, AppLanguage.BANGLA, state.progressOf(ExerciseType.MATH), onMathClick)
     }
 }
 

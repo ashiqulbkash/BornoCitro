@@ -18,7 +18,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import com.bornochitra.R
 import com.bornochitra.core.tips.ContextualTip
@@ -73,34 +72,6 @@ fun BcTip(
     modifier: Modifier = Modifier,
 ) {
     BcBanner(kind = BcBannerKind.TIP, text = stringResource(tip.messageRes()), modifier = modifier)
-}
-
-/** Interim: the old result/voice banner (removed when Result and Listen are redesigned, Phases 4–5). */
-enum class BcFeedbackTone(val kind: BcBannerKind) {
-    ENCOURAGING(BcBannerKind.INFO),
-    GOOD(BcBannerKind.TIP),
-    GREAT(BcBannerKind.SUCCESS),
-}
-
-/** Interim: a titled banner for screens not redesigned yet. */
-@Composable
-fun BcFeedbackBanner(
-    tone: BcFeedbackTone,
-    title: String,
-    message: String,
-    modifier: Modifier = Modifier,
-) {
-    val (container, content) = tone.kind.colors()
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .background(container, BcShapes.banner)
-            .padding(horizontal = BcSpacing.m, vertical = BcSpacing.roomy),
-        verticalArrangement = Arrangement.spacedBy(BcSpacing.xxs),
-    ) {
-        Text(text = title, style = BcType.banner.copy(fontWeight = FontWeight.Bold), color = content)
-        Text(text = message, style = BcType.banner, color = content)
-    }
 }
 
 private val BcBannerKind.icon: Int

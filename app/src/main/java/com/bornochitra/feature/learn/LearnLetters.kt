@@ -9,11 +9,21 @@ import com.bornochitra.core.locale.AppLanguage
  */
 data class LearnLetter(val letter: String, val word: String, val spoken: String = letter)
 
-/** The letters taught in [language], with their words. */
-fun learnLetters(language: AppLanguage): List<LearnLetter> = when (language) {
-    AppLanguage.BANGLA -> banglaLearnLetters
-    AppLanguage.ENGLISH -> englishLearnLetters
+/** The groups the listen screen shows its letters under. */
+enum class LearnGroup {
+    VOWELS,
+    CONSONANTS,
+    ENGLISH_LETTERS,
 }
+
+/** The letters taught in [language], with their words, group by group in teaching order. */
+fun learnGroups(language: AppLanguage): List<Pair<LearnGroup, List<LearnLetter>>> = when (language) {
+    AppLanguage.BANGLA -> listOf(LearnGroup.VOWELS to banglaVowelLetters, LearnGroup.CONSONANTS to banglaConsonantLetters)
+    AppLanguage.ENGLISH -> listOf(LearnGroup.ENGLISH_LETTERS to englishLearnLetters)
+}
+
+/** The letters taught in [language], with their words. */
+fun learnLetters(language: AppLanguage): List<LearnLetter> = learnGroups(language).flatMap { (_, letters) -> letters }
 
 /** What the explanation button says in [language]: "A for apple", "অ তে অজগর". */
 fun LearnLetter.explanation(language: AppLanguage): String = when (language) {
@@ -53,7 +63,7 @@ val englishLearnLetters: List<LearnLetter> = listOf(
 
 /**
  * The Bangla vowels and consonants with their words (plan.md Step 12), in the order of the tracing
- * lists. A letter no word starts with, such as ঙ or ং, is taught with a word it ends in, as in a
+ * lists: [banglaVowelLetters], then [banglaConsonantLetters]. A letter no word starts with, such as ঙ or ং, is taught with a word it ends in, as in a
  * primer. ড় ঢ় য় are written as the letter plus nukta (U+09BC), the same way their exercise titles are.
  *
  * Some letters are spoken by their primer names (স্বরে অ, হ্রস্ব ই, দীর্ঘ ঈ, খণ্ড ত, দন্ত্য ন …).
@@ -62,7 +72,9 @@ val englishLearnLetters: List<LearnLetter> = listOf(
  * them apart. The other letters, র and ঞ among them once their look-alikes are named, are clear alone;
  * ঃ and ঁ are already read by their names.
  */
-val banglaLearnLetters: List<LearnLetter> = listOf(
+val banglaLearnLetters: List<LearnLetter> get() = banglaVowelLetters + banglaConsonantLetters
+
+private val banglaVowelLetters: List<LearnLetter> = listOf(
     LearnLetter("অ", "অজগর", spoken = "স্বরে অ"),
     LearnLetter("আ", "আম", spoken = "স্বরে আ"),
     LearnLetter("ই", "ইঁদুর", spoken = "হ্রস্ব ই"),
@@ -74,6 +86,9 @@ val banglaLearnLetters: List<LearnLetter> = listOf(
     LearnLetter("ঐ", "ঐরাবত"),
     LearnLetter("ও", "ওল", spoken = "স্বরে ও"),
     LearnLetter("ঔ", "ঔষধ"),
+)
+
+private val banglaConsonantLetters: List<LearnLetter> = listOf(
     LearnLetter("ক", "কলা"),
     LearnLetter("খ", "খরগোশ"),
     LearnLetter("গ", "গরু"),

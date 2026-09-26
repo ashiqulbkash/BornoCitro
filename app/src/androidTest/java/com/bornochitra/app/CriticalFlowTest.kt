@@ -229,7 +229,7 @@ class CriticalFlowTest {
             listOf("A", "A for apple", "Z for zebra").map { it to AppLanguage.ENGLISH },
             TestSpeechModule.spoken.toList(),
         )
-        composeRule.onNodeWithText(string(R.string.learn_no_voice_title)).assertDoesNotExist()
+        composeRule.onNodeWithText(noVoiceMessage(R.string.title_english)).assertDoesNotExist()
 
         // Learn is below the English hub: no navigation bar, and Back returns to the hub.
         assertNoNavigationBar()
@@ -257,7 +257,7 @@ class CriticalFlowTest {
             listOf("স্বরে অ", "অ তে অজগর", "ঁ তে চাঁদ").map { it to AppLanguage.BANGLA },
             TestSpeechModule.spoken.toList(),
         )
-        composeRule.onNodeWithText(string(R.string.learn_no_voice_title)).assertDoesNotExist()
+        composeRule.onNodeWithText(noVoiceMessage(R.string.title_bangla)).assertDoesNotExist()
 
         // Learn is below the Bangla hub: no navigation bar, and Back returns to the hub.
         assertNoNavigationBar()
@@ -470,6 +470,9 @@ class CriticalFlowTest {
     }
 
     private fun string(@StringRes id: Int, vararg args: Any): String = composeRule.activity.getString(id, *args)
+
+    /** The listen screen's notice that the phone cannot speak the language named by [languageName]. */
+    private fun noVoiceMessage(@StringRes languageName: Int): String = string(R.string.learn_no_voice_message, string(languageName))
 
     /** Skips selectable nodes: tabs and language options, which can share a button's text. */
     private fun clickButton(label: String) {

@@ -31,6 +31,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.text.TextStyle
 import com.bornochitra.R
+import com.bornochitra.core.locale.AppLanguage
 import com.bornochitra.core.model.ExerciseType
 import com.bornochitra.core.ui.components.BcActivityRow
 import com.bornochitra.core.ui.components.BcGameCard
@@ -43,6 +44,7 @@ import com.bornochitra.core.ui.components.label
 import com.bornochitra.core.ui.theme.BcDimens
 import com.bornochitra.core.ui.theme.BcShapes
 import com.bornochitra.core.ui.theme.BcSpacing
+import com.bornochitra.core.ui.theme.BcTheme
 import com.bornochitra.core.ui.theme.BcType
 
 /** The blank in a fill-the-blanks game card's mini sequence. */
@@ -105,16 +107,48 @@ internal data class HubColors(
     val progress: Color,
 )
 
-/** A hub row that opens the [type] category, led by [glyph] in the hub's [colors]. */
+@Composable
+internal fun hubColors(language: AppLanguage): HubColors = when (language) {
+    AppLanguage.BANGLA -> {
+        val scheme = MaterialTheme.colorScheme
+        HubColors(leadContainer = scheme.primaryContainer, leadContent = scheme.onPrimaryContainer, progress = scheme.primary)
+    }
+    AppLanguage.ENGLISH -> {
+        val colors = BcTheme.colors
+        HubColors(leadContainer = colors.englishContainer, leadContent = colors.onEnglishContainer, progress = colors.english)
+    }
+}
+
+/**
+ * The glyph that leads a category's row, and its style. Math has one in each hub: a sign in the Bangla hub,
+ * "1+" in the English one, which needs the smaller style to fit.
+ */
+private fun hubLead(type: ExerciseType, language: AppLanguage): Pair<String, TextStyle> = when (type) {
+    ExerciseType.VOWEL -> "অ" to BcType.rowLead
+    ExerciseType.CONSONANT -> "ক" to BcType.rowLead
+    ExerciseType.BANGLA_NUMBER -> "১" to BcType.rowLead
+    ExerciseType.ENGLISH_SMALL -> "a" to BcType.rowLead
+    ExerciseType.ENGLISH_CAPITAL -> "A" to BcType.rowLead
+    ExerciseType.MATH -> when (language) {
+        AppLanguage.BANGLA -> "+" to BcType.rowLeadSign
+        AppLanguage.ENGLISH -> "1+" to BcType.rowLeadCompact
+    }
+    ExerciseType.DRAWING -> error("Drawing is not a hub category")
+}
+
+/**
+ * A row that opens the [type] category, led by its glyph in the [language] hub's colours. The hubs and the
+ * fill-the-blanks picker use it.
+ */
 @Composable
 internal fun HubCategoryRow(
     type: ExerciseType,
-    glyph: String,
+    language: AppLanguage,
     progress: Float,
-    colors: HubColors,
     onClick: () -> Unit,
-    glyphStyle: TextStyle = BcType.rowLead,
 ) {
+    val colors = hubColors(language)
+    val (glyph, glyphStyle) = hubLead(type, language)
     BcActivityRow(name = type.label(), progress = progress, progressColor = colors.progress, onClick = onClick) {
         BcRowLead(glyph = glyph, containerColor = colors.leadContainer, contentColor = colors.leadContent, style = glyphStyle)
     }

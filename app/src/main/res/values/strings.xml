@@ -108,17 +108,23 @@
     <string name="overall">সব মিলিয়ে</string>
 
     <!-- Handwriting model dialog -->
-    <string name="model_dialog_title">হাতের লেখা পড়ার মডেল</string>
     <string name="model_checking">মডেল আছে কি না দেখা হচ্ছে।</string>
-    <string name="model_offer">শূন্যস্থান পূরণ তোমার হাতের লেখা পড়ে। এর জন্য একবার প্রায় ৫০ এমবি নামাতে হবে, নামানো শেষ হলেই এটি খুলবে।</string>
+    <string name="model_offer">শূন্যস্থান পূরণ খেলতে হাতের লেখা চেনার ফাইল লাগবে। একবার নামালে পরে ইন্টারনেট ছাড়াই চলবে।</string>
+    <string name="model_offer_title">একবার নামিয়ে নাও</string>
+    <string name="model_internet_note">ইন্টারনেট লাগবে। বড়দের জিজ্ঞেস করো।</string>
+    <string name="model_checking_title">একটু দাঁড়াও</string>
+    <string name="model_no_internet_title">ইন্টারনেট নেই</string>
+    <string name="model_downloading_title">নামানো হচ্ছে</string>
+    <string name="model_waiting_for_internet_title">ইন্টারনেটের অপেক্ষা</string>
+    <string name="model_failed_title">নামানো যায়নি</string>
     <string name="model_no_internet">শূন্যস্থান পূরণের জন্য হাতের লেখা পড়ার মডেল লাগবে, কিন্তু ইন্টারনেট বন্ধ। মডেল নামাতে ওয়াই-ফাই বা মোবাইল ডেটা চালু করো।</string>
-    <string name="model_downloading">নামানো হচ্ছে। এক মিনিটের মতো লাগতে পারে।</string>
+    <string name="model_downloading">এক মিনিটের মতো লাগতে পারে। এটা লুকিয়ে রাখলেও নামানো চলবে।</string>
     <string name="model_waiting_for_internet">ইন্টারনেট বন্ধ হয়ে গেছে। ওয়াই-ফাই বা মোবাইল ডেটা চালু করলে নামানো আবার চলবে।</string>
     <string name="model_failed">নামানো শেষ হয়নি। আবার চেষ্টা করো।</string>
     <string name="model_download">নামাও</string>
     <string name="model_try_again">আবার চেষ্টা করো</string>
     <string name="model_hide">লুকাও</string>
-    <string name="model_not_now">এখন না</string>
+    <string name="model_not_now">পরে</string>
 
     <!-- About / Welcome -->
     <string name="about_heading">বর্ণচিত্র কী?</string>
@@ -196,6 +202,8 @@
     <string name="fill_blanks_difficulty">কতটা কঠিন</string>
     <string name="fill_blanks_easy">সহজ</string>
     <string name="fill_blanks_hard">কঠিন</string>
+    <string name="fill_blanks_easy_caption">ফাঁকা ঘর দূরে দূরে</string>
+    <string name="fill_blanks_hard_caption">পাশাপাশি ফাঁকা ঘরও থাকে</string>
     <string name="fill_blanks_choose_category">একটা বিভাগ বেছে নাও</string>
     <string name="fill_blanks_no_sequence">কোনো সারি নেই</string>
     <string name="error_no_sequences">এই বিভাগে কোনো সারি নেই।</string>
@@ -203,11 +211,16 @@
     <string name="fill_blanks_cell_blank">ফাঁকা ঘর</string>
     <string name="fill_blanks_cell_active">এখন এই ফাঁকা ঘরটি পূরণ করো</string>
     <string name="fill_blanks_cell_filled">পূরণ হয়েছে: %1$s</string>
-    <string name="fill_blanks_not_recognized">ঠিক হয়নি। আবার শুরু করো।</string>
+    <string name="fill_blanks_not_recognized">প্রায় হয়েছে! “আবার শুরু” চেপে আবার লেখো।</string>
     <string name="fill_blanks_trace_hint">ফোঁটার ওপর দিয়ে লেখো</string>
     <string name="fill_blanks_write_missing">বাদ পড়াটি ঘরে লেখো</string>
     <string name="fill_blanks_canvas_description">বাদ পড়াটি লেখার জায়গা।</string>
     <string name="fill_blanks_hint">সাহায্য</string>
+    <string name="fill_blanks_hint_title">সাহায্য লাগবে?</string>
+    <!-- %1$d is the highest score a hinted blank can get. -->
+    <string name="fill_blanks_hint_message">ফোঁটা দেখালে লেখা সহজ হবে। তবে এই ঘরে সবচেয়ে বেশি %1$d%% পাবে।</string>
+    <string name="fill_blanks_hint_confirm">ফোঁটা দেখাও</string>
+    <string name="fill_blanks_hint_dismiss">না, নিজে লিখি</string>
     <plurals name="fill_blanks_summary">
         <item quantity="one">তুমি %1$dটি ফাঁকা ঘর পূরণ করেছ। তোমার স্কোর %2$d%%।</item>
         <item quantity="other">তুমি %1$dটি ফাঁকা ঘর পূরণ করেছ। তোমার স্কোর %2$d%%।</item>
@@ -215,6 +228,6 @@
     <string name="fill_blanks_next_sequence">পরের সারি</string>
 
     <!-- Learn with audio; %1$s is the language, named as in the hub titles. -->
-    <string name="learn_no_voice_title">কথা বলার কণ্ঠ নেই</string>
-    <string name="learn_no_voice_message">এই ফোনে %1$s বলার কণ্ঠ নেই, তাই কিছু শোনা যাবে না। ফোনের সেটিংসে লেখা থেকে কথা (টেক্সট-টু-স্পিচ) খুলে %1$s কণ্ঠ নামিয়ে নাও।</string>
+    <string name="learn_section_english" translatable="false">A–Z</string>
+    <string name="learn_no_voice_message">এই ফোনে %1$s কথা বলার ভয়েস নেই। ফোনের সেটিংস থেকে ইনস্টল করতে বড়দের বলো।</string>
 </resources>

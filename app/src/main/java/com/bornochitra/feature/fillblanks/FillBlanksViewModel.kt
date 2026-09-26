@@ -12,6 +12,7 @@ import com.bornochitra.core.model.Exercise
 import com.bornochitra.core.model.ExerciseType
 import com.bornochitra.core.model.PracticeResult
 import com.bornochitra.core.model.ScoreLevel
+import com.bornochitra.core.model.StarRule
 import com.bornochitra.core.recognition.FreehandChecker
 import com.bornochitra.core.tracing.TracePoint
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -69,6 +70,7 @@ data class BlankResult(
 
 data class FillBlanksState(
     val type: ExerciseType? = null,
+    val difficulty: Difficulty = Difficulty.BEGINNER,
     val isLoading: Boolean = true,
     @StringRes val error: Int? = null,
     val cells: List<SequenceCell> = emptyList(),
@@ -77,6 +79,11 @@ data class FillBlanksState(
     /** Which blank attempt is on the canvas; a new value clears the canvas's ink. */
     val attemptId: Int = 0,
     val isHintShown: Boolean = false,
+    /** The hint sheet asks whether to show the guide; it is only answered by the child. */
+    val isHintSheetShown: Boolean = false,
+    /** Something has been written on the active blank since it was last cleared. */
+    val hasInk: Boolean = false,
+    val isRestartConfirmationShown: Boolean = false,
     /** The last check read the writing as something other than the missing item; cleared by the next stroke. */
     val isNotRecognized: Boolean = false,
     val results: List<BlankResult> = emptyList(),
@@ -84,11 +91,20 @@ data class FillBlanksState(
     val isSequenceFinished: Boolean get() = !isLoading && error == null && activeExercise == null && results.isNotEmpty()
 
     val averagePercent: Int get() = if (results.isEmpty()) 0 else results.map { it.score }.average().roundToInt()
+
+    /** The finished sequence's stars, by the same rule as a single try's. */
+    val stars: Int get() = StarRule.starsFor(averagePercent.toFloat())
 }
 
 sealed interface FillBlanksEvent {
     /** The active blank was traced to completion with the engine's [score] and [scoreLevel]. */
     data class BlankCompleted(val score: Float, val scoreLevel: ScoreLevel) : FillBlanksEvent
+
+    /** The child tapped Help: the hint sheet asks before the guide is shown. */
+    data object HintRequested : FillBlanksEvent
+
+    /** The child closed the hint sheet without the guide. */
+    data object HintDismissed : FillBlanksEvent
 
     /** The child asked to see the active blank's dotted guide. */
     data object HintUsed : FillBlanksEvent
@@ -98,6 +114,12 @@ sealed interface FillBlanksEvent {
 
     /** A stroke was lifted; [ink] is everything written on the active blank so far, one list per stroke. */
     data class InkChanged(val ink: List<List<TracePoint>>) : FillBlanksEvent
+
+    /** The child tapped Reset: with ink on the blank it asks first, otherwise it starts over at once. */
+    data object BlankRestartRequested : FillBlanksEvent
+
+    /** The child kept the ink rather than starting over. */
+    data object BlankRestartDismissed : FillBlanksEvent
 
     /** The child started the active blank over. */
     data object BlankRestarted : FillBlanksEvent
@@ -134,7 +156,7 @@ class FillBlanksViewModel @Inject constructor(
     private var blankStartedAtMs: Long = 0L
     private var recognitionJob: Job? = null
 
-    private val mutableState = MutableStateFlow(FillBlanksState(type = type))
+    private val mutableState = MutableStateFlow(FillBlanksState(type = type, difficulty = difficulty))
     val uiState: StateFlow<FillBlanksState> = mutableState.asStateFlow()
 
     init {
@@ -147,20 +169,22 @@ class FillBlanksViewModel @Inject constructor(
                 cancelRecognition()
                 onBlankCompleted(event.score, event.scoreLevel)
             }
-            FillBlanksEvent.HintUsed ->
-                mutableState.value = mutableState.value.copy(isHintShown = true, isNotRecognized = false)
+            FillBlanksEvent.HintRequested -> mutableState.value = mutableState.value.copy(isHintSheetShown = true)
+            FillBlanksEvent.HintDismissed -> mutableState.value = mutableState.value.copy(isHintSheetShown = false)
+            FillBlanksEvent.HintUsed -> mutableState.value = mutableState.value.copy(
+                isHintShown = true,
+                isHintSheetShown = false,
+                isNotRecognized = false,
+            )
             FillBlanksEvent.StrokeStarted -> {
                 cancelRecognition()
-                mutableState.value = mutableState.value.copy(isNotRecognized = false)
+                mutableState.value = mutableState.value.copy(hasInk = true, isNotRecognized = false)
             }
             is FillBlanksEvent.InkChanged -> onInkChanged(event.ink)
-            FillBlanksEvent.BlankRestarted -> {
-                cancelRecognition()
-                mutableState.value = mutableState.value.copy(
-                    attemptId = mutableState.value.attemptId + 1,
-                    isNotRecognized = false,
-                )
-            }
+            FillBlanksEvent.BlankRestartRequested -> onRestartRequested()
+            FillBlanksEvent.BlankRestartDismissed ->
+                mutableState.value = mutableState.value.copy(isRestartConfirmationShown = false)
+            FillBlanksEvent.BlankRestarted -> restartBlank()
             FillBlanksEvent.NextSequence -> {
                 cancelRecognition()
                 onNextSequence()
@@ -168,14 +192,32 @@ class FillBlanksViewModel @Inject constructor(
         }
     }
 
+    private fun onRestartRequested() {
+        if (mutableState.value.hasInk) {
+            mutableState.value = mutableState.value.copy(isRestartConfirmationShown = true)
+        } else {
+            restartBlank()
+        }
+    }
+
+    private fun restartBlank() {
+        cancelRecognition()
+        mutableState.value = mutableState.value.copy(
+            attemptId = mutableState.value.attemptId + 1,
+            hasInk = false,
+            isRestartConfirmationShown = false,
+            isNotRecognized = false,
+        )
+    }
+
     private suspend fun load() {
         if (type == null || type == ExerciseType.DRAWING) {
-            mutableState.value = FillBlanksState(type = type, isLoading = false, error = R.string.error_no_sequences)
+            mutableState.value = FillBlanksState(type = type, difficulty = difficulty, isLoading = false, error = R.string.error_no_sequences)
             return
         }
         sequenceItems = exerciseRepository.observeExercises(type).first().sequenceItems(type)
         if (sequenceItems.size < BlankSequenceGenerator.MIN_WINDOW) {
-            mutableState.value = FillBlanksState(type = type, isLoading = false, error = R.string.error_too_few_items)
+            mutableState.value = FillBlanksState(type = type, difficulty = difficulty, isLoading = false, error = R.string.error_too_few_items)
             return
         }
         val seed = savedStateHandle.get<Long>(KEY_SEED) ?: System.currentTimeMillis().also { savedStateHandle[KEY_SEED] = it }
@@ -188,6 +230,7 @@ class FillBlanksViewModel @Inject constructor(
         blankStartedAtMs = System.currentTimeMillis()
         mutableState.value = FillBlanksState(
             type = type,
+            difficulty = difficulty,
             isLoading = false,
             cells = next.cells(filledCount = 0),
             activeExercise = next.items[next.blankIndices.first()],
@@ -244,6 +287,9 @@ class FillBlanksViewModel @Inject constructor(
             activeExercise = nextBlank?.let { checkNotNull(sequence).items[it] },
             attemptId = current.attemptId + 1,
             isHintShown = false,
+            isHintSheetShown = false,
+            hasInk = false,
+            isRestartConfirmationShown = false,
             isNotRecognized = false,
             results = results,
         )

@@ -32,7 +32,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
@@ -52,13 +51,12 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bornochitra.R
 import com.bornochitra.core.model.ScoreLevel
-import com.bornochitra.core.model.StarRule
 import com.bornochitra.core.ui.components.BcCard
 import com.bornochitra.core.ui.components.BcEmptyState
 import com.bornochitra.core.ui.components.BcExerciseShape
 import com.bornochitra.core.ui.components.BcLetterText
 import com.bornochitra.core.ui.components.BcPrimaryButton
-import com.bornochitra.core.ui.components.BcStar
+import com.bornochitra.core.ui.components.BcResultStars
 import com.bornochitra.core.ui.components.BcTextButton
 import com.bornochitra.core.ui.components.BcTip
 import com.bornochitra.core.ui.components.BcTonalButton
@@ -74,7 +72,6 @@ import kotlin.math.roundToInt
 
 private const val SCORE_REVEAL_MS = 700
 private const val POP_START_SCALE = 0.7f
-private const val SIDE_STAR_TILT = 10f
 
 /**
  * Reports one finished attempt (plan.md section 39). Wording is encouraging at every level: a low
@@ -178,7 +175,7 @@ private fun AttemptSummary(
                 verticalArrangement = Arrangement.spacedBy(BcSpacing.m),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                ResultStars(count = attempt.stars, modifier = Modifier.padding(top = BcSpacing.xs))
+                BcResultStars(count = attempt.stars, modifier = Modifier.padding(top = BcSpacing.xs))
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
                         text = stringResource(wording.headline),
@@ -241,26 +238,6 @@ private fun AttemptSummary(
                 )
             }
         }
-    }
-}
-
-/** This try's stars: the middle one larger and raised, the side ones tilted outwards. Empty ones are outlines. */
-@Composable
-private fun ResultStars(count: Int, modifier: Modifier = Modifier) {
-    val description = stringResource(R.string.progress_stars_description, count, StarRule.MAX_STARS)
-    Row(
-        modifier = modifier.clearAndSetSemantics { contentDescription = description },
-        horizontalArrangement = Arrangement.spacedBy(BcSpacing.xs),
-        verticalAlignment = Alignment.Bottom,
-    ) {
-        BcStar(filled = count >= 1, size = BcDimens.resultStarSide, outlineWhenEmpty = true, modifier = Modifier.rotate(-SIDE_STAR_TILT))
-        BcStar(
-            filled = count >= 2,
-            size = BcDimens.resultStarMiddle,
-            outlineWhenEmpty = true,
-            modifier = Modifier.padding(bottom = BcDimens.resultStarRaise),
-        )
-        BcStar(filled = count >= 3, size = BcDimens.resultStarSide, outlineWhenEmpty = true, modifier = Modifier.rotate(SIDE_STAR_TILT))
     }
 }
 

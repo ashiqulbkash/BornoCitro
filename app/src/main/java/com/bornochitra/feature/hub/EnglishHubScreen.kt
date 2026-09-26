@@ -11,11 +11,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bornochitra.R
+import com.bornochitra.core.locale.AppLanguage
 import com.bornochitra.core.model.ExerciseType
 import com.bornochitra.core.ui.components.label
 import com.bornochitra.core.ui.theme.BcSpacing
 import com.bornochitra.core.ui.theme.BcTheme
-import com.bornochitra.core.ui.theme.BcType
 import com.bornochitra.core.ui.theme.BornoChitraTheme
 
 private val FillCells = listOf("a", GAME_BLANK, "c")
@@ -77,10 +77,9 @@ private fun EnglishHubContent(
         },
         modifier = modifier,
     ) {
-        val colors = HubColors(leadContainer = bcColors.englishContainer, leadContent = bcColors.onEnglishContainer, progress = bcColors.english)
-        HubCategoryRow(ExerciseType.ENGLISH_SMALL, "a", state.progressOf(ExerciseType.ENGLISH_SMALL), colors, onEnglishSmallClick)
-        HubCategoryRow(ExerciseType.ENGLISH_CAPITAL, "A", state.progressOf(ExerciseType.ENGLISH_CAPITAL), colors, onEnglishCapitalClick)
-        HubCategoryRow(ExerciseType.MATH, "1+", state.progressOf(ExerciseType.MATH), colors, onMathClick, glyphStyle = BcType.rowLeadCompact)
+        HubCategoryRow(ExerciseType.ENGLISH_SMALL, AppLanguage.ENGLISH, state.progressOf(ExerciseType.ENGLISH_SMALL), onEnglishSmallClick)
+        HubCategoryRow(ExerciseType.ENGLISH_CAPITAL, AppLanguage.ENGLISH, state.progressOf(ExerciseType.ENGLISH_CAPITAL), onEnglishCapitalClick)
+        HubCategoryRow(ExerciseType.MATH, AppLanguage.ENGLISH, state.progressOf(ExerciseType.MATH), onMathClick)
         Text(
             text = stringResource(R.string.hub_math_shared, ExerciseType.MATH.label()),
             style = MaterialTheme.typography.bodySmall,

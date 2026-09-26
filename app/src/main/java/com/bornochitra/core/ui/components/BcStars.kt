@@ -10,6 +10,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeJoin
@@ -27,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bornochitra.R
 import com.bornochitra.core.model.StarRule
+import com.bornochitra.core.ui.theme.BcDimens
 import com.bornochitra.core.ui.theme.BcSpacing
 import com.bornochitra.core.ui.theme.BcTheme
 import com.bornochitra.core.ui.theme.BornoChitraTheme
@@ -39,6 +41,7 @@ private const val STAR_GRID = 24f
 private const val EMPTY_STROKE_UNITS = 1.6f
 private val StarOutlineWidth = 1.5.dp
 private val StarGap = 1.dp
+private const val SIDE_STAR_TILT = 10f
 private val StarPath = PathParser().parsePathString(STAR_PATH).toPath()
 
 /** Star sizes the design uses: tiles and chips 13, cards 14, grown-ups 18, legend 30. Text-sized so they scale with the font. */
@@ -97,6 +100,34 @@ fun BcStar(
                 drawPath(StarPath, color = colors.starEmpty)
             }
         }
+    }
+}
+
+/**
+ * A try's stars, large: the middle one bigger and raised, the side ones tilted outwards, empty ones outlines.
+ * Result draws them at 64/88, the fill-the-blanks summary at 60/80 (design/DESIGN_SPEC.md 5.12, 5.17).
+ */
+@Composable
+fun BcResultStars(
+    count: Int,
+    modifier: Modifier = Modifier,
+    sideSize: Dp = BcDimens.resultStarSide,
+    middleSize: Dp = BcDimens.resultStarMiddle,
+) {
+    val description = stringResource(R.string.progress_stars_description, count, StarRule.MAX_STARS)
+    Row(
+        modifier = modifier.clearAndSetSemantics { contentDescription = description },
+        horizontalArrangement = Arrangement.spacedBy(BcSpacing.xs),
+        verticalAlignment = Alignment.Bottom,
+    ) {
+        BcStar(filled = count >= 1, size = sideSize, outlineWhenEmpty = true, modifier = Modifier.rotate(-SIDE_STAR_TILT))
+        BcStar(
+            filled = count >= 2,
+            size = middleSize,
+            outlineWhenEmpty = true,
+            modifier = Modifier.padding(bottom = BcDimens.resultStarRaise),
+        )
+        BcStar(filled = count >= 3, size = sideSize, outlineWhenEmpty = true, modifier = Modifier.rotate(SIDE_STAR_TILT))
     }
 }
 

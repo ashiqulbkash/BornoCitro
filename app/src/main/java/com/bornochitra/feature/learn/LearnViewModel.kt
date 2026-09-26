@@ -24,7 +24,10 @@ enum class VoiceStatus {
 
 data class LearnItem(
     val letter: String,
+    /** "A for apple": what the example button shows and says; it ends with [word]. */
     val explanation: String,
+    val word: String,
+    val group: LearnGroup,
     val spokenLetter: String = letter,
 )
 
@@ -56,8 +59,16 @@ class LearnViewModel @Inject constructor(
     private val mutableState = MutableStateFlow(
         LearnUiState(
             language = language,
-            items = learnLetters(language).map {
-                LearnItem(letter = it.letter, explanation = it.explanation(language), spokenLetter = it.spoken)
+            items = learnGroups(language).flatMap { (group, letters) ->
+                letters.map {
+                    LearnItem(
+                        letter = it.letter,
+                        explanation = it.explanation(language),
+                        word = it.word,
+                        group = group,
+                        spokenLetter = it.spoken,
+                    )
+                }
             },
         ),
     )
