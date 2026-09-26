@@ -30,7 +30,7 @@ private val features = listOf(
 fun AboutContent(modifier: Modifier = Modifier) {
     Column(
         modifier = modifier.verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.spacedBy(BcSpacing.md),
+        verticalArrangement = Arrangement.spacedBy(BcSpacing.m),
     ) {
         Text(text = stringResource(R.string.about_heading), style = MaterialTheme.typography.headlineMedium)
         Text(text = stringResource(R.string.about_description), style = MaterialTheme.typography.bodyLarge)
@@ -47,7 +47,7 @@ private fun FeatureCard(
         Text(
             text = stringResource(text),
             style = MaterialTheme.typography.bodyLarge,
-            modifier = Modifier.padding(BcSpacing.md),
+            modifier = Modifier.padding(BcSpacing.m),
         )
     }
 }
@@ -56,6 +56,6 @@ private fun FeatureCard(
 @Composable
 private fun AboutContentPreview() {
     BornoChitraTheme {
-        AboutContent(modifier = Modifier.padding(BcSpacing.md))
+        AboutContent(modifier = Modifier.padding(BcSpacing.m))
     }
 }

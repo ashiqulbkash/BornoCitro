@@ -25,6 +25,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.tooling.preview.Preview
 import com.bornochitra.core.model.Point
 import com.bornochitra.core.model.Stroke
+import com.bornochitra.core.ui.theme.BcTheme
 import com.bornochitra.core.ui.theme.BornoChitraTheme
 
 /**
@@ -46,9 +47,9 @@ fun TracingInputCanvas(
     tracedColor: Color? = null,
     onPointerEvent: (TracingPointerEvent) -> Unit = {},
 ) {
-    val resolvedDotColor = style.dotColor ?: MaterialTheme.colorScheme.primary
-    val resolvedPathColor = style.pathColor ?: MaterialTheme.colorScheme.outline
-    val resolvedTracedColor = tracedColor ?: MaterialTheme.colorScheme.secondary
+    val resolvedDotColor = style.dotColor ?: BcTheme.colors.guide
+    val resolvedPathColor = style.pathColor ?: BcTheme.colors.guide.copy(alpha = GUIDE_LINE_ALPHA)
+    val resolvedTracedColor = tracedColor ?: MaterialTheme.colorScheme.primary
     val guides = remember(guideStrokes, style.dotSpacing) {
         guideStrokes.map { guide -> guide.points to DottedPathSampler.sample(guide.points, style.dotSpacing) }
     }

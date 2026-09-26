@@ -7,13 +7,32 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontVariation
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.LineHeightStyle
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
 import com.bornochitra.R
+
+/** Display, titles, buttons and marks (Bengali + Latin). Only the weights the design uses are bundled. */
+val BcBalooFontFamily = FontFamily(
+    Font(R.font.baloo_da_2_medium, FontWeight.Medium),
+    Font(R.font.baloo_da_2_semibold, FontWeight.SemiBold),
+    Font(R.font.baloo_da_2_bold, FontWeight.Bold),
+    Font(R.font.baloo_da_2_extrabold, FontWeight.ExtraBold),
+)
+
+/** Body text, captions and labels inside text. */
+val BcHindFontFamily = FontFamily(
+    Font(R.font.hind_siliguri_regular, FontWeight.Normal),
+    Font(R.font.hind_siliguri_medium, FontWeight.Medium),
+    Font(R.font.hind_siliguri_semibold, FontWeight.SemiBold),
+    Font(R.font.hind_siliguri_bold, FontWeight.Bold),
+)
 
 /**
  * Andika, a school print font, for English small letters: its single-storey a, g and y are the shapes
  * children are taught, and the English guides are derived from this exact face (see
- * `EnglishSmallExercises.kt`). Only the bold weight the letter styles use is bundled.
+ * `EnglishSmallExercises.kt`). The design also uses it for the word "English" and the "Aa" mark. Only the
+ * bold weight is bundled.
  */
 val BcLatinLetterFontFamily = FontFamily(Font(R.font.andika_bold, FontWeight.Bold))
 
@@ -35,57 +54,118 @@ val BcLatinCapitalFontFamily = FontFamily(
     ),
 )
 
-// Sized up from the M3 defaults for readability by young children and to give
-// Bengali characters (displayLarge) enough room to render clearly.
-val BcTypography = Typography(
-    displayLarge = TextStyle(
-        fontWeight = FontWeight.Bold,
-        fontSize = 96.sp,
-        lineHeight = 104.sp,
-    ),
-    displayMedium = TextStyle(
-        fontWeight = FontWeight.Bold,
-        fontSize = 64.sp,
-        lineHeight = 72.sp,
-    ),
-    headlineLarge = TextStyle(
-        fontWeight = FontWeight.Bold,
-        fontSize = 32.sp,
-        lineHeight = 40.sp,
-    ),
-    headlineMedium = TextStyle(
-        fontWeight = FontWeight.SemiBold,
-        fontSize = 28.sp,
-        lineHeight = 36.sp,
-    ),
-    titleLarge = TextStyle(
-        fontWeight = FontWeight.SemiBold,
-        fontSize = 22.sp,
-        lineHeight = 28.sp,
-    ),
-    titleMedium = TextStyle(
-        fontWeight = FontWeight.Medium,
-        fontSize = 18.sp,
-        lineHeight = 24.sp,
-    ),
-    bodyLarge = TextStyle(
-        fontWeight = FontWeight.Normal,
-        fontSize = 18.sp,
-        lineHeight = 26.sp,
-    ),
-    bodyMedium = TextStyle(
-        fontWeight = FontWeight.Normal,
-        fontSize = 16.sp,
-        lineHeight = 24.sp,
-    ),
-    labelLarge = TextStyle(
-        fontWeight = FontWeight.Medium,
-        fontSize = 16.sp,
-        lineHeight = 22.sp,
-    ),
-    labelMedium = TextStyle(
-        fontWeight = FontWeight.Medium,
-        fontSize = 14.sp,
-        lineHeight = 20.sp,
-    ),
+/**
+ * The platform's Noto Sans Bengali, for Bengali letters and numbers the child learns. Their guides were derived
+ * from the phone's own system font at Bold, so this is deliberately not a bundled file (a newer Noto redraws ন).
+ */
+val BcBengaliLetterFontFamily: FontFamily = FontFamily.Default
+
+// Bengali matras and conjuncts need the full line height on both sides: never trim it off the first or last line.
+private val BengaliLineHeight = LineHeightStyle(
+    alignment = LineHeightStyle.Alignment.Center,
+    trim = LineHeightStyle.Trim.None,
 )
+
+private fun style(
+    family: FontFamily,
+    weight: FontWeight,
+    size: TextUnit,
+    lineHeight: TextUnit,
+) = TextStyle(
+    fontFamily = family,
+    fontWeight = weight,
+    fontSize = size,
+    lineHeight = lineHeight,
+    lineHeightStyle = BengaliLineHeight,
+)
+
+private fun baloo(weight: FontWeight, size: TextUnit, lineHeight: TextUnit) = style(BcBalooFontFamily, weight, size, lineHeight)
+
+private fun hind(weight: FontWeight, size: TextUnit, lineHeight: TextUnit) = style(BcHindFontFamily, weight, size, lineHeight)
+
+// design/DESIGN_SPEC.md 2. The roles the design does not name keep their M3 sizes in the design's fonts.
+val BcTypography = Typography(
+    displayLarge = baloo(FontWeight.ExtraBold, 57.sp, 68.sp),
+    displayMedium = baloo(FontWeight.ExtraBold, 45.sp, 56.sp),
+    displaySmall = baloo(FontWeight.ExtraBold, 40.sp, 50.sp),
+    headlineLarge = baloo(FontWeight.Bold, 32.sp, 42.sp),
+    headlineMedium = baloo(FontWeight.Bold, 28.sp, 38.sp),
+    headlineSmall = baloo(FontWeight.Bold, 24.sp, 32.sp),
+    titleLarge = baloo(FontWeight.Bold, 22.sp, 30.sp),
+    titleMedium = baloo(FontWeight.Bold, 18.sp, 24.sp),
+    titleSmall = baloo(FontWeight.Bold, 16.sp, 22.sp),
+    bodyLarge = hind(FontWeight.Medium, 18.sp, 29.sp),
+    bodyMedium = hind(FontWeight.Medium, 16.sp, 25.sp),
+    bodySmall = hind(FontWeight.Medium, 14.sp, 20.sp),
+    labelLarge = baloo(FontWeight.Bold, 17.sp, 20.sp),
+    labelMedium = baloo(FontWeight.Bold, 15.sp, 20.sp),
+    labelSmall = hind(FontWeight.SemiBold, 13.sp, 16.sp),
+)
+
+/** The design's custom styles (`BcType`). Letter styles are resized by [BcLetterStyle] for learning characters. */
+object BcType {
+    val letterTile = baloo(FontWeight.Bold, 40.sp, 46.sp)
+    val letterPractice = baloo(FontWeight.ExtraBold, 56.sp, 70.sp)
+    val letterResult = baloo(FontWeight.ExtraBold, 72.sp, 80.sp)
+    val scoreXL = baloo(FontWeight.ExtraBold, 56.sp, 62.sp)
+    val scoreL = baloo(FontWeight.ExtraBold, 48.sp, 53.sp)
+    val percentHeader = baloo(FontWeight.ExtraBold, 30.sp, 33.sp)
+    val flag = baloo(FontWeight.Bold, 11.sp, 14.sp)
+
+    /** Small button labels. */
+    val labelLargeSmall = baloo(FontWeight.Bold, 15.sp, 20.sp)
+
+    /** Segmented-switch labels. */
+    val segment = baloo(FontWeight.Bold, 17.sp, 20.sp)
+
+    /** Banner text. */
+    val banner = hind(FontWeight.Medium, 15.sp, 22.sp)
+
+    /** Compact banner text (dialog info banner, Progress detail). */
+    val bannerSmall = hind(FontWeight.Medium, 14.sp, 20.sp)
+
+    /** Captions and chips that the design sets at weight 600. */
+    val bodySmallStrong = hind(FontWeight.SemiBold, 14.sp, 20.sp)
+
+    /** Percentages on subject cards: bodySmall at 700. */
+    val bodySmallBold = hind(FontWeight.Bold, 14.sp, 20.sp)
+
+    /** Instructions: bodyLarge at 600. */
+    val instruction = hind(FontWeight.SemiBold, 18.sp, 29.sp)
+
+    /** Compact activity-row names. */
+    val rowNameCompact = baloo(FontWeight.Bold, 16.sp, 22.sp)
+
+    /** Tile status on the 4-column Progress detail grid; 12sp per the user's correction d. */
+    val statusTiny = hind(FontWeight.SemiBold, 12.sp, 16.sp)
+
+    /** Listen example text: 18sp Hind 600. */
+    val example = hind(FontWeight.SemiBold, 18.sp, 26.sp)
+
+    /** The glyph on a Home subject card's 72dp tile. */
+    val subjectGlyph = baloo(FontWeight.ExtraBold, 38.sp, 44.sp)
+
+    /** The glyph on a 52dp activity-row lead. */
+    val rowLead = baloo(FontWeight.ExtraBold, 26.sp, 32.sp)
+
+    /** The glyph on a 44dp compact-row lead. */
+    val rowLeadCompact = baloo(FontWeight.ExtraBold, 22.sp, 28.sp)
+
+    /** Game-card mini cells. */
+    val gameCell = baloo(FontWeight.Bold, 18.sp, 24.sp)
+
+    /** Fill-the-blanks sequence cells. */
+    val sequenceCell = baloo(FontWeight.Bold, 28.sp, 36.sp)
+
+    /** Difficulty mini-pattern cells. */
+    val miniCell = baloo(FontWeight.Bold, 13.sp, 16.sp)
+
+    /** Listen and learn letter buttons. */
+    val learnLetter = baloo(FontWeight.ExtraBold, 30.sp, 38.sp)
+
+    /** Progress detail tile characters. */
+    val detailTile = baloo(FontWeight.Bold, 32.sp, 40.sp)
+
+    /** The app logo's "অ" inside the 36dp top-bar circle. */
+    val logoSmall = baloo(FontWeight.ExtraBold, 20.sp, 24.sp)
+}

@@ -24,7 +24,7 @@ import com.bornochitra.core.locale.AppLanguage
 import com.bornochitra.core.ui.components.BcFeedbackBanner
 import com.bornochitra.core.ui.components.BcFeedbackTone
 import com.bornochitra.core.ui.components.BcPrimaryButton
-import com.bornochitra.core.ui.components.BcSecondaryButton
+import com.bornochitra.core.ui.components.BcOutlineButton
 import com.bornochitra.core.ui.components.BcTopAppBar
 import com.bornochitra.core.ui.theme.BcDimens
 import com.bornochitra.core.ui.theme.BcSpacing
@@ -67,15 +67,15 @@ private fun LearnContent(
             if (state.voiceStatus == VoiceStatus.MISSING) {
                 NoVoiceBanner(
                     language = state.language,
-                    modifier = Modifier.padding(start = BcSpacing.md, end = BcSpacing.md, top = BcSpacing.md),
+                    modifier = Modifier.padding(start = BcSpacing.m, end = BcSpacing.m, top = BcSpacing.m),
                 )
             }
             LazyColumn(
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f),
-                contentPadding = PaddingValues(BcSpacing.md),
-                verticalArrangement = Arrangement.spacedBy(BcSpacing.sm),
+                contentPadding = PaddingValues(BcSpacing.m),
+                verticalArrangement = Arrangement.spacedBy(BcSpacing.xs),
             ) {
                 items(state.items, key = { it.letter }) { item ->
                     LearnRow(item = item, onEvent = onEvent)
@@ -111,15 +111,15 @@ private fun LearnRow(
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(BcSpacing.sm),
+        horizontalArrangement = Arrangement.spacedBy(BcSpacing.xs),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         BcPrimaryButton(
             text = item.letter,
             onClick = { onEvent(LearnEvent.LetterClicked(item)) },
-            modifier = Modifier.width(BcDimens.letterTileSize),
+            modifier = Modifier.width(BcDimens.tileMinSize),
         )
-        BcSecondaryButton(
+        BcOutlineButton(
             text = item.explanation,
             onClick = { onEvent(LearnEvent.ExplanationClicked(item)) },
             modifier = Modifier.weight(1f),

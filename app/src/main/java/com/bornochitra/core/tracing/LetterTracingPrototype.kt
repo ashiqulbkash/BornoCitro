@@ -51,8 +51,8 @@ fun LetterTracingPrototype(exercise: Exercise, modifier: Modifier = Modifier) {
     }
 
     Column(
-        modifier = modifier.padding(BcSpacing.md),
-        verticalArrangement = Arrangement.spacedBy(BcSpacing.sm),
+        modifier = modifier.padding(BcSpacing.m),
+        verticalArrangement = Arrangement.spacedBy(BcSpacing.xs),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(text = exercise.title, style = MaterialTheme.typography.displayMedium)

@@ -45,7 +45,7 @@ private fun VowelOPreview() {
         Surface {
             ExerciseDotPreviewCanvas(
                 exercise = vowelExercises.first { it.id == "vowel-o" },
-                modifier = Modifier.fillMaxWidth().padding(BcSpacing.md),
+                modifier = Modifier.fillMaxWidth().padding(BcSpacing.m),
             )
         }
     }
@@ -58,7 +58,7 @@ private fun ConsonantKoPreview() {
         Surface {
             ExerciseDotPreviewCanvas(
                 exercise = consonantExercises.first { it.id == "consonant-ko" },
-                modifier = Modifier.fillMaxWidth().padding(BcSpacing.md),
+                modifier = Modifier.fillMaxWidth().padding(BcSpacing.m),
             )
         }
     }
@@ -71,7 +71,7 @@ private fun DrawingHousePreview() {
         Surface {
             ExerciseDotPreviewCanvas(
                 exercise = drawingExercises.first { it.id == "drawing-house" },
-                modifier = Modifier.fillMaxWidth().padding(BcSpacing.md),
+                modifier = Modifier.fillMaxWidth().padding(BcSpacing.m),
             )
         }
     }

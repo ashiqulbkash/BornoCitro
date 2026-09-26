@@ -145,13 +145,13 @@ private fun ExerciseTracingContent(
         BcPrimaryButton(text = stringResource(R.string.action_reset), onClick = onRestart)
     }
 
-    BoxWithConstraints(modifier = modifier.padding(BcSpacing.md)) {
+    BoxWithConstraints(modifier = modifier.padding(BcSpacing.m)) {
         if (maxWidth > maxHeight) {
             // Side by side, so the canvas takes the full height instead of what a heading, tip and
             // button leave above and below it.
             Row(
                 modifier = Modifier.fillMaxSize(),
-                horizontalArrangement = Arrangement.spacedBy(BcSpacing.md),
+                horizontalArrangement = Arrangement.spacedBy(BcSpacing.m),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 canvas(Modifier.fillMaxHeight().aspectRatio(1f))
@@ -159,7 +159,7 @@ private fun ExerciseTracingContent(
                     modifier = Modifier
                         .weight(1f)
                         .verticalScroll(rememberScrollState()),
-                    verticalArrangement = Arrangement.spacedBy(BcSpacing.sm, Alignment.CenterVertically),
+                    verticalArrangement = Arrangement.spacedBy(BcSpacing.xs, Alignment.CenterVertically),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     BcExerciseHeading(title = title)
@@ -171,7 +171,7 @@ private fun ExerciseTracingContent(
         } else {
             Column(
                 modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.spacedBy(BcSpacing.sm),
+                verticalArrangement = Arrangement.spacedBy(BcSpacing.xs),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 BcExerciseHeading(title = title)

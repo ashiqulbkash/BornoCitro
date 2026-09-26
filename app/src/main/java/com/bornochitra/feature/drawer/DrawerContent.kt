@@ -33,12 +33,12 @@ fun DrawerContent(
     modifier: Modifier = Modifier,
 ) {
     ModalDrawerSheet(modifier = modifier.fillMaxWidth(DRAWER_WIDTH_FRACTION)) {
-        Column(modifier = Modifier.padding(horizontal = BcSpacing.md, vertical = BcSpacing.md)) {
+        Column(modifier = Modifier.padding(horizontal = BcSpacing.m, vertical = BcSpacing.m)) {
             Text(text = stringResource(R.string.title_home), style = MaterialTheme.typography.headlineSmall)
             BcLanguageSwitch(
                 language = state.language,
                 onLanguageSelected = { onEvent(DrawerEvent.LanguageSelected(it)) },
-                modifier = Modifier.padding(vertical = BcSpacing.md),
+                modifier = Modifier.padding(vertical = BcSpacing.m),
             )
             NavigationDrawerItem(
                 label = { Text(text = stringResource(R.string.drawer_progress)) },

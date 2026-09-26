@@ -11,7 +11,7 @@ import com.bornochitra.core.model.ExerciseProgress
 import com.bornochitra.core.model.ExerciseType
 import com.bornochitra.core.model.LearningProgress
 import com.bornochitra.core.model.LearningState
-import com.bornochitra.core.model.ScoreLevel
+import com.bornochitra.core.model.StarRule
 import com.bornochitra.core.model.toLearningState
 import com.bornochitra.core.tracing.ScoreThresholds
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,9 +25,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
-
-/** How many stars a fully learned exercise shows. */
-const val MAX_EXERCISE_STARS = 3
 
 data class ProgressExerciseItem(
     val id: String,
@@ -124,19 +121,9 @@ class ProgressViewModel @Inject constructor(
     private fun Exercise.toItem(progress: ExerciseProgress?) = ProgressExerciseItem(
         id = id,
         title = title,
-        stars = starsOf(progress),
+        stars = StarRule.starsOf(progress, thresholds),
         state = progress.toLearningState(),
     )
-
-    /** Stars come from the best score so far, so a good attempt is never taken away by a worse one. */
-    private fun starsOf(progress: ExerciseProgress?): Int {
-        if (progress == null || progress.attemptCount == 0) return 0
-        return when (thresholds.classify(progress.bestScore)) {
-            ScoreLevel.PERFECT -> 3
-            ScoreLevel.MEDIUM -> 2
-            ScoreLevel.LOW -> 1
-        }
-    }
 }
 
 private fun LearningProgress.progressOf(type: ExerciseType): Float = when (type) {

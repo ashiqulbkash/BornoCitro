@@ -29,6 +29,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bornochitra.R
 import com.bornochitra.core.model.ExerciseType
 import com.bornochitra.core.model.LearningState
+import com.bornochitra.core.model.StarRule
 import com.bornochitra.core.ui.components.BcEmptyState
 import com.bornochitra.core.ui.components.BcLabeledProgress
 import com.bornochitra.core.ui.components.BcPrimaryButton
@@ -36,7 +37,7 @@ import com.bornochitra.core.ui.components.BcTopAppBar
 import com.bornochitra.core.ui.components.exerciseTitle
 import com.bornochitra.core.ui.components.label
 import com.bornochitra.core.ui.components.letterFontFamily
-import com.bornochitra.core.ui.theme.BcFeedbackGood
+import com.bornochitra.core.ui.theme.BcTheme
 import com.bornochitra.core.ui.theme.BcSpacing
 import com.bornochitra.core.ui.theme.BornoChitraTheme
 
@@ -136,8 +137,8 @@ private fun CategoryButtons(
     Column(
         modifier = modifier
             .verticalScroll(rememberScrollState())
-            .padding(BcSpacing.md),
-        verticalArrangement = Arrangement.spacedBy(BcSpacing.md),
+            .padding(BcSpacing.m),
+        verticalArrangement = Arrangement.spacedBy(BcSpacing.m),
     ) {
         BcLabeledProgress(label = stringResource(R.string.overall), progress = state.overallProgress)
 
@@ -170,12 +171,12 @@ private fun CategoryProgressList(
     LazyColumn(
         modifier = modifier,
         contentPadding = PaddingValues(
-            start = BcSpacing.md,
-            end = BcSpacing.md,
-            top = innerPadding.calculateTopPadding() + BcSpacing.md,
-            bottom = innerPadding.calculateBottomPadding() + BcSpacing.md,
+            start = BcSpacing.m,
+            end = BcSpacing.m,
+            top = innerPadding.calculateTopPadding() + BcSpacing.m,
+            bottom = innerPadding.calculateBottomPadding() + BcSpacing.m,
         ),
-        verticalArrangement = Arrangement.spacedBy(BcSpacing.md),
+        verticalArrangement = Arrangement.spacedBy(BcSpacing.m),
     ) {
         item(key = "category-${category.type}") {
             BcLabeledProgress(label = category.type.label(), progress = category.progress)
@@ -198,7 +199,7 @@ private fun ExerciseStarsRow(
     stateText: String?,
     modifier: Modifier = Modifier,
 ) {
-    val starsDescription = stringResource(R.string.progress_stars_description, stars, MAX_EXERCISE_STARS)
+    val starsDescription = stringResource(R.string.progress_stars_description, stars, StarRule.MAX_STARS)
     Row(
         modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -226,10 +227,10 @@ private fun ExerciseStarsRow(
             Text(
                 text = FILLED_STAR.repeat(stars),
                 style = MaterialTheme.typography.titleLarge,
-                color = BcFeedbackGood,
+                color = BcTheme.colors.star,
             )
             Text(
-                text = EMPTY_STAR.repeat(MAX_EXERCISE_STARS - stars),
+                text = EMPTY_STAR.repeat(StarRule.MAX_STARS - stars),
                 style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.outline,
             )

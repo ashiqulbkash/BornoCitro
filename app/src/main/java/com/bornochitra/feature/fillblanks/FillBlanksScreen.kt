@@ -35,7 +35,7 @@ import com.bornochitra.core.model.ScoreLevel
 import com.bornochitra.core.tracing.ExerciseTracingCanvas
 import com.bornochitra.core.ui.components.BcEmptyState
 import com.bornochitra.core.ui.components.BcPrimaryButton
-import com.bornochitra.core.ui.components.BcSecondaryButton
+import com.bornochitra.core.ui.components.BcOutlineButton
 import com.bornochitra.core.ui.components.BcTopAppBar
 import com.bornochitra.core.ui.components.letterFontFamily
 import com.bornochitra.core.ui.theme.BcSpacing
@@ -82,8 +82,8 @@ private fun FillBlanksContent(
             }
 
             else -> Column(
-                modifier = contentModifier.padding(BcSpacing.md),
-                verticalArrangement = Arrangement.spacedBy(BcSpacing.md),
+                modifier = contentModifier.padding(BcSpacing.m),
+                verticalArrangement = Arrangement.spacedBy(BcSpacing.m),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 SequenceRow(cells = state.cells)
@@ -112,7 +112,7 @@ private fun FillBlanksContent(
 private fun SequenceRow(cells: List<SequenceCell>, modifier: Modifier = Modifier) {
     Row(
         modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(BcSpacing.xs),
+        horizontalArrangement = Arrangement.spacedBy(BcSpacing.xxs),
     ) {
         cells.forEach { cell ->
             SequenceCellBox(cell = cell, modifier = Modifier.weight(1f))
@@ -198,8 +198,8 @@ private fun ColumnScope.BlankTracing(
             .aspectRatio(1f)
             .border(1.dp, MaterialTheme.colorScheme.outline, MaterialTheme.shapes.medium),
     )
-    Row(horizontalArrangement = Arrangement.spacedBy(BcSpacing.sm)) {
-        BcSecondaryButton(
+    Row(horizontalArrangement = Arrangement.spacedBy(BcSpacing.xs)) {
+        BcOutlineButton(
             text = stringResource(R.string.fill_blanks_hint),
             onClick = { onEvent(FillBlanksEvent.HintUsed) },
             enabled = !isHintShown,
@@ -254,7 +254,7 @@ private fun FillBlanksFinishedPreview() {
 @Composable
 private fun SequenceRowPreview() {
     BornoChitraTheme {
-        SequenceRow(cells = previewCells, modifier = Modifier.padding(BcSpacing.md))
+        SequenceRow(cells = previewCells, modifier = Modifier.padding(BcSpacing.m))
     }
 }
 

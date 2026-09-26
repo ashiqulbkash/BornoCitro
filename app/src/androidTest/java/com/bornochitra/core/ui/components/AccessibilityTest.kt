@@ -35,8 +35,8 @@ class AccessibilityTest {
 
         composeRule.onNodeWithText("অ", useUnmergedTree = false)
             .assert(SemanticsMatcher.expectValue(SemanticsProperties.Role, Role.Button))
-            .assertWidthIsAtLeast(BcDimens.letterTileSize)
-            .assertHeightIsAtLeast(BcDimens.letterTileSize)
+            .assertWidthIsAtLeast(BcDimens.tileMinSize)
+            .assertHeightIsAtLeast(BcDimens.tileMinSize)
     }
 
     @Test
@@ -68,7 +68,7 @@ class AccessibilityTest {
         }
 
         composeRule.onNodeWithContentDescription(context.getString(R.string.action_back))
-            .assertWidthIsAtLeast(BcDimens.minTouchTarget)
-            .assertHeightIsAtLeast(BcDimens.minTouchTarget)
+            .assertWidthIsAtLeast(BcDimens.iconButton)
+            .assertHeightIsAtLeast(BcDimens.iconButton)
     }
 }

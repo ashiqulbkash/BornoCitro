@@ -11,7 +11,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.bornochitra.R
 import com.bornochitra.core.ui.components.BcPrimaryButton
-import com.bornochitra.core.ui.components.BcSecondaryButton
+import com.bornochitra.core.ui.components.BcOutlineButton
 import com.bornochitra.core.ui.theme.BcSpacing
 import com.bornochitra.core.ui.theme.BornoChitraTheme
 
@@ -41,7 +41,7 @@ fun HandwritingModelDialog(
         text = {
             if (isBusy) {
                 Row(
-                    horizontalArrangement = Arrangement.spacedBy(BcSpacing.md),
+                    horizontalArrangement = Arrangement.spacedBy(BcSpacing.m),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     CircularProgressIndicator()
@@ -69,7 +69,7 @@ fun HandwritingModelDialog(
             }
         },
         dismissButton = {
-            BcSecondaryButton(
+            BcOutlineButton(
                 text = if (isBusy) stringResource(R.string.model_hide) else stringResource(R.string.model_not_now),
                 onClick = { onEvent(FillBlanksGateEvent.ModelDialogDismissed) },
             )

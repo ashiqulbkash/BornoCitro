@@ -47,7 +47,26 @@
     <string name="status_started">Started</string>
     <string name="status_practicing">Practicing</string>
     <string name="status_completed">Completed</string>
-    <string name="status_mastered">Mastered</string>
+    <string name="status_mastered">Learned</string>
+
+    <!-- Tiles and header progress cards. -->
+    <plurals name="tile_attempts">
+        <item quantity="one">%d try</item>
+        <item quantity="other">%d tries</item>
+    </plurals>
+    <string name="tile_continue_here">Start here</string>
+    <plurals name="header_learned">
+        <item quantity="one">%d learned</item>
+        <item quantity="other">%d learned</item>
+    </plurals>
+    <plurals name="header_done">
+        <item quantity="one">%d done</item>
+        <item quantity="other">%d done</item>
+    </plurals>
+    <plurals name="header_running">
+        <item quantity="one">%d in progress</item>
+        <item quantity="other">%d in progress</item>
+    </plurals>
 
     <string name="empty_vowels">No vowels yet</string>
     <string name="empty_consonants">No consonants yet</string>

@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">বর্ণচিত্র</string>
+    <!-- The letter on the app's logo mark, the same in every language. -->
+    <string name="logo_letter" translatable="false">অ</string>
     <string name="splash_message">বর্ণচিত্র — লেখো, শেখো, বেড়ে ওঠো</string>
 
     <!-- Toolbar titles: short, one line at 360dp. -->
@@ -46,7 +48,26 @@
     <string name="status_started">শুরু হয়েছে</string>
     <string name="status_practicing">অনুশীলন চলছে</string>
     <string name="status_completed">শেষ হয়েছে</string>
-    <string name="status_mastered">আয়ত্ত হয়েছে</string>
+    <string name="status_mastered">শিখে ফেলেছ</string>
+
+    <!-- Tiles and header progress cards. -->
+    <plurals name="tile_attempts">
+        <item quantity="one">%d বার</item>
+        <item quantity="other">%d বার</item>
+    </plurals>
+    <string name="tile_continue_here">এখান থেকে</string>
+    <plurals name="header_learned">
+        <item quantity="one">%dটি শিখেছ</item>
+        <item quantity="other">%dটি শিখেছ</item>
+    </plurals>
+    <plurals name="header_done">
+        <item quantity="one">%dটি শেষ</item>
+        <item quantity="other">%dটি শেষ</item>
+    </plurals>
+    <plurals name="header_running">
+        <item quantity="one">%dটি চলছে</item>
+        <item quantity="other">%dটি চলছে</item>
+    </plurals>
 
     <string name="empty_vowels">এখনো কোনো স্বরবর্ণ নেই</string>
     <string name="empty_consonants">এখনো কোনো ব্যঞ্জনবর্ণ নেই</string>

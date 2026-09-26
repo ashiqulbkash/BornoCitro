@@ -16,9 +16,13 @@ import androidx.compose.ui.graphics.drawscope.Stroke as PathStrokeStyle
 import androidx.compose.ui.tooling.preview.Preview
 import com.bornochitra.core.model.Point
 import com.bornochitra.core.model.Stroke
+import com.bornochitra.core.ui.theme.BcTheme
 import com.bornochitra.core.ui.theme.BornoChitraTheme
 
 internal const val GUIDE_CANVAS_UNIT = 100f
+
+/** The guide line under the dots is drawn at 60% of the guide colour (design/DESIGN_SPEC.md 4, Tracing canvas). */
+internal const val GUIDE_LINE_ALPHA = 0.6f
 
 /** Visual styling for [DottedPathCanvas]. All sizes are in the exercise's normalized 0..100 units. */
 data class DottedPathStyle(
@@ -40,8 +44,8 @@ fun DottedPathCanvas(
     modifier: Modifier = Modifier,
     style: DottedPathStyle = DottedPathStyle(),
 ) {
-    val resolvedDotColor = style.dotColor ?: MaterialTheme.colorScheme.primary
-    val resolvedPathColor = style.pathColor ?: MaterialTheme.colorScheme.outline
+    val resolvedDotColor = style.dotColor ?: BcTheme.colors.guide
+    val resolvedPathColor = style.pathColor ?: BcTheme.colors.guide.copy(alpha = GUIDE_LINE_ALPHA)
     val dots = remember(stroke, style.dotSpacing) {
         DottedPathSampler.sample(stroke.points, style.dotSpacing)
     }

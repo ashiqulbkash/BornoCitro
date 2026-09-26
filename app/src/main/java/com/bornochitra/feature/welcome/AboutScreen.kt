@@ -26,7 +26,7 @@ fun AboutScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(horizontal = BcSpacing.md),
+                .padding(horizontal = BcSpacing.m),
         )
     }
 }

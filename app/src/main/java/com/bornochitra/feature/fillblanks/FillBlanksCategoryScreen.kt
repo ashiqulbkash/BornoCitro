@@ -23,7 +23,7 @@ import com.bornochitra.R
 import com.bornochitra.core.locale.AppLanguage
 import com.bornochitra.core.model.Difficulty
 import com.bornochitra.core.model.ExerciseType
-import com.bornochitra.core.ui.components.BcChoiceButton
+import com.bornochitra.core.ui.components.BcChoiceColumn
 import com.bornochitra.core.ui.components.BcPrimaryButton
 import com.bornochitra.core.ui.components.BcTopAppBar
 import com.bornochitra.core.ui.components.label
@@ -89,19 +89,19 @@ private fun FillBlanksCategoryContent(
                 .fillMaxSize()
                 .padding(innerPadding)
                 .verticalScroll(rememberScrollState())
-                .padding(BcSpacing.md),
-            verticalArrangement = Arrangement.spacedBy(BcSpacing.md),
+                .padding(BcSpacing.m),
+            verticalArrangement = Arrangement.spacedBy(BcSpacing.m),
         ) {
             Text(text = stringResource(R.string.fill_blanks_difficulty), style = MaterialTheme.typography.titleLarge)
-            Row(horizontalArrangement = Arrangement.spacedBy(BcSpacing.sm)) {
-                BcChoiceButton(
-                    text = stringResource(R.string.fill_blanks_easy),
+            Row(horizontalArrangement = Arrangement.spacedBy(BcSpacing.xs)) {
+                BcChoiceColumn(
+                    label = stringResource(R.string.fill_blanks_easy),
                     selected = difficulty == Difficulty.BEGINNER,
                     onClick = { onDifficultyChange(Difficulty.BEGINNER) },
                     modifier = Modifier.weight(1f),
                 )
-                BcChoiceButton(
-                    text = stringResource(R.string.fill_blanks_hard),
+                BcChoiceColumn(
+                    label = stringResource(R.string.fill_blanks_hard),
                     selected = difficulty == Difficulty.ADVANCED,
                     onClick = { onDifficultyChange(Difficulty.ADVANCED) },
                     modifier = Modifier.weight(1f),

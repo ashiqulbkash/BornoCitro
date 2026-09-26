@@ -80,7 +80,7 @@ fun BrandSplash(
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = BcSpacing.md, vertical = BcSpacing.lg)
+                    .padding(horizontal = BcSpacing.m, vertical = BcSpacing.l)
                     .graphicsLayer { alpha = messageAlpha.value },
             )
         }

@@ -44,8 +44,8 @@ fun BanglaHubScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
                 .verticalScroll(rememberScrollState())
-                .padding(BcSpacing.md),
-            verticalArrangement = Arrangement.spacedBy(BcSpacing.md),
+                .padding(BcSpacing.m),
+            verticalArrangement = Arrangement.spacedBy(BcSpacing.m),
         ) {
             BcPrimaryButton(text = ExerciseType.VOWEL.label(), onClick = onVowelsClick, modifier = Modifier.fillMaxWidth())
             BcPrimaryButton(text = ExerciseType.CONSONANT.label(), onClick = onConsonantsClick, modifier = Modifier.fillMaxWidth())

@@ -56,15 +56,15 @@ private fun WelcomeContent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .navigationBarsPadding()
-                    .padding(BcSpacing.md),
+                    .padding(BcSpacing.m),
             )
         },
     ) { innerPadding ->
         Column(
             modifier = Modifier
                 .padding(innerPadding)
-                .padding(horizontal = BcSpacing.md),
-            verticalArrangement = Arrangement.spacedBy(BcSpacing.md),
+                .padding(horizontal = BcSpacing.m),
+            verticalArrangement = Arrangement.spacedBy(BcSpacing.m),
         ) {
             BcLanguageSwitch(
                 language = state.language,

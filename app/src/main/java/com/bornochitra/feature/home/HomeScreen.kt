@@ -66,8 +66,8 @@ private fun HomeContent(
                 .fillMaxSize()
                 .padding(innerPadding)
                 .verticalScroll(rememberScrollState())
-                .padding(BcSpacing.md),
-            verticalArrangement = Arrangement.spacedBy(BcSpacing.md),
+                .padding(BcSpacing.m),
+            verticalArrangement = Arrangement.spacedBy(BcSpacing.m),
         ) {
             Text(text = stringResource(R.string.home_welcome), style = MaterialTheme.typography.headlineMedium)
 

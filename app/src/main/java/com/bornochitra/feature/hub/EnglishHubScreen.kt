@@ -43,8 +43,8 @@ fun EnglishHubScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
                 .verticalScroll(rememberScrollState())
-                .padding(BcSpacing.md),
-            verticalArrangement = Arrangement.spacedBy(BcSpacing.md),
+                .padding(BcSpacing.m),
+            verticalArrangement = Arrangement.spacedBy(BcSpacing.m),
         ) {
             BcPrimaryButton(text = ExerciseType.ENGLISH_SMALL.label(), onClick = onEnglishSmallClick, modifier = Modifier.fillMaxWidth())
             BcPrimaryButton(text = ExerciseType.ENGLISH_CAPITAL.label(), onClick = onEnglishCapitalClick, modifier = Modifier.fillMaxWidth())

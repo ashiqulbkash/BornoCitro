@@ -69,13 +69,13 @@ private fun BanglaNumbersContent(
                 columns = GridCells.Fixed(GRID_COLUMNS),
                 modifier = Modifier.fillMaxSize(),
                 contentPadding = PaddingValues(
-                    start = BcSpacing.md,
-                    end = BcSpacing.md,
-                    top = innerPadding.calculateTopPadding() + BcSpacing.md,
-                    bottom = innerPadding.calculateBottomPadding() + BcSpacing.md,
+                    start = BcSpacing.m,
+                    end = BcSpacing.m,
+                    top = innerPadding.calculateTopPadding() + BcSpacing.m,
+                    bottom = innerPadding.calculateBottomPadding() + BcSpacing.m,
                 ),
-                horizontalArrangement = Arrangement.spacedBy(BcSpacing.sm, Alignment.CenterHorizontally),
-                verticalArrangement = Arrangement.spacedBy(BcSpacing.sm),
+                horizontalArrangement = Arrangement.spacedBy(BcSpacing.xs, Alignment.CenterHorizontally),
+                verticalArrangement = Arrangement.spacedBy(BcSpacing.xs),
             ) {
                 items(state.exercises, key = { it.id }) { item ->
                     BcExerciseTile(

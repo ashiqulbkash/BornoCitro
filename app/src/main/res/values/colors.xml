@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="bc_background_light">#FFFFFBFE</color>
-    <color name="bc_background_dark">#FF1C1B1F</color>
+    <color name="bc_background_light">#FFFDF8FF</color>
+    <color name="bc_background_dark">#FF15121B</color>
 </resources>

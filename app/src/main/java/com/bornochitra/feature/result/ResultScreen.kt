@@ -42,7 +42,7 @@ import com.bornochitra.core.ui.components.BcExerciseHeading
 import com.bornochitra.core.ui.components.BcFeedbackBanner
 import com.bornochitra.core.ui.components.BcFeedbackTone
 import com.bornochitra.core.ui.components.BcPrimaryButton
-import com.bornochitra.core.ui.components.BcSecondaryButton
+import com.bornochitra.core.ui.components.BcOutlineButton
 import com.bornochitra.core.ui.components.BcTip
 import com.bornochitra.core.ui.components.BcTopAppBar
 import com.bornochitra.core.ui.components.exerciseTitle
@@ -114,7 +114,7 @@ private fun ResultContent(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding)
-                    .padding(BcSpacing.md),
+                    .padding(BcSpacing.m),
             )
         }
     }
@@ -136,7 +136,7 @@ private fun AttemptSummary(
                 .fillMaxWidth()
                 .verticalScroll(rememberScrollState())
                 .heightIn(min = maxHeight),
-            verticalArrangement = Arrangement.spacedBy(BcSpacing.md, Alignment.CenterVertically),
+            verticalArrangement = Arrangement.spacedBy(BcSpacing.m, Alignment.CenterVertically),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             BcFeedbackBanner(
@@ -174,14 +174,14 @@ private fun AttemptSummary(
             // still learning (plan.md section 39).
             val nextExerciseId = attempt.nextExerciseId
             if (nextExerciseId != null && attempt.scoreLevel != ScoreLevel.LOW) {
-                BcSecondaryButton(
+                BcOutlineButton(
                     text = stringResource(R.string.result_next),
                     onClick = { onPracticeClick(nextExerciseId, emptyList()) },
                     modifier = Modifier.fillMaxWidth(),
                 )
             }
 
-            BcSecondaryButton(
+            BcOutlineButton(
                 text = stringResource(R.string.result_view_progress),
                 onClick = onProgressClick,
                 modifier = Modifier.fillMaxWidth(),
@@ -221,7 +221,7 @@ private fun ResultHeadline(
             scaleY = pop.value
         },
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(BcSpacing.md),
+        verticalArrangement = Arrangement.spacedBy(BcSpacing.m),
     ) {
         BcExerciseHeading(title = title)
         Text(
